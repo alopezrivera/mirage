@@ -1,0 +1,33 @@
+#+title: Org Mode Capabilities Review
+
+* Text
+
+** Markup
+Here's *content*
+
+** Links
+[[https:google.com][Here is the Org Mode homepage]]
+
+** Tables
+| Name  | Age | Uses Emacs |
+|-------+-----+------------|
+| David |  37 | Yes        |
+| Third |  45 | Yes        |
+|       |     |            |
+
+** Lists
+1. [X] First
+2. [ ] Second
+3. [ ] Third
+   - a
+   - b
+   - cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+     1. asaaaaaaa(add-hook 'org-mode-hook 'org-indent-mode)(add-hook 'org-mode-hook 'org-indent-mode)(add-hook 'org-mode-hook 'org-indent-mode)(add-hook 'org-mode-hook 'org-indent-mode)(add-hook 'org-mode-hook 'org-indent-mode)(add-hook 'org-mode-hook 'org-indent-mode)(add-hook 'org-mode-hook 'org-indent-mode)(add-hook 'org-mode-hook 'org-indent-mode)
+
+* Source blocks
+
+#+begin_src emacs-lisp
+
+(defun test ())
+
+#+end_src
