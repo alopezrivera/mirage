@@ -67,7 +67,7 @@
 ;; Disable tooltips
 (tooltip-mode -1)
 
-;; Give some breathing room
+;; Set width of side fringes
 (set-fringe-mode 10)
 
 ;; Disable menu bar
@@ -85,8 +85,14 @@
 (add-to-list 'default-frame-alist '(height . 40))
 (add-to-list 'default-frame-alist '(width  . 100))
 
-;; Font
+;; Default face
 (set-face-attribute 'default nil :font "Fira Code Retina" :height 110)
+
+;; Fixed pitch face
+(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 110)
+
+;; Variable pitch face
+(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
 
 ;; Modeline font
 (set-face-attribute 'mode-line nil :font "Fira Code Retina" :height 100)
@@ -161,25 +167,99 @@
 
 ;; -----------------------------
 
-(use-package org)
+;; Face setup
+(defun custom/org-face-setup ()
+  ;;  Headers variable font sizes
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))
+  ;; Set fixed and variable faces
+  (progn (set-face-attribute 'org-block            nil :foreground nil :inherit 'fixed-pitch)
+	 (set-face-attribute 'org-code             nil                 :inherit '(shadow fixed-pitch))
+	 (set-face-attribute 'org-table            nil                 :inherit '(shadow fixed-pitch))
+	 (set-face-attribute 'org-verbatim         nil                 :inherit '(shadow fixed-pitch))
+	 (set-face-attribute 'org-special-keyword  nil                 :inherit '(font-lock-comment-face fixed-pitch))
+	 (set-face-attribute 'org-meta-line        nil                 :inherit '(font-lock-comment-face fixed-pitch))
+	 (set-face-attribute 'org-checkbox         nil                 :inherit 'fixed-pitch)
+	 (set-face-attribute 'org-indent           nil                 :inherit '(org-hide fixed-pitch))))
 
-;; Hide markup symbols
-;; (setq org-hide-emphasis-markers t)
+;; Org hook
+(defun custom/org-mode-setup ()
 
-;; Support shift selection
-;; (setq org-support-shift-select  nil)
+  ;; Enter variable pitch mode
+  (variable-pitch-mode 1)
 
-;; By default, wrap long lines at the end of the buffer, as opposed to truncating them
-;; (setq org-startup-truncated     nil)
+  ;; Enter visual line mode:  wrap long lines at the end of the buffer, as opposed to truncating them
+  (visual-line-mode    1)
 
-;; By default, indent truncated lines appropriately
-;; (setq org-startup-indented      t)
+  ;; Enter indent mode: indent truncated lines appropriately
+  (org-indent-mode      )
 
-;; Set indentation of code blocks to 2 by default
-;; (setq org-edit-src-content-in dentation 2)
+  (custom/org-face-setup))
 
-;; ;; Make code editing reasonable
-;; (setq org-src-tab-acts-natively nil)
+;; Load Org Mode
+(use-package org
+  :hook (org-mode . custom/org-mode-setup)
+  :config
+
+  ;; Change ellipsis ("...") to remove clutter
+  (setq org-ellipsis " ▾")
+
+  ;; Hide markup symbols
+  (setq org-hide-emphasis-markers t)
+)
+
+;; Custom header bullets
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+;; Replace list hyphens with dots
+(font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+;; Center text
+(use-package olivetti
+  :diminish
+  )
+
+(add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
+
+(add-hook 'org-mode-hook 'olivetti-mode)
+
+;; -----------------------------
+;;          Org Babel
+;; -----------------------------
+
+;; Set indentation of code blocks to 0
+(setq org-edit-src-content-indentation 0)
+
+;; Indent code blocks appropriately when inside lists
+(setq org-src-preserve-indentation     nil)
+
+;; Make code editing reasonable
+(setq org-src-tab-acts-natively        t)
+
+;; Language packages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)))
+
+;; Suppress security confirmation when evaluating code
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (member lang '("emacs-lisp" "python"))))
+
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 ;; -----------------------------
 
