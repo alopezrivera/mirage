@@ -42,6 +42,7 @@
 (load custom-file)
 
 #+end_src
+
 *** Initialization
 
 #+begin_src emacs-lisp
@@ -49,7 +50,7 @@
 #+end_src
 
 *** UI
-**** Config
+**** Taming
 
 #+begin_src emacs-lisp
 
@@ -65,24 +66,18 @@
 ;; Disable tooltips
 (tooltip-mode -1)
 
-;; Set width of side fringes
-(set-fringe-mode 10)
-
 ;; Disable menu bar
 (menu-bar-mode -1)
 
-;; Enable visual bell
-(setq visible-bell t)
-
 #+end_src
 
-**** Frame Size
+**** Theme
 
 #+begin_src emacs-lisp
 
-;; Initial frame size
-(add-to-list 'default-frame-alist '(height . 40))
-(add-to-list 'default-frame-alist '(width  . 100))
+;; Theme
+(use-package doom-themes
+  :init (load-theme 'doom-dracula t))
 
 #+end_src
 
@@ -104,13 +99,28 @@
 
 #+end_src
 
-**** Theme
+**** Color guides
 
 #+begin_src emacs-lisp
 
-;; Theme
-(use-package doom-themes
-  :init (load-theme 'doom-dracula t))
+;; Enable visual bell
+(setq visible-bell t)
+
+;; Set width of side fringes
+(set-fringe-mode 7)
+
+;; Set fringe color
+(set-face-background 'fringe "#30f295")
+
+#+end_src
+
+**** Frame Size
+
+#+begin_src emacs-lisp
+
+;; Initial frame size
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(width  . 100))
 
 #+end_src
 
@@ -133,7 +143,7 @@
 #+end_src
 
 *** Editing
-**** UI
+**** Taming
 
 #+begin_src emacs-lisp
 
@@ -150,18 +160,21 @@
 
 #+end_src
 
-**** Copying
+**** Cut, Copy, Paste
 
 #+begin_src emacs-lisp
 
-;; Copy with mouse right click
-(global-set-key (kbd "<mouse-3>")      #'kill-ring-save)
-(global-set-key (kbd "<down-mouse-3>")              nil)
+;; Copy region with S-left click
+(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
+(global-set-key (kbd "S-<down-mouse-1>")  nil)
+
+;; Paste with mouse right click
+(global-set-key (kbd "<mouse-3>")        'yank)
+(global-set-key (kbd "<down-mouse-3>")    nil)
 
 #+end_src
 
-**** Multiple 
-Cursors
+**** Multiple Cursors
 
 #+begin_src emacs-lisp
 
@@ -212,10 +225,10 @@ Cursors
 (require 'rectangular-region-mode)
 
 ;; Save rectangle to kill ring
-(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'copy-rectangle-as-kill)
+(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'kill-ring-save)
 
 ;; Yank rectangle
-(global-set-key (kbd "C-M-y") 'yank-rectangle)
+(global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
 
 #+end_src
 
@@ -280,37 +293,10 @@ Cursors
 
 ** Org Mode
 *** Startup
-**** Faces
-
-#+begin_src emacs-lisp
-
-;; Face setup
-(defun custom/org-face-setup ()
-  ;;  Headers variable font sizes
-  (dolist (face '((org-level-1 . 1.2)
-                  (org-level-2 . 1.1)
-                  (org-level-3 . 1.05)
-                  (org-level-4 . 1.0)
-                  (org-level-5 . 1.1)
-                  (org-level-6 . 1.1)
-                  (org-level-7 . 1.1)
-                  (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))
-  ;; Set fixed and variable faces
-  (progn (set-face-attribute 'org-block            nil :foreground nil :inherit 'fixed-pitch)
-	 (set-face-attribute 'org-code             nil                 :inherit '(shadow fixed-pitch))
-	 (set-face-attribute 'org-table            nil                 :inherit '(shadow fixed-pitch))
-	 (set-face-attribute 'org-verbatim         nil                 :inherit '(shadow fixed-pitch))
-	 (set-face-attribute 'org-special-keyword  nil                 :inherit '(font-lock-comment-face fixed-pitch))
-	 (set-face-attribute 'org-meta-line        nil                 :inherit '(font-lock-comment-face fixed-pitch))
-	 (set-face-attribute 'org-checkbox         nil                 :inherit 'fixed-pitch)
-	 (set-face-attribute 'org-indent           nil                 :inherit '(org-hide fixed-pitch))))
-
-#+end_src
-
 **** Hook
 
 #+begin_src emacs-lisp
+
 ;; Org hook
 (defun custom/org-mode-setup ()
 
@@ -321,10 +307,8 @@ Cursors
   (visual-line-mode    1)
 
   ;; Enter indent mode: indent truncated lines appropriately
-  (org-indent-mode      )
+  (org-indent-mode     1))
 
-  ;; Face setup
-  (custom/org-face-setup))
 #+end_src
 
 **** Load Org Mode
@@ -334,39 +318,69 @@ Cursors
 ;; Load Org Mode
 (use-package org
   :hook (org-mode . custom/org-mode-setup)
-  :config
-
-  ;; Change ellipsis ("...") to remove clutter
-  (setq org-ellipsis " ▾")
-
-  ;; Hide markup symbols
-  (setq org-hide-emphasis-markers t)
 )
 
 #+end_src
 
 *** UI
-**** Headers
+**** Preferences
 
 #+begin_src emacs-lisp
 
-;; Custom header bullets
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+;; Hide #+TITLE:
+(setq org-hidden-keywords '(title))
 
 #+end_src
 
-**** Lists
+**** Visual cues
 
 #+begin_src emacs-lisp
 
-;; Replace list hyphens with dots
-(font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+;; Change ellipsis ("...") to remove clutter
+(setq org-ellipsis " ▾")
+
+#+end_src
+
+**** Markers
+
+#+begin_src emacs-lisp
+
+;; Install org-superstar
+(use-package org-superstar)
+
+(require 'org-superstar)
+
+;; Hook to Org Mode
+(add-hook 'org-indent-mode-hook (lambda () (org-superstar-mode 1)))
+
+#+end_src
+
+***** Headers
+
+#+begin_src emacs-lisp
+
+;; Headers
+(setq org-superstar-headline-bullets-list
+      '("◉" "▷" "○" "●" "○" "●" "○" "●"))
+
+;; Do not cycle header markers
+(setq org-superstar-cycle-headline-bullets nil)
+
+#+end_src
+
+***** Lists
+
+#+begin_src emacs-lisp
+
+;; Set custom bullet points
+(setq
+ org-superstar-item-bullet-alist
+ '((42 . "▷" )
+   (43 . "○")
+   (45 . "●")))
+
+;; Set custom bullet point height
+(set-face-attribute 'org-superstar-item nil :inherit 'fixed-pitch :height 90)
 
 #+end_src
 
@@ -385,7 +399,86 @@ Cursors
 
 #+end_src
 
-*** Structure templates
+*** Text
+**** Faces
+***** Title
+
+#+begin_src emacs-lisp
+
+;; Title face
+
+(defun custom/org-title-setup () 
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-document-title nil :height 2.074 :foreground 'unspecified :inherit 'org-level-8)))
+
+(add-hook 'org-mode-hook 'custom/org-title-setup)
+
+#+end_src
+
+***** Headers
+
+#+begin_src emacs-lisp
+
+;; Use levels 1 through 4
+(setq org-n-level-faces 4)
+
+;; Do not cycle header style after 4th level
+(setq org-cycle-level-faces nil)
+
+;; Hide leading stars
+(setq org-hide-leading-starts t)
+
+;; Font sizes
+(defun custom/org-header-setup () 
+  (with-eval-after-load 'org-faces
+
+    ;; Header font sizes
+    (dolist (face '((org-level-1 . 1.5)
+                    (org-level-2 . 1.2)
+                    (org-level-3 . 1.1)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.0)
+                    (org-level-6 . 1.0)
+                    (org-level-7 . 1.0)
+                    (org-level-8 . 1.0)))
+      (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))))
+
+(add-hook 'org-mode-hook 'custom/org-header-setup)
+
+#+end_src
+
+***** Text
+
+#+begin_src emacs-lisp
+
+(defun custom/org-pitch-setup ()
+  (with-eval-after-load 'org-faces
+
+      ;; Code
+      (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
+
+      ;; Tables
+      (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
+
+      ;; Lists
+      (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
+      (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))
+
+      ;; Meta
+      (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
+      (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
+      (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
+      (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
+
+  (add-hook 'org-indent-mode-hook 'custom/org-pitch-setup)
+
+#+end_src
+
+**** Editing
+***** Structure Templates
+
 #+begin_src emacs-lisp
 
 ;; Required as of Org 9.2
@@ -397,8 +490,7 @@ Cursors
 
 #+end_src
 
-*** Editing
-**** Keep text selection after executing commands
+***** Keep text selection after executing commands
 
 #+begin_src emacs-lisp
 
@@ -419,25 +511,30 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-*** Auto-tangle Configuration setup
+**** Highlighting
 
 #+begin_src emacs-lisp
 
-;; Trigger org-babel-tangle when saving init.org
-(defun custom/org-babel-tangle-config()
-(when (string-equal (buffer-file-name)
-		    (expand-file-name "~/.emacs.d/init.org")))
-  ;; Dynamic scoping
-  (let ((org-confirm-babel-evaluate nil))
-    (org-babel-tangle)))
-
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-tangle-config)))
+;; Hide markup symbols
+(setq org-hide-emphasis-markers t)
 
 #+end_src
 
 ** *Org Babel*
+*** Languages
 
-*** Code Block Indentation
+#+begin_src emacs-lisp
+
+;; Language packages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)))
+
+#+end_src
+
+*** Editing
+**** Code Block Indentation
 
 #+begin_src emacs-lisp
 
@@ -452,19 +549,8 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-*** Languages
-
-#+begin_src emacs-lisp
-
-;; Language packages
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python     . t)))
-
-#+end_src
-
-*** Security
+*** Execution
+**** Suppress Confirmation
 
 #+begin_src emacs-lisp
 
@@ -473,6 +559,23 @@ function that sets `deactivate-mark' to t."
   (not (member lang '("emacs-lisp" "python"))))
 
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+#+end_src
+
+*** Configuration
+**** Auto-tangle Configuration Setup
+
+#+begin_src emacs-lisp
+
+;; Trigger org-babel-tangle when saving init.org
+(defun custom/org-babel-tangle-config()
+(when (string-equal (buffer-file-name)
+		          (expand-file-name "~/.emacs.d/init.org")))
+  ;; Dynamic scoping
+  (let ((org-confirm-babel-evaluate nil))
+    (org-babel-tangle)))
+
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-tangle-config)))
 
 #+end_src
 

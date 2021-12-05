@@ -20,5 +20,6 @@
 	mouse-drag-mode-line
 	mouse-save-then-kill
 	mouse-start-rectangle
+	swiper
 	swiper-mc
 	))

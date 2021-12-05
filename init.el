@@ -38,18 +38,12 @@
 ;; Disable tooltips
 (tooltip-mode -1)
 
-;; Set width of side fringes
-(set-fringe-mode 10)
-
 ;; Disable menu bar
 (menu-bar-mode -1)
 
-;; Enable visual bell
-(setq visible-bell t)
-
-;; Initial frame size
-(add-to-list 'default-frame-alist '(height . 40))
-(add-to-list 'default-frame-alist '(width  . 100))
+;; Theme
+(use-package doom-themes
+  :init (load-theme 'doom-dracula t))
 
 ;; Default face
 (set-face-attribute 'default nil :font "Fira Code Retina" :height 110)
@@ -63,9 +57,18 @@
 ;; Modeline font
 (set-face-attribute 'mode-line nil :font "Fira Code Retina" :height 100)
 
-;; Theme
-(use-package doom-themes
-  :init (load-theme 'doom-dracula t))
+;; Enable visual bell
+(setq visible-bell t)
+
+;; Set width of side fringes
+(set-fringe-mode 7)
+
+;; Set fringe color
+(set-face-background 'fringe "#30f295")
+
+;; Initial frame size
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(width  . 100))
 
 ;; Make keyboard ESC quit dialogs, equivalent to C-g
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -84,9 +87,13 @@
 (global-unset-key [C-mouse-1])
 (global-unset-key [C-down-mouse-1])
 
-;; Copy with mouse right click
-(global-set-key (kbd "<mouse-3>")      #'kill-ring-save)
-(global-set-key (kbd "<down-mouse-3>")              nil)
+;; Copy region with S-left click
+(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
+(global-set-key (kbd "S-<down-mouse-1>")  nil)
+
+;; Paste with mouse right click
+(global-set-key (kbd "<mouse-3>")        'yank)
+(global-set-key (kbd "<down-mouse-3>")    nil)
 
 ;; Multiple cursors
 (use-package multiple-cursors
@@ -129,10 +136,10 @@
 (require 'rectangular-region-mode)
 
 ;; Save rectangle to kill ring
-(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'copy-rectangle-as-kill)
+(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'kill-ring-save)
 
 ;; Yank rectangle
-(global-set-key (kbd "C-M-y") 'yank-rectangle)
+(global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
 
 ;; Load Swiper
 (use-package swiper
@@ -168,28 +175,6 @@
 ;; Create binding for evaluating buffer
 (global-set-key (kbd "C-x e") 'eval-buffer)
 
-;; Face setup
-(defun custom/org-face-setup ()
-  ;;  Headers variable font sizes
-  (dolist (face '((org-level-1 . 1.2)
-                  (org-level-2 . 1.1)
-                  (org-level-3 . 1.05)
-                  (org-level-4 . 1.0)
-                  (org-level-5 . 1.1)
-                  (org-level-6 . 1.1)
-                  (org-level-7 . 1.1)
-                  (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))
-  ;; Set fixed and variable faces
-  (progn (set-face-attribute 'org-block            nil :foreground nil :inherit 'fixed-pitch)
-	 (set-face-attribute 'org-code             nil                 :inherit '(shadow fixed-pitch))
-	 (set-face-attribute 'org-table            nil                 :inherit '(shadow fixed-pitch))
-	 (set-face-attribute 'org-verbatim         nil                 :inherit '(shadow fixed-pitch))
-	 (set-face-attribute 'org-special-keyword  nil                 :inherit '(font-lock-comment-face fixed-pitch))
-	 (set-face-attribute 'org-meta-line        nil                 :inherit '(font-lock-comment-face fixed-pitch))
-	 (set-face-attribute 'org-checkbox         nil                 :inherit 'fixed-pitch)
-	 (set-face-attribute 'org-indent           nil                 :inherit '(org-hide fixed-pitch))))
-
 ;; Org hook
 (defun custom/org-mode-setup ()
 
@@ -200,34 +185,43 @@
   (visual-line-mode    1)
 
   ;; Enter indent mode: indent truncated lines appropriately
-  (org-indent-mode      )
-
-  ;; Face setup
-  (custom/org-face-setup))
+  (org-indent-mode     1))
 
 ;; Load Org Mode
 (use-package org
   :hook (org-mode . custom/org-mode-setup)
-  :config
-
-  ;; Change ellipsis ("...") to remove clutter
-  (setq org-ellipsis " ▾")
-
-  ;; Hide markup symbols
-  (setq org-hide-emphasis-markers t)
 )
 
-;; Custom header bullets
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+;; Hide #+TITLE:
+(setq org-hidden-keywords '(title))
 
-;; Replace list hyphens with dots
-(font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+;; Change ellipsis ("...") to remove clutter
+(setq org-ellipsis " ▾")
+
+;; Install org-superstar
+(use-package org-superstar)
+
+(require 'org-superstar)
+
+;; Hook to Org Mode
+(add-hook 'org-indent-mode-hook (lambda () (org-superstar-mode 1)))
+
+;; Headers
+(setq org-superstar-headline-bullets-list
+      '("◉" "▷" "○" "●" "○" "●" "○" "●"))
+
+;; Do not cycle header markers
+(setq org-superstar-cycle-headline-bullets nil)
+
+;; Set custom bullet points
+(setq
+ org-superstar-item-bullet-alist
+ '((42 . "▷" )
+   (43 . "○")
+   (45 . "●")))
+
+;; Set custom bullet point height
+(set-face-attribute 'org-superstar-item nil :inherit 'fixed-pitch :height 90)
 
 ;; Center text
 (use-package olivetti
@@ -237,6 +231,63 @@
 (add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
 
 (add-hook 'org-mode-hook 'olivetti-mode)
+
+;; Title face
+
+(defun custom/org-title-setup () 
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-document-title nil :height 2.074 :foreground 'unspecified :inherit 'org-level-8)))
+
+(add-hook 'org-mode-hook 'custom/org-title-setup)
+
+;; Use levels 1 through 4
+(setq org-n-level-faces 4)
+
+;; Do not cycle header style after 4th level
+(setq org-cycle-level-faces nil)
+
+;; Hide leading stars
+(setq org-hide-leading-starts t)
+
+;; Font sizes
+(defun custom/org-header-setup () 
+  (with-eval-after-load 'org-faces
+
+    ;; Header font sizes
+    (dolist (face '((org-level-1 . 1.5)
+                    (org-level-2 . 1.2)
+                    (org-level-3 . 1.1)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.0)
+                    (org-level-6 . 1.0)
+                    (org-level-7 . 1.0)
+                    (org-level-8 . 1.0)))
+      (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))))
+
+(add-hook 'org-mode-hook 'custom/org-header-setup)
+
+(defun custom/org-pitch-setup ()
+  (with-eval-after-load 'org-faces
+
+      ;; Code
+      (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
+
+      ;; Tables
+      (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
+
+      ;; Lists
+      (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
+      (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))
+
+      ;; Meta
+      (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
+      (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
+      (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
+      (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
+
+  (add-hook 'org-indent-mode-hook 'custom/org-pitch-setup)
 
 ;; Required as of Org 9.2
 (require 'org-tempo)
@@ -260,15 +311,14 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
 
-;; Trigger org-babel-tangle when saving init.org
-(defun custom/org-babel-tangle-config()
-(when (string-equal (buffer-file-name)
-		    (expand-file-name "~/.emacs.d/init.org")))
-  ;; Dynamic scoping
-  (let ((org-confirm-babel-evaluate nil))
-    (org-babel-tangle)))
+;; Hide markup symbols
+(setq org-hide-emphasis-markers t)
 
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-tangle-config)))
+;; Language packages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)))
 
 ;; Set indentation of code blocks to 0
 (setq org-edit-src-content-indentation 0)
@@ -279,17 +329,21 @@ function that sets `deactivate-mark' to t."
 ;; Make code indentation reasonable
 (setq org-src-tab-acts-natively        t)
 
-;; Language packages
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python     . t)))
-
 ;; Suppress security confirmation when evaluating code
 (defun my-org-confirm-babel-evaluate (lang body)
   (not (member lang '("emacs-lisp" "python"))))
 
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+;; Trigger org-babel-tangle when saving init.org
+(defun custom/org-babel-tangle-config()
+(when (string-equal (buffer-file-name)
+		          (expand-file-name "~/.emacs.d/init.org")))
+  ;; Dynamic scoping
+  (let ((org-confirm-babel-evaluate nil))
+    (org-babel-tangle)))
+
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-tangle-config)))
 
 ;; Conclude initialization file
 (provide 'init)
