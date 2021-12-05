@@ -38,13 +38,20 @@ lasdfkasdj fklasjd fkasj dfkaj skfj askj dfkajsdfklj askldj fklasjd fkjs dfkj as
 #+RESULTS:
 
 *** Python
-#+begin_src python :results value
-if 'a' == 'a':
-    return 1
+#+begin_src python :results output file :file example.png :output-dir test/
+
+import sys
+import matplotlib.pyplot as plt
+from mpl_plotter.two_d import line
+
+line(backend="Agg", color='blue', line_width=20)
+
+plt.savefig(sys.stdout.buffer)
+
 #+end_src
 
 #+RESULTS:
-: 1
+[[file:test/example.png]]
 
 *** 
 
