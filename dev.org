@@ -1,0 +1,108 @@
+#+title:Emacs Development
+
+* Backlog
+* Review
+** Package management
+*** straight.el
+https://github.com/raxod502/straight.el
+https://www.youtube.com/watch?v=UmbVeqphGlc
+** UI
+*** Margins
+**** Visual fill mode
+
+#+begin_src emacs-lisp
+
+;; Visual fill mode
+(defun custom/org-mode-visual-fill ()
+  (setq         visual-fill-column-width        120)
+  (setq-default visual-fill-colummn-center-text   t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . custom/org-mode-visual-fill))
+
+#+end_src
+
+*** Line wrapping
+**** Adaptive wrap
+
+#+begin_src emacs-lisp
+
+;; Adaptive wrap
+(use-package adaptive-wrap
+  :config
+  (progn
+    (setq-default adaptive-wrap-extra-indent 12)
+
+    (defun turn-on-adaptive-wrap-prefix-mode ()
+      "Turns on adaptive-wrap-prefix-mode"
+      (interactive)
+      (adaptive-wrap-prefix-mode 1))
+    (define-globalized-minor-mode global-adaptive-wrap-prefix-mode
+      adaptive-wrap-prefix-mode
+      turn-on-adaptive-wrap-prefix-mode)
+    (global-adaptive-wrap-prefix-mode 1)))
+
+#+end_src
+
+** Completion
+*** Prescient
+**** ivy-prescient
+https://github.com/raxod502/prescient.el#usage
+*** Hydra
+*** Helm
+https://emacs-helm.github.io/helm/
+*** Selectrum
+* Bugs
+** Org Mode
+*** TODO Lists
+List break indentation face
+* Desires
+** Text editing
+*** Undo tree
+**** TODO Set size and position of visualization window
+** Org Mode
+*** UI
+**** TODO Custom markup
+***** https://list.orgmode.org/87wo0iz3xh.fsf@ucl.ac.uk/T/
+
+#+begin_src emacs-lisp
+
+(defun user-custom-keywords ()
+  ;; M-x list-faces-display
+  (let ((user-custom-keywords
+	 '((":next:" . 'org-habit-clear-face)
+	   (":wait:" . 'org-habit-alert-face)
+	   (":failed:" . 'org-habit-overdue-face)
+	   (":success:" . 'org-habit-ready-face)
+	   (":unscheduled:" . 'avy-lead-face-0))))
+
+    (dolist (elt user-custom-keywords)
+      (let ((regex (car elt))
+	    (face (cdr elt)))
+	(font-lock-add-keywords
+	 nil
+	 `((,regex 0 ,face t))
+	 'append)))))
+
+
+#+end_src
+
+***** https://emacs.stackexchange.com/questions/2538/how-to-define-additional-mode-specific-pairs-for-electric-pair-mode
+*** Text editing
+**** Headers
+****** TODO RET on empty title -> delete all *
+*** Key bindings
+**** TODO Region markup
+| Bold | Italic | Highlight | Strikethrough | Underline |
+| "*"  | "/"    | "="       | "+"           | "_"       |
+*** Export
+**** Text blocks
+***** TODO LaTeX
+https://alhassy.github.io/org-special-block-extras/
+** Code
+*** Parenthesis
+https://www.emacswiki.org/emacs/ParEdit
+* Misteries
+** Ivy
+=M-x ^=

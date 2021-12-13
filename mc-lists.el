@@ -19,7 +19,9 @@
       '(
 	mouse-drag-mode-line
 	mouse-save-then-kill
+	mouse-set-region
 	mouse-start-rectangle
+	org-ctrl-c-ctrl-c
 	swiper
 	swiper-mc
 	))
