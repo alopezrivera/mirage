@@ -1,12 +1,21 @@
-;; Set default directory
+(setq initial-buffer-choice "~/.emacs.d/init.org")
+
+;; Initial frame size
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(width  . 100))
+
+;; Default directory
 (setq default-directory "~/.emacs.d/")
+
+;; Config directory
+(setq config-directory "~/.emacs.d/")
 
 ;; Initialize package sources
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org"   . "https://orgmode.org/elpa/")
-			 ("elpa"  . "https://elpa.gnu.org/packages/")))
+			     ("org"   . "https://orgmode.org/elpa/")
+			     ("elpa"  . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -20,10 +29,6 @@
 ;; If true, Emacs will attempt to download packages in use-package declarations
 (setq use-package-always-ensure t)
 
-;; Customize names displayed in mode line
-(use-package delight)
-(require 'delight)
-
 ;; Customize interface code blocks
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
@@ -33,9 +38,7 @@
   (set-mark beg)
   (goto-char end)
   (activate-mark)
-)
-
-(setq initial-buffer-choice "~/.emacs.d/init.org")
+  )
 
 ;; Inhibit startup message
 (setq inhibit-startup-message t)
@@ -52,22 +55,23 @@
 ;; Disable menu bar
 (menu-bar-mode -1)
 
-;; Theme
-(use-package doom-themes
-  :init (load-theme 'doom-palenight t))
-
-;; Symbol library
-(use-package all-the-icons
-  :if (display-graphic-p))
-
 ;; Enable visual bell
 (setq visible-bell t)
 
-;; Set width of side fringes
-(set-fringe-mode 7)
+;; Install doom-modeline
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode))
 
-;; Set fringe color
-(set-face-background 'fringe "#30f295")
+;; Customize names displayed in mode line
+(use-package delight)
+(require 'delight)
+
+;; Remove default modes from mode line
+(delight '((visual-line-mode nil "simple")
+	   (buffer-face-mode nil "simple")
+   	   (eldoc-mode nil "eldoc")
+	   ;; Major modes
+	   (emacs-lisp-mode "EL" :major)))
 
 ;; Line numbers: display globally
 (global-display-line-numbers-mode t)
@@ -77,36 +81,82 @@
 
 ;; Exceptions
 (dolist (mode '(org-mode-hook
-		  term-mode-hook
-		  shell-mode-hook
-		  eshell-mode-hook
-		  undo-tree-visualizer-mode-hook))
+		    term-mode-hook
+		    shell-mode-hook
+		    eshell-mode-hook
+		    undo-tree-visualizer-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-;; Highlight HTML color strings in their own color
-(use-package rainbow-mode)
-(require 'rainbow-mode)
+;; Load Swiper
+(use-package swiper)
 
-;; Install doom-modeline
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode))
+(require 'swiper)
 
-;; Remove default modes from mode line
-(delight '((visual-line-mode nil "simple")
-	   (buffer-face-mode nil "simple")
-   	   (eldoc-mode       nil "eldoc")
-	   ;; Major modes
-	   (emacs-lisp-mode "EL" :major)))
+;; Smart search
+(defun custom/search-region (beg end)
+  "Search selected region with swiper-isearch."
+  (swiper-isearch (buffer-substring-no-properties beg end)))
 
-;; Mode line font
-(set-face-attribute 'mode-line nil :height 110)
+(defun custom/smart-search (beg end)
+  "Search for selected regions. If none are, call swiper-isearch."
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end))
+                 (list nil nil)))
+  (deactivate-mark)
+  (if (and beg end)
+      (custom/search-region beg end)
+    (swiper-isearch)))
 
-;; Initial frame size
-(add-to-list 'default-frame-alist '(height . 40))
-(add-to-list 'default-frame-alist '(width  . 100))
+(define-key global-map (kbd "C-s") #'custom/smart-search)
 
-;; Make keyboard ESC quit dialogs, equivalent to C-g
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(defun custom/narrow-and-search (beg end)
+  (narrow-to-region beg end)
+  (deactivate-mark)
+  (swiper-isearch))
+
+(defun custom/search-in-region (beg end)
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end))
+                 (list nil nil)))
+  (if (and beg end)
+      (custom/narrow-and-search beg end)
+    (swiper-isearch)))
+
+(define-key global-map (kbd "C-x C-x") #'custom/search-in-region)
+
+;; M-RET: multiple-cursors-mode
+(define-key swiper-map (kbd "M-<return>") 'swiper-mc)
+
+;; Ivy completion framework
+(use-package counsel)
+(use-package ivy
+  :delight ivy-mode
+  :bind (:map ivy-minibuffer-map
+	      ("TAB" . ivy-alt-done)
+	      ("C-l" . ivy-alt-done)
+	      ("C-j" . ivy-next-line)
+	      ("C-k" . ivy-previous-line)
+	      :map ivy-switch-buffer-map
+	      ("C-k" . ivy-previous-line)
+	      ("C-l" . ivy-done)
+	      ("C-d" . ivy-switch-buffer-kill)
+	      :map ivy-reverse-i-search-map
+	      ("C-k" . ivy-previous-line)
+	      ("C-d" . ivy-reverse-i-search-kill))
+  :init (ivy-mode 1))
+
+;; Completion candidate descriptions
+(use-package ivy-rich
+  :bind
+  (("<menu>" . counsel-M-x))
+  :init (ivy-rich-mode 1))
+
+;; Command suggestions
+(use-package which-key
+  :delight which-key-mode
+  :config
+  (which-key-mode)
+  (setq which-key-idle-delay 1.0))
 
 ;; Replace description key bindings by their helpful equivalents
 (use-package helpful
@@ -119,68 +169,25 @@
   ([remap describe-variable] . helpful-variable)
   ([remap describe-key]      . helpful-key))
 
+(use-package command-log-mode
+  :delight command-log-mode)
+(global-command-log-mode)
+
+;; Counsel buffer switching
+(global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
+
 ;; Create new frame
 (global-set-key (kbd "C-S-n") 'make-frame-command)
 
-;; Default face
-(set-face-attribute 'default nil :font "Fira Code Retina" :height 110)
-
-;; Fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 110)
-
-;; Variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
-
-;; Unset secondary overlay key bindings
-(global-unset-key [M-mouse-1])
-(global-unset-key [M-drag-mouse-1])
-(global-unset-key [M-down-mouse-1])
-(global-unset-key [M-mouse-3])
-(global-unset-key [M-mouse-2])
-
-;; Unset mouse bindings
-(global-unset-key [C-mouse-1])
-(global-unset-key [C-down-mouse-1])
-
-(global-set-key (kbd "C-`") 'widen)
-
-;; Undo Tree
-(use-package undo-tree
-  :bind (:map undo-tree-visualizer-mode-map
-	      ("RET" . undo-tree-visualizer-quit)))
-(require 'undo-tree)
-(global-undo-tree-mode)
-
-;; Visualize in side buffer
-(defun custom/undo-tree-split-side-by-side (original-function &rest args)
-  "Split undo-tree side-by-side"
-  (let ((split-height-threshold nil)
-        (split-width-threshold 0))
-    (apply original-function args)))
-
-(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
-
-;; Undo tree command
-(defun custom/undo-tree ()
-  (interactive)
-  (undo-tree-visualize))
-
-(global-set-key (kbd "M-/") #'custom/undo-tree)
-
-;; Copy region with S-left click
-(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
-(global-set-key (kbd "S-<down-mouse-1>")  nil)
-
-;; Paste with mouse right click
-(global-set-key (kbd "<mouse-3>")        'yank)
-(global-set-key (kbd "<down-mouse-3>")    nil)
+;; Make ESC quit present window and bury its buffer
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 ;; Multiple cursors
 (use-package multiple-cursors
   :bind (("C-."         . mc/mark-next-like-this)
 	 ("C-;"         . mc/mark-previous-like-this)
 	 ("C-<mouse-1>" . mc/add-cursor-on-click))
-)
+  )
 
 ;; Load package
 (require 'multiple-cursors)
@@ -188,25 +195,10 @@
 ;; Unknown commands file
 (setq mc/list-file "~/.emacs.d/mc-lists.el")
 
-;; Multiple cursor rectangle definition mouse event
-(defun mouse-start-rectangle (start-event)
-  (interactive "e")
-  (deactivate-mark)
-  (mouse-set-point start-event)
-  (set-rectangular-region-anchor)
-  (rectangle-mark-mode +1)
-  (let ((drag-event))
-    (track-mouse
-      (while (progn
-               (setq drag-event (read-event))
-               (mouse-movement-p drag-event))
-        (mouse-set-point drag-event)))))
-
-(global-set-key (kbd "M-<down-mouse-1>")     #'mouse-start-rectangle)
-
-;; RET: newline
+;; Return as usual
 (define-key mc/keymap (kbd "<return>")       'electric-newline-and-maybe-indent)
-;; Exit multiple-cursors-mode: ESC, right mouse click
+
+;; Exit multiple-cursors-mode
 (define-key mc/keymap (kbd "<escape>")       'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<down-mouse-1>")  nil)
@@ -219,6 +211,34 @@
 
 ;; Yank rectangle
 (global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
+
+;; Enter multiple-cursors-mode
+(defun custom/rectangular-region-multiple-cursors ()
+  (interactive)
+  (rrm/switch-to-multiple-cursors)
+  (deactivate-mark))
+
+(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
+
+;; Exit rectangular-region-mode
+(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
+(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
+
+;; Multiple cursor rectangle definition mouse event
+(defun custom/smart-mouse-rectangle (start-event)
+  (interactive "e")
+  (deactivate-mark)
+  (mouse-set-point start-event)
+  (set-rectangular-region-anchor)
+  (rectangle-mark-mode +1)
+  (let ((drag-event))
+    (track-mouse
+      (while (progn
+               (setq drag-event (read-event))
+               (mouse-movement-p drag-event))
+        (mouse-set-point drag-event)))))
+
+(global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
 
 (defun custom/smart-comment ()
   "Comments out the current line if no region is selected.
@@ -244,92 +264,21 @@ last line."
       ;; Else, select line
       (setq beg (line-beginning-position) end (line-end-position)))
 
-    ;; Comment/uncomment region
-    (if (org-in-src-block-p)
-	;; Manage Org Babel misbehavior with comment-or-uncomment-region
-	(org-comment-dwim (custom/active-region beg end))
+
+    ;; Comment or uncomment region
+    ;; If Org Mode is active
+    (if (string-equal major-mode "org-mode")
+	(if (org-in-src-block-p)
+	    ;; Manage Org Babel misbehavior with comment-or-uncomment-region
+	    (org-comment-dwim (custom/active-region beg end))
+	  (comment-or-uncomment-region beg end))
+      ;; Else, proceed regularly
       (comment-or-uncomment-region beg end))
 
     ;; Move to the beginning of the next line
     (move-beginning-of-line 2)))
 
-(global-set-key (kbd "M-;") 'custom/smart-comment)
-
-;; Load Swiper
-(use-package swiper)
-
-(require 'swiper)
-
-;; Smart search
-(defun custom/search-region (beg end)
-  "Search selected region with swiper-isearch."
-  (swiper-isearch (buffer-substring-no-properties beg end)))
-
-(defun custom/smart-search (beg end)
-  "Search for selected regions. If none are, call swiper-isearch."
-  (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end))
-                 (list nil nil)))
-  (deactivate-mark)
-  (if (and beg end)
-      (custom/search-region beg end)
-    (swiper-isearch)))
-
-(define-key global-map (kbd "C-s") 'custom/smart-search)
-
-(defun custom/narrow-and-search (beg end)
-  (narrow-to-region beg end)
-  (deactivate-mark)
-  (swiper-isearch))
-
-(defun custom/search-in-region (beg end)
-  (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end))
-                 (list nil nil)))
-  (if (and beg end)
-      (custom/narrow-and-search beg end)
-    (swiper-isearch)))
-
-(define-key global-map (kbd "C-x C-x") 'custom/search-in-region)
-
-;; M-RET: multiple-cursors-mode
-(define-key swiper-map (kbd "M-<return>") 'swiper-mc)
-
-;; Command suggestions
-(use-package which-key
-  :delight which-key-mode
-  :config
-  (which-key-mode)
-  (setq which-key-idle-delay 0.3))
-
-;; Completion framework
-(use-package counsel)
-(use-package ivy
-  :delight ivy-mode
-  :bind (:map ivy-minibuffer-map
-	 ("TAB" . ivy-alt-done)
-	 ("C-l" . ivy-alt-done)
-	 ("C-j" . ivy-next-line)
-	 ("C-k" . ivy-previous-line)
-	 :map ivy-switch-buffer-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-l" . ivy-done)
-	 ("C-d" . ivy-switch-buffer-kill)
-	 :map ivy-reverse-i-search-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-d" . ivy-reverse-i-search-kill))
-  :config (ivy-mode 1))
-
-;; Completion candidate descriptions
-(use-package ivy-rich
-  :config 
-  (ivy-rich-mode 1)
-  :bind
-  (("<menu>" . counsel-M-x)))
-
-(use-package command-log-mode
-  :delight command-log-mode)
-(global-command-log-mode)
+(global-set-key (kbd "M-;") #'custom/smart-comment)
 
 ;; Create binding for evaluating buffer
 (global-set-key (kbd "C-x e") 'eval-buffer)
@@ -338,125 +287,59 @@ last line."
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-;; Org hook
-(defun custom/org-mode-setup ()
+;; Unset secondary overlay key bindings
+(global-unset-key [M-mouse-1])
+(global-unset-key [M-drag-mouse-1])
+(global-unset-key [M-down-mouse-1])
+(global-unset-key [M-mouse-3])
+(global-unset-key [M-mouse-2])
 
-  ;; Enter variable pitch mode
-  (variable-pitch-mode 1)
+;; Unset mouse bindings
+(global-unset-key [C-mouse-1])
+(global-unset-key [C-down-mouse-1])
 
-  ;; Enter visual line mode:  wrap long lines at the end of the buffer, as opposed to truncating them
-  (visual-line-mode    1)
-  ;; Move through lines as they are displayed in visual-line-mode, as opposed to how they are stored.
-  (setq line-move-visual t)
+(global-set-key (kbd "C-`") 'widen)
 
-  ;; Enter indent mode: indent truncated lines appropriately
-  (org-indent-mode     1))
+;; Undo Tree
+(use-package undo-tree
+  :bind (("M-/" . undo-tree-visualize)
+         :map undo-tree-visualizer-mode-map
+         ("RET" . undo-tree-visualizer-quit)
+         ("ESC" . undo-tree-visualizer-quit))
+  :config
+  (global-undo-tree-mode))
+
+;; Visualize in side buffer
+(defun custom/undo-tree-split-side-by-side (original-function &rest args)
+  "Split undo-tree side-by-side"
+  (let ((split-height-threshold nil)
+        (split-width-threshold 0))
+    (apply original-function args)))
+
+(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
+
+;; ;; Undo tree command
+;; (defun custom/undo-tree ()
+;;   (interactive)
+;;   (undo-tree-visualize))
+
+;; (global-set-key (kbd "M-/") #'custom/undo-tree)
+
+;; Increase kill ring size
+(setq kill-ring-max 200)
+
+;; Copy region with S-left click
+(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
+(global-set-key (kbd "S-<down-mouse-1>")  nil)
+
+;; Paste with mouse right click
+(global-set-key (kbd "<mouse-3>")        'yank)
+(global-set-key (kbd "<down-mouse-3>")    nil)
 
 ;; Load Org Mode
 (use-package org
-  :hook (org-mode . custom/org-mode-setup)
   :delight org-indent-mode
-)
-
-;; Hide #+TITLE:
-(setq org-hidden-keywords '(title))
-
-;; Change ellipsis ("...") to remove clutter
-(setq org-ellipsis " ▾")
-
-;; Refrain from repositioning text when cycling visibility
-(remove-hook 'org-cycle-hook #'org-optimize-window-after-visibility-change)
-
-;; Install org-superstar
-(use-package org-superstar)
-
-(require 'org-superstar)
-
-;; Hook to Org Mode
-(add-hook 'org-indent-mode-hook (lambda () (org-superstar-mode 1)))
-
-;; Headers
-(setq org-superstar-headline-bullets-list
-      '("◉" "▷" "○" "●" "○" "●" "○" "●"))
-
-;; Do not cycle header markers
-(setq org-superstar-cycle-headline-bullets nil)
-
-;; Set custom bullet points
-(setq
- org-superstar-item-bullet-alist
- '((42 . ">")
-   (43 . "○")
-   (45 . "●")))
-
-;; Set custom bullet point height
-(set-face-attribute 'org-superstar-item nil :inherit 'fixed-pitch :height 90)
-
-;; Center text
-(use-package olivetti
-  :delight olivetti-mode
   )
-
-(add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
-
-(add-hook 'org-mode-hook 'olivetti-mode)
-
-;; Title face
-
-(defun custom/org-title-setup () 
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :height 2.074 :foreground 'unspecified :inherit 'org-level-8)))
-
-(add-hook 'org-mode-hook 'custom/org-title-setup)
-
-;; Use levels 1 through 4
-(setq org-n-level-faces 4)
-
-;; Do not cycle header style after 4th level
-(setq org-cycle-level-faces nil)
-
-;; Hide leading stars
-(setq org-hide-leading-starts t)
-
-;; Font sizes
-(defun custom/org-header-setup () 
-  (with-eval-after-load 'org-faces
-
-    ;; Header font sizes
-    (dolist (face '((org-level-1 . 1.5)
-                    (org-level-2 . 1.2)
-                    (org-level-3 . 1.1)
-                    (org-level-4 . 1.0)
-                    (org-level-5 . 1.0)
-                    (org-level-6 . 1.0)
-                    (org-level-7 . 1.0)
-                    (org-level-8 . 1.0)))
-      (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))))
-
-(add-hook 'org-mode-hook 'custom/org-header-setup)
-
-(defun custom/org-pitch-setup ()
-  (with-eval-after-load 'org-faces
-
-      ;; Code
-      (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
-      (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
-      (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
-
-      ;; Tables
-      (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
-
-      ;; Lists
-      (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
-      (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))
-
-      ;; Meta
-      (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
-      (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
-      (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
-      (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
-
-  (add-hook 'org-indent-mode-hook 'custom/org-pitch-setup)
 
 ;; Required as of Org 9.2
 (require 'org-tempo)
@@ -464,6 +347,9 @@ last line."
 (add-to-list 'org-structure-template-alist '("sh"  . "src shell"))
 (add-to-list 'org-structure-template-alist '("el"  . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py"  . "src python"))
+
+;; Refrain from repositioning text when cycling visibility
+(remove-hook 'org-cycle-hook #'org-optimize-window-after-visibility-change)
 
 (defun custom/with-mark-active (&rest args)
   "Keep mark active after command. To be used as advice AFTER any
@@ -480,16 +366,61 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
 
-;; Hide markup symbols
-(setq org-hide-emphasis-markers t)
-
-(setq org-agenda-files '("~/.emacs.d/test/tasks.org"))
-
 ;; Language packages
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
    (python     . t)))
+
+;; Trigger org-babel-tangle when saving any org files in the config directory
+(setq source-search-str (replace-regexp-in-string "~" "/root" config-directory))
+(defun custom/org-babel-tangle-config()
+  "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
+     (when (string-match source-search-str (expand-file-name buffer-file-name))
+     ;; Tangle ommitting confirmation
+     (let ((org-confirm-babel-evaluate nil)) (org-babel-tangle)))
+)
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-tangle-config)))
+
+(defun custom/org-fix-bleed-end-line-block (from to flag spec)
+  "Toggle fontification of last char of block end lines when cycling.
+
+This avoids the bleeding of `org-block-end-line' when block is
+folded."
+  (when (and (eq spec 'org-hide-block)
+             (/= (point-max) to))
+    (save-excursion
+      (if flag
+          (font-lock-unfontify-region to (1+ to))
+        (font-lock-flush to (1+ to))))))
+
+(advice-add 'org-flag-region :after #'custom/org-fix-bleed-end-line-block)
+
+(defun custom/org-fix-bleed-end-line-cycle (state)
+  "Toggle fontification of last char of block lines when cycling.
+
+This avoids the bleeding of `org-block-end-line' when outline is
+folded."
+  (save-excursion
+    (when org-fontify-whole-block-delimiter-line
+      (let ((case-fold-search t)
+            beg end)
+        (cond ((memq state '(overview contents all))
+               (setq beg (point-min)
+                     end (point-max)))
+              ((memq state '(children folded subtree))
+               (setq beg (point)
+                     end (org-end-of-subtree t t))))
+        (when beg           ; should always be true, but haven't tested enough
+          (goto-char beg)
+          (while (search-forward "#+end" end t)
+            (end-of-line)
+            (unless (= (point) (point-max))
+              (if (org-invisible-p (1- (point)))
+                  (font-lock-unfontify-region (point) (1+ (point)))
+                (font-lock-flush (point) (1+ (point)))))))))))
+
+(add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
 
 ;; Set indentation of code blocks to 0
 (setq org-edit-src-content-indentation 0)
@@ -506,15 +437,105 @@ function that sets `deactivate-mark' to t."
 
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
-;; Trigger org-babel-tangle when saving init.org
-(defun custom/org-babel-tangle-config()
-(when (string-equal (buffer-file-name)
-		          (expand-file-name "~/.emacs.d/init.org")))
-  ;; Dynamic scoping
-  (let ((org-confirm-babel-evaluate nil))
-    (org-babel-tangle)))
+;; Org Agenda log mode
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
 
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-tangle-config)))
+;; Org Agenda week view key binding
+(global-set-key (kbd "C-c a") (lambda () (interactive) (org-agenda)))
+
+;; Restart Org Agenda
+(defun custom/org-agenda-restart ()
+  (interactive)
+  (org-agenda-quit) 
+  (org-agenda))
+
+;; Mark items as done
+(defun custom/org-agenda-todo-done ()
+  (interactive)
+  (org-agenda-todo 'done))
+
+;; Set custom Org Agenda key bindings
+(defun custom/org-agenda-custom-bindings ()
+  ;; (local-set-key (kbd "<escape>") 'org-agenda-quit)
+  (local-set-key (kbd "C-a") #'custom/org-agenda-restart)
+  (local-set-key (kbd "d")   #'custom/org-agenda-todo-done))
+
+(add-hook 'org-agenda-mode-hook 'custom/org-agenda-custom-bindings)
+
+;; Set Org Agenda files
+(setq org-agenda-files '("~/.emacs.d/tasks.org"
+			 "~/.emacs.d/contacts.org"))
+
+(setq org-tag-alist
+      '((:startgroup)
+	;; Put mutually exclusive tags here
+	(:endgroup)
+	("@errand"  . ?E)
+	("@home"    . ?H)
+	("@work"    . ?W)
+	("agenda" . ?a)
+	("planning" . ?p)
+	("publish"  . ?P)
+	("batch"    . ?b)
+	("note"     . ?n)
+	("idea"     . ?i)))
+
+;; Define TODO keyword sequences
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+	(sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+
+;; Configure custom agenda views
+(setq org-agenda-custom-commands
+      
+      '(("d" "Dashboard"
+	 ((agenda "" ((org-deadline-warning-days 7)))
+	  (todo "NEXT"
+		((org-agenda-overriding-header "Next Tasks")))
+	  (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+	
+	("n" "Next Tasks"
+	 ((todo "NEXT"
+		((org-agenda-overriding-header "Next Tasks")))))
+
+ 	("W" "Work Tasks" tags-todo "+work-email")
+
+	("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+	 ((org-agenda-overriding-header "Low Effort Tasks")
+	  (org-agenda-max-todos 20)
+	  (org-agenda-files org-agenda-files)))
+
+	("w" "Workflow Status"
+	 ((todo "WAIT"
+		((org-agenda-overriding-header "Waiting on External")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "REVIEW"
+		((org-agenda-overriding-header "In Review")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "PLAN"
+		((org-agenda-overriding-header "In Planning")
+		 (org-agenda-todo-list-sublevels nil)
+		 (org-agenda-files org-agenda-files)))
+	  (todo "BACKLOG"
+		((org-agenda-overriding-header "Project Backlog")
+		 (org-agenda-todo-list-sublevels nil)
+		 (org-agenda-files org-agenda-files)))
+	  (todo "READY"
+		((org-agenda-overriding-header "Ready for Work")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "ACTIVE"
+		((org-agenda-overriding-header "Active Projects")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "COMPLETED"
+		((org-agenda-overriding-header "Completed Projects")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "CANC"
+		((org-agenda-overriding-header "Cancelled Projects")
+		 (org-agenda-files org-agenda-files)))))))
+
+(require 'theme (concat config-directory "theme.el"))
 
 ;; Conclude initialization file
 (provide 'init)
