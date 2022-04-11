@@ -1,10 +1,8 @@
-#+title: Emacs: Org Mode Configuration File
+#+title: Emacs Initialization File
 #+STARTUP: content
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
 
-* Configuration
-** System information
-
+* System information
 #+begin_src emacs-lisp
 
 ;; Set default directory
@@ -12,9 +10,9 @@
 
 #+end_src
 
-** Emacs
-*** Infrastructure
-**** Package Management
+* Emacs
+** Infrastructure
+*** Package Management
 
 #+begin_src emacs-lisp
 
@@ -22,8 +20,8 @@
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org"   . "https://orgmode.org/elpa/")
-			 ("elpa"  . "https://elpa.gnu.org/packages/")))
+			       ("org"   . "https://orgmode.org/elpa/")
+			       ("elpa"  . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -39,17 +37,7 @@
 
 #+end_src
 
-***** Mode Line
-
-#+begin_src emacs-lisp
-
-;; Customize names displayed in mode line
-(use-package delight)
-(require 'delight)
-
-#+end_src
-
-***** Customize Interface
+**** Customize Interface
 
 #+begin_src emacs-lisp
 
@@ -59,7 +47,17 @@
 
 #+end_src
 
-**** Emacs Lisp utilities
+**** Mode Line Package Display
+
+#+begin_src emacs-lisp
+
+;; Customize names displayed in mode line
+(use-package delight)
+(require 'delight)
+
+#+end_src
+
+*** Emacs Lisp utilities
 
 #+begin_src emacs-lisp
 
@@ -68,18 +66,34 @@
   (set-mark beg)
   (goto-char end)
   (activate-mark)
-)
+  )
 
 #+end_src
 
-*** Initialization
+*** Key bindings
+
+#+begin_src emacs-lisp
+
+(use-package general
+  ;; :config
+  ;; (general-evil-setup t)
+
+  ;; (general-create-definer rune/leader-keys
+  ;;   :keymaps '(normal insert visual emacs)
+  ;;   :prefix "SPC"
+  ;;   :global-prefix "C-SPC")
+  )
+
+#+end_src
+
+** Initialization
 
 #+begin_src emacs-lisp
 (setq initial-buffer-choice "~/.emacs.d/init.org")
 #+end_src
 
-*** UI
-**** Taming
+** UI
+*** Taming
 
 #+begin_src emacs-lisp
 
@@ -100,17 +114,22 @@
 
 #+end_src
 
-**** Theme
+*** Theme
 
 #+begin_src emacs-lisp
 
+;; Set custom theme directory
+(setq custom-theme-directory "~/.emacs.d/themes")
+
 ;; Theme
-(use-package doom-themes
-  :init (load-theme 'doom-palenight t))
+;; (use-package doom-themes
+;;   :init (load-theme 'doom-palenight t))
+
+(load-theme 'code t)
 
 #+end_src
 
-**** Icons
+*** Icons
 
 #+begin_src emacs-lisp
 
@@ -120,8 +139,8 @@
 
 #+end_src
 
-**** Guides
-***** Fringes
+*** Guides
+**** Fringes
 #+begin_src emacs-lisp
 
 ;; Enable visual bell
@@ -135,7 +154,7 @@
 
 #+end_src
 
-***** Line numbers
+**** Line numbers
 
 #+begin_src emacs-lisp
 
@@ -147,25 +166,25 @@
 
 ;; Exceptions
 (dolist (mode '(org-mode-hook
-		  term-mode-hook
-		  shell-mode-hook
-		  eshell-mode-hook
-		  undo-tree-visualizer-mode-hook))
+		term-mode-hook
+		shell-mode-hook
+		eshell-mode-hook
+		undo-tree-visualizer-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 #+end_src
 
-***** Colors
+**** Colors
 
 #+begin_src emacs-lisp
 
 ;; Highlight HTML color strings in their own color
-(use-package rainbow-mode)
-(require 'rainbow-mode)
+(use-package rainbow-mode
+  :init (rainbow-mode))
 
 #+end_src
 
-**** Mode Line
+*** Mode Line
 
 #+begin_src emacs-lisp
 
@@ -185,7 +204,7 @@
 
 #+end_src
 
-**** Frame Size
+*** Frame Size
 
 #+begin_src emacs-lisp
 
@@ -195,17 +214,8 @@
 
 #+end_src
 
-*** Navigation
-**** Escape
-
-#+begin_src emacs-lisp
-
-;; Make keyboard ESC quit dialogs, equivalent to C-g
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-#+end_src
-
-**** Describe
+** Navigation
+*** Documentation
 
 #+begin_src emacs-lisp
 
@@ -222,7 +232,25 @@
 
 #+end_src
 
-**** Frame Management
+*** Escape
+
+#+begin_src emacs-lisp
+
+;; Make ESC quit present window and bury its buffer
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+#+end_src
+
+*** Buffer
+
+#+begin_src emacs-lisp
+
+;; Counsel buffer switching
+(global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
+
+#+end_src
+
+*** Frame
 
 #+begin_src emacs-lisp
 
@@ -231,8 +259,8 @@
 
 #+end_src
 
-*** Text
-**** Faces
+** Text
+*** Faces
 
 #+begin_src emacs-lisp
 
@@ -247,7 +275,7 @@
 
 #+end_src
 
-**** Taming
+*** Taming
 
 #+begin_src emacs-lisp
 
@@ -264,7 +292,7 @@
 
 #+end_src
 
-**** Narrowing
+*** Narrowing
 
 #+begin_src emacs-lisp
 
@@ -272,16 +300,19 @@
 
 #+end_src
 
-**** Undo, Redo
+*** Undo, Redo
+**** Undo Tree
 
 #+begin_src emacs-lisp
 
 ;; Undo Tree
 (use-package undo-tree
-  :bind (:map undo-tree-visualizer-mode-map
-	      ("RET" . undo-tree-visualizer-quit)))
-(require 'undo-tree)
-(global-undo-tree-mode)
+  :bind (("M-/" . undo-tree-visualize)
+         :map undo-tree-visualizer-mode-map
+         ("RET" . undo-tree-visualizer-quit)
+         ("ESC" . undo-tree-visualizer-quit))
+  :config
+  (global-undo-tree-mode))
 
 ;; Visualize in side buffer
 (defun custom/undo-tree-split-side-by-side (original-function &rest args)
@@ -292,16 +323,25 @@
 
 (advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
 
-;; Undo tree command
-(defun custom/undo-tree ()
-  (interactive)
-  (undo-tree-visualize))
+;; ;; Undo tree command
+;; (defun custom/undo-tree ()
+;;   (interactive)
+;;   (undo-tree-visualize))
 
-(global-set-key (kbd "M-/") #'custom/undo-tree)
+;; (global-set-key (kbd "M-/") #'custom/undo-tree)
 
 #+end_src
 
-**** Cut, Copy, Paste
+**** Kill Ring Size
+
+#+begin_src emacs-lisp
+
+;; Increase kill ring size
+(setq kill-ring-max 200)
+
+#+end_src
+
+*** Cut, Copy, Paste
 
 #+begin_src emacs-lisp
 
@@ -315,7 +355,7 @@
 
 #+end_src
 
-**** Multiple Cursors
+*** Multiple Cursors
 
 #+begin_src emacs-lisp
 
@@ -324,7 +364,7 @@
   :bind (("C-."         . mc/mark-next-like-this)
 	 ("C-;"         . mc/mark-previous-like-this)
 	 ("C-<mouse-1>" . mc/add-cursor-on-click))
-)
+  )
 
 ;; Load package
 (require 'multiple-cursors)
@@ -332,32 +372,17 @@
 ;; Unknown commands file
 (setq mc/list-file "~/.emacs.d/mc-lists.el")
 
-;; Multiple cursor rectangle definition mouse event
-(defun mouse-start-rectangle (start-event)
-  (interactive "e")
-  (deactivate-mark)
-  (mouse-set-point start-event)
-  (set-rectangular-region-anchor)
-  (rectangle-mark-mode +1)
-  (let ((drag-event))
-    (track-mouse
-      (while (progn
-               (setq drag-event (read-event))
-               (mouse-movement-p drag-event))
-        (mouse-set-point drag-event)))))
-
-(global-set-key (kbd "M-<down-mouse-1>")     #'mouse-start-rectangle)
-
-;; RET: newline
+;; Return as usual
 (define-key mc/keymap (kbd "<return>")       'electric-newline-and-maybe-indent)
-;; Exit multiple-cursors-mode: ESC, right mouse click
+
+;; Exit multiple-cursors-mode
 (define-key mc/keymap (kbd "<escape>")       'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<down-mouse-1>")  nil)
 
 #+end_src
 
-**** Rectangular Regions
+*** Rectangular Regions
 
 #+begin_src emacs-lisp
 
@@ -370,10 +395,44 @@
 ;; Yank rectangle
 (global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
 
+;; Enter multiple-cursors-mode
+(defun custom/rectangular-region-multiple-cursors ()
+  (interactive)
+  (rrm/switch-to-multiple-cursors)
+  (deactivate-mark))
+
+(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
+
+;; Exit rectangular-region-mode
+(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
+(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
+
 #+end_src
 
-*** Code
-**** Smart Comments
+*** Smart Mouse Rectangle
+
+#+begin_src emacs-lisp
+
+;; Multiple cursor rectangle definition mouse event
+(defun custom/smart-mouse-rectangle (start-event)
+  (interactive "e")
+  (deactivate-mark)
+  (mouse-set-point start-event)
+  (set-rectangular-region-anchor)
+  (rectangle-mark-mode +1)
+  (let ((drag-event))
+    (track-mouse
+      (while (progn
+               (setq drag-event (read-event))
+               (mouse-movement-p drag-event))
+        (mouse-set-point drag-event)))))
+
+(global-set-key (kbd "M-<down-mouse-1>")     #'custom/smart-mouse-rectangle)
+
+#+end_src
+
+** Code
+*** Smart Comments
 
 #+begin_src emacs-lisp
 
@@ -401,21 +460,26 @@ last line."
       ;; Else, select line
       (setq beg (line-beginning-position) end (line-end-position)))
 
-    ;; Comment/uncomment region
-    (if (org-in-src-block-p)
-	;; Manage Org Babel misbehavior with comment-or-uncomment-region
-	(org-comment-dwim (custom/active-region beg end))
+
+    ;; Comment or uncomment region
+    ;; If Org Mode is active
+    (if (string-equal major-mode "org-mode")
+	(if (org-in-src-block-p)
+	    ;; Manage Org Babel misbehavior with comment-or-uncomment-region
+	    (org-comment-dwim (custom/active-region beg end))
+	  (comment-or-uncomment-region beg end))
+      ;; Else, proceed regularly
       (comment-or-uncomment-region beg end))
 
     ;; Move to the beginning of the next line
     (move-beginning-of-line 2)))
 
-(global-set-key (kbd "M-;") 'custom/smart-comment)
+(global-set-key (kbd "M-;") #'custom/smart-comment)
 
 #+end_src
 
-*** Search
-**** Swiper
+** Search
+*** Swiper
 
 #+begin_src emacs-lisp
 
@@ -426,7 +490,7 @@ last line."
 
 #+end_src
 
-***** Smart search
+**** Smart search
 
 #+begin_src emacs-lisp
 
@@ -445,11 +509,11 @@ last line."
       (custom/search-region beg end)
     (swiper-isearch)))
 
-(define-key global-map (kbd "C-s") 'custom/smart-search)
+(define-key global-map (kbd "C-s") #'custom/smart-search)
 
 #+end_src
 
-***** Search in region
+**** Search in region
 
 #+begin_src emacs-lisp
 
@@ -466,11 +530,11 @@ last line."
       (custom/narrow-and-search beg end)
     (swiper-isearch)))
 
-(define-key global-map (kbd "C-x C-x") 'custom/search-in-region)
+(define-key global-map (kbd "C-x C-x") #'custom/search-in-region)
 
 #+end_src
 
-***** Multiple cursors
+**** Multiple cursors
 
 #+begin_src emacs-lisp
 
@@ -479,8 +543,8 @@ last line."
 
 #+end_src
 
-*** Completion
-**** Commands
+** Completion
+*** Commands
 
 #+begin_src emacs-lisp
 
@@ -489,12 +553,12 @@ last line."
   :delight which-key-mode
   :config
   (which-key-mode)
-  (setq which-key-idle-delay 0.3))
+  (setq which-key-idle-delay 1.0))
 
 #+end_src
 
-**** Frameworks
-***** Ivy
+*** Frameworks
+**** Ivy
 
 #+begin_src emacs-lisp
 
@@ -503,29 +567,28 @@ last line."
 (use-package ivy
   :delight ivy-mode
   :bind (:map ivy-minibuffer-map
-	 ("TAB" . ivy-alt-done)
-	 ("C-l" . ivy-alt-done)
-	 ("C-j" . ivy-next-line)
-	 ("C-k" . ivy-previous-line)
-	 :map ivy-switch-buffer-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-l" . ivy-done)
-	 ("C-d" . ivy-switch-buffer-kill)
-	 :map ivy-reverse-i-search-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-d" . ivy-reverse-i-search-kill))
-  :config (ivy-mode 1))
+	      ("TAB" . ivy-alt-done)
+	      ("C-l" . ivy-alt-done)
+	      ("C-j" . ivy-next-line)
+	      ("C-k" . ivy-previous-line)
+	      :map ivy-switch-buffer-map
+	      ("C-k" . ivy-previous-line)
+	      ("C-l" . ivy-done)
+	      ("C-d" . ivy-switch-buffer-kill)
+	      :map ivy-reverse-i-search-map
+	      ("C-k" . ivy-previous-line)
+	      ("C-d" . ivy-reverse-i-search-kill))
+  :init (ivy-mode 1))
 
 ;; Completion candidate descriptions
 (use-package ivy-rich
-  :config 
-  (ivy-rich-mode 1)
   :bind
-  (("<menu>" . counsel-M-x)))
+  (("<menu>" . counsel-M-x))
+  :init (ivy-rich-mode 1))
 
 #+end_src
 
-*** Diagnostics
+** Diagnostics
 
 #+begin_src emacs-lisp
 
@@ -535,7 +598,7 @@ last line."
 
 #+end_src
 
-** Emacs Lisp
+* Emacs Lisp
 
 #+begin_src emacs-lisp
 
@@ -544,8 +607,8 @@ last line."
 
 #+end_src
 
-*** Visual
-**** Rainbow Delimiters
+** Visual
+*** Rainbow Delimiters
 
 #+begin_src emacs-lisp
 
@@ -555,9 +618,9 @@ last line."
 
 #+end_src
 
-** Org Mode
-*** Startup
-**** Hook
+* Org Mode
+** Startup
+*** Hook
 
 #+begin_src emacs-lisp
 
@@ -577,7 +640,7 @@ last line."
 
 #+end_src
 
-**** Load Org Mode
+*** Load Org Mode
 
 #+begin_src emacs-lisp
 
@@ -585,12 +648,12 @@ last line."
 (use-package org
   :hook (org-mode . custom/org-mode-setup)
   :delight org-indent-mode
-)
+  )
 
 #+end_src
 
-*** UI
-**** Preferences
+** UI
+*** Preferences
 
 #+begin_src emacs-lisp
 
@@ -599,7 +662,7 @@ last line."
 
 #+end_src
 
-**** Visual cues
+*** Visual cues
 
 #+begin_src emacs-lisp
 
@@ -608,7 +671,7 @@ last line."
 
 #+end_src
 
-**** Navigation
+*** Navigation
 
 #+begin_src emacs-lisp
 
@@ -617,7 +680,7 @@ last line."
 
 #+end_src
 
-**** Markers
+*** Markers
 
 #+begin_src emacs-lisp
 
@@ -631,7 +694,7 @@ last line."
 
 #+end_src
 
-***** Headers
+**** Headers
 
 #+begin_src emacs-lisp
 
@@ -644,7 +707,7 @@ last line."
 
 #+end_src
 
-***** Lists
+**** Lists
 
 #+begin_src emacs-lisp
 
@@ -660,7 +723,7 @@ last line."
 
 #+end_src
 
-**** Page
+*** Page
 
 #+begin_src emacs-lisp
 
@@ -675,9 +738,56 @@ last line."
 
 #+end_src
 
-*** Text
-**** Faces
-***** Title
+*** Bugs
+**** Fix Babel code block bleeding
+
+#+begin_src emacs-lisp
+
+(defun custom/org-fix-bleed-end-line-block (from to flag spec)
+  "Toggle fontification of last char of block end lines when cycling.
+
+This avoids the bleeding of `org-block-end-line' when block is
+folded."
+  (when (and (eq spec 'org-hide-block)
+             (/= (point-max) to))
+    (save-excursion
+      (if flag
+          (font-lock-unfontify-region to (1+ to))
+        (font-lock-flush to (1+ to))))))
+
+(advice-add 'org-flag-region :after #'custom/org-fix-bleed-end-line-block)
+
+(defun custom/org-fix-bleed-end-line-cycle (state)
+  "Toggle fontification of last char of block lines when cycling.
+
+This avoids the bleeding of `org-block-end-line' when outline is
+folded."
+  (save-excursion
+    (when org-fontify-whole-block-delimiter-line
+      (let ((case-fold-search t)
+            beg end)
+        (cond ((memq state '(overview contents all))
+               (setq beg (point-min)
+                     end (point-max)))
+              ((memq state '(children folded subtree))
+               (setq beg (point)
+                     end (org-end-of-subtree t t))))
+        (when beg           ; should always be true, but haven't tested enough
+          (goto-char beg)
+          (while (search-forward "#+end" end t)
+            (end-of-line)
+            (unless (= (point) (point-max))
+              (if (org-invisible-p (1- (point)))
+                  (font-lock-unfontify-region (point) (1+ (point)))
+                (font-lock-flush (point) (1+ (point)))))))))))
+
+(add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
+
+#+end_src
+
+** Text
+*** Faces
+**** Title
 
 #+begin_src emacs-lisp
 
@@ -687,11 +797,11 @@ last line."
   (with-eval-after-load 'org-faces
     (set-face-attribute 'org-document-title nil :height 2.074 :foreground 'unspecified :inherit 'org-level-8)))
 
-(add-hook 'org-mode-hook 'custom/org-title-setup)
+(add-hook 'org-mode-hook #'custom/org-title-setup)
 
 #+end_src
 
-***** Headers
+**** Headers
 
 #+begin_src emacs-lisp
 
@@ -719,41 +829,41 @@ last line."
                     (org-level-8 . 1.0)))
       (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))))
 
-(add-hook 'org-mode-hook 'custom/org-header-setup)
+(add-hook 'org-mode-hook #'custom/org-header-setup)
 
 #+end_src
 
-***** Text
+**** Text
 
 #+begin_src emacs-lisp
 
 (defun custom/org-pitch-setup ()
   (with-eval-after-load 'org-faces
 
-      ;; Code
-      (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
-      (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
-      (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
+    ;; Code
+    (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
 
-      ;; Tables
-      (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
+    ;; Tables
+    (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
 
-      ;; Lists
-      (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
-      (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))
+    ;; Lists
+    (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))
 
-      ;; Meta
-      (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
-      (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
-      (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
-      (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
+    ;; Meta
+    (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
 
-  (add-hook 'org-indent-mode-hook 'custom/org-pitch-setup)
+(add-hook 'org-indent-mode-hook #'custom/org-pitch-setup)
 
 #+end_src
 
-**** Editing
-***** Structure templates
+*** Editing
+**** Structure templates
 
 #+begin_src emacs-lisp
 
@@ -766,7 +876,7 @@ last line."
 
 #+end_src
 
-***** Keep text selection after executing commands
+**** Keep text selection after executing commands
 
 #+begin_src emacs-lisp
 
@@ -787,7 +897,7 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-**** Highlighting
+*** Highlighting
 
 #+begin_src emacs-lisp
 
@@ -796,17 +906,136 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-*** Org Agenda
-**** Agenda files
+* Org Agenda
 
 #+begin_src emacs-lisp
 
-(setq org-agenda-files '("~/.emacs.d/test/tasks.org"))
+;; Org Agenda log mode
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
+
+;; Org Agenda week view key binding
+(global-set-key (kbd "C-c a") (lambda () (interactive) (org-agenda)))
+
+;; Restart Org Agenda
+(defun custom/org-agenda-restart ()
+  (interactive)
+  (org-agenda-quit) 
+  (org-agenda))
+
+;; Mark items as done
+(defun custom/org-agenda-todo-done ()
+  (interactive)
+  (org-agenda-todo 'done))
+
+;; Set custom Org Agenda key bindings
+(defun custom/org-agenda-custom-bindings ()
+  ;; (local-set-key (kbd "<escape>") 'org-agenda-quit)
+  (local-set-key (kbd "C-a") #'custom/org-agenda-restart)
+  (local-set-key (kbd "d")   #'custom/org-agenda-todo-done))
+
+(add-hook 'org-agenda-mode-hook 'custom/org-agenda-custom-bindings)
 
 #+end_src
 
-** *Org Babel*
-*** Languages
+** Agenda files
+
+#+begin_src emacs-lisp
+
+;; Set Org Agenda files
+(setq org-agenda-files '("~/.emacs.d/tasks.org"
+			 "~/.emacs.d/contacts.org"))
+
+#+end_src
+
+** Keyword Sequences
+
+#+begin_src emacs-lisp
+
+;; Define TODO keyword sequences
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+	(sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+
+#+end_src
+
+** Custom Agenda Views
+
+#+begin_src emacs-lisp
+
+;; Configure custom agenda views
+(setq org-agenda-custom-commands
+      
+      '(("d" "Dashboard"
+	 ((agenda "" ((org-deadline-warning-days 7)))
+	  (todo "NEXT"
+		((org-agenda-overriding-header "Next Tasks")))
+	  (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+	
+	("n" "Next Tasks"
+	 ((todo "NEXT"
+		((org-agenda-overriding-header "Next Tasks")))))
+
+ 	("W" "Work Tasks" tags-todo "+work-email")
+
+	("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+	 ((org-agenda-overriding-header "Low Effort Tasks")
+	  (org-agenda-max-todos 20)
+	  (org-agenda-files org-agenda-files)))
+
+	("w" "Workflow Status"
+	 ((todo "WAIT"
+		((org-agenda-overriding-header "Waiting on External")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "REVIEW"
+		((org-agenda-overriding-header "In Review")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "PLAN"
+		((org-agenda-overriding-header "In Planning")
+		 (org-agenda-todo-list-sublevels nil)
+		 (org-agenda-files org-agenda-files)))
+	  (todo "BACKLOG"
+		((org-agenda-overriding-header "Project Backlog")
+		 (org-agenda-todo-list-sublevels nil)
+		 (org-agenda-files org-agenda-files)))
+	  (todo "READY"
+		((org-agenda-overriding-header "Ready for Work")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "ACTIVE"
+		((org-agenda-overriding-header "Active Projects")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "COMPLETED"
+		((org-agenda-overriding-header "Completed Projects")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "CANC"
+		((org-agenda-overriding-header "Cancelled Projects")
+		 (org-agenda-files org-agenda-files)))))))
+
+#+end_src
+
+** Define Org-wide Tags
+
+#+begin_src emacs-lisp
+
+(setq org-tag-alist
+      '((:startgroup)
+	;; Put mutually exclusive tags here
+	(:endgroup)
+	("@errand"  . ?E)
+	("@home"    . ?H)
+	("@work"    . ?W)
+	("agenda" . ?a)
+	("planning" . ?p)
+	("publish"  . ?P)
+	("batch"    . ?b)
+	("note"     . ?n)
+	("idea"     . ?i)))
+
+#+end_src
+
+* *Org Babel*
+** Languages
 
 #+begin_src emacs-lisp
 
@@ -818,8 +1047,8 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-*** Editing
-**** Code Block Indentation
+** Editing
+*** Code Block Indentation
 
 #+begin_src emacs-lisp
 
@@ -834,8 +1063,8 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-*** Execution
-**** Suppress Confirmation
+** Execution
+*** Suppress Confirmation
 
 #+begin_src emacs-lisp
 
@@ -847,24 +1076,23 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-*** Configuration
-**** Auto-tangle Configuration Setup
+** Configuration
+*** Auto-tangle Configuration Setup
 
 #+begin_src emacs-lisp
 
 ;; Trigger org-babel-tangle when saving init.org
 (defun custom/org-babel-tangle-config()
-(when (string-equal (buffer-file-name)
-		          (expand-file-name "~/.emacs.d/init.org")))
-  ;; Dynamic scoping
-  (let ((org-confirm-babel-evaluate nil))
-    (org-babel-tangle)))
+  (when (string-equal (buffer-file-name) (expand-file-name "~/.emacs.d/init.org"))
+    ;; Dynamic scoping
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-tangle-config)))
 
 #+end_src
 
-** Closing
+* Closing
 
 #+begin_src emacs-lisp
 
@@ -872,4 +1100,3 @@ function that sets `deactivate-mark' to t."
 (provide 'init)
 
 #+end_src
-
