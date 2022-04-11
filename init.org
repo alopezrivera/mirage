@@ -1,4 +1,4 @@
-#+title: Emacs Configuration File
+#+title:Emacs Configuration File
 #+STARTUP: content
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
 
