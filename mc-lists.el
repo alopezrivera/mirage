@@ -4,19 +4,26 @@
 (setq mc/cmds-to-run-for-all
       '(
 	beginning-of-visual-line
+	custom/rectangular-region-multiple-cursors
+	custom/smart-comment
 	electric-newline-and-maybe-indent
 	end-of-visual-line
 	keyboard-escape-quit
 	kill-rectangle
+	kill-region
+	org-meta-return
 	org-self-insert-command
 	org-shiftright
 	org-yank
 	rectangle-left-char
+	rectangle-next-line
+	rectangle-previous-line
 	rectangle-right-char
 	))
 
 (setq mc/cmds-to-run-once
       '(
+	custom/smart-search
 	mouse-drag-mode-line
 	mouse-save-then-kill
 	mouse-set-region
@@ -24,4 +31,5 @@
 	org-ctrl-c-ctrl-c
 	swiper
 	swiper-mc
+	widen
 	))
