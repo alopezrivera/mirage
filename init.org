@@ -851,7 +851,13 @@ folded."
 (add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
 
 #+end_src
+*** Code block execution
 
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-x C-x") 'org-babel-execute-src-block)
+
+#+end_src
 
 *** Code block indentation
 
