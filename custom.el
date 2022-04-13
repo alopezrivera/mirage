@@ -16,7 +16,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#1c1f2b" "#676E95"))
  '(objed-cursor-color "#ff5370")
  '(package-selected-packages
-   '(circadian solar svg-tag-mode org-modern treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs autothemer autotheme general helpful ivy-rich undo-tree rainbow-mode delight which-key whic-key rainbow-delimiters org-autolist org-autolist-mode org-superstar multiple-cursors adaptive-wrap visual-fill-column org-bullets doom-themes olivetti doom-modeline swipereval- counsel ivy command-log-mode use-package))
+   '(rectangular-region-mode circadian solar svg-tag-mode org-modern treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs autothemer autotheme general helpful ivy-rich undo-tree rainbow-mode delight which-key whic-key rainbow-delimiters org-autolist org-autolist-mode org-superstar multiple-cursors adaptive-wrap visual-fill-column org-bullets doom-themes olivetti doom-modeline swipereval- counsel ivy command-log-mode use-package))
  '(pdf-view-midnight-colors (cons "#EEFFFF" "#292D3E"))
  '(rustic-ansi-faces
    ["#292D3E" "#ff5370" "#c3e88d" "#ffcb6b" "#82aaff" "#c792ea" "#89DDFF" "#EEFFFF"])

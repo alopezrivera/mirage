@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 
-(setq initial-buffer-choice "~/.emacs.d/init.org")
+(setq initial-buffer-choice "~/.emacs.d/theme.org")
 
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 40))
@@ -75,15 +75,13 @@
 ;; Enable visual bell
 (setq visible-bell t)
 
-;; Set width of side fringes
-(set-fringe-mode 0)
+(defun custom/hide-modeline ()
+  (interactive)
+  (if mode-line-format
+      (setq mode-line-format nil)
+    (doom-modeline-mode)))
 
-;; Set fringe color
-(set-face-background 'fringe "#ebebeb")
-
-;; Install doom-modeline
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode))
+(global-set-key (kbd "M-m") #'custom/hide-modeline)
 
 ;; Line numbers: display globally
 (global-display-line-numbers-mode t)
@@ -98,6 +96,9 @@
 		    eshell-mode-hook
 		    undo-tree-visualizer-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+;; Set width of side fringes
+(set-fringe-mode 0)
 
 ;; Load Swiper
 (use-package swiper)
@@ -184,6 +185,9 @@
 (use-package command-log-mode
   :delight command-log-mode)
 (global-command-log-mode)
+
+;; Return to indentation
+(global-set-key (kbd "S-<home>") 'back-to-indentation)
 
 ;; Counsel buffer switching
 (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
@@ -542,6 +546,8 @@ folded."
                 (font-lock-flush (point) (1+ (point)))))))))))
 
 (add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
+
+(global-set-key (kbd "C-x C-x") 'org-babel-execute-src-block)
 
 ;; Set indentation of code blocks to 0
 (setq org-edit-src-content-indentation 0)

@@ -41,7 +41,7 @@
     (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
     (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
 
-(add-hook 'org-mode-hook #'custom/org-pitch-setup)
+(add-hook 'org-indent-mode-hook #'custom/org-pitch-setup)
 
 ;; Title face
 
@@ -158,22 +158,29 @@
              (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))))
 
 ;; Highlight HTML color strings in their own color
-(use-package rainbow-mode
-  :init (rainbow-mode))
+(use-package rainbow-mode)
 
-(rainbow-mode 1)
+;; Install doom-modeline
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode))
 
-(setq doom-modeline-bar-width 10)
+;; Bar
+(setq-default doom-modeline-bar-width 0.01)
 
-(defun custom/modeline-color (color)
-  (set-face-background 'modeline modeline-color)
-  (set-face-attribute 'doom-modeline-bar nil :background modeline-color :inherit 'mode-line))
+;; Color
+(defun custom/modeline-color (bg bg-in face face-in)
+  "Set the color of the mode line and blend the 
+`doom-modeline-bar' with the background."
+  (set-face-attribute 'mode-line          nil :foreground face    :background bg)
+  (set-face-attribute 'mode-line-inactive nil :foreground face-in :background bg-in))
 
 (defun custom/dark-modeline ()
-  (custom/modeline-color "#000000"))
+  "Mode line for light themes."
+  (custom/modeline-color "#3d3d3d" "#000000" "#cfcfcf" "#cfcfcf"))
 
 (defun custom/light-modeline ()
-  (custom/modeline-color "#FFFFFF"))
+  "Mode line for dark themes."
+  (custom/modeline-color "#f2f2f2" "#ededed" "#878787" "#616161"))
 
 (display-time-mode t)
 
@@ -183,8 +190,8 @@
 
 ;; Remove default modes from mode line
 (delight '((visual-line-mode nil "simple")
-	   (buffer-face-mode nil "simple")
-   	   (eldoc-mode nil "eldoc")
+	         (buffer-face-mode nil "simple")
+   	 (eldoc-mode       nil "eldoc")
 	   ;; Major modes
 	   (emacs-lisp-mode "EL" :major)))
 
@@ -243,23 +250,11 @@
 
 (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
 
-;; (defvar after-enable-modus-operandi-hook nil
-;;    "Normal hook run after enabling a theme.")
+(defun custom/modeline-box ()
+  (set-face-attribute 'mode-line nil          :box nil)
+  (set-face-attribute 'mode-line-inactive nil :box nil))
 
-;; (defun run-after-enable-modus-operandi-hook (&rest _args)
-;;    "Run `after-enable-theme-hook'."
-;;    (run-hooks 'after-enable-theme-hook))
-
-;; (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
-
-;; (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
-
-;; (enable-theme 'modus-operandi)
-
-;; (defun foo (a b)
-;;   (* a b))
-;; (add-function :before (print 1 2) #'foo)
-;; (my-two "a")
+(add-hook 'after-enable-theme-hook #'custom/modeline-box)
 
 ;; Org Mode
 (defun custom/org-theme-reload ()
@@ -268,8 +263,43 @@
 
 (add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
 
-;; Mode line
-;; (add-hook ')
+(defun custom/operandi-advice ()
+  (custom/light-modeline))
+
+(defun custom/vivendi-advice ()
+  (custom/dark-modeline))
+
+(defun custom/theme-specific-advice (_orig-fun &rest args)
+  (print "===================")
+  (cond ((string-equal (nth 0 args) "modus-operandi") (print "OPERANDI"))
+	    ((string-equal (nth 0 args) "modus-vivendi")  (print "VIVENDI"))
+	    (t))
+  (print "~~~~~~~~~~~~~~~~~~~")
+  (if (string-equal (nth 0 args) "modus-operandi")
+      (print "OPERANDI")
+    (if (string-equal (nth 0 args) "modus-vivendi")
+	      (print "VIVENDI")))
+  (print "===================")
+  (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
+	      ((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
+  (apply _orig-fun args))
+
+(advice-add 'enable-theme :around #'custom/theme-specific-advice)
+
+;; (enable-theme 'modus-vivendi)
+;; (enable-theme 'modus-operandi)
+
+(setq calendar-latitude      52.00667)
+(setq calendar-longitude     4.355561)
+(setq calendar-loadtion-name "Delft")
+(setq calendar-standard-time-zone-name "CEST")
+(setq calendar-daylight-time-zone-name "CET")
+
+(use-package circadian
+  :config
+  (setq circadian-themes '((:sunrise . modus-operandi)
+                           (:sunset  . modus-vivendi)))
+  (circadian-setup))
 
 (defun custom/modus-themes-toggle ()
   "Toggle between `modus-operandi' and `modus-vivendi' themes.
@@ -286,21 +316,9 @@ manual."
 
 (global-set-key (kbd "C-t") 'custom/modus-themes-toggle)
 
-(setq calendar-latitude      52.00667)
-(setq calendar-longitude     4.355561)
-(setq calendar-loadtion-name "Delft")
-(setq calendar-standard-time-zone-name "CEST")
-(setq calendar-daylight-time-zone-name "CET")
-
-(use-package circadian
-  :config
-  (setq circadian-themes '((:sunrise . modus-operandi)
-                           (:sunset  . modus-vivendi)))
-  (circadian-setup))
-
-(if (<> 7 (string-to-number (format-time-string "%H")) 17)
-    (modus-themes-load-operandi)
-  (modus-themes-load-vivendi))
+;; (if (<> 7 (string-to-number (format-time-string "%H")) 17)
+;;     (modus-themes-load-operandi)
+;;   (modus-themes-load-vivendi))
 
 ;; Provide theme
 (provide 'theme)

@@ -24,6 +24,7 @@
 (setq mc/cmds-to-run-once
       '(
 	custom/smart-search
+	eval-last-sexp
 	mouse-drag-mode-line
 	mouse-save-then-kill
 	mouse-set-region
