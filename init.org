@@ -741,6 +741,15 @@ last line."
 #+end_src
 * LaTeX
 * Org Mode
+** Lists
+
+#+begin_src emacs-lisp
+
+;; List indentation
+(setq-default org-list-indent-offset 4)
+
+#+end_src
+
 ** Inline images
 *** Startup
 
