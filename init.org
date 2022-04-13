@@ -3,6 +3,13 @@
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
 
 * Setup
+
+#+begin_src emacs-lisp
+
+;;; -*- lexical-binding: t; -*-
+
+#+end_src
+
 ** Startup
 *** Buffer
 
@@ -76,6 +83,15 @@
 #+end_src
 
 ** General purpose functions
+*** <>
+
+#+begin_src emacs-lisp
+
+(defun <> (a b c)
+  (and (> b a) (> c b)))
+
+#+end_src
+
 *** in-mode
 
 #+begin_src emacs-lisp
