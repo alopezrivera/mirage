@@ -15,7 +15,7 @@
 
 #+begin_src emacs-lisp
 
-(setq initial-buffer-choice "~/.emacs.d/init.org")
+(setq initial-buffer-choice "~/.emacs.d/theme.org")
 
 #+end_src
 
@@ -158,26 +158,17 @@
 (setq visible-bell t)
 
 #+end_src
-
-** Fringes
-
-#+begin_src emacs-lisp
-
-;; Set width of side fringes
-(set-fringe-mode 0)
-
-;; Set fringe color
-(set-face-background 'fringe "#ebebeb")
-
-#+end_src
-
 ** Mode line
 
 #+begin_src emacs-lisp
 
-;; Install doom-modeline
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode))
+(defun custom/hide-modeline ()
+  (interactive)
+  (if mode-line-format
+      (setq mode-line-format nil)
+    (doom-modeline-mode)))
+
+(global-set-key (kbd "M-m") #'custom/hide-modeline)
 
 #+end_src
 
@@ -198,6 +189,15 @@
 		    eshell-mode-hook
 		    undo-tree-visualizer-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+#+end_src
+
+** Fringes
+
+#+begin_src emacs-lisp
+
+;; Set width of side fringes
+(set-fringe-mode 0)
 
 #+end_src
 
@@ -335,6 +335,15 @@
 #+end_src
 
 * Navigation
+** Text
+
+#+begin_src emacs-lisp
+
+;; Return to indentation
+(global-set-key (kbd "S-<home>") 'back-to-indentation)
+
+#+end_src
+
 ** Buffer
 
 #+begin_src emacs-lisp
@@ -842,6 +851,8 @@ folded."
 (add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
 
 #+end_src
+
+
 *** Code block indentation
 
 #+begin_src emacs-lisp
