@@ -1,3 +1,17 @@
+
+** org-download
+
+#+begin_src emacs-lisp
+
+;; org-download
+(use-package org-download)
+
+;; Add hooks
+(dolist (mode '(org-mode-hook
+		      dired-mode-hook))
+  (add-hook mode 'org-download-enable))
+
+#+end_src
 ** treemacs
 #+begin_src emacs-lisp
 
@@ -112,7 +126,8 @@
   ;;   :config (treemacs-set-scope-type 'Tabs))
 
 #+end_src
-** org-superstar
+** archive
+*** org-superstar
 
 #+begin_src emacs-lisp
 
@@ -126,7 +141,7 @@
 
 #+end_src
 
-*** Headers
+**** Headers
 
 #+begin_src emacs-lisp
 
@@ -139,7 +154,7 @@
 
 #+end_src
 
-*** Lists
+**** Lists
 
 #+begin_src emacs-lisp
 
