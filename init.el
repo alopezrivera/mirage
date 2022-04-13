@@ -14,8 +14,8 @@
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			     ("org"   . "https://orgmode.org/elpa/")
-			     ("elpa"  . "https://elpa.gnu.org/packages/")))
+			 ("org"   . "https://orgmode.org/elpa/")
+			 ("elpa"  . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -33,12 +33,24 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
+(defun custom/in-mode (mode)
+  "Return t if Org Mode is currently active."
+  (string-equal major-mode mode))
+
 ;; Retrieve active region
 (defun custom/active-region (beg end)
   (set-mark beg)
   (goto-char end)
   (activate-mark)
   )
+
+(defun custom/match-regexs (string patterns)
+  "Return t if all provided regex PATTERNS
+(provided as a list) match STRING."
+  (cl-loop for pattern in patterns
+	   if (not (string-match pattern string))
+	     return nil
+	   finally return t))
 
 ;; Inhibit startup message
 (setq inhibit-startup-message t)
@@ -58,20 +70,15 @@
 ;; Enable visual bell
 (setq visible-bell t)
 
+;; Set width of side fringes
+(set-fringe-mode 0)
+
+;; Set fringe color
+(set-face-background 'fringe "#ebebeb")
+
 ;; Install doom-modeline
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode))
-
-;; Customize names displayed in mode line
-(use-package delight)
-(require 'delight)
-
-;; Remove default modes from mode line
-(delight '((visual-line-mode nil "simple")
-	   (buffer-face-mode nil "simple")
-   	   (eldoc-mode nil "eldoc")
-	   ;; Major modes
-	   (emacs-lisp-mode "EL" :major)))
 
 ;; Line numbers: display globally
 (global-display-line-numbers-mode t)
@@ -182,6 +189,17 @@
 ;; Make ESC quit present window and bury its buffer
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
+;; Unset secondary overlay key bindings
+(global-unset-key [M-mouse-1])
+(global-unset-key [M-drag-mouse-1])
+(global-unset-key [M-down-mouse-1])
+(global-unset-key [M-mouse-3])
+(global-unset-key [M-mouse-2])
+
+;; Unset mouse bindings
+(global-unset-key [C-mouse-1])
+(global-unset-key [C-down-mouse-1])
+
 ;; Multiple cursors
 (use-package multiple-cursors
   :bind (("C-."         . mc/mark-next-like-this)
@@ -267,7 +285,7 @@ last line."
 
     ;; Comment or uncomment region
     ;; If Org Mode is active
-    (if (string-equal major-mode "org-mode")
+    (if (custom/in-mode "org-mode")
 	(if (org-in-src-block-p)
 	    ;; Manage Org Babel misbehavior with comment-or-uncomment-region
 	    (org-comment-dwim (custom/active-region beg end))
@@ -297,6 +315,104 @@ last line."
 ;; Unset mouse bindings
 (global-unset-key [C-mouse-1])
 (global-unset-key [C-down-mouse-1])
+
+;; Multiple cursors
+(use-package multiple-cursors
+  :bind (("C-."         . mc/mark-next-like-this)
+	 ("C-;"         . mc/mark-previous-like-this)
+	 ("C-<mouse-1>" . mc/add-cursor-on-click))
+  )
+
+;; Load package
+(require 'multiple-cursors)
+
+;; Unknown commands file
+(setq mc/list-file "~/.emacs.d/mc-lists.el")
+
+;; Return as usual
+(define-key mc/keymap (kbd "<return>")       'electric-newline-and-maybe-indent)
+
+;; Exit multiple-cursors-mode
+(define-key mc/keymap (kbd "<escape>")       'multiple-cursors-mode)
+(define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
+(define-key mc/keymap (kbd "<down-mouse-1>")  nil)
+
+;; Ensure rectangular-region-mode is loaded
+(require 'rectangular-region-mode)
+
+;; Save rectangle to kill ring
+(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'kill-ring-save)
+
+;; Yank rectangle
+(global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
+
+;; Enter multiple-cursors-mode
+(defun custom/rectangular-region-multiple-cursors ()
+  (interactive)
+  (rrm/switch-to-multiple-cursors)
+  (deactivate-mark))
+
+(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
+
+;; Exit rectangular-region-mode
+(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
+(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
+
+;; Multiple cursor rectangle definition mouse event
+(defun custom/smart-mouse-rectangle (start-event)
+  (interactive "e")
+  (deactivate-mark)
+  (mouse-set-point start-event)
+  (set-rectangular-region-anchor)
+  (rectangle-mark-mode +1)
+  (let ((drag-event))
+    (track-mouse
+      (while (progn
+               (setq drag-event (read-event))
+               (mouse-movement-p drag-event))
+        (mouse-set-point drag-event)))))
+
+(global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
+
+(defun custom/smart-comment ()
+  "Comments out the current line if no region is selected.
+If the cursor stands on an opening parenthesis and Emacs Lisp 
+mode is active, the region of the corresponding s expression 
+is selected and commented out.
+If a region is selected, it comments out the region, from 
+the start of the top line of the region, to the end to its 
+last line."
+  (interactive)
+  (let (beg end)
+    (if (region-active-p)
+
+	;; If the beginning and end of the region are in
+	;; the same line, select entire line
+	(if (= (count-lines (region-beginning) (region-end)) 1)
+	    (setq beg (line-beginning-position) end (line-end-position))
+	  ;; Else, select region from the start of its first
+	  ;; line to the end of its last.
+          (setq beg (save-excursion (goto-char (region-beginning)) (line-beginning-position))
+		end (save-excursion (goto-char (region-end)) (line-end-position))))
+      
+      ;; Else, select line
+      (setq beg (line-beginning-position) end (line-end-position)))
+
+
+    ;; Comment or uncomment region
+    ;; If Org Mode is active
+    (if (custom/in-mode "org-mode")
+	(if (org-in-src-block-p)
+	    ;; Manage Org Babel misbehavior with comment-or-uncomment-region
+	    (org-comment-dwim (custom/active-region beg end))
+	  (comment-or-uncomment-region beg end))
+      ;; Else, proceed regularly
+      (comment-or-uncomment-region beg end))
+
+    ;; Move to the beginning of the next line
+    (move-beginning-of-line 2)))
+
+(global-set-key (kbd "M-;") #'custom/smart-comment)
 
 (global-set-key (kbd "C-`") 'widen)
 
@@ -348,9 +464,6 @@ last line."
 (add-to-list 'org-structure-template-alist '("el"  . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py"  . "src python"))
 
-;; Refrain from repositioning text when cycling visibility
-(remove-hook 'org-cycle-hook #'org-optimize-window-after-visibility-change)
-
 (defun custom/with-mark-active (&rest args)
   "Keep mark active after command. To be used as advice AFTER any
 function that sets `deactivate-mark' to t."
@@ -366,6 +479,8 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
 
+(setq org-preview-latex-image-directory (concat config-directory "tmp/"))
+
 ;; Language packages
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -373,10 +488,11 @@ function that sets `deactivate-mark' to t."
    (python     . t)))
 
 ;; Trigger org-babel-tangle when saving any org files in the config directory
-(setq source-search-str (replace-regexp-in-string "~" "/root" config-directory))
+(setq source-regex (list ".org" (replace-regexp-in-string "~" "/root" config-directory)))
+
 (defun custom/org-babel-tangle-config()
   "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
-     (when (string-match source-search-str (expand-file-name buffer-file-name))
+     (if (custom/match-regexs (expand-file-name buffer-file-name) source-regex)
      ;; Tangle ommitting confirmation
      (let ((org-confirm-babel-evaluate nil)) (org-babel-tangle)))
 )

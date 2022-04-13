@@ -1,28 +1,24 @@
-(use-package modus-themes)
-
-(modus-themes-load-themes)
-(modus-themes-load-operandi)
-
 ;; Default face
-(set-face-attribute 'default nil :font "Fira Code Retina" :height 110)
+(set-face-attribute 'default nil        :font "Fira Code Retina" :height 110)
 
 ;; Fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 110)
+(set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 110)
 
 ;; Variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Linux Libertine"  :height 135 :weight 'regular)
+
+;; Title face
+(setq title-typeface "Century Gothic")
+
+;; Heading face
+(setq heading-typeface "Century Gothic")
+
+;; Mode line
+(set-face-attribute 'mode-line nil :height 110 :inherit 'fixed-pitch)
 
 ;; Symbol library
 (use-package all-the-icons
   :if (display-graphic-p))
-
-;; Title face
-
-(defun custom/org-title-setup () 
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :height 2.074 :foreground 'unspecified :inherit 'org-level-8)))
-
-(add-hook 'org-mode-hook #'custom/org-title-setup)
 
 (defun custom/org-pitch-setup ()
   (with-eval-after-load 'org-faces
@@ -45,7 +41,16 @@
     (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
     (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
 
-(add-hook 'org-indent-mode-hook #'custom/org-pitch-setup)
+(add-hook 'org-mode-hook #'custom/org-pitch-setup)
+
+;; Title face
+
+(defun custom/org-title-setup () 
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-document-title nil :font title-typeface :height 2.074 :weight 'bold :foreground 'unspecified)))
+;; :inherit 'org-level-8
+
+(add-hook 'org-mode-hook #'custom/org-title-setup)
 
 ;; Use levels 1 through 4
 (setq org-n-level-faces 4)
@@ -60,7 +65,7 @@
 (defun custom/org-header-setup () 
   (with-eval-after-load 'org-faces
 
-    ;; Header font sizes
+    ;; Heading font sizes
     (dolist (face '((org-level-1 . 1.5)
                     (org-level-2 . 1.2)
                     (org-level-3 . 1.1)
@@ -69,7 +74,7 @@
                     (org-level-6 . 1.0)
                     (org-level-7 . 1.0)
                     (org-level-8 . 1.0)))
-      (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))))
+         (set-face-attribute (car face) nil :font heading-typeface :weight 'regular :height (cdr face)))))
 
 (add-hook 'org-mode-hook #'custom/org-header-setup)
 
@@ -156,14 +161,30 @@
 (use-package rainbow-mode
   :init (rainbow-mode))
 
-;; Mode line font
-(set-face-attribute 'mode-line nil :height 110)
+(rainbow-mode 1)
 
-;; Set width of side fringes
-(set-fringe-mode 3)
+(setq doom-modeline-bar-width 10)
 
-;; Set fringe color
-(set-face-background 'fringe "#ebebeb")
+(defun custom/modeline-color (color)
+  (set-face-background 'modeline modeline-color)
+  (set-face-attribute 'doom-modeline-bar nil :background modeline-color :inherit 'mode-line))
+
+(defun custom/dark-modeline ()
+  (custom/modeline-color "#000000"))
+
+(defun custom/light-modeline ()
+  (custom/modeline-color "#FFFFFF"))
+
+;; Customize names displayed in mode line
+(use-package delight)
+(require 'delight)
+
+;; Remove default modes from mode line
+(delight '((visual-line-mode nil "simple")
+	   (buffer-face-mode nil "simple")
+   	   (eldoc-mode nil "eldoc")
+	   ;; Major modes
+	   (emacs-lisp-mode "EL" :major)))
 
 (use-package org-modern)
 
@@ -178,13 +199,14 @@
 
   ;; Enter visual line mode:  wrap long lines at the end of the buffer, as opposed to truncating them
   (visual-line-mode    1)
+
   ;; Move through lines as they are displayed in visual-line-mode, as opposed to how they are stored.
   (setq line-move-visual t)
 
   ;; Enter indent mode: indent truncated lines appropriately
   (org-indent-mode     1))
 
-(add-hook 'org-mode-hook 'custom/org-mode-setup)
+(add-hook 'org-mode-hook #'custom/org-mode-setup)
 
 ;; Center text
 (use-package olivetti
@@ -203,6 +225,69 @@
 
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ▾")
+
+(plist-put org-format-latex-options :scale 1.5)
+
+(use-package modus-themes)
+
+(modus-themes-load-themes)
+
+(defvar after-enable-theme-hook nil
+   "Normal hook run after enabling a theme.")
+
+(defun run-after-enable-theme-hook (&rest _args)
+   "Run `after-enable-theme-hook'."
+   (run-hooks 'after-enable-theme-hook))
+
+(advice-add 'enable-theme :after #'run-after-enable-theme-hook)
+
+;; (defvar after-enable-modus-operandi-hook nil
+;;    "Normal hook run after enabling a theme.")
+
+;; (defun run-after-enable-modus-operandi-hook (&rest _args)
+;;    "Run `after-enable-theme-hook'."
+;;    (run-hooks 'after-enable-theme-hook))
+
+;; (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
+
+;; (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
+
+;; (enable-theme 'modus-operandi)
+
+;; (defun foo (a b) (+ a b))
+
+;; (advice-add 'foo :around (lambda (orig a b)))
+
+;; Org Mode
+(defun custom/org-theme-reload ()
+  (if (custom/in-mode "org-mode")
+      (org-mode)))
+
+(add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
+
+;; Mode line
+;; (add-hook ')
+
+(defun my-modus-themes-toggle ()
+  "Toggle between `modus-operandi' and `modus-vivendi' themes.
+This uses `enable-theme' instead of the standard method of
+`load-theme'.  The technicalities are covered in the Modus themes
+manual."
+  (interactive)
+  (pcase (modus-themes--current-theme)
+    ('modus-operandi (progn (enable-theme 'modus-vivendi)
+                            (disable-theme 'modus-operandi)))
+    ('modus-vivendi (progn (enable-theme 'modus-operandi)
+                            (disable-theme 'modus-vivendi)))
+    (_ (error "No Modus theme is loaded; evaluate `modus-themes-load-themes' first"))))
+
+(use-package circadian                  ; you need to install this
+  :config
+  (setq circadian-themes '(("08:00" . modus-operandi)
+                           ("17:00"  . modus-vivendi)))
+  (circadian-setup))
+
+(modus-themes-load-vivendi)
 
 ;; Provide theme
 (provide 'theme)
