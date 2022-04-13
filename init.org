@@ -794,6 +794,14 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 ** LaTeX
+*** Equation preview format
+
+#+begin_src emacs-lisp
+
+;; SVG LaTeX equation preview
+(setq org-latex-create-formula-image-program 'dvisvgm)
+
+#+end_src
 
 *** Equation preview directory
 
