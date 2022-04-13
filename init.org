@@ -48,6 +48,7 @@
 #+end_src
 
 ** Package management
+*** use-package
 
 #+begin_src emacs-lisp
 
@@ -55,8 +56,8 @@
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org"   . "https://orgmode.org/elpa/")
-			 ("elpa"  . "https://elpa.gnu.org/packages/")))
+			       ("org"   . "https://orgmode.org/elpa/")
+			       ("elpa"  . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -72,7 +73,23 @@
 
 #+end_src
 
-*** Customize Interface
+*** quelpa-use-package
+
+#+begin_src emacs-lisp
+
+;; quelpa
+(use-package quelpa)
+
+;; quelpa-use-package
+(quelpa
+ '(quelpa-use-package
+   :fetcher git
+   :url "https://github.com/quelpa/quelpa-use-package.git"))
+(require 'quelpa-use-package)
+
+#+end_src
+
+*** Customize interface
 
 #+begin_src emacs-lisp
 
@@ -724,6 +741,16 @@ last line."
 #+end_src
 * LaTeX
 * Org Mode
+** Inline images
+*** Startup
+
+#+begin_src emacs-lisp
+
+;; Render inline images when opening org files
+(setq org-startup-with-inline-images t)
+
+#+end_src
+
 ** Variable pitch
 
 #+begin_src emacs-lisp
@@ -858,7 +885,6 @@ folded."
 (global-set-key (kbd "C-x C-x") 'org-babel-execute-src-block)
 
 #+end_src
-
 *** Code block indentation
 
 #+begin_src emacs-lisp
