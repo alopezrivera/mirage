@@ -154,21 +154,3 @@
 (set-face-attribute 'org-superstar-item nil :inherit 'fixed-pitch :height 90)
 
 #+end_src
-** solar circadian
-
-#+begin_src emacs-lisp
-
-(use-package solar                      ; built-in
-  :config
-  (setq calendar-latitude  52.01
-        calendar-longitude 04.36))
-
-(use-package circadian                  ; you need to install this
-  :ensure
-  :after solar
-  (setq circadian-themes '((:sunrise . modus-operandi)
-                           (:sunset  . modus-vivendi)))
-  (circadian-setup))
-
-#+end_src
-

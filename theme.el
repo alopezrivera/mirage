@@ -175,6 +175,8 @@
 (defun custom/light-modeline ()
   (custom/modeline-color "#FFFFFF"))
 
+(display-time-mode t)
+
 ;; Customize names displayed in mode line
 (use-package delight)
 (require 'delight)
@@ -254,9 +256,10 @@
 
 ;; (enable-theme 'modus-operandi)
 
-;; (defun foo (a b) (+ a b))
-
-;; (advice-add 'foo :around (lambda (orig a b)))
+;; (defun foo (a b)
+;;   (* a b))
+;; (add-function :before (print 1 2) #'foo)
+;; (my-two "a")
 
 ;; Org Mode
 (defun custom/org-theme-reload ()
@@ -268,7 +271,7 @@
 ;; Mode line
 ;; (add-hook ')
 
-(defun my-modus-themes-toggle ()
+(defun custom/modus-themes-toggle ()
   "Toggle between `modus-operandi' and `modus-vivendi' themes.
 This uses `enable-theme' instead of the standard method of
 `load-theme'.  The technicalities are covered in the Modus themes
@@ -281,13 +284,23 @@ manual."
                             (disable-theme 'modus-vivendi)))
     (_ (error "No Modus theme is loaded; evaluate `modus-themes-load-themes' first"))))
 
-(use-package circadian                  ; you need to install this
+(global-set-key (kbd "C-t") 'custom/modus-themes-toggle)
+
+(setq calendar-latitude      52.00667)
+(setq calendar-longitude     4.355561)
+(setq calendar-loadtion-name "Delft")
+(setq calendar-standard-time-zone-name "CEST")
+(setq calendar-daylight-time-zone-name "CET")
+
+(use-package circadian
   :config
-  (setq circadian-themes '(("08:00" . modus-operandi)
-                           ("17:00"  . modus-vivendi)))
+  (setq circadian-themes '((:sunrise . modus-operandi)
+                           (:sunset  . modus-vivendi)))
   (circadian-setup))
 
-(modus-themes-load-vivendi)
+(if (<> 7 (string-to-number (format-time-string "%H")) 17)
+    (modus-themes-load-operandi)
+  (modus-themes-load-vivendi))
 
 ;; Provide theme
 (provide 'theme)

@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (setq initial-buffer-choice "~/.emacs.d/init.org")
 
 ;; Initial frame size
@@ -32,6 +34,9 @@
 ;; Customize interface code blocks
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
+
+(defun <> (a b c)
+  (and (> b a) (> c b)))
 
 (defun custom/in-mode (mode)
   "Return t if Org Mode is currently active."
