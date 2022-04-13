@@ -345,7 +345,6 @@
 #+end_src
 
 ** LaTeX
-
 *** Equation preview scale
 
 #+begin_src emacs-lisp
