@@ -16,8 +16,8 @@
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org"   . "https://orgmode.org/elpa/")
-			 ("elpa"  . "https://elpa.gnu.org/packages/")))
+			       ("org"   . "https://orgmode.org/elpa/")
+			       ("elpa"  . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -30,6 +30,16 @@
 
 ;; If true, Emacs will attempt to download packages in use-package declarations
 (setq use-package-always-ensure t)
+
+;; quelpa
+(use-package quelpa)
+
+;; quelpa-use-package
+(quelpa
+ '(quelpa-use-package
+   :fetcher git
+   :url "https://github.com/quelpa/quelpa-use-package.git"))
+(require 'quelpa-use-package)
 
 ;; Customize interface code blocks
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -461,6 +471,9 @@ last line."
 (global-set-key (kbd "<mouse-3>")        'yank)
 (global-set-key (kbd "<down-mouse-3>")    nil)
 
+;; Render inline images when opening org files
+(setq org-startup-with-inline-images t)
+
 ;; Load Org Mode
 (use-package org
   :delight org-indent-mode
@@ -487,6 +500,9 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaleft  :after #'custom/with-mark-active)
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
+
+;; SVG LaTeX equation preview
+(setq org-latex-create-formula-image-program 'dvisvgm)
 
 (setq org-preview-latex-image-directory (concat config-directory "tmp/"))
 

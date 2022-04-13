@@ -270,24 +270,13 @@
   (custom/dark-modeline))
 
 (defun custom/theme-specific-advice (_orig-fun &rest args)
-  (print "===================")
-  (cond ((string-equal (nth 0 args) "modus-operandi") (print "OPERANDI"))
-	    ((string-equal (nth 0 args) "modus-vivendi")  (print "VIVENDI"))
-	    (t))
-  (print "~~~~~~~~~~~~~~~~~~~")
-  (if (string-equal (nth 0 args) "modus-operandi")
-      (print "OPERANDI")
-    (if (string-equal (nth 0 args) "modus-vivendi")
-	      (print "VIVENDI")))
-  (print "===================")
+  (setq modeline-status mode-line-format)
   (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
 	      ((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
-  (apply _orig-fun args))
+  (apply _orig-fun args)
+  (setq mode-line-format modeline-status))
 
 (advice-add 'enable-theme :around #'custom/theme-specific-advice)
-
-;; (enable-theme 'modus-vivendi)
-;; (enable-theme 'modus-operandi)
 
 (setq calendar-latitude      52.00667)
 (setq calendar-longitude     4.355561)
