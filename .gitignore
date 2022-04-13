@@ -1,6 +1,7 @@
 
+*~
+*#*
+tmp/*
 elpa/*
 auto-save-list/*
-*~
-*#*#
 url/cache/root/https/*
