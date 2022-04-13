@@ -1,0 +1,8 @@
+** vundo
+
+#+begin_src emacs-lisp
+
+(use-package vundo
+  :quelpa ((vundo :fetcher github :repo "casouri/vundo") :upgrade t))
+
+#+end_src
