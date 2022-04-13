@@ -18,6 +18,7 @@
 (set-face-attribute 'variable-pitch nil :font "Linux Libertine"  :height 135 :weight 'regular)
 
 #+end_src
+
 *** Headings
 
 #+begin_src emacs-lisp
@@ -29,6 +30,7 @@
 (setq heading-typeface "Century Gothic")
 
 #+end_src
+
 *** Mode line
 
 #+begin_src emacs-lisp
@@ -37,6 +39,7 @@
 (set-face-attribute 'mode-line nil :height 110 :inherit 'fixed-pitch)
 
 #+end_src
+
 ** Icons
 
 #+begin_src emacs-lisp
