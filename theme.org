@@ -235,8 +235,9 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 (use-package rainbow-mode)
 
 #+end_src
-* Mode line
-** Doom
+* Display
+** Mode line
+*** Doom
 
 #+begin_src emacs-lisp
 
@@ -246,7 +247,7 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 
 #+end_src
 
-** Design
+*** Design
 
 #+begin_src emacs-lisp
 
@@ -278,7 +279,7 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 
 #+end_src
 
-*** Mode display
+**** Mode display
 
 #+begin_src emacs-lisp
 
