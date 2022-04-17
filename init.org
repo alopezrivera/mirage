@@ -752,7 +752,7 @@ last line."
 #+begin_src emacs-lisp
 
 ;; List indentation
-(setq-default org-list-indent-offset 4)
+(setq-default org-list-indent-offset 1)
 
 #+end_src
 
