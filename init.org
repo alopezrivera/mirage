@@ -59,17 +59,23 @@
 			       ("org"   . "https://orgmode.org/elpa/")
 			       ("elpa"  . "https://elpa.gnu.org/packages/")))
 (package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
 
 ;; Ensure use-package is installed
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 
+;; use-package
 (require 'use-package)
 
 ;; If true, Emacs will attempt to download packages in use-package declarations
 (setq use-package-always-ensure t)
+
+#+end_src
+
+#+begin_src emacs-lisp :tangle nil
+
+;; Update package database
+(package-refresh-contents)
 
 #+end_src
 
