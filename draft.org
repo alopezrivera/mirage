@@ -1,3 +1,24 @@
+* Bash
+** Transform all files in directory from DOS to Unix
+
+#+begin_src emacs-lisp
+
+(defun custom/dos2unix_directory ()
+  (let ((default-directory (file-name-directory buffer-file-name))) 
+    (shell-command "find . -maxdepth 1 -type f -exec dos2unix {} \;")))
+
+(custom/dos2unix_directory)
+
+#+end_src
+
+** auctex
+
+#+begin_src emacs-lisp
+
+;; AUCTeX install
+(use-package tex :ensure auctex)
+
+#+end_src
 
 ** org-download
 
