@@ -52,7 +52,7 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 #+begin_src emacs-lisp
 
 ;; Mode line
-(set-face-attribute 'mode-line nil :height 110 :inherit 'fixed-pitch)
+(set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
 
 #+end_src
 
@@ -257,8 +257,8 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 (defun custom/modeline-color (bg bg-in face face-in)
   "Set the color of the mode line and blend the 
 `doom-modeline-bar' with the background."
-  (set-face-attribute 'mode-line          nil :foreground face    :background bg)
-  (set-face-attribute 'mode-line-inactive nil :foreground face-in :background bg-in))
+  (set-face-attribute 'mode-line          nil :foreground face    :background bg    :box nil)
+  (set-face-attribute 'mode-line-inactive nil :foreground face-in :background bg-in :box nil))
 
 (defun custom/dark-modeline ()
   "Mode line for light themes."
@@ -266,11 +266,11 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 
 (defun custom/light-modeline ()
   "Mode line for dark themes."
-  (custom/modeline-color "#f2f2f2" "#ededed" "#878787" "#616161"))
+  (custom/modeline-color "#ededed" "#ededed" "#616161" "#878787"))
 
 #+end_src
 
-*** Time
+**** Time
 
 #+begin_src emacs-lisp
 
@@ -397,19 +397,7 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 
 #+end_src
 
-*** Mode line
-
-#+begin_src emacs-lisp
-
-(defun custom/modeline-box ()
-  (set-face-attribute 'mode-line nil          :box nil)
-  (set-face-attribute 'mode-line-inactive nil :box nil))
-
-(add-hook 'after-enable-theme-hook #'custom/modeline-box)
-
-#+end_src
-
-*** Org Mode
+**** Org Mode
 
 #+begin_src emacs-lisp
 
