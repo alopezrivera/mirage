@@ -24,8 +24,8 @@
 #+begin_src emacs-lisp
 
 ;; Initial frame size
-(add-to-list 'default-frame-alist '(height . 40))
-(add-to-list 'default-frame-alist '(width  . 100))
+(add-to-list 'default-frame-alist '(height . 50))
+(add-to-list 'default-frame-alist '(width  . 70))
 
 #+end_src
 *** Directory
