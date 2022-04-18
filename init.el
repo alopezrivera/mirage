@@ -66,6 +66,10 @@
 	     return nil
 	   finally return t))
 
+;; Retrieve current theme
+(defun custom/current-theme ()
+  (substring (format "%s" (nth 0 custom-enabled-themes))))
+
 ;; Inhibit startup message
 (setq inhibit-startup-message t)
 
@@ -511,7 +515,13 @@ function that sets `deactivate-mark' to t."
 ;; SVG LaTeX equation preview
 (setq org-latex-create-formula-image-program 'dvisvgm)
 
-(setq org-preview-latex-image-directory (concat config-directory "tmp/"))
+;; Default
+(setq org-preview-latex-image-directory (concat config-directory "tmp/ltximg/"))
+
+;; Theme-specific LaTeX preview directory
+(defun custom/latex-preview-directory ()
+  (setq org-preview-latex-image-directory
+   (concat config-directory "tmp/" "ltximg/" (custom/current-theme) "/")))
 
 ;; org-fragtog
 (use-package org-fragtog)
@@ -691,6 +701,33 @@ folded."
 		 (org-agenda-files org-agenda-files)))))))
 
 (require 'theme (concat config-directory "theme.el"))
+
+(defvar after-enable-theme-hook nil
+   "Normal hook run after enabling a theme.")
+
+(defun run-after-enable-theme-hook (&rest _args)
+   "Run `after-enable-theme-hook'."
+   (run-hooks 'after-enable-theme-hook))
+
+(advice-add 'enable-theme :after #'run-after-enable-theme-hook)
+
+;; Reload Org Mode
+(defun custom/org-theme-reload ()
+  (if (custom/in-mode "org-mode")
+      (org-mode)))
+
+(add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
+
+;; LaTeX equation preview directory
+(defun custom/switch-latex-preview-directory ()
+  "Deactivate LaTeX previews in current buffer,
+change LaTeX preview directory and reactivate
+LaTeX previews in current buffer."
+  (org-latex-preview '(4))
+  (custom/latex-preview-directory)
+  (org-latex-preview '(16)))
+
+(add-hook 'after-enable-theme-hook #'custom/switch-latex-preview-directory)
 
 ;; Conclude initialization file
 (provide 'init)

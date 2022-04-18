@@ -249,22 +249,6 @@
 
 (modus-themes-load-themes)
 
-(defvar after-enable-theme-hook nil
-   "Normal hook run after enabling a theme.")
-
-(defun run-after-enable-theme-hook (&rest _args)
-   "Run `after-enable-theme-hook'."
-   (run-hooks 'after-enable-theme-hook))
-
-(advice-add 'enable-theme :after #'run-after-enable-theme-hook)
-
-;; Org Mode
-(defun custom/org-theme-reload ()
-  (if (custom/in-mode "org-mode")
-      (org-mode)))
-
-(add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
-
 (defun custom/operandi-advice ()
   (custom/light-modeline))
 
