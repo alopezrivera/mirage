@@ -997,8 +997,10 @@ folded."
 
 ** Theme-agnostic enabling hook
 
+
 #+begin_src emacs-lisp
 
+;; Theme-agnostic enabling hook
 (defvar after-enable-theme-hook nil
    "Normal hook run after enabling a theme.")
 
@@ -1006,12 +1008,12 @@ folded."
    "Run `after-enable-theme-hook'."
    (run-hooks 'after-enable-theme-hook))
 
+;; enable-theme
 (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
 
 #+end_src
 
 *** Org Mode
-
 
 #+begin_src emacs-lisp
 
