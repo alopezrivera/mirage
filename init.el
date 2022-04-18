@@ -30,16 +30,6 @@
 ;; If true, Emacs will attempt to download packages in use-package declarations
 (setq use-package-always-ensure t)
 
-;; quelpa
-(use-package quelpa)
-
-;; quelpa-use-package
-(quelpa
- '(quelpa-use-package
-   :fetcher git
-   :url "https://github.com/quelpa/quelpa-use-package.git"))
-(require 'quelpa-use-package)
-
 ;; Customize interface code blocks
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
