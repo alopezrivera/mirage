@@ -503,16 +503,6 @@ manual."
 
 #+end_src
 
-** Load
-
-#+begin_src emacs-lisp
-
-;; (if (<> 7 (string-to-number (format-time-string "%H")) 17)
-;;     (modus-themes-load-operandi)
-;;   (modus-themes-load-vivendi))
-
-#+end_src
-
 * Declare
 #+begin_src emacs-lisp
 
