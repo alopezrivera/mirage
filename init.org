@@ -700,14 +700,6 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 ** LaTeX
-
-#+begin_src emacs-lisp
-
-;; LaTeX preview hook
-(add-hook 'org-mode-hook (lambda () (org-latex-preview '(16))))
-
-#+end_src
-
 *** Equation preview format
 
 #+begin_src emacs-lisp
@@ -725,6 +717,24 @@ function that sets `deactivate-mark' to t."
 (defun custom/latex-preview-directory ()
   (setq org-preview-latex-image-directory
    (concat config-directory "tmp/" "ltximg/" (custom/current-theme) "/")))
+
+#+end_src
+
+*** Equation preview reload hook
+
+#+begin_src emacs-lisp
+
+;; Reload LaTeX equation previews
+(defun custom/latex-preview-reload ()
+  "Reload all LaTeX previews in buffer,
+ensuring the LaTeX preview directory
+matches the current theme."
+  (if (custom/in-mode "org-mode")
+      (progn (org-latex-preview '(64))
+	     (custom/latex-preview-directory)
+	     (org-latex-preview '(16)))))
+
+(add-hook 'org-mode-hook #'custom/latex-preview-reload)
 
 #+end_src
 
@@ -1011,23 +1021,6 @@ folded."
       (org-mode)))
 
 (add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
-
-#+end_src
-
-**** Switch LaTeX preview directory
-
-#+begin_src emacs-lisp
-
-;; LaTeX equation preview directory
-(defun custom/switch-latex-preview-directory ()
-  "Deactivate LaTeX previews in current buffer,
-change LaTeX preview directory and reactivate
-LaTeX previews in current buffer."
-  (org-latex-preview '(4))
-  (custom/latex-preview-directory)
-  (org-latex-preview '(16)))
-
-(add-hook 'after-enable-theme-hook #'custom/switch-latex-preview-directory)
 
 #+end_src
 
