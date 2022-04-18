@@ -2,21 +2,6 @@
 #+STARTUP: content
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./theme.el :mkdirp yes
 
-- Test of a piece of writing aks jdkajs dkajs dkj adalskd alsk d
-  saaslkjd aksjd kajs dkja sdkj 
-   - KAJs dkajs dkajs dkjas dkj askdj asjdoiasdoiasidjoas dkajsd
-      - asdkajs dkajs dkajs daosidoaisjdaskd aksn dmnas dmna sd
-         - aksjd kasjdansodiaoisdjaosd kas dna smdn asjdasidjaoisd
-            - kas dkjas dkaosidjajs dn aksjdnoajisodniaksj dkaoiasjd
-               - uiyguiy khg gh hg hg y yg yg yig ig yi yg yg iyg yg iyg iyg yig yig iyg iyg yig yigyg iyg yig yig yig ig g yig 97y 97y gu 9t
-            - asd
-
-\begin{equation}
-        \int^a_b f(x)dx
-\end{equation}
-
-Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd $f(x)=b$
-
 * Typefaces
 ** Text
 *** Body
