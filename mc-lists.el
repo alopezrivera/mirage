@@ -11,7 +11,11 @@
 	keyboard-escape-quit
 	kill-rectangle
 	kill-region
+	org-backward-sentence
+	org-cycle
+	org-forward-sentence
 	org-meta-return
+	org-metaright
 	org-self-insert-command
 	org-shiftright
 	org-yank

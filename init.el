@@ -3,8 +3,8 @@
 (setq initial-buffer-choice "~/.emacs.d/theme.org")
 
 ;; Initial frame size
-(add-to-list 'default-frame-alist '(height . 40))
-(add-to-list 'default-frame-alist '(width  . 100))
+(add-to-list 'default-frame-alist '(height . 50))
+(add-to-list 'default-frame-alist '(width  . 70))
 
 ;; Default directory
 (setq default-directory "~/.emacs.d/")
@@ -19,13 +19,12 @@
 			       ("org"   . "https://orgmode.org/elpa/")
 			       ("elpa"  . "https://elpa.gnu.org/packages/")))
 (package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
 
 ;; Ensure use-package is installed
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 
+;; use-package
 (require 'use-package)
 
 ;; If true, Emacs will attempt to download packages in use-package declarations
@@ -471,6 +470,11 @@ last line."
 (global-set-key (kbd "<mouse-3>")        'yank)
 (global-set-key (kbd "<down-mouse-3>")    nil)
 
+(use-package magit)
+
+;; List indentation
+(setq-default org-list-indent-offset 1)
+
 ;; Render inline images when opening org files
 (setq org-startup-with-inline-images t)
 
@@ -501,10 +505,18 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
 
+;; LaTeX preview hook
+(add-hook 'org-mode-hook 'org-latex-preview)
+
 ;; SVG LaTeX equation preview
 (setq org-latex-create-formula-image-program 'dvisvgm)
 
 (setq org-preview-latex-image-directory (concat config-directory "tmp/"))
+
+;; org-fragtog
+(use-package org-fragtog)
+
+(add-hook 'org-mode-hook 'org-fragtog-mode)
 
 ;; Language packages
 (org-babel-do-load-languages

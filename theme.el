@@ -1,11 +1,11 @@
 ;; Default face
-(set-face-attribute 'default nil        :font "Fira Code Retina" :height 110)
+(set-face-attribute 'default nil        :font "Fira Code Retina" :height 85)
 
 ;; Fixed pitch face
-(set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 110)
+(set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 85)
 
 ;; Variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Linux Libertine"  :height 135 :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Latin Modern Roman"  :height 95 :weight 'regular)
 
 ;; Title face
 (setq title-typeface "Century Gothic")
@@ -14,7 +14,7 @@
 (setq heading-typeface "Century Gothic")
 
 ;; Mode line
-(set-face-attribute 'mode-line nil :height 110 :inherit 'fixed-pitch)
+(set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
 
 ;; Symbol library
 (use-package all-the-icons
@@ -67,13 +67,13 @@
 
     ;; Heading font sizes
     (dolist (face '((org-level-1 . 1.5)
-                    (org-level-2 . 1.2)
-                    (org-level-3 . 1.1)
-                    (org-level-4 . 1.0)
-                    (org-level-5 . 1.0)
-                    (org-level-6 . 1.0)
-                    (org-level-7 . 1.0)
-                    (org-level-8 . 1.0)))
+                    (org-level-2 . 1.3)
+                    (org-level-3 . 1.2)
+                    (org-level-4 . 1.1)
+                    (org-level-5 . 1.1)
+                    (org-level-6 . 1.1)
+                    (org-level-7 . 1.1)
+                    (org-level-8 . 1.1)))
          (set-face-attribute (car face) nil :font heading-typeface :weight 'regular :height (cdr face)))))
 
 (add-hook 'org-mode-hook #'custom/org-header-setup)
@@ -171,8 +171,8 @@
 (defun custom/modeline-color (bg bg-in face face-in)
   "Set the color of the mode line and blend the 
 `doom-modeline-bar' with the background."
-  (set-face-attribute 'mode-line          nil :foreground face    :background bg)
-  (set-face-attribute 'mode-line-inactive nil :foreground face-in :background bg-in))
+  (set-face-attribute 'mode-line          nil :foreground face    :background bg    :box nil)
+  (set-face-attribute 'mode-line-inactive nil :foreground face-in :background bg-in :box nil))
 
 (defun custom/dark-modeline ()
   "Mode line for light themes."
@@ -180,7 +180,7 @@
 
 (defun custom/light-modeline ()
   "Mode line for dark themes."
-  (custom/modeline-color "#f2f2f2" "#ededed" "#878787" "#616161"))
+  (custom/modeline-color "#ededed" "#ededed" "#616161" "#878787"))
 
 (display-time-mode t)
 
@@ -195,28 +195,6 @@
 	   ;; Major modes
 	   (emacs-lisp-mode "EL" :major)))
 
-(use-package org-modern)
-
-(add-hook 'org-mode-hook #'org-modern-mode)
-(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
-
-;; Org hook
-(defun custom/org-mode-setup ()
-
-  ;; Enter variable pitch mode
-  (variable-pitch-mode 1)
-
-  ;; Enter visual line mode:  wrap long lines at the end of the buffer, as opposed to truncating them
-  (visual-line-mode    1)
-
-  ;; Move through lines as they are displayed in visual-line-mode, as opposed to how they are stored.
-  (setq line-move-visual t)
-
-  ;; Enter indent mode: indent truncated lines appropriately
-  (org-indent-mode     1))
-
-(add-hook 'org-mode-hook #'custom/org-mode-setup)
-
 ;; Center text
 (use-package olivetti
   :delight olivetti-mode
@@ -224,7 +202,37 @@
 
 (add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
 
-(add-hook 'org-mode-hook 'olivetti-mode)
+;; 
+(dolist (mode '(org-mode-hook
+		    magit-mode-hook))
+  (add-hook mode 'olivetti-mode))
+
+(use-package org-modern)
+
+(add-hook 'org-mode-hook #'org-modern-mode)
+(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+
+;; Tags
+(setq org-modern-tag nil)
+
+;; Priorities
+(setq org-modern-priority nil)
+
+;; Vertical table line width
+(setq org-moder-table-vertical 3)
+
+;; Horizontal table line width
+(setq org-modern-table-horizontal 0.1)
+
+(setq org-modern-list '((?+ . "-")
+			      (?- . "•")
+			      (?* . "▶")))
+
+;; (add-hook 'org-mode-hook (lambda () (variable-pitch-mode 1)))
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
 
 ;; Title keyword
 (setq org-hidden-keywords '(title))
@@ -250,12 +258,6 @@
 
 (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
 
-(defun custom/modeline-box ()
-  (set-face-attribute 'mode-line nil          :box nil)
-  (set-face-attribute 'mode-line-inactive nil :box nil))
-
-(add-hook 'after-enable-theme-hook #'custom/modeline-box)
-
 ;; Org Mode
 (defun custom/org-theme-reload ()
   (if (custom/in-mode "org-mode")
@@ -271,9 +273,9 @@
 
 (defun custom/theme-specific-advice (_orig-fun &rest args)
   (setq modeline-status mode-line-format)
+  (apply _orig-fun args)
   (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
 	      ((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
-  (apply _orig-fun args)
   (setq mode-line-format modeline-status))
 
 (advice-add 'enable-theme :around #'custom/theme-specific-advice)
@@ -304,10 +306,6 @@ manual."
     (_ (error "No Modus theme is loaded; evaluate `modus-themes-load-themes' first"))))
 
 (global-set-key (kbd "C-t") 'custom/modus-themes-toggle)
-
-;; (if (<> 7 (string-to-number (format-time-string "%H")) 17)
-;;     (modus-themes-load-operandi)
-;;   (modus-themes-load-vivendi))
 
 ;; Provide theme
 (provide 'theme)
