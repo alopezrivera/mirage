@@ -849,9 +849,6 @@ function that sets `deactivate-mark' to t."
 
 #+begin_src emacs-lisp
 
-;; Default
-(setq org-preview-latex-image-directory (concat config-directory "tmp/ltximg/"))
-
 ;; Theme-specific LaTeX preview directory
 (defun custom/latex-preview-directory ()
   (setq org-preview-latex-image-directory
