@@ -15,7 +15,7 @@
         \int^a_b f(x)dx
 \end{equation}
 
-Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
+Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd $f(x)=b$
 
 * Typefaces
 ** Text
@@ -417,34 +417,6 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 (use-package modus-themes)
 
 (modus-themes-load-themes)
-
-#+end_src
-
-** Theme-agnostic enabling hook
-
-#+begin_src emacs-lisp
-
-(defvar after-enable-theme-hook nil
-   "Normal hook run after enabling a theme.")
-
-(defun run-after-enable-theme-hook (&rest _args)
-   "Run `after-enable-theme-hook'."
-   (run-hooks 'after-enable-theme-hook))
-
-(advice-add 'enable-theme :after #'run-after-enable-theme-hook)
-
-#+end_src
-
-**** Org Mode
-
-#+begin_src emacs-lisp
-
-;; Org Mode
-(defun custom/org-theme-reload ()
-  (if (custom/in-mode "org-mode")
-      (org-mode)))
-
-(add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
 
 #+end_src
 
