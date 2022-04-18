@@ -834,6 +834,17 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
+*** Disable preview when cursor lies on equation
+
+#+begin_src emacs-lisp
+
+;; org-fragtog
+(use-package org-fragtog)
+
+(add-hook 'org-mode-hook 'org-fragtog-mode)
+
+#+end_src
+
 ** Org Babel
 *** Languages
 
