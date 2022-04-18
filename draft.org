@@ -10,8 +10,7 @@
 (custom/dos2unix_directory)
 
 #+end_src
-
-** auctex
+* auctex
 
 #+begin_src emacs-lisp
 
@@ -20,7 +19,7 @@
 
 #+end_src
 
-** org-download
+* org-download
 
 #+begin_src emacs-lisp
 
@@ -33,7 +32,7 @@
   (add-hook mode 'org-download-enable))
 
 #+end_src
-** treemacs
+* treemacs
 #+begin_src emacs-lisp
 
   (use-package treemacs
@@ -147,8 +146,8 @@
   ;;   :config (treemacs-set-scope-type 'Tabs))
 
 #+end_src
-** archive
-*** org-superstar
+* archive
+** org-superstar
 
 #+begin_src emacs-lisp
 
@@ -162,7 +161,7 @@
 
 #+end_src
 
-**** Headers
+*** Headers
 
 #+begin_src emacs-lisp
 
@@ -175,7 +174,7 @@
 
 #+end_src
 
-**** Lists
+*** Lists
 
 #+begin_src emacs-lisp
 
