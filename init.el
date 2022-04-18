@@ -193,7 +193,22 @@
 (global-set-key (kbd "S-<home>") 'back-to-indentation)
 
 ;; Counsel buffer switching
-(global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
+(global-set-key (kbd "C-x b") 'counsel-switch-buffer)
+
+;; Split and follow
+(defun split-and-follow-horizontally ()
+  (interactive)
+  (split-window-below)
+  (balance-windows)
+  (other-window 1))
+(global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+
+(defun split-and-follow-vertically ()
+  (interactive)
+  (split-window-right)
+  (balance-windows)
+  (other-window 1))
+(global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 
 ;; Create new frame
 (global-set-key (kbd "C-S-n") 'make-frame-command)
