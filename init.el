@@ -515,9 +515,6 @@ function that sets `deactivate-mark' to t."
 ;; SVG LaTeX equation preview
 (setq org-latex-create-formula-image-program 'dvisvgm)
 
-;; Default
-(setq org-preview-latex-image-directory (concat config-directory "tmp/ltximg/"))
-
 ;; Theme-specific LaTeX preview directory
 (defun custom/latex-preview-directory ()
   (setq org-preview-latex-image-directory
