@@ -809,6 +809,14 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 ** LaTeX
+
+#+begin_src emacs-lisp
+
+;; LaTeX preview hook
+(add-hook 'org-mode-hook 'org-latex-preview)
+
+#+end_src
+
 *** Equation preview format
 
 #+begin_src emacs-lisp
