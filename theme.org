@@ -15,7 +15,6 @@
         \int^a_b f(x)dx
 \end{equation}
 
-
 Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 
 * Typefaces
@@ -402,7 +401,6 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 (setq org-ellipsis " ▾")
 
 #+end_src
-
 ** LaTeX
 *** Equation preview scale
 
