@@ -839,7 +839,7 @@ function that sets `deactivate-mark' to t."
 #+begin_src emacs-lisp
 
 ;; LaTeX preview hook
-(add-hook 'org-mode-hook 'org-latex-preview)
+(add-hook 'org-mode-hook (lambda () (org-latex-preview '(16))))
 
 #+end_src
 
