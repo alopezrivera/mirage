@@ -455,9 +455,9 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 
 (defun custom/theme-specific-advice (_orig-fun &rest args)
   (setq modeline-status mode-line-format)
+  (apply _orig-fun args)
   (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
 	      ((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
-  (apply _orig-fun args)
   (setq mode-line-format modeline-status))
 
 (advice-add 'enable-theme :around #'custom/theme-specific-advice)
