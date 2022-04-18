@@ -366,9 +366,10 @@
 #+begin_src emacs-lisp
 
 ;; Counsel buffer switching
-(global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
+(global-set-key (kbd "C-x b") 'counsel-switch-buffer)
 
 #+end_src
+
 ** Frame
 
 #+begin_src emacs-lisp
