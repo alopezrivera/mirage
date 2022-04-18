@@ -745,6 +745,15 @@ last line."
 (global-set-key (kbd "<down-mouse-3>")    nil)
 
 #+end_src
+
+* Git
+
+#+begin_src emacs-lisp
+
+(use-package magit)
+
+#+end_src
+
 * LaTeX
 * Org Mode
 ** Lists
