@@ -638,6 +638,15 @@ last line."
 
 * LaTeX
 * Org Mode
+
+#+begin_src emacs-lisp
+
+;; Load Org Mode
+(use-package org
+  :delight org-indent-mode)
+
+#+end_src
+
 ** Lists
 
 #+begin_src emacs-lisp
@@ -657,16 +666,6 @@ last line."
 
 #+end_src
 
-** Variable pitch
-
-#+begin_src emacs-lisp
-
-;; Load Org Mode
-(use-package org
-  :delight org-indent-mode
-  )
-
-#+end_src
 ** Structure templates
 
 #+begin_src emacs-lisp
