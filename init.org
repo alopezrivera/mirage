@@ -79,22 +79,6 @@
 
 #+end_src
 
-*** quelpa-use-package
-
-#+begin_src emacs-lisp
-
-;; quelpa
-(use-package quelpa)
-
-;; quelpa-use-package
-(quelpa
- '(quelpa-use-package
-   :fetcher git
-   :url "https://github.com/quelpa/quelpa-use-package.git"))
-(require 'quelpa-use-package)
-
-#+end_src
-
 *** Customize interface
 
 #+begin_src emacs-lisp
