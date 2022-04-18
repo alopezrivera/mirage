@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 
-(setq initial-buffer-choice "~/.emacs.d/theme.org")
+(setq initial-buffer-choice "/mnt/c/Users/xXY4n/Downloads/emacs/test.org")
 
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 50))
@@ -248,43 +248,6 @@
 (define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<down-mouse-1>")  nil)
 
-;; Ensure rectangular-region-mode is loaded
-(require 'rectangular-region-mode)
-
-;; Save rectangle to kill ring
-(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'kill-ring-save)
-
-;; Yank rectangle
-(global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
-
-;; Enter multiple-cursors-mode
-(defun custom/rectangular-region-multiple-cursors ()
-  (interactive)
-  (rrm/switch-to-multiple-cursors)
-  (deactivate-mark))
-
-(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
-
-;; Exit rectangular-region-mode
-(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
-(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
-
-;; Multiple cursor rectangle definition mouse event
-(defun custom/smart-mouse-rectangle (start-event)
-  (interactive "e")
-  (deactivate-mark)
-  (mouse-set-point start-event)
-  (set-rectangular-region-anchor)
-  (rectangle-mark-mode +1)
-  (let ((drag-event))
-    (track-mouse
-      (while (progn
-               (setq drag-event (read-event))
-               (mouse-movement-p drag-event))
-        (mouse-set-point drag-event)))))
-
-(global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
-
 (defun custom/smart-comment ()
   "Comments out the current line if no region is selected.
 If the cursor stands on an opening parenthesis and Emacs Lisp 
@@ -324,6 +287,43 @@ last line."
     (move-beginning-of-line 2)))
 
 (global-set-key (kbd "M-;") #'custom/smart-comment)
+
+;; Ensure rectangular-region-mode is loaded
+(require 'rectangular-region-mode)
+
+;; Save rectangle to kill ring
+(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'kill-ring-save)
+
+;; Yank rectangle
+(global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
+
+;; Enter multiple-cursors-mode
+(defun custom/rectangular-region-multiple-cursors ()
+  (interactive)
+  (rrm/switch-to-multiple-cursors)
+  (deactivate-mark))
+
+(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
+
+;; Exit rectangular-region-mode
+(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
+(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
+
+;; Multiple cursor rectangle definition mouse event
+(defun custom/smart-mouse-rectangle (start-event)
+  (interactive "e")
+  (deactivate-mark)
+  (mouse-set-point start-event)
+  (set-rectangular-region-anchor)
+  (rectangle-mark-mode +1)
+  (let ((drag-event))
+    (track-mouse
+      (while (progn
+               (setq drag-event (read-event))
+               (mouse-movement-p drag-event))
+        (mouse-set-point drag-event)))))
+
+(global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
 
 ;; Create binding for evaluating buffer
 (global-set-key (kbd "C-x e") 'eval-buffer)
@@ -331,115 +331,6 @@ last line."
 ;; Enable rainbow delimiters on all programming modes
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
-
-;; Unset secondary overlay key bindings
-(global-unset-key [M-mouse-1])
-(global-unset-key [M-drag-mouse-1])
-(global-unset-key [M-down-mouse-1])
-(global-unset-key [M-mouse-3])
-(global-unset-key [M-mouse-2])
-
-;; Unset mouse bindings
-(global-unset-key [C-mouse-1])
-(global-unset-key [C-down-mouse-1])
-
-;; Multiple cursors
-(use-package multiple-cursors
-  :bind (("C-."         . mc/mark-next-like-this)
-	 ("C-;"         . mc/mark-previous-like-this)
-	 ("C-<mouse-1>" . mc/add-cursor-on-click))
-  )
-
-;; Load package
-(require 'multiple-cursors)
-
-;; Unknown commands file
-(setq mc/list-file "~/.emacs.d/mc-lists.el")
-
-;; Return as usual
-(define-key mc/keymap (kbd "<return>")       'electric-newline-and-maybe-indent)
-
-;; Exit multiple-cursors-mode
-(define-key mc/keymap (kbd "<escape>")       'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<down-mouse-1>")  nil)
-
-;; Ensure rectangular-region-mode is loaded
-(require 'rectangular-region-mode)
-
-;; Save rectangle to kill ring
-(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'kill-ring-save)
-
-;; Yank rectangle
-(global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
-
-;; Enter multiple-cursors-mode
-(defun custom/rectangular-region-multiple-cursors ()
-  (interactive)
-  (rrm/switch-to-multiple-cursors)
-  (deactivate-mark))
-
-(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
-
-;; Exit rectangular-region-mode
-(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
-(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
-
-;; Multiple cursor rectangle definition mouse event
-(defun custom/smart-mouse-rectangle (start-event)
-  (interactive "e")
-  (deactivate-mark)
-  (mouse-set-point start-event)
-  (set-rectangular-region-anchor)
-  (rectangle-mark-mode +1)
-  (let ((drag-event))
-    (track-mouse
-      (while (progn
-               (setq drag-event (read-event))
-               (mouse-movement-p drag-event))
-        (mouse-set-point drag-event)))))
-
-(global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
-
-(defun custom/smart-comment ()
-  "Comments out the current line if no region is selected.
-If the cursor stands on an opening parenthesis and Emacs Lisp 
-mode is active, the region of the corresponding s expression 
-is selected and commented out.
-If a region is selected, it comments out the region, from 
-the start of the top line of the region, to the end to its 
-last line."
-  (interactive)
-  (let (beg end)
-    (if (region-active-p)
-
-	;; If the beginning and end of the region are in
-	;; the same line, select entire line
-	(if (= (count-lines (region-beginning) (region-end)) 1)
-	    (setq beg (line-beginning-position) end (line-end-position))
-	  ;; Else, select region from the start of its first
-	  ;; line to the end of its last.
-          (setq beg (save-excursion (goto-char (region-beginning)) (line-beginning-position))
-		end (save-excursion (goto-char (region-end)) (line-end-position))))
-      
-      ;; Else, select line
-      (setq beg (line-beginning-position) end (line-end-position)))
-
-
-    ;; Comment or uncomment region
-    ;; If Org Mode is active
-    (if (custom/in-mode "org-mode")
-	(if (org-in-src-block-p)
-	    ;; Manage Org Babel misbehavior with comment-or-uncomment-region
-	    (org-comment-dwim (custom/active-region beg end))
-	  (comment-or-uncomment-region beg end))
-      ;; Else, proceed regularly
-      (comment-or-uncomment-region beg end))
-
-    ;; Move to the beginning of the next line
-    (move-beginning-of-line 2)))
-
-(global-set-key (kbd "M-;") #'custom/smart-comment)
 
 (global-set-key (kbd "C-`") 'widen)
 
@@ -514,9 +405,6 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
 
-;; LaTeX preview hook
-(add-hook 'org-mode-hook 'org-latex-preview)
-
 ;; SVG LaTeX equation preview
 (setq org-latex-create-formula-image-program 'dvisvgm)
 
@@ -524,6 +412,18 @@ function that sets `deactivate-mark' to t."
 (defun custom/latex-preview-directory ()
   (setq org-preview-latex-image-directory
    (concat config-directory "tmp/" "ltximg/" (custom/current-theme) "/")))
+
+;; Reload LaTeX equation previews
+(defun custom/latex-preview-reload ()
+  "Reload all LaTeX previews in buffer,
+ensuring the LaTeX preview directory
+matches the current theme."
+  (if (custom/in-mode "org-mode")
+      (progn (org-latex-preview '(64))
+	     (custom/latex-preview-directory)
+	     (org-latex-preview '(16)))))
+
+(add-hook 'org-mode-hook #'custom/latex-preview-reload)
 
 ;; org-fragtog
 (use-package org-fragtog)
@@ -704,6 +604,7 @@ folded."
 
 (require 'theme (concat config-directory "theme.el"))
 
+;; Theme-agnostic enabling hook
 (defvar after-enable-theme-hook nil
    "Normal hook run after enabling a theme.")
 
@@ -711,6 +612,7 @@ folded."
    "Run `after-enable-theme-hook'."
    (run-hooks 'after-enable-theme-hook))
 
+;; enable-theme
 (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
 
 ;; Reload Org Mode
@@ -719,17 +621,6 @@ folded."
       (org-mode)))
 
 (add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
-
-;; LaTeX equation preview directory
-(defun custom/switch-latex-preview-directory ()
-  "Deactivate LaTeX previews in current buffer,
-change LaTeX preview directory and reactivate
-LaTeX previews in current buffer."
-  (org-latex-preview '(4))
-  (custom/latex-preview-directory)
-  (org-latex-preview '(16)))
-
-(add-hook 'after-enable-theme-hook #'custom/switch-latex-preview-directory)
 
 ;; Conclude initialization file
 (provide 'init)
