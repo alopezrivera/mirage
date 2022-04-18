@@ -326,41 +326,61 @@ Jsan djahs djhasbdjkhbsajkd hajkshd jkh $f(x) = b$ kj dlfjas dfklj asd
 
 #+end_src
 
-** Variable pitch
+*** Defaults
 
 #+begin_src emacs-lisp
 
-;; Org hook
-(defun custom/org-mode-setup ()
+;; Tags
+(setq org-modern-tag nil)
 
-  ;; Enter variable pitch mode
-  (variable-pitch-mode 1)
-
-  ;; Enter visual line mode:  wrap long lines at the end of the buffer, as opposed to truncating them
-  (visual-line-mode    1)
-
-  ;; Move through lines as they are displayed in visual-line-mode, as opposed to how they are stored.
-  (setq line-move-visual t)
-
-  ;; Enter indent mode: indent truncated lines appropriately
-  (org-indent-mode     1))
-
-(add-hook 'org-mode-hook #'custom/org-mode-setup)
+;; Priorities
+(setq org-modern-priority nil)
 
 #+end_src
 
-** Centering
+*** Tables
 
 #+begin_src emacs-lisp
 
-;; Center text
-(use-package olivetti
-  :delight olivetti-mode
-  )
+;; Vertical table line width
+(setq org-moder-table-vertical 3)
 
-(add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
+;; Horizontal table line width
+(setq org-modern-table-horizontal 0.1)
 
-(add-hook 'org-mode-hook 'olivetti-mode)
+#+end_src
+
+*** Lists
+
+#+begin_src emacs-lisp
+
+(setq org-modern-list '((?+ . "-")
+			      (?- . "•")
+			      (?* . "▶")))
+
+#+end_src
+
+** variable-pitch
+
+#+begin_src emacs-lisp
+
+;; (add-hook 'org-mode-hook (lambda () (variable-pitch-mode 1)))
+
+#+end_src
+
+** visual-line
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+#+end_src
+
+** org-indent
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
 
 #+end_src
 
