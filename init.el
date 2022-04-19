@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 
-(setq initial-buffer-choice "/mnt/c/Users/xXY4n/Downloads/emacs/test.org")
+(setq initial-buffer-choice "~/.emacs.d/init.org")
 
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 50))
@@ -216,6 +216,44 @@
 ;; Make ESC quit present window and bury its buffer
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
+(global-set-key (kbd "C-`") 'widen)
+
+;; Undo Tree
+(use-package undo-tree
+  :bind (("M-/" . undo-tree-visualize)
+         :map undo-tree-visualizer-mode-map
+         ("RET" . undo-tree-visualizer-quit)
+         ("ESC" . undo-tree-visualizer-quit))
+  :config
+  (global-undo-tree-mode))
+
+;; Visualize in side buffer
+(defun custom/undo-tree-split-side-by-side (original-function &rest args)
+  "Split undo-tree side-by-side"
+  (let ((split-height-threshold nil)
+        (split-width-threshold 0))
+    (apply original-function args)))
+
+(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
+
+;; ;; Undo tree command
+;; (defun custom/undo-tree ()
+;;   (interactive)
+;;   (undo-tree-visualize))
+
+;; (global-set-key (kbd "M-/") #'custom/undo-tree)
+
+;; Increase kill ring size
+(setq kill-ring-max 200)
+
+;; Copy region with S-left click
+(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
+(global-set-key (kbd "S-<down-mouse-1>")  nil)
+
+;; Paste with mouse right click
+(global-set-key (kbd "<mouse-3>")        'yank)
+(global-set-key (kbd "<down-mouse-3>")    nil)
+
 ;; Unset secondary overlay key bindings
 (global-unset-key [M-mouse-1])
 (global-unset-key [M-drag-mouse-1])
@@ -332,56 +370,25 @@ last line."
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(global-set-key (kbd "C-`") 'widen)
+;; yasnippet
+(use-package yasnippet)
 
-;; Undo Tree
-(use-package undo-tree
-  :bind (("M-/" . undo-tree-visualize)
-         :map undo-tree-visualizer-mode-map
-         ("RET" . undo-tree-visualizer-quit)
-         ("ESC" . undo-tree-visualizer-quit))
-  :config
-  (global-undo-tree-mode))
+(yas-global-mode 1)
 
-;; Visualize in side buffer
-(defun custom/undo-tree-split-side-by-side (original-function &rest args)
-  "Split undo-tree side-by-side"
-  (let ((split-height-threshold nil)
-        (split-width-threshold 0))
-    (apply original-function args)))
-
-(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
-
-;; ;; Undo tree command
-;; (defun custom/undo-tree ()
-;;   (interactive)
-;;   (undo-tree-visualize))
-
-;; (global-set-key (kbd "M-/") #'custom/undo-tree)
-
-;; Increase kill ring size
-(setq kill-ring-max 200)
-
-;; Copy region with S-left click
-(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
-(global-set-key (kbd "S-<down-mouse-1>")  nil)
-
-;; Paste with mouse right click
-(global-set-key (kbd "<mouse-3>")        'yank)
-(global-set-key (kbd "<down-mouse-3>")    nil)
+;; yasnippet-snippets
+(use-package yasnippet-snippets)
 
 (use-package magit)
+
+;; Load Org Mode
+(use-package org
+  :delight org-indent-mode)
 
 ;; List indentation
 (setq-default org-list-indent-offset 1)
 
 ;; Render inline images when opening org files
 (setq org-startup-with-inline-images t)
-
-;; Load Org Mode
-(use-package org
-  :delight org-indent-mode
-  )
 
 ;; Required as of Org 9.2
 (require 'org-tempo)
