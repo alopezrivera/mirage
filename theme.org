@@ -9,10 +9,10 @@
 #+begin_src emacs-lisp
 
 ;; Default face
-(set-face-attribute 'default nil        :font "Fira Code Retina" :height 95)
+(set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
 
 ;; Fixed pitch face
-(set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 85)
+(set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 93)
 
 ;; Variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Latin Modern Roman"  :height 115 :weight 'regular)
