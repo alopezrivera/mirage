@@ -767,6 +767,17 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 ** LaTeX
+*** Header
+
+#+begin_src emacs-lisp
+
+;; Justify equation labels - [fleqn]
+;; Preview page width      - \\setlength{\\textwidth}{10cm}
+(setq org-format-latex-header
+      "\\documentclass[fleqn]{article}\n\\usepackage[usenames]{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]\n\\pagestyle{empty}             % do not remove\n% The settings below are copied from fullpage.sty\n\\setlength{\\textwidth}{10cm}\n\\addtolength{\\textwidth}{-3cm}\n\\setlength{\\oddsidemargin}{1.5cm}\n\\addtolength{\\oddsidemargin}{-2.54cm}\n\\setlength{\\evensidemargin}{\\oddsidemargin}\n\\setlength{\\textheight}{\\paperheight}\n\\addtolength{\\textheight}{-\\headheight}\n\\addtolength{\\textheight}{-\\headsep}\n\\addtolength{\\textheight}{-\\footskip}\n\\addtolength{\\textheight}{-3cm}\n\\setlength{\\topmargin}{1.5cm}\n\\addtolength{\\topmargin}{-2.54cm}")
+
+#+end_src
+
 *** Equation preview format
 
 #+begin_src emacs-lisp
