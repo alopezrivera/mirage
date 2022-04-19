@@ -378,6 +378,20 @@ last line."
 ;; yasnippet-snippets
 (use-package yasnippet-snippets)
 
+;; Require < to load snippet
+(defun custom/<-snippet (_orig-fun &rest args)
+  (interactive)
+  (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+  (print args)
+	(if (not (string-equal line ""))
+	    (if (string-equal (substring line 0 1) "<")
+		(progn (save-excursion (move-beginning-of-line nil)
+				       (right-char 1)
+				       (delete-region (line-beginning-position) (point)))
+		       (apply _orig-fun args)))))
+
+(advice-add 'yas-expand :around #'custom/<-snippet)
+
 (use-package magit)
 
 ;; Load Org Mode
@@ -427,8 +441,8 @@ ensuring the LaTeX preview directory
 matches the current theme."
   (if (custom/in-mode "org-mode")
       (progn (org-latex-preview '(64))
-	     (custom/latex-preview-directory)
-	     (org-latex-preview '(16)))))
+	           (custom/latex-preview-directory)
+		   (org-latex-preview '(16)))))
 
 (add-hook 'org-mode-hook #'custom/latex-preview-reload)
 
