@@ -639,16 +639,7 @@ last line."
 
 #+end_src
 
-*** Snippets
-
-#+begin_src emacs-lisp
-
-;; yasnippet-snippets
-(use-package yasnippet-snippets)
-
-#+end_src
-
-*** Require < to load snippet
+*** <
 
 #+begin_src emacs-lisp
 
@@ -665,6 +656,15 @@ last line."
 		       (apply _orig-fun args)))))
 
 (advice-add 'yas-expand :around #'custom/<-snippet)
+
+#+end_src
+
+*** Snippets
+
+#+begin_src emacs-lisp
+
+;; yasnippet-snippets
+(use-package yasnippet-snippets)
 
 #+end_src
 
