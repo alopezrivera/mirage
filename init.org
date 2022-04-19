@@ -408,6 +408,67 @@
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 #+end_src
+* Writing
+** Narrowing
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-`") 'widen)
+
+#+end_src
+** Undo, Redo
+*** Undo Tree
+
+#+begin_src emacs-lisp
+
+;; Undo Tree
+(use-package undo-tree
+  :bind (("M-/" . undo-tree-visualize)
+         :map undo-tree-visualizer-mode-map
+         ("RET" . undo-tree-visualizer-quit)
+         ("ESC" . undo-tree-visualizer-quit))
+  :config
+  (global-undo-tree-mode))
+
+;; Visualize in side buffer
+(defun custom/undo-tree-split-side-by-side (original-function &rest args)
+  "Split undo-tree side-by-side"
+  (let ((split-height-threshold nil)
+        (split-width-threshold 0))
+    (apply original-function args)))
+
+(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
+
+;; ;; Undo tree command
+;; (defun custom/undo-tree ()
+;;   (interactive)
+;;   (undo-tree-visualize))
+
+;; (global-set-key (kbd "M-/") #'custom/undo-tree)
+
+#+end_src
+
+*** Kill Ring Size
+
+#+begin_src emacs-lisp
+
+;; Increase kill ring size
+(setq kill-ring-max 200)
+
+#+end_src
+** Cut, Copy, Paste
+
+#+begin_src emacs-lisp
+
+;; Copy region with S-left click
+(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
+(global-set-key (kbd "S-<down-mouse-1>")  nil)
+
+;; Paste with mouse right click
+(global-set-key (kbd "<mouse-3>")        'yank)
+(global-set-key (kbd "<down-mouse-3>")    nil)
+
+#+end_src
 * Coding
 ** Navigation
 *** Defaults
@@ -566,65 +627,17 @@ last line."
 
 #+end_src
 
-* Writing
-** Narrowing
+* Templates
 
 #+begin_src emacs-lisp
 
-(global-set-key (kbd "C-`") 'widen)
+;; yasnippet
+(use-package yasnippet)
 
-#+end_src
-** Undo, Redo
-*** Undo Tree
+(yas-global-mode 1)
 
-#+begin_src emacs-lisp
-
-;; Undo Tree
-(use-package undo-tree
-  :bind (("M-/" . undo-tree-visualize)
-         :map undo-tree-visualizer-mode-map
-         ("RET" . undo-tree-visualizer-quit)
-         ("ESC" . undo-tree-visualizer-quit))
-  :config
-  (global-undo-tree-mode))
-
-;; Visualize in side buffer
-(defun custom/undo-tree-split-side-by-side (original-function &rest args)
-  "Split undo-tree side-by-side"
-  (let ((split-height-threshold nil)
-        (split-width-threshold 0))
-    (apply original-function args)))
-
-(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
-
-;; ;; Undo tree command
-;; (defun custom/undo-tree ()
-;;   (interactive)
-;;   (undo-tree-visualize))
-
-;; (global-set-key (kbd "M-/") #'custom/undo-tree)
-
-#+end_src
-
-*** Kill Ring Size
-
-#+begin_src emacs-lisp
-
-;; Increase kill ring size
-(setq kill-ring-max 200)
-
-#+end_src
-** Cut, Copy, Paste
-
-#+begin_src emacs-lisp
-
-;; Copy region with S-left click
-(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
-(global-set-key (kbd "S-<down-mouse-1>")  nil)
-
-;; Paste with mouse right click
-(global-set-key (kbd "<mouse-3>")        'yank)
-(global-set-key (kbd "<down-mouse-3>")    nil)
+;; yasnippet-snippets
+(use-package yasnippet-snippets)
 
 #+end_src
 
@@ -678,6 +691,7 @@ last line."
 (add-to-list 'org-structure-template-alist '("py"  . "src python"))
 
 #+end_src
+
 ** Keep text selection after executing commands
 
 #+begin_src emacs-lisp
