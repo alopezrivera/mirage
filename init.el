@@ -1,10 +1,18 @@
 ;;; -*- lexical-binding: t; -*-
 
-(setq initial-buffer-choice "~/.emacs.d/init.org")
-
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 50))
 (add-to-list 'default-frame-alist '(width  . 70))
+
+;; Initial buffer
+(setq initial-buffer-choice "/mnt/c/Users/xXY4n/Downloads/emacs/test.org")
+
+;; Background buffers
+(defun custom/background-buffers ()
+  (cl-loop for buffer in '("~/.emacs.d/init.org")
+	   collect (find-file-noselect buffer)))
+
+(add-hook 'after-init-hook #'custom/background-buffers)
 
 ;; Default directory
 (setq default-directory "~/.emacs.d/")
@@ -407,9 +415,16 @@ last line."
 ;; Required as of Org 9.2
 (require 'org-tempo)
 
-(add-to-list 'org-structure-template-alist '("sh"  . "src shell"))
-(add-to-list 'org-structure-template-alist '("el"  . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py"  . "src python"))
+;; LaTeX structure templates
+(tempo-define-template "org-tempo-"
+		             '("#+NAME: eq:1" p "\n\\begin{equation}\n\\end{equation}" >)
+			     "<eq"
+			     "LaTeX equation template")
+
+;; Code block structure templates
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
 
 (defun custom/with-mark-active (&rest args)
   "Keep mark active after command. To be used as advice AFTER any
@@ -425,6 +440,11 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaleft  :after #'custom/with-mark-active)
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
+
+;; Justify equation labels - [fleqn]
+;; Preview page width      - \\setlength{\\textwidth}{10cm}
+(setq org-format-latex-header
+      "\\documentclass[fleqn]{article}\n\\usepackage[usenames]{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]\n\\pagestyle{empty}             % do not remove\n% The settings below are copied from fullpage.sty\n\\setlength{\\textwidth}{10cm}\n\\addtolength{\\textwidth}{-3cm}\n\\setlength{\\oddsidemargin}{1.5cm}\n\\addtolength{\\oddsidemargin}{-2.54cm}\n\\setlength{\\evensidemargin}{\\oddsidemargin}\n\\setlength{\\textheight}{\\paperheight}\n\\addtolength{\\textheight}{-\\headheight}\n\\addtolength{\\textheight}{-\\headsep}\n\\addtolength{\\textheight}{-\\footskip}\n\\addtolength{\\textheight}{-3cm}\n\\setlength{\\topmargin}{1.5cm}\n\\addtolength{\\topmargin}{-2.54cm}")
 
 ;; SVG LaTeX equation preview
 (setq org-latex-create-formula-image-program 'dvisvgm)
@@ -445,6 +465,49 @@ matches the current theme."
 		   (org-latex-preview '(16)))))
 
 (add-hook 'org-mode-hook #'custom/latex-preview-reload)
+
+;; Continuous numbering of Org Mode equations
+(defun org-renumber-environment (orig-func &rest args)
+  (let ((results '()) 
+        (counter -1)
+        (numberp))
+
+    (setq results (cl-loop for (begin .  env) in 
+                        (org-element-map (org-element-parse-buffer) 'latex-environment
+                          (lambda (env)
+                            (cons
+                             (org-element-property :begin env)
+                             (org-element-property :value env))))
+                        collect
+                        (cond
+                         ((and (string-match "\\\\begin{equation}" env)
+                               (not (string-match "\\\\tag{" env)))
+                          (cl-incf counter)
+                          (cons begin counter))
+                         ((string-match "\\\\begin{align}" env)
+                          (prog2
+                              (incf counter)
+                              (cons begin counter)                          
+                            (with-temp-buffer
+                              (insert env)
+                              (goto-char (point-min))
+                              ;; \\ is used for a new line. Each one leads to a number
+                              (incf counter (count-matches "\\\\$"))
+                              ;; unless there are nonumbers.
+                              (goto-char (point-min))
+                              (decf counter (count-matches "\\nonumber")))))
+                         (t
+                          (cons begin nil)))))
+
+    (when (setq numberp (cdr (assoc (point) results)))
+      (setf (car args)
+            (concat
+             (format "\\setcounter{equation}{%s}\n" numberp)
+             (car args)))))
+  
+  (apply orig-func args))
+
+(advice-add 'org-create-formula-image :around #'org-renumber-environment)
 
 ;; org-fragtog
 (use-package org-fragtog)

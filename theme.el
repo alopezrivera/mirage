@@ -1,11 +1,11 @@
 ;; Default face
-(set-face-attribute 'default nil        :font "Fira Code Retina" :height 85)
+(set-face-attribute 'default nil        :font "Fira Code Retina" :height 95)
 
 ;; Fixed pitch face
 (set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 85)
 
 ;; Variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Latin Modern Roman"  :height 95 :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Latin Modern Roman"  :height 115 :weight 'regular)
 
 ;; Title face
 (setq title-typeface "Century Gothic")
@@ -66,14 +66,14 @@
   (with-eval-after-load 'org-faces
 
     ;; Heading font sizes
-    (dolist (face '((org-level-1 . 1.5)
-                    (org-level-2 . 1.3)
-                    (org-level-3 . 1.2)
-                    (org-level-4 . 1.1)
-                    (org-level-5 . 1.1)
-                    (org-level-6 . 1.1)
-                    (org-level-7 . 1.1)
-                    (org-level-8 . 1.1)))
+    (dolist (face '((org-level-1 . 1.6)
+                    (org-level-2 . 1.4)
+                    (org-level-3 . 1.3)
+                    (org-level-4 . 1.2)
+                    (org-level-5 . 1.2)
+                    (org-level-6 . 1.2)
+                    (org-level-7 . 1.2)
+                    (org-level-8 . 1.2)))
          (set-face-attribute (car face) nil :font heading-typeface :weight 'regular :height (cdr face)))))
 
 (add-hook 'org-mode-hook #'custom/org-header-setup)
@@ -230,9 +230,9 @@
 
 ;; (add-hook 'org-mode-hook (lambda () (variable-pitch-mode 1)))
 
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
 (add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
 
 ;; Title keyword
 (setq org-hidden-keywords '(title))
