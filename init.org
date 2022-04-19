@@ -15,7 +15,7 @@
 
 #+begin_src emacs-lisp
 
-(setq initial-buffer-choice "~/.emacs.d/theme.org")
+(setq initial-buffer-choice "~/.emacs.d/init.org")
 
 #+end_src
 
