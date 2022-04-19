@@ -375,9 +375,6 @@ last line."
 
 (yas-global-mode 1)
 
-;; yasnippet-snippets
-(use-package yasnippet-snippets)
-
 ;; Require < to load snippet
 (defun custom/<-snippet (_orig-fun &rest args)
   (interactive)
@@ -391,6 +388,9 @@ last line."
 		       (apply _orig-fun args)))))
 
 (advice-add 'yas-expand :around #'custom/<-snippet)
+
+;; yasnippet-snippets
+(use-package yasnippet-snippets)
 
 (use-package magit)
 
