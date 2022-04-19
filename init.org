@@ -721,9 +721,28 @@ last line."
 ;; Required as of Org 9.2
 (require 'org-tempo)
 
-(add-to-list 'org-structure-template-alist '("sh"  . "src shell"))
-(add-to-list 'org-structure-template-alist '("el"  . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py"  . "src python"))
+#+end_src
+
+*** LaTeX
+
+#+begin_src emacs-lisp
+
+;; LaTeX structure templates
+(tempo-define-template "org-tempo-"
+		             '("#+NAME: eq:1" p "\n\\begin{equation}\n\\end{equation}" >)
+			     "<eq"
+			     "LaTeX equation template")
+
+#+end_src
+
+*** Code blocks
+
+#+begin_src emacs-lisp
+
+;; Code block structure templates
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
 
 #+end_src
 
