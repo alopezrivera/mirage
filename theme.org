@@ -352,19 +352,19 @@
 
 #+end_src
 
-** visual-line
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
-#+end_src
-
 ** org-indent
 
 #+begin_src emacs-lisp
 
 (add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
+
+#+end_src
+
+** visual-line
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
 
 #+end_src
 
