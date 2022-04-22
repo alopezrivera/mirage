@@ -1,5 +1,6 @@
-* Bash
-** Transform all files in directory from DOS to Unix
+#+title:DRAFTS
+
+* Transform all files in directory from DOS to Unix
 
 #+begin_src emacs-lisp
 
@@ -144,48 +145,5 @@
   ;;   :after (treemacs)
   ;;   :ensure t
   ;;   :config (treemacs-set-scope-type 'Tabs))
-
-#+end_src
-* archive
-** org-superstar
-
-#+begin_src emacs-lisp
-
-;; Install org-superstar
-(use-package org-superstar)
-
-(require 'org-superstar)
-
-;; Hook to Org Mode
-(add-hook 'org-indent-mode-hook (lambda () (org-superstar-mode 1)))
-
-#+end_src
-
-*** Headers
-
-#+begin_src emacs-lisp
-
-;; Headers
-(setq org-superstar-headline-bullets-list
-      '("◉" "▷" "○" "●" "○" "●" "○" "●"))
-
-;; Do not cycle header markers
-(setq org-superstar-cycle-headline-bullets nil)
-
-#+end_src
-
-*** Lists
-
-#+begin_src emacs-lisp
-
-;; Set custom bullet points
-(setq
- org-superstar-item-bullet-alist
- '((42 . ">")
-   (43 . "○")
-   (45 . "●")))
-
-;; Set custom bullet point height
-(set-face-attribute 'org-superstar-item nil :inherit 'fixed-pitch :height 90)
 
 #+end_src

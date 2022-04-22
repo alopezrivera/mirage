@@ -1,0 +1,74 @@
+#+title:ARCHIVE
+
+** use-package
+
+#+begin_src emacs-lisp
+
+;; Initialize package sources
+(require 'package)
+;; 
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			       ("org"   . "https://orgmode.org/elpa/")
+			       ("elpa"  . "https://elpa.gnu.org/packages/")))
+(package-initialize)
+;; 
+;; Ensure use-package is installed
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+;; 
+;; use-package
+(require 'use-package)
+;; 
+;; If true, Emacs will attempt to download packages in use-package declarations
+(setq use-package-always-ensure t)
+;; 
+#+end_src
+
+#+begin_src emacs-lisp :tangle nil
+
+;; Update package database
+(package-refresh-contents)
+
+#+end_src
+** org-superstar
+
+#+begin_src emacs-lisp
+
+;; Install org-superstar
+(use-package org-superstar)
+
+(require 'org-superstar)
+
+;; Hook to Org Mode
+(add-hook 'org-indent-mode-hook (lambda () (org-superstar-mode 1)))
+
+#+end_src
+
+*** Headers
+
+#+begin_src emacs-lisp
+
+;; Headers
+(setq org-superstar-headline-bullets-list
+      '("◉" "▷" "○" "●" "○" "●" "○" "●"))
+
+;; Do not cycle header markers
+(setq org-superstar-cycle-headline-bullets nil)
+
+#+end_src
+
+*** Lists
+
+#+begin_src emacs-lisp
+
+;; Set custom bullet points
+(setq
+ org-superstar-item-bullet-alist
+ '((42 . ">")
+   (43 . "○")
+   (45 . "●")))
+
+;; Set custom bullet point height
+(set-face-attribute 'org-superstar-item nil :inherit 'fixed-pitch :height 90)
+
+#+end_src
