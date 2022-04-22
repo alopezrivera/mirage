@@ -237,24 +237,24 @@
 
 #+end_src
 
-** Line numbers
+** Centering
 
 #+begin_src emacs-lisp
 
-;; Line numbers: display globally
-(global-display-line-numbers-mode t)
+;; Center text
+(use-package olivetti
+  :delight olivetti-mode
+  )
 
-;; Display column number
-(column-number-mode)
+(add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
 
-;; Exceptions
-(dolist (mode '(pdf-view-mode
-		    org-mode-hook
-		    term-mode-hook
-		    shell-mode-hook
-		    eshell-mode-hook
-		    undo-tree-visualizer-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+;; Normal modes
+(dolist (mode '(org-mode-hook
+		    magit-mode-hook))
+  (add-hook mode 'olivetti-mode))
+
+;; Programming modes
+(add-hook 'prog-mode-hook 'olivetti-mode)
 
 #+end_src
 

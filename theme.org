@@ -296,24 +296,6 @@
 
 #+end_src
 
-** Centering
-
-#+begin_src emacs-lisp
-
-;; Center text
-(use-package olivetti
-  :delight olivetti-mode
-  )
-
-(add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
-
-;; 
-(dolist (mode '(org-mode-hook
-		    magit-mode-hook))
-  (add-hook mode 'olivetti-mode))
-
-#+end_src
-
 * Org Mode
 ** org-modern
 
