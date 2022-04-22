@@ -56,34 +56,31 @@
 #+end_src
 
 ** Package management
+*** straight.el
+
+#+begin_src emacs-lisp
+
+;; straight
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+#+end_src
+
 *** use-package
 
 #+begin_src emacs-lisp
 
-;; Initialize package sources
-(require 'package)
-
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			       ("org"   . "https://orgmode.org/elpa/")
-			       ("elpa"  . "https://elpa.gnu.org/packages/")))
-(package-initialize)
-
-;; Ensure use-package is installed
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-;; use-package
-(require 'use-package)
-
-;; If true, Emacs will attempt to download packages in use-package declarations
-(setq use-package-always-ensure t)
-
-#+end_src
-
-#+begin_src emacs-lisp :tangle nil
-
-;; Update package database
-(package-refresh-contents)
+(straight-use-package 'use-package)
 
 #+end_src
 
