@@ -98,7 +98,17 @@
 
 #+end_src
 
+** Configuration management
+*** Debugging
+
+#+begin_src emacs-lisp
+
+(setq debug-on-error t)
+
+#+end_src
+
 ** General purpose functions
+
 *** <>
 
 #+begin_src emacs-lisp
@@ -443,9 +453,9 @@ buffer is already narrowed, widen buffer."
 (defvar custom/double-home-timeout 0.4)
 
 (defun custom/home ()
-  "Move to indentation. If the command is repeated within 
-`custom/double-home-timeout' seconds, move to beginning
-of line."
+  "Move to indentation. If the command is repeated 
+within `custom/double-home-timeout' seconds, move to
+`beginning-of-visual-line'."
   (interactive)
   (let ((last-called (get this-command 'custom/last-call-time)))
     (if (and (eq last-command this-command)
@@ -455,6 +465,29 @@ of line."
   (put this-command 'custom/last-call-time (current-time)))
 
 (global-set-key (kbd "<home>") 'custom/home)
+
+#+end_src
+
+*** End
+
+#+begin_src emacs-lisp
+
+;; Double end to go to the beginning of line
+(defvar custom/double-end-timeout 0.4)
+
+(defun custom/end ()
+  "Move to end of visual line. If the command is repeated 
+within `custom/double-end-timeout' seconds, move to end
+of line."
+  (interactive)
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (and (eq last-command this-command)
+             (<= (time-to-seconds (time-since last-called)) custom/double-end-timeout))
+        (progn (beginning-of-visual-line) (end-of-line))
+      (end-of-visual-line)))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(global-set-key (kbd "<end>") 'custom/end)
 
 #+end_src
 
