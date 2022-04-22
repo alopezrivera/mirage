@@ -228,8 +228,6 @@ buffer is already narrowed, widen buffer."
 ;; Double home to go to the beginning of line
 (defvar custom/double-home-timeout 0.4)
 
-(print custom/double-home-timeout)
-
 (defun custom/home ()
   "Move to indentation. If the command is repeated within 
 `custom/double-home-timeout' seconds, move to beginning
@@ -304,11 +302,26 @@ mark if a region is active."
     (if (region-active-p)
 	      (deactivate-mark))))
 
-;; Make ESC quit present window and bury its buffer
-(global-set-key (kbd "<escape>") 'custom/escape-window-or-region)
-
 ;; Minibuffer escape
 (add-hook 'minibuffer-setup-hook (lambda () (local-set-key (kbd "<escape>") 'minibuffer-keyboard-quit)))
+
+;; Global double escape
+(defvar custom/double-escape-timeout 0.4)
+
+(defun custom/escape ()
+  "Execute `custom/escape-window-or-region'. If the command 
+is repeated within `custom/double-escape-timeout' seconds, 
+kill the current buffer and delete its window."
+  (interactive)
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (and (eq last-command this-command)
+             (<= (time-to-seconds (time-since last-called)) custom/double-escape-timeout))
+        (progn (kill-buffer)
+	             (delete-window))
+      (custom/escape-window-or-region)))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(global-set-key (kbd "<escape>") 'custom/escape)
 
 (global-set-key (kbd "C-`") 'widen)
 
