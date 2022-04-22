@@ -155,6 +155,17 @@
 
 #+end_src
 
+*** current-line-empty
+
+#+begin_src emacs-lisp
+
+(defun custom/current-line-empty ()
+  (save-excursion
+    (beginning-of-line)
+    (looking-at-p "[[:blank:]]*$")))
+
+#+end_src
+
 *** current-window-number
 
 #+begin_src emacs-lisp
