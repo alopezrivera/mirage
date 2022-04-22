@@ -546,11 +546,11 @@ mark if a region is active."
   (global-undo-tree-mode))
 
 ;; Visualize in side buffer
-(defun custom/undo-tree-split-side-by-side (original-function &rest args)
+(defun custom/undo-tree-split-side-by-side (orig-fun &rest args)
   "Split undo-tree side-by-side"
   (let ((split-height-threshold nil)
         (split-width-threshold 0))
-    (apply original-function args)))
+    (apply orig-fun args)))
 
 (advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
 
@@ -610,8 +610,8 @@ mark if a region is active."
 ;; Multiple cursors
 (use-package multiple-cursors
   :bind (("C-."         . mc/mark-next-like-this)
-	 ("C-;"         . mc/mark-previous-like-this)
-	 ("C-<mouse-1>" . mc/add-cursor-on-click))
+	       ("C-;"         . mc/mark-previous-like-this)
+	       ("C-<mouse-1>" . mc/add-cursor-on-click))
   )
 
 ;; Load package
@@ -722,6 +722,7 @@ last line."
 (global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
 
 #+end_src
+
 ** Emacs Lisp
 *** Buffer evaluation
 
@@ -759,7 +760,7 @@ last line."
 #+begin_src emacs-lisp
 
 ;; Require < to load snippet
-(defun custom/<-snippet (_orig-fun &rest args)
+(defun custom/<-snippet (orig-fun &rest args)
   (interactive)
   (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
   (print args)
@@ -768,7 +769,7 @@ last line."
 		(progn (save-excursion (move-beginning-of-line nil)
 				       (right-char 1)
 				       (delete-region (line-beginning-position) (point)))
-		       (apply _orig-fun args)))))
+		       (apply orig-fun args)))))
 
 (advice-add 'yas-expand :around #'custom/<-snippet)
 
@@ -928,7 +929,7 @@ matches the current theme."
 #+begin_src emacs-lisp
 
 ;; Continuous numbering of Org Mode equations
-(defun org-renumber-environment (orig-func &rest args)
+(defun org-renumber-environment (orig-fun &rest args)
   (let ((results '()) 
         (counter -1)
         (numberp))
@@ -966,7 +967,7 @@ matches the current theme."
              (format "\\setcounter{equation}{%s}\n" numberp)
              (car args)))))
   
-  (apply orig-func args))
+  (apply orig-fun args))
 
 (advice-add 'org-create-formula-image :around #'org-renumber-environment)
 
