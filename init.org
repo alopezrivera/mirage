@@ -912,58 +912,64 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
-** Lists
+** Startup
 
 #+begin_src emacs-lisp
 
-;; List indentation
-(setq-default org-list-indent-offset 1)
-
-#+end_src
-
-** Inline images
-*** Startup
-
-#+begin_src emacs-lisp
-
-;; Render inline images when opening org files
+;; Startup with inline images
 (setq org-startup-with-inline-images t)
 
 #+end_src
 
-** Structure templates
+** Editing
+*** org-return
 
 #+begin_src emacs-lisp
 
-;; Required as of Org 9.2
-(require 'org-tempo)
+;; org-return
+(defun custom/org-return ()
+  "`org-meta-return' unless in an
+empty list item."
+  (interactive)
+  (if (custom/current-line-empty-bullet)
+      (progn (org-return)
+		   (move-beginning-of-line nil))
+    (progn (org-return)
+	         (org-cycle))))
+
+(define-key org-mode-map (kbd "<return>") #'custom/org-return)
 
 #+end_src
 
-*** LaTeX
+*** org-meta-return
 
 #+begin_src emacs-lisp
 
-;; LaTeX structure templates
-(tempo-define-template "org-tempo-"
-		             '("#+NAME: eq:1" p "\n\\begin{equation}\n\\end{equation}" >)
-			     "<eq"
-			     "LaTeX equation template")
+;; org-meta-return
+(defun custom/org-meta-return ()
+  "`org-meta-return' unless in an
+empty list item."
+  (interactive)
+  (if (custom/current-line-empty-bullet)
+      (progn (org-meta-return)
+	           (next-line)
+		   (move-end-of-line nil))
+    (org-meta-return)))
+
+(define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
 #+end_src
 
-*** Code blocks
+*** Insert heading respecting content
 
 #+begin_src emacs-lisp
 
-;; Code block structure templates
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py" . "src python"))
+;; Insert heading after current tree
+(define-key org-mode-map (kbd "S-<return>") 'org-insert-heading-respect-content)
 
 #+end_src
 
-** Keep text selection after executing commands
+*** Keep text selection after executing commands
 
 #+begin_src emacs-lisp
 
