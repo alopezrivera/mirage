@@ -151,10 +151,25 @@
 
 #+end_src
 
+*** current-window-number
+
+#+begin_src emacs-lisp
+
+(defun custom/current-window-number ()
+  "Retrieve the current window's number."
+  (setq window (prin1-to-string (get-buffer-window (current-buffer))))
+  (string-match "^[^0-9]*\\([0-9]+\\)[^0-9]*$" window)
+  (match-string 1 window))
+
+#+end_src
+
 * Display
 ** Defaults
 
 #+begin_src emacs-lisp
+
+;; Frame name
+(setq-default frame-title-format '("Emacs [%m] %b"))
 
 ;; Inhibit startup message
 (setq inhibit-startup-message t)
