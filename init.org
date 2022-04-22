@@ -20,19 +20,23 @@
 (add-to-list 'default-frame-alist '(width  . 70))
 
 #+end_src
+
 *** Buffers
 
 #+begin_src emacs-lisp
 
 ;; Initial buffer
-(setq initial-buffer-choice "/mnt/c/Users/xXY4n/Downloads/emacs/test.org")
+(setq initial-buffer-choice nil)
 
-;; Background buffers
-(defun custom/background-buffers ()
-  (cl-loop for buffer in '("~/.emacs.d/init.org")
+;; Buffers opened at startup
+(defvar custom/background-buffers
+  '("~/.emacs.d/init.org" "/mnt/c/Users/xXY4n/Downloads/emacs/test.org"))
+
+(defun custom/spawn-background-buffers ()
+  (cl-loop for buffer in custom/background-buffers
 	   collect (find-file-noselect buffer)))
 
-(add-hook 'after-init-hook #'custom/background-buffers)
+(add-hook 'after-init-hook #'custom/spawn-background-buffers)
 
 #+end_src
 
