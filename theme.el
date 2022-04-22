@@ -219,10 +219,10 @@
 (setq org-modern-priority nil)
 
 ;; Vertical table line width
-(setq org-moder-table-vertical 3)
+(setq org-modern-table-vertical 1)
 
 ;; Horizontal table line width
-(setq org-modern-table-horizontal 0.1)
+(setq org-modern-table-horizontal 1)
 
 (setq org-modern-list '((?+ . "-")
 			      (?- . "•")

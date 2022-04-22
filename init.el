@@ -20,23 +20,21 @@
 ;; Config directory
 (setq config-directory "~/.emacs.d/")
 
-;; Initialize package sources
-(require 'package)
+;; straight
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			       ("org"   . "https://orgmode.org/elpa/")
-			       ("elpa"  . "https://elpa.gnu.org/packages/")))
-(package-initialize)
-
-;; Ensure use-package is installed
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-;; use-package
-(require 'use-package)
-
-;; If true, Emacs will attempt to download packages in use-package declarations
-(setq use-package-always-ensure t)
+(straight-use-package 'use-package)
 
 ;; Customize interface code blocks
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -67,6 +65,15 @@
 ;; Retrieve current theme
 (defun custom/current-theme ()
   (substring (format "%s" (nth 0 custom-enabled-themes))))
+
+(defun custom/current-window-number ()
+  "Retrieve the current window's number."
+  (setq window (prin1-to-string (get-buffer-window (current-buffer))))
+  (string-match "^[^0-9]*\\([0-9]+\\)[^0-9]*$" window)
+  (match-string 1 window))
+
+;; Frame name
+(setq-default frame-title-format '("Emacs [%m] %b"))
 
 ;; Inhibit startup message
 (setq inhibit-startup-message t)
@@ -134,22 +141,43 @@
 (define-key global-map (kbd "C-s") #'custom/smart-search)
 
 (defun custom/narrow-and-search (beg end)
+  "Narrow to region and trigger swiper search."
   (narrow-to-region beg end)
   (deactivate-mark)
   (swiper-isearch))
 
 (defun custom/search-in-region (beg end)
+  "Narrow and search active region. If the current
+buffer is already narrowed, widen buffer."
   (interactive (if (use-region-p)
                    (list (region-beginning) (region-end))
                  (list nil nil)))
-  (if (and beg end)
-      (custom/narrow-and-search beg end)
-    (swiper-isearch)))
+  (if (not (buffer-narrowed-p))
+      (if (and beg end)
+	  (progn (custom/narrow-and-search beg end)))
+    (progn (widen)
+	   (if (bound-and-true-p multiple-cursors-mode)
+	       (mc/disable-multiple-cursors-mode)))))
 
-(define-key global-map (kbd "C-x C-x") #'custom/search-in-region)
+(defun custom/swiper-exit-narrow-search ()
+  (interactive)
+  (minibuffer-keyboard-quit)
+  (if (buffer-narrowed-p)
+      (widen)))
+
+;; Narrow search
+(define-key global-map (kbd "C-r") #'custom/search-in-region)
+
+;; Exit narrow search from swiper
+(define-key swiper-map (kbd "C-e") #'custom/swiper-exit-narrow-search)
+
+(defun custom/swiper-multiple-cursors ()
+  (interactive)
+  (swiper-mc)
+  (minibuffer-keyboard-quit))
 
 ;; M-RET: multiple-cursors-mode
-(define-key swiper-map (kbd "M-<return>") 'swiper-mc)
+(define-key swiper-map (kbd "M-<return>") 'custom/swiper-multiple-cursors)
 
 ;; Ivy completion framework
 (use-package counsel)
@@ -197,8 +225,24 @@
   :delight command-log-mode)
 (global-command-log-mode)
 
-;; Return to indentation
-(global-set-key (kbd "S-<home>") 'back-to-indentation)
+;; Double home to go to the beginning of line
+(defvar custom/double-home-timeout 0.4)
+
+(print custom/double-home-timeout)
+
+(defun custom/home ()
+  "Move to indentation. If the command is repeated within 
+`custom/double-home-timeout' seconds, move to beginning
+of line."
+  (interactive)
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (and (eq last-command this-command)
+             (<= (time-to-seconds (time-since last-called)) custom/double-home-timeout))
+        (beginning-of-visual-line)
+      (back-to-indentation)))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(global-set-key (kbd "<home>") 'custom/home)
 
 ;; Counsel buffer switching
 (global-set-key (kbd "C-x b") 'counsel-switch-buffer)
@@ -221,8 +265,50 @@
 ;; Create new frame
 (global-set-key (kbd "C-S-n") 'make-frame-command)
 
+;; Record last sent message
+(defvar last-message nil)
+(defadvice message (after my-message pre act) (setq last-message ad-return-value))
+
+(defun custom/undefined-override (orig-fun &rest args)
+  "Override `undefined' function to suppress
+undefined key binding messages when interrupting
+key binding input with C-g."
+  (let ((inhibit-message t)
+	      (message-log-max nil))
+    (progn (apply orig-fun args)
+	         (setq _message last-message)))
+  ;; (print (type-of message))
+  (if (string-match-p (regexp-quote "C-g is undefined") _message)
+      (keyboard-quit)
+    (message _message)))
+
+;; Override the undefined key binding notice with a keyboard-quit
+(advice-add 'undefined :around #'custom/undefined-override)
+
+(defun custom/escape-window-or-region ()
+  "Set course of action based current window.
+
+If the window is dedicated, `quit-window'.
+If the dedicated window is not deleted by 
+`quit-window' (such as for `command-log-mode'),
+proceed to `delete-window'.
+
+If the window is not dedicated, deactivate
+mark if a region is active."
+  (interactive)
+  (setq escaped-window (custom/current-window-number))  
+  (if (window-dedicated-p (get-buffer-window (current-buffer)))
+      (progn (quit-window)
+	           (if (string-equal escaped-window (custom/current-window-number))
+		       (delete-window)))
+    (if (region-active-p)
+	      (deactivate-mark))))
+
 ;; Make ESC quit present window and bury its buffer
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "<escape>") 'custom/escape-window-or-region)
+
+;; Minibuffer escape
+(add-hook 'minibuffer-setup-hook (lambda () (local-set-key (kbd "<escape>") 'minibuffer-keyboard-quit)))
 
 (global-set-key (kbd "C-`") 'widen)
 
@@ -236,11 +322,11 @@
   (global-undo-tree-mode))
 
 ;; Visualize in side buffer
-(defun custom/undo-tree-split-side-by-side (original-function &rest args)
+(defun custom/undo-tree-split-side-by-side (orig-fun &rest args)
   "Split undo-tree side-by-side"
   (let ((split-height-threshold nil)
         (split-width-threshold 0))
-    (apply original-function args)))
+    (apply orig-fun args)))
 
 (advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
 
@@ -276,8 +362,8 @@
 ;; Multiple cursors
 (use-package multiple-cursors
   :bind (("C-."         . mc/mark-next-like-this)
-	 ("C-;"         . mc/mark-previous-like-this)
-	 ("C-<mouse-1>" . mc/add-cursor-on-click))
+	       ("C-;"         . mc/mark-previous-like-this)
+	       ("C-<mouse-1>" . mc/add-cursor-on-click))
   )
 
 ;; Load package
@@ -384,7 +470,7 @@ last line."
 (yas-global-mode 1)
 
 ;; Require < to load snippet
-(defun custom/<-snippet (_orig-fun &rest args)
+(defun custom/<-snippet (orig-fun &rest args)
   (interactive)
   (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
   (print args)
@@ -393,7 +479,7 @@ last line."
 		(progn (save-excursion (move-beginning-of-line nil)
 				       (right-char 1)
 				       (delete-region (line-beginning-position) (point)))
-		       (apply _orig-fun args)))))
+		       (apply orig-fun args)))))
 
 (advice-add 'yas-expand :around #'custom/<-snippet)
 
@@ -467,7 +553,7 @@ matches the current theme."
 (add-hook 'org-mode-hook #'custom/latex-preview-reload)
 
 ;; Continuous numbering of Org Mode equations
-(defun org-renumber-environment (orig-func &rest args)
+(defun org-renumber-environment (orig-fun &rest args)
   (let ((results '()) 
         (counter -1)
         (numberp))
@@ -505,7 +591,7 @@ matches the current theme."
              (format "\\setcounter{equation}{%s}\n" numberp)
              (car args)))))
   
-  (apply orig-func args))
+  (apply orig-fun args))
 
 (advice-add 'org-create-formula-image :around #'org-renumber-environment)
 

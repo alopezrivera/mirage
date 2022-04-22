@@ -27,7 +27,9 @@
 
 (setq mc/cmds-to-run-once
       '(
+	custom/search-in-region
 	custom/smart-search
+	custom/swiper-multiple-cursors
 	eval-last-sexp
 	mouse-drag-mode-line
 	mouse-save-then-kill
