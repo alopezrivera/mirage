@@ -412,7 +412,7 @@ of line."
   (let ((last-called (get this-command 'custom/last-call-time)))
     (if (and (eq last-command this-command)
              (<= (time-to-seconds (time-since last-called)) custom/double-home-timeout))
-        (beginning-of-line)
+        (beginning-of-visual-line)
       (back-to-indentation)))
   (put this-command 'custom/last-call-time (current-time)))
 
