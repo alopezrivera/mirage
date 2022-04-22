@@ -229,7 +229,8 @@
 (column-number-mode)
 
 ;; Exceptions
-(dolist (mode '(org-mode-hook
+(dolist (mode '(pdf-view-mode
+		    org-mode-hook
 		    term-mode-hook
 		    shell-mode-hook
 		    eshell-mode-hook
