@@ -266,10 +266,11 @@
 
 (defun custom/light-modeline ()
   "Mode line for dark themes."
-  (custom/modeline-color "#ededed" "#ededed" "#616161" "#878787"))
+  (custom/modeline-color "#fff0ff" "#ededed" "#616161" "#878787"))
 
 #+end_src
 
+*** Content
 **** Time
 
 #+begin_src emacs-lisp
