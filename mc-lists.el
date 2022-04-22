@@ -13,6 +13,7 @@
 	kill-region
 	org-backward-sentence
 	org-cycle
+	org-end-of-line
 	org-forward-sentence
 	org-meta-return
 	org-metaright

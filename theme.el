@@ -16,6 +16,14 @@
 ;; Mode line
 (set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
 
+(defun custom/dark-line-numbers ()
+  "Line numbers for light themes."
+  (set-face-attribute 'line-number nil :foreground "#cfcfcf" :background "#262626"))
+
+(defun custom/light-line-numbers ()
+  "Line numbers for dark themes."
+  (set-face-attribute 'line-number nil :foreground "#878787" :background "#ededed"))
+
 ;; Symbol library
 (use-package all-the-icons
   :if (display-graphic-p))
@@ -180,7 +188,7 @@
 
 (defun custom/light-modeline ()
   "Mode line for dark themes."
-  (custom/modeline-color "#ededed" "#ededed" "#616161" "#878787"))
+  (custom/modeline-color "#fff0ff" "#ededed" "#616161" "#878787"))
 
 (display-time-mode t)
 
@@ -250,10 +258,12 @@
 (modus-themes-load-themes)
 
 (defun custom/operandi-advice ()
-  (custom/light-modeline))
+  (custom/light-modeline)
+  (custom/light-line-numbers))
 
 (defun custom/vivendi-advice ()
-  (custom/dark-modeline))
+  (custom/dark-modeline)
+  (custom/dark-line-numbers))
 
 (defun custom/theme-specific-advice (_orig-fun &rest args)
   (setq modeline-status mode-line-format)
