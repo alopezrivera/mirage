@@ -1,6 +1,27 @@
 #+title:ARCHIVE
 
-** use-package
+* line-numbers-mode
+
+#+begin_src emacs-lisp
+
+;; Line numbers: display globally
+(global-display-line-numbers-mode t)
+
+;; Display column number
+(column-number-mode)
+
+;; Exceptions
+(dolist (mode '(pdf-view-mode
+		    org-mode-hook
+		    term-mode-hook
+		    shell-mode-hook
+		    eshell-mode-hook
+		    undo-tree-visualizer-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+#+end_src
+
+* use-package
 
 #+begin_src emacs-lisp
 
@@ -30,7 +51,7 @@
 (package-refresh-contents)
 
 #+end_src
-** org-superstar
+* org-superstar
 
 #+begin_src emacs-lisp
 
@@ -44,7 +65,7 @@
 
 #+end_src
 
-*** Headers
+** Headers
 
 #+begin_src emacs-lisp
 
@@ -57,7 +78,7 @@
 
 #+end_src
 
-*** Lists
+** Lists
 
 #+begin_src emacs-lisp
 
