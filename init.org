@@ -165,14 +165,32 @@
 
 #+end_src
 
-*** current-line-empty
+*** current-line-regex
+
+#+begin_src emacs-lisp
+
+(defun custom/current-line-regex (pattern)
+  (save-excursion
+    (beginning-of-line)
+    (looking-at-p pattern)))
+
+#+end_src
+
+**** current-line-empty
 
 #+begin_src emacs-lisp
 
 (defun custom/current-line-empty ()
-  (save-excursion
-    (beginning-of-line)
-    (looking-at-p "[[:blank:]]*$")))
+  (custom/current-line-regex "[[:blank:]]*$"))
+
+#+end_src
+
+**** current-line-empty-bullet
+
+#+begin_src emacs-lisp
+
+(defun custom/current-line-empty-bullet ()
+  (custom/current-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$"))
 
 #+end_src
 
