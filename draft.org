@@ -1,14 +1,20 @@
 #+title:DRAFTS
 
-* Transform all files in directory from DOS to Unix
+* PDFs
+** pdf-tools
 
 #+begin_src emacs-lisp
 
-(defun custom/dos2unix_directory ()
-  (let ((default-directory (file-name-directory buffer-file-name))) 
-    (shell-command "find . -maxdepth 1 -type f -exec dos2unix {} \;")))
+;; pdf-tools
+(straight-use-package 'pdf-tools)
 
-(custom/dos2unix_directory)
+#+end_src
+
+#+begin_src emacs-lisp :tangle nil
+
+;; Install
+(pdf-tools-install)
+(pdf-loader-install)
 
 #+end_src
 * auctex
