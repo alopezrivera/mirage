@@ -840,24 +840,15 @@ not empty. In any case, advance to next line."
 (global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
 
 #+end_src
-
-** Emacs Lisp
-*** Buffer evaluation
-
-#+begin_src emacs-lisp
-
-;; Create binding for evaluating buffer
-(global-set-key (kbd "C-x e") 'eval-buffer)
-
-#+end_src
-
+** Syntax highlighting
 *** Rainbow delimiters
 
 #+begin_src emacs-lisp
 
 ;; Enable rainbow delimiters on all programming modes
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+(use-package rainbow-delimiters)
+
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 #+end_src
 
