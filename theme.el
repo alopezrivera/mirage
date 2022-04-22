@@ -203,18 +203,6 @@
 	   ;; Major modes
 	   (emacs-lisp-mode "EL" :major)))
 
-;; Center text
-(use-package olivetti
-  :delight olivetti-mode
-  )
-
-(add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
-
-;; 
-(dolist (mode '(org-mode-hook
-		    magit-mode-hook))
-  (add-hook mode 'olivetti-mode))
-
 (use-package org-modern)
 
 (add-hook 'org-mode-hook #'org-modern-mode)
@@ -235,6 +223,9 @@
 (setq org-modern-list '((?+ . "-")
 			      (?- . "•")
 			      (?* . "▶")))
+
+;; List indentation
+(setq-default org-list-indent-offset 1)
 
 ;; (add-hook 'org-mode-hook (lambda () (variable-pitch-mode 1)))
 

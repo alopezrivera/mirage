@@ -5,14 +5,17 @@
 (add-to-list 'default-frame-alist '(width  . 70))
 
 ;; Initial buffer
-(setq initial-buffer-choice "/mnt/c/Users/xXY4n/Downloads/emacs/test.org")
+(setq initial-buffer-choice nil)
 
-;; Background buffers
-(defun custom/background-buffers ()
-  (cl-loop for buffer in '("~/.emacs.d/init.org")
+;; Buffers opened at startup
+(defvar custom/background-buffers
+  '("~/.emacs.d/init.org" "/mnt/c/Users/xXY4n/Downloads/emacs/test.org"))
+
+(defun custom/spawn-background-buffers ()
+  (cl-loop for buffer in custom/background-buffers
 	   collect (find-file-noselect buffer)))
 
-(add-hook 'after-init-hook #'custom/background-buffers)
+(add-hook 'after-init-hook #'custom/spawn-background-buffers)
 
 ;; Default directory
 (setq default-directory "~/.emacs.d/")
@@ -40,6 +43,8 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
+(setq debug-on-error t)
+
 (defun <> (a b c)
   (and (> b a) (> c b)))
 
@@ -65,6 +70,17 @@
 ;; Retrieve current theme
 (defun custom/current-theme ()
   (substring (format "%s" (nth 0 custom-enabled-themes))))
+
+(defun custom/current-line-regex (pattern)
+  (save-excursion
+    (beginning-of-line)
+    (looking-at-p pattern)))
+
+(defun custom/current-line-empty ()
+  (custom/current-line-regex "[[:blank:]]*$"))
+
+(defun custom/current-line-empty-bullet ()
+  (custom/current-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$"))
 
 (defun custom/current-window-number ()
   "Retrieve the current window's number."
@@ -110,20 +126,20 @@
 
 (global-set-key (kbd "M-m") #'custom/hide-modeline)
 
-;; Line numbers: display globally
-(global-display-line-numbers-mode t)
+;; Center text
+(use-package olivetti
+  :delight olivetti-mode
+  )
 
-;; Display column number
-(column-number-mode)
+(add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
 
-;; Exceptions
-(dolist (mode '(pdf-view-mode
-		    org-mode-hook
-		    term-mode-hook
-		    shell-mode-hook
-		    eshell-mode-hook
-		    undo-tree-visualizer-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+;; Normal modes
+(dolist (mode '(org-mode-hook
+		    magit-mode-hook))
+  (add-hook mode 'olivetti-mode))
+
+;; Programming modes
+(add-hook 'prog-mode-hook 'olivetti-mode)
 
 ;; Set width of side fringes
 (set-fringe-mode 0)
@@ -239,9 +255,9 @@ buffer is already narrowed, widen buffer."
 (defvar custom/double-home-timeout 0.4)
 
 (defun custom/home ()
-  "Move to indentation. If the command is repeated within 
-`custom/double-home-timeout' seconds, move to beginning
-of line."
+  "Move to indentation. If the command is repeated 
+within `custom/double-home-timeout' seconds, move to
+`beginning-of-visual-line'."
   (interactive)
   (let ((last-called (get this-command 'custom/last-call-time)))
     (if (and (eq last-command this-command)
@@ -251,6 +267,23 @@ of line."
   (put this-command 'custom/last-call-time (current-time)))
 
 (global-set-key (kbd "<home>") 'custom/home)
+
+;; Double end to go to the beginning of line
+(defvar custom/double-end-timeout 0.4)
+
+(defun custom/end ()
+  "Move to end of visual line. If the command is repeated 
+within `custom/double-end-timeout' seconds, move to end
+of line."
+  (interactive)
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (and (eq last-command this-command)
+             (<= (time-to-seconds (time-since last-called)) custom/double-end-timeout))
+        (progn (beginning-of-visual-line) (end-of-line))
+      (end-of-visual-line)))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(global-set-key (kbd "<end>") 'custom/end)
 
 ;; Counsel buffer switching
 (global-set-key (kbd "C-x b") 'counsel-switch-buffer)
@@ -371,6 +404,9 @@ kill the current buffer and delete its window."
 (global-set-key (kbd "<mouse-3>")        'yank)
 (global-set-key (kbd "<down-mouse-3>")    nil)
 
+;; Create binding for evaluating buffer
+(global-set-key (kbd "C-x e") 'eval-buffer)
+
 ;; Unset secondary overlay key bindings
 (global-unset-key [M-mouse-1])
 (global-unset-key [M-drag-mouse-1])
@@ -404,39 +440,37 @@ kill the current buffer and delete its window."
 (define-key mc/keymap (kbd "<down-mouse-1>")  nil)
 
 (defun custom/smart-comment ()
-  "Comments out the current line if no region is selected.
-If the cursor stands on an opening parenthesis and Emacs Lisp 
-mode is active, the region of the corresponding s expression 
-is selected and commented out.
-If a region is selected, it comments out the region, from 
-the start of the top line of the region, to the end to its 
-last line."
+  "If a region is active, comment out all lines in the
+region. Otherwise, comment out current line if it is
+not empty. In any case, advance to next line."
   (interactive)
   (let (beg end)
+
+    ;; If a region is active
     (if (region-active-p)
 
-	;; If the beginning and end of the region are in
-	;; the same line, select entire line
-	(if (= (count-lines (region-beginning) (region-end)) 1)
-	    (setq beg (line-beginning-position) end (line-end-position))
-	  ;; Else, select region from the start of its first
-	  ;; line to the end of its last.
-          (setq beg (save-excursion (goto-char (region-beginning)) (line-beginning-position))
-		end (save-excursion (goto-char (region-end)) (line-end-position))))
+	      ;; If the beginning and end of the region are in
+	      ;; the same line, select entire line
+	      (if (= (count-lines (region-beginning) (region-end)) 1)
+		  (setq beg (line-beginning-position) end (line-end-position))
+		;; Else, select region from the start of its first
+		;; line to the end of its last.
+		(setq beg (save-excursion (goto-char (region-beginning)) (line-beginning-position))
+		      end (save-excursion (goto-char (region-end)) (line-end-position))))
       
       ;; Else, select line
       (setq beg (line-beginning-position) end (line-end-position)))
 
-
     ;; Comment or uncomment region
     ;; If Org Mode is active
-    (if (custom/in-mode "org-mode")
-	(if (org-in-src-block-p)
-	    ;; Manage Org Babel misbehavior with comment-or-uncomment-region
-	    (org-comment-dwim (custom/active-region beg end))
-	  (comment-or-uncomment-region beg end))
-      ;; Else, proceed regularly
-      (comment-or-uncomment-region beg end))
+    (if (not (custom/current-line-empty))
+	      (if (custom/in-mode "org-mode")
+		  (if (org-in-src-block-p)
+		      ;; Manage Org Babel misbehavior with comment-or-uncomment-region
+		      (org-comment-dwim (custom/active-region beg end))
+		    (comment-or-uncomment-region beg end))
+		;; Else, proceed regularly
+		(comment-or-uncomment-region beg end)))
 
     ;; Move to the beginning of the next line
     (move-beginning-of-line 2)))
@@ -480,12 +514,10 @@ last line."
 
 (global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
 
-;; Create binding for evaluating buffer
-(global-set-key (kbd "C-x e") 'eval-buffer)
-
 ;; Enable rainbow delimiters on all programming modes
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+(use-package rainbow-delimiters)
+
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 ;; yasnippet
 (use-package yasnippet)
@@ -515,25 +547,37 @@ last line."
 (use-package org
   :delight org-indent-mode)
 
-;; List indentation
-(setq-default org-list-indent-offset 1)
-
-;; Render inline images when opening org files
+;; Startup with inline images
 (setq org-startup-with-inline-images t)
 
-;; Required as of Org 9.2
-(require 'org-tempo)
+;; org-return
+(defun custom/org-return ()
+  "`org-meta-return' unless in an
+empty list item."
+  (interactive)
+  (if (custom/current-line-empty-bullet)
+      (progn (org-return)
+		   (move-beginning-of-line nil))
+    (progn (org-return)
+	         (org-cycle))))
 
-;; LaTeX structure templates
-(tempo-define-template "org-tempo-"
-		             '("#+NAME: eq:1" p "\n\\begin{equation}\n\\end{equation}" >)
-			     "<eq"
-			     "LaTeX equation template")
+(define-key org-mode-map (kbd "<return>") #'custom/org-return)
 
-;; Code block structure templates
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py" . "src python"))
+;; org-meta-return
+(defun custom/org-meta-return ()
+  "`org-meta-return' unless in an
+empty list item."
+  (interactive)
+  (if (custom/current-line-empty-bullet)
+      (progn (org-meta-return)
+	           (next-line)
+		   (move-end-of-line nil))
+    (org-meta-return)))
+
+(define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
+
+;; Insert heading after current tree
+(define-key org-mode-map (kbd "S-<return>") 'org-insert-heading-respect-content)
 
 (defun custom/with-mark-active (&rest args)
   "Keep mark active after command. To be used as advice AFTER any
@@ -549,6 +593,20 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaleft  :after #'custom/with-mark-active)
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
+
+;; Required as of Org 9.2
+(require 'org-tempo)
+
+;; LaTeX structure templates
+(tempo-define-template "org-tempo-"
+		             '("#+NAME: eq:1" p "\n\\begin{equation}\n\\end{equation}" >)
+			     "<eq"
+			     "LaTeX equation template")
+
+;; Code block structure templates
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
 
 ;; Justify equation labels - [fleqn]
 ;; Preview page width      - \\setlength{\\textwidth}{10cm}
