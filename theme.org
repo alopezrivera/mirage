@@ -40,6 +40,21 @@
 
 #+end_src
 
+*** Line numbers
+
+#+begin_src emacs-lisp
+
+
+(defun custom/dark-line-numbers ()
+  "Line numbers for light themes."
+  (set-face-attribute 'line-number nil :foreground "#cfcfcf" :background "#262626"))
+
+(defun custom/light-line-numbers ()
+  "Line numbers for dark themes."
+  (set-face-attribute 'line-number nil :foreground "#878787" :background "#ededed"))
+
+#+end_src
+
 ** Icons
 
 #+begin_src emacs-lisp
@@ -411,7 +426,8 @@
 #+begin_src emacs-lisp
 
 (defun custom/operandi-advice ()
-  (custom/light-modeline))
+  (custom/light-modeline)
+  (custom/light-line-numbers))
 
 #+end_src
 
@@ -420,7 +436,8 @@
 #+begin_src emacs-lisp
 
 (defun custom/vivendi-advice ()
-  (custom/dark-modeline))
+  (custom/dark-modeline)
+  (custom/dark-line-numbers))
 
 #+end_src
 
