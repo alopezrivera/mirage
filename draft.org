@@ -1,7 +1,17 @@
 #+title:DRAFTS
 
-* PDFs
-** pdf-tools
+
+* Performance profiling
+
+#+begin_src emacs-lisp
+
+;; esup
+(straight-use-package 'esup)
+
+(setq esup-depth 0)
+
+#+end_src
+* pdf-tools
 
 #+begin_src emacs-lisp
 
