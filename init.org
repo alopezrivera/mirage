@@ -188,6 +188,7 @@
 
 #+end_src
 ** Warnings
+*** Visible bell
 
 #+begin_src emacs-lisp
 
