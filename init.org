@@ -195,6 +195,14 @@
 (setq visible-bell t)
 
 #+end_src
+*** Confirmations
+
+#+begin_src emacs-lisp
+
+(advice-add 'yes-or-no-p :override 'y-or-n-p)
+
+#+end_src
+
 ** Mode line
 
 #+begin_src emacs-lisp
