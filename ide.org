@@ -2,143 +2,6 @@
 #+STARTUP: content
 #+PROPERTY: header-args:emacs-lisp :results none :tangle nil :mkdirp yes
 
-* Navigation
-** Defaults
-
-#+begin_src emacs-lisp
-
-;; Unset secondary overlay key bindings
-(global-unset-key [M-mouse-1])
-(global-unset-key [M-drag-mouse-1])
-(global-unset-key [M-down-mouse-1])
-(global-unset-key [M-mouse-3])
-(global-unset-key [M-mouse-2])
-
-;; Unset mouse bindings
-(global-unset-key [C-mouse-1])
-(global-unset-key [C-down-mouse-1])
-
-#+end_src
-
-** Multiple cursors
-
-#+begin_src emacs-lisp
-
-;; Multiple cursors
-(use-package multiple-cursors
-  :bind (("C-."         . mc/mark-next-like-this)
-	 ("C-;"         . mc/mark-previous-like-this)
-	 ("C-<mouse-1>" . mc/add-cursor-on-click))
-  )
-
-;; Load package
-(require 'multiple-cursors)
-
-;; Unknown commands file
-(setq mc/list-file "~/.emacs.d/mc-lists.el")
-
-;; Return as usual
-(define-key mc/keymap (kbd "<return>")       'electric-newline-and-maybe-indent)
-
-;; Exit multiple-cursors-mode
-(define-key mc/keymap (kbd "<escape>")       'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<down-mouse-1>")  nil)
-
-#+end_src
-** Smart comments
-
-#+begin_src emacs-lisp
-
-(defun custom/smart-comment ()
-  "Comments out the current line if no region is selected.
-If the cursor stands on an opening parenthesis and Emacs Lisp 
-mode is active, the region of the corresponding s expression 
-is selected and commented out.
-If a region is selected, it comments out the region, from 
-the start of the top line of the region, to the end to its 
-last line."
-  (interactive)
-  (let (beg end)
-    (if (region-active-p)
-
-	;; If the beginning and end of the region are in
-	;; the same line, select entire line
-	(if (= (count-lines (region-beginning) (region-end)) 1)
-	    (setq beg (line-beginning-position) end (line-end-position))
-	  ;; Else, select region from the start of its first
-	  ;; line to the end of its last.
-          (setq beg (save-excursion (goto-char (region-beginning)) (line-beginning-position))
-		end (save-excursion (goto-char (region-end)) (line-end-position))))
-      
-      ;; Else, select line
-      (setq beg (line-beginning-position) end (line-end-position)))
-
-
-    ;; Comment or uncomment region
-    ;; If Org Mode is active
-    (if (custom/in-mode "org-mode")
-	(if (org-in-src-block-p)
-	    ;; Manage Org Babel misbehavior with comment-or-uncomment-region
-	    (org-comment-dwim (custom/active-region beg end))
-	  (comment-or-uncomment-region beg end))
-      ;; Else, proceed regularly
-      (comment-or-uncomment-region beg end))
-
-    ;; Move to the beginning of the next line
-    (move-beginning-of-line 2)))
-
-(global-set-key (kbd "M-;") #'custom/smart-comment)
-
-#+end_src
-
-** Rectangular regions
-
-#+begin_src emacs-lisp
-
-;; Ensure rectangular-region-mode is loaded
-(require 'rectangular-region-mode)
-
-;; Save rectangle to kill ring
-(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'kill-ring-save)
-
-;; Yank rectangle
-(global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
-
-;; Enter multiple-cursors-mode
-(defun custom/rectangular-region-multiple-cursors ()
-  (interactive)
-  (rrm/switch-to-multiple-cursors)
-  (deactivate-mark))
-
-(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
-
-;; Exit rectangular-region-mode
-(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
-(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
-
-#+end_src
-** Smart mouse rectangle
-
-#+begin_src emacs-lisp
-
-;; Multiple cursor rectangle definition mouse event
-(defun custom/smart-mouse-rectangle (start-event)
-  (interactive "e")
-  (deactivate-mark)
-  (mouse-set-point start-event)
-  (set-rectangular-region-anchor)
-  (rectangle-mark-mode +1)
-  (let ((drag-event))
-    (track-mouse
-      (while (progn
-               (setq drag-event (read-event))
-               (mouse-movement-p drag-event))
-        (mouse-set-point drag-event)))))
-
-(global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
-
-#+end_src
 * Language Server Protocol
 
 #+begin_src emacs-lisp
@@ -187,14 +50,7 @@ last line."
 
 #+end_src
 
-* Autocompletion
-
-#+begin_src emacs-lisp
-
-;; company-mode
-
-#+end_src
-
+* Syntax highlighting
 * Syntax checking
 
 #+begin_src emacs-lisp
@@ -203,7 +59,17 @@ last line."
 
 #+end_src
 
+* Autocompletion
+
+#+begin_src emacs-lisp
+
+;; company-mode
+
+#+end_src
+
 * Project interaction
+
+** projectile
 
 #+begin_src emacs-lisp
 
@@ -211,22 +77,11 @@ last line."
 
 #+end_src
 
-* Emacs Lisp
-** Buffer evaluation
+** helm-projectile
 
 #+begin_src emacs-lisp
 
-;; Create binding for evaluating buffer
-(global-set-key (kbd "C-x e") 'eval-buffer)
+;; helm projectile
 
 #+end_src
 
-** Rainbow delimiters
-
-#+begin_src emacs-lisp
-
-;; Enable rainbow delimiters on all programming modes
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
-#+end_src
