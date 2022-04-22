@@ -93,6 +93,8 @@
 ;; Enable visual bell
 (setq visible-bell t)
 
+(advice-add 'yes-or-no-p :override 'y-or-n-p)
+
 (defun custom/hide-modeline ()
   (interactive)
   (if mode-line-format
