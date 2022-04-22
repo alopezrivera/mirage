@@ -695,6 +695,16 @@ kill the current buffer and delete its window."
 
 #+end_src
 * Coding
+** Execution
+*** Emacs Lisp
+
+#+begin_src emacs-lisp
+
+;; Create binding for evaluating buffer
+(global-set-key (kbd "C-x e") 'eval-buffer)
+
+#+end_src
+
 ** Navigation
 *** Defaults
 
