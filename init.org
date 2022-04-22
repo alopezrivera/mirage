@@ -754,39 +754,37 @@ kill the current buffer and delete its window."
 #+begin_src emacs-lisp
 
 (defun custom/smart-comment ()
-  "Comments out the current line if no region is selected.
-If the cursor stands on an opening parenthesis and Emacs Lisp 
-mode is active, the region of the corresponding s expression 
-is selected and commented out.
-If a region is selected, it comments out the region, from 
-the start of the top line of the region, to the end to its 
-last line."
+  "If a region is active, comment out all lines in the
+region. Otherwise, comment out current line if it is
+not empty. In any case, advance to next line."
   (interactive)
   (let (beg end)
+
+    ;; If a region is active
     (if (region-active-p)
 
-	;; If the beginning and end of the region are in
-	;; the same line, select entire line
-	(if (= (count-lines (region-beginning) (region-end)) 1)
-	    (setq beg (line-beginning-position) end (line-end-position))
-	  ;; Else, select region from the start of its first
-	  ;; line to the end of its last.
-          (setq beg (save-excursion (goto-char (region-beginning)) (line-beginning-position))
-		end (save-excursion (goto-char (region-end)) (line-end-position))))
+	      ;; If the beginning and end of the region are in
+	      ;; the same line, select entire line
+	      (if (= (count-lines (region-beginning) (region-end)) 1)
+		  (setq beg (line-beginning-position) end (line-end-position))
+		;; Else, select region from the start of its first
+		;; line to the end of its last.
+		(setq beg (save-excursion (goto-char (region-beginning)) (line-beginning-position))
+		      end (save-excursion (goto-char (region-end)) (line-end-position))))
       
       ;; Else, select line
       (setq beg (line-beginning-position) end (line-end-position)))
 
-
     ;; Comment or uncomment region
     ;; If Org Mode is active
-    (if (custom/in-mode "org-mode")
-	(if (org-in-src-block-p)
-	    ;; Manage Org Babel misbehavior with comment-or-uncomment-region
-	    (org-comment-dwim (custom/active-region beg end))
-	  (comment-or-uncomment-region beg end))
-      ;; Else, proceed regularly
-      (comment-or-uncomment-region beg end))
+    (if (not (custom/current-line-empty))
+	      (if (custom/in-mode "org-mode")
+		  (if (org-in-src-block-p)
+		      ;; Manage Org Babel misbehavior with comment-or-uncomment-region
+		      (org-comment-dwim (custom/active-region beg end))
+		    (comment-or-uncomment-region beg end))
+		;; Else, proceed regularly
+		(comment-or-uncomment-region beg end)))
 
     ;; Move to the beginning of the next line
     (move-beginning-of-line 2)))
