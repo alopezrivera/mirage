@@ -72,6 +72,13 @@
   (string-match "^[^0-9]*\\([0-9]+\\)[^0-9]*$" window)
   (match-string 1 window))
 
+;; Transform all files in directory from DOS to Unix line breaks
+(defun custom/dos2unix (&optional dir)
+  (let ((dir (or dir (file-name-directory buffer-file-name)))
+	      (default-directory dir))
+	  (print dir)
+    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
+
 ;; Frame name
 (setq-default frame-title-format '("Emacs [%m] %b"))
 
@@ -110,7 +117,8 @@
 (column-number-mode)
 
 ;; Exceptions
-(dolist (mode '(org-mode-hook
+(dolist (mode '(pdf-view-mode
+		    org-mode-hook
 		    term-mode-hook
 		    shell-mode-hook
 		    eshell-mode-hook
