@@ -986,7 +986,10 @@ empty list item."
       (progn (org-meta-return)
 	           (next-line)
 		   (move-end-of-line nil))
-    (org-meta-return)))
+    (if (custom/current-line-header-or-list)
+	      (progn (move-end-of-line nil)
+		     (org-meta-return))
+      (org-meta-return))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
