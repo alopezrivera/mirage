@@ -1,6 +1,41 @@
 #+title:DRAFTS
 
+* Org Roam
 
+#+begin_src emacs-lisp
+
+;; Org Roam
+(straight-use-package 'org-roam)
+
+#+end_src
+
+** UI
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'org-roam-ui)
+
+#+end_src
+
+*** Settings
+
+#+begin_src emacs-lisp
+
+(setq org-roam-ui-sync-theme nil
+      org-roam-ui-follow t
+      org-roam-ui-update-on-save t
+      org-roam-ui-open-on-start nil)
+
+#+end_src
+
+** Timestamps
+
+#+begin_src emacs-lisp
+
+;; Org Roam timestamps
+(straight-use-package 'org-roam-timestamps)
+
+#+end_src
 * Performance profiling
 
 #+begin_src emacs-lisp
