@@ -204,6 +204,15 @@
 
 #+end_src
 
+**** current-line-header-or-list
+
+#+begin_src emacs-lisp
+
+(defun custom/current-line-header-or-list ()
+  (custom/current-line-regex "[[:blank:]]*[-+1-9.)*]+.*$"))
+
+#+end_src
+
 *** current-window-number
 
 #+begin_src emacs-lisp
