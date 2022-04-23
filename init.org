@@ -165,6 +165,16 @@
 
 #+end_src
 
+*** kill-current-buffer
+
+#+begin_src emacs-lisp
+
+(defun custom/kill-current-buffer ()
+  (interactive)
+  (kill-buffer (current-buffer)))
+
+#+end_src
+
 *** current-line-regex
 
 #+begin_src emacs-lisp
