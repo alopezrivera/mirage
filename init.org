@@ -705,16 +705,27 @@ kill the current buffer and delete its window."
 
 #+end_src
 * Coding
-** Execution
+** Evaluation
 *** Emacs Lisp
+**** IELM
 
 #+begin_src emacs-lisp
 
-;; Create binding for evaluating buffer
-(global-set-key (kbd "C-x e") 'eval-buffer)
+;; IELM
+(global-set-key (kbd "C-l") 'ielm)
+
+;; Exit IELM
+(define-key ielm-map (kbd "C-l") 'custom/kill-current-buffer)
 
 #+end_src
 
+**** Buffer
+#+begin_src emacs-lisp
+
+;; Buffer evaluation
+(global-set-key (kbd "C-x e") 'eval-buffer)
+
+#+end_src
 ** Navigation
 *** Defaults
 
