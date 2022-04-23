@@ -711,11 +711,12 @@ kill the current buffer and delete its window."
 
 #+begin_src emacs-lisp
 
-;; IELM
-(global-set-key (kbd "C-l") 'ielm)
+  ;; IELM
+  (global-set-key (kbd "C-l") 'ielm)
 
-;; Exit IELM
-(define-key ielm-map (kbd "C-l") 'custom/kill-current-buffer)
+  ;; Exit IELM
+  (with-eval-after-load 'ielm
+    (define-key ielm-map (kbd "C-l") 'kill-this-buffer))
 
 #+end_src
 
