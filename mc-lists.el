@@ -4,6 +4,7 @@
 (setq mc/cmds-to-run-for-all
       '(
 	beginning-of-visual-line
+	custom/del-backward
 	custom/rectangular-region-multiple-cursors
 	custom/smart-comment
 	electric-newline-and-maybe-indent
@@ -13,6 +14,7 @@
 	kill-region
 	org-backward-sentence
 	org-cycle
+	org-delete-char
 	org-end-of-line
 	org-forward-sentence
 	org-meta-return
@@ -28,15 +30,19 @@
 
 (setq mc/cmds-to-run-once
       '(
+	clm/toggle-command-log-buffer
+	counsel-M-x
 	custom/search-in-region
 	custom/smart-search
 	custom/swiper-multiple-cursors
+	dabbrev-expand
 	eval-last-sexp
 	mouse-drag-mode-line
 	mouse-save-then-kill
 	mouse-set-region
 	mouse-start-rectangle
 	org-ctrl-c-ctrl-c
+	org-metadown
 	swiper
 	swiper-mc
 	widen

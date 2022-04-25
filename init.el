@@ -45,20 +45,6 @@
 
 (setq debug-on-error t)
 
-(defun <> (a b c)
-  (and (> b a) (> c b)))
-
-(defun custom/in-mode (mode)
-  "Return t if Org Mode is currently active."
-  (string-equal major-mode mode))
-
-;; Retrieve active region
-(defun custom/active-region (beg end)
-  (set-mark beg)
-  (goto-char end)
-  (activate-mark)
-  )
-
 (defun custom/match-regexs (string patterns)
   "Return t if all provided regex PATTERNS
 (provided as a list) match STRING."
@@ -67,20 +53,66 @@
 	     return nil
 	   finally return t))
 
+(defun custom/at-point (go-to-point &optional position)
+  (let ((position (or position (point))))
+    (save-excursion
+      (funcall go-to-point)
+      (= position (point)))))
+
+(defun custom/at-eol (&optional position)
+  (custom/at-point 'end-of-line position))
+
+(defun custom/at-bol (&optional position)
+  (custom/at-point 'beginning-of-line position))
+
+(defun custom/at-indent (&optional position)
+  (custom/at-point 'back-to-indentation position))
+
+(defun custom/relative-line (query &optional number &rest args)
+  "Return the result of a boolean query at the current
+line or another specified by its relative position to the
+current line.
+Optionally, `args' may be given as input to be passed
+to the query at execution."
+  (let ((number (or number 0)))
+    (save-excursion
+      (beginning-of-visual-line (+ number 1))
+      (apply query args))))
+
+(defun custom/relative-line-regex (pattern &optional number)
+  (custom/relative-line 'looking-at-p number pattern))
+
+(defun custom/relative-line-empty (&optional number)
+  (custom/relative-line-regex "[[:blank:]]*$" number))
+
+(defun custom/relative-line-indented (&optional number)
+  (custom/relative-line-regex "[[:blank:]]+.*$" number))
+
+(defun custom/relative-line-org-list (&optional number)
+  (interactive)
+  (custom/relative-line 'org-at-item-p number))
+
+(defun custom/relative-line-org-heading (&optional number)
+  (interactive)
+  (custom/relative-line 'org-at-heading-p number))
+
+(defun custom/relative-line-org-list-empty (&optional number)
+  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$" number))
+
+(defun custom/relative-line-org-heading-or-list ()
+  (or (custom/relative-line-org-heading) (custom/relative-line-org-list)))
+
+(defun custom/in-mode (mode)
+  "Return t if Org Mode is currently active."
+  (string-equal major-mode mode))
+
+(defun custom/in-org (cond)
+  "Return t if `cond' is t and Org Mode is active."
+  (and cond (custom/in-mode "org-mode")))
+
 ;; Retrieve current theme
 (defun custom/current-theme ()
   (substring (format "%s" (nth 0 custom-enabled-themes))))
-
-(defun custom/current-line-regex (pattern)
-  (save-excursion
-    (beginning-of-line)
-    (looking-at-p pattern)))
-
-(defun custom/current-line-empty ()
-  (custom/current-line-regex "[[:blank:]]*$"))
-
-(defun custom/current-line-empty-bullet ()
-  (custom/current-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$"))
 
 (defun custom/current-window-number ()
   "Retrieve the current window's number."
@@ -88,11 +120,26 @@
   (string-match "^[^0-9]*\\([0-9]+\\)[^0-9]*$" window)
   (match-string 1 window))
 
+(defun custom/get-point (command)
+  (interactive)
+  (save-excursion
+    (funcall command)
+    (point)))
+
+;; Retrieve active region
+(defun custom/active-region (beg end)
+  (set-mark beg)
+  (goto-char end)
+  (activate-mark)
+  )
+
+(defun <> (a b c)
+  (and (> b a) (> c b)))
+
 ;; Transform all files in directory from DOS to Unix line breaks
 (defun custom/dos2unix (&optional dir)
   (let ((dir (or dir (file-name-directory buffer-file-name)))
 	      (default-directory dir))
-	  (print dir)
     (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
 ;; Frame name
@@ -251,27 +298,42 @@ buffer is already narrowed, widen buffer."
   :delight command-log-mode)
 (global-command-log-mode)
 
-;; Double home to go to the beginning of line
+(defun custom/home ()
+  "Conditional homing. 
+
+Default: `back-to-indentation'
+
+Conditional:
+`beginning-of-visual-line'
+  - Org Mode headers
+  - Empty indented lines
+  - Wrapped visual lines"
+  (interactive)
+  (cond ((custom/in-org (custom/relative-line-org-heading-or-list))                               (beginning-of-visual-line))
+	      ((custom/relative-line-empty)                                                             (beginning-of-visual-line))
+	      ((> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'back-to-indentation)) (beginning-of-visual-line))
+	      (t                                                                                        (back-to-indentation))))
+
 (defvar custom/double-home-timeout 0.4)
 
-(defun custom/home ()
-  "Move to indentation. If the command is repeated 
-within `custom/double-home-timeout' seconds, move to
-`beginning-of-visual-line'."
+(defun custom/dynamic-home ()
+  "Dynamic homing command with a timeout of `custom/double-home-timeout' seconds.
+- Single press: `custom/home' 
+- Double press: `beginning-of-visual-line'"
   (interactive)
   (let ((last-called (get this-command 'custom/last-call-time)))
-    (if (and (eq last-command this-command)
+    (if (and (eq last-command this-command)	     
              (<= (time-to-seconds (time-since last-called)) custom/double-home-timeout))
         (beginning-of-visual-line)
-      (back-to-indentation)))
+      (custom/home)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<home>") 'custom/home)
+(global-set-key (kbd "<home>") 'custom/dynamic-home)
 
 ;; Double end to go to the beginning of line
 (defvar custom/double-end-timeout 0.4)
 
-(defun custom/end ()
+(defun custom/dynamic-end ()
   "Move to end of visual line. If the command is repeated 
 within `custom/double-end-timeout' seconds, move to end
 of line."
@@ -283,7 +345,7 @@ of line."
       (end-of-visual-line)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<end>") 'custom/end)
+(global-set-key (kbd "<end>") 'custom/dynamic-end)
 
 ;; Counsel buffer switching
 (global-set-key (kbd "C-x b") 'counsel-switch-buffer)
@@ -318,7 +380,6 @@ key binding input with C-g."
 	      (message-log-max nil))
     (progn (apply orig-fun args)
 	         (setq _message last-message)))
-  ;; (print (type-of message))
   (if (string-match-p (regexp-quote "C-g is undefined") _message)
       (keyboard-quit)
     (message _message)))
@@ -349,7 +410,7 @@ mark if a region is active."
 (add-hook 'minibuffer-setup-hook (lambda () (local-set-key (kbd "<escape>") 'minibuffer-keyboard-quit)))
 
 ;; Global double escape
-(defvar custom/double-escape-timeout 0.4)
+(defvar custom/double-escape-timeout 1)
 
 (defun custom/escape ()
   "Execute `custom/escape-window-or-region'. If the command 
@@ -365,6 +426,64 @@ kill the current buffer and delete its window."
   (put this-command 'custom/last-call-time (current-time)))
 
 (global-set-key (kbd "<escape>") 'custom/escape)
+
+(defun custom/delete-region ()
+  "Conditional region deletion.
+
+Default: `delete-region'
+
+If region starts at indented line, delete
+region and indent plus one character."
+  (interactive)
+  (save-excursion
+    (progn (setq beg (region-beginning) end (region-end))
+	         (if (custom/at-indent beg)
+		     (progn (beginning-of-visual-line)
+			    (delete-region (point) end)
+			    (delete-backward-char 1))
+		   (delete-region beg end)))))
+
+(defun custom/del-forward ()
+  "Conditional forward deletion.
+
+Default: `delete-forward-char' 1
+
+If next line is empty, forward delete indent of 
+next line plus one character."
+  (interactive)
+  (if (and (custom/at-eol) (custom/relative-line-indented 1))
+      (progn (save-excursion
+	             (next-line)
+		     (back-to-indentation)
+		     (delete-region (point) (line-beginning-position)))
+	           (delete-forward-char 1))
+    (delete-forward-char 1)))
+
+(global-set-key (kbd "<deletechar>") 'custom/del-forward)
+
+(defun custom/del-backward ()
+  "Conditional forward deletion.
+
+Default: `delete-backward-char' 1
+
+If area is active, delete area.
+
+If `multiple-cursors-mode' is active
+however, `delete-backward-char' 1.
+
+If cursor lies either `custom/at-indent'
+level or is preceded only by whitespace, 
+delete region from `point' to `line-beginning-position'."
+  (interactive)
+  (if multiple-cursors-mode
+      (if (region-active-p)
+	        (custom/delete-region)
+	      (if (and (or (custom/at-indent) (custom/relative-line-empty)) (not (custom/at-bol)))
+		  (delete-region (point) (line-beginning-position))
+		(delete-backward-char 1)))
+      (delete-backward-char 1)))
+
+(global-set-key (kbd "<backspace>") 'custom/del-backward)
 
 (global-set-key (kbd "C-`") 'widen)
 
@@ -386,13 +505,6 @@ kill the current buffer and delete its window."
 
 (advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
 
-;; ;; Undo tree command
-;; (defun custom/undo-tree ()
-;;   (interactive)
-;;   (undo-tree-visualize))
-
-;; (global-set-key (kbd "M-/") #'custom/undo-tree)
-
 ;; Increase kill ring size
 (setq kill-ring-max 200)
 
@@ -404,7 +516,14 @@ kill the current buffer and delete its window."
 (global-set-key (kbd "<mouse-3>")        'yank)
 (global-set-key (kbd "<down-mouse-3>")    nil)
 
-;; Create binding for evaluating buffer
+;; IELM
+(global-set-key (kbd "C-l") 'ielm)
+
+;; Exit IELM
+(with-eval-after-load 'ielm
+  (define-key ielm-map (kbd "C-l") 'kill-this-buffer))
+
+;; Buffer evaluation
 (global-set-key (kbd "C-x e") 'eval-buffer)
 
 ;; Unset secondary overlay key bindings
@@ -463,7 +582,7 @@ not empty. In any case, advance to next line."
 
     ;; Comment or uncomment region
     ;; If Org Mode is active
-    (if (not (custom/current-line-empty))
+    (if (not (custom/relative-line-empty))
 	      (if (custom/in-mode "org-mode")
 		  (if (org-in-src-block-p)
 		      ;; Manage Org Babel misbehavior with comment-or-uncomment-region
@@ -528,7 +647,6 @@ not empty. In any case, advance to next line."
 (defun custom/<-snippet (orig-fun &rest args)
   (interactive)
   (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-  (print args)
 	(if (not (string-equal line ""))
 	    (if (string-equal (substring line 0 1) "<")
 		(progn (save-excursion (move-beginning-of-line nil)
@@ -555,11 +673,10 @@ not empty. In any case, advance to next line."
   "`org-meta-return' unless in an
 empty list item."
   (interactive)
-  (if (custom/current-line-empty-bullet)
-      (progn (org-return)
-		   (move-beginning-of-line nil))
-    (progn (org-return)
-	         (org-cycle))))
+  (cond ((custom/relative-line-org-list-empty)        (progn (org-return) (move-beginning-of-line nil)))
+	      ((custom/relative-line-org-heading-or-list)   (progn (org-return) (org-cycle)))
+	      ((custom/relative-line-indented)              (progn (org-return) (org-cycle)))
+	      (t                                            (org-return))))
 
 (define-key org-mode-map (kbd "<return>") #'custom/org-return)
 
@@ -568,11 +685,10 @@ empty list item."
   "`org-meta-return' unless in an
 empty list item."
   (interactive)
-  (if (custom/current-line-empty-bullet)
-      (progn (org-meta-return)
-	           (next-line)
-		   (move-end-of-line nil))
-    (org-meta-return)))
+  (cond ((org-in-src-block-p)                       (custom/org-return))
+	      ((custom/relative-line-org-list-empty)      (progn (org-meta-return) (next-line) (move-end-of-line nil)))
+	      ((custom/relative-line-org-heading-or-list) (progn (move-end-of-line nil) (org-meta-return)))
+	      (t                                          (org-meta-return))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
@@ -593,6 +709,15 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaleft  :after #'custom/with-mark-active)
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
+
+(defun custom/org-cycle (orig-fun &rest args)
+  (interactive)
+  (if (not (custom/relative-line-org-heading-or-list))
+      (apply orig-fun args)
+    (progn (beginning-of-visual-line)
+	       (apply orig-fun args))))
+
+(advice-add 'org-cycle :around #'custom/org-cycle)
 
 ;; Required as of Org 9.2
 (require 'org-tempo)
