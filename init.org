@@ -798,13 +798,6 @@ kill the current buffer and delete its window."
 
 (advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
 
-;; ;; Undo tree command
-;; (defun custom/undo-tree ()
-;;   (interactive)
-;;   (undo-tree-visualize))
-
-;; (global-set-key (kbd "M-/") #'custom/undo-tree)
-
 #+end_src
 
 *** Kill Ring Size
