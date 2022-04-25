@@ -622,7 +622,7 @@ Conditional:
 ;; Double end to go to the beginning of line
 (defvar custom/double-end-timeout 0.4)
 
-(defun custom/end ()
+(defun custom/dynamic-end ()
   "Move to end of visual line. If the command is repeated 
 within `custom/double-end-timeout' seconds, move to end
 of line."
@@ -634,7 +634,7 @@ of line."
       (end-of-visual-line)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<end>") 'custom/end)
+(global-set-key (kbd "<end>") 'custom/dynamic-end)
 
 #+end_src
 
@@ -783,6 +783,12 @@ kill the current buffer and delete its window."
   :config
   (global-undo-tree-mode))
 
+#+end_src
+
+**** Visualize in side buffer
+
+#+begin_src emacs-lisp
+
 ;; Visualize in side buffer
 (defun custom/undo-tree-split-side-by-side (orig-fun &rest args)
   "Split undo-tree side-by-side"
@@ -918,7 +924,7 @@ not empty. In any case, advance to next line."
 
     ;; Comment or uncomment region
     ;; If Org Mode is active
-    (if (not (custom/current-line-empty))
+    (if (not (custom/relative-line-empty))
 	      (if (custom/in-mode "org-mode")
 		  (if (org-in-src-block-p)
 		      ;; Manage Org Babel misbehavior with comment-or-uncomment-region
