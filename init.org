@@ -581,25 +581,40 @@ buffer is already narrowed, widen buffer."
 
 #+begin_src emacs-lisp
 
-;; Double home to go to the beginning of line
+(defun custom/home ()
+  "Conditional homing. 
+
+Default: `back-to-indentation'
+
+Conditional:
+`beginning-of-visual-line'
+  - Org Mode headers
+  - Empty indented lines
+  - Wrapped visual lines"
+  (interactive)
+  (cond ((custom/in-org (custom/relative-line-org-heading-or-list))                               (beginning-of-visual-line))
+	      ((custom/relative-line-empty)                                                             (beginning-of-visual-line))
+	      ((> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'back-to-indentation)) (beginning-of-visual-line))
+	      (t                                                                                        (back-to-indentation))))
+
 (defvar custom/double-home-timeout 0.4)
 
-(defun custom/home ()
-  "Move to indentation. If the command is repeated 
-within `custom/double-home-timeout' seconds, move to
-`beginning-of-visual-line'."
+(defun custom/dynamic-home ()
+  "Dynamic homing command with a timeout of `custom/double-home-timeout' seconds.
+- Single press: `custom/home' 
+- Double press: `beginning-of-visual-line'"
   (interactive)
   (let ((last-called (get this-command 'custom/last-call-time)))
-    (if (and (eq last-command this-command)
+    (if (and (eq last-command this-command)	     
              (<= (time-to-seconds (time-since last-called)) custom/double-home-timeout))
         (beginning-of-visual-line)
-      (back-to-indentation)))
+      (custom/home)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<home>") 'custom/home)
+(global-set-key (kbd "<home>") 'custom/dynamic-home)
 
 #+end_src
-
+    
 *** End
 
 #+begin_src emacs-lisp
