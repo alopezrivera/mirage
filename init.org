@@ -1202,6 +1202,21 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
 
 #+end_src
+** Navigation
+
+#+begin_src emacs-lisp
+
+(defun custom/org-cycle (orig-fun &rest args)
+  (interactive)
+  (if (not (custom/relative-line-org-heading-or-list))
+      (apply orig-fun args)
+    (progn (beginning-of-visual-line)
+	       (apply orig-fun args))))
+
+(advice-add 'org-cycle :around #'custom/org-cycle)
+
+#+end_src
+
 ** Structure templates
 
 #+begin_src emacs-lisp
