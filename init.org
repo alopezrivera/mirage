@@ -742,7 +742,7 @@ mark if a region is active."
 #+begin_src emacs-lisp
 
 ;; Global double escape
-(defvar custom/double-escape-timeout 0.4)
+(defvar custom/double-escape-timeout 1)
 
 (defun custom/escape ()
   "Execute `custom/escape-window-or-region'. If the command 
