@@ -1164,14 +1164,10 @@ empty list item."
   "`org-meta-return' unless in an
 empty list item."
   (interactive)
-  (if (custom/current-line-empty-bullet)
-      (progn (org-meta-return)
-	           (next-line)
-		   (move-end-of-line nil))
-    (if (custom/current-line-header-or-list)
-	      (progn (move-end-of-line nil)
-		     (org-meta-return))
-      (org-meta-return))))
+  (cond ((org-in-src-block-p)                       (custom/org-return))
+	      ((custom/relative-line-org-list-empty)      (progn (org-meta-return) (next-line) (move-end-of-line nil)))
+	      ((custom/relative-line-org-heading-or-list) (progn (move-end-of-line nil) (org-meta-return)))
+	      (t                                          (org-meta-return))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
