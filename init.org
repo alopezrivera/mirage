@@ -1146,11 +1146,10 @@ not empty. In any case, advance to next line."
   "`org-meta-return' unless in an
 empty list item."
   (interactive)
-  (if (custom/current-line-empty-bullet)
-      (progn (org-return)
-		   (move-beginning-of-line nil))
-    (progn (org-return)
-	         (org-cycle))))
+  (cond ((custom/relative-line-org-list-empty)        (progn (org-return) (move-beginning-of-line nil)))
+	      ((custom/relative-line-org-heading-or-list)   (progn (org-return) (org-cycle)))
+	      ((custom/relative-line-indented)              (progn (org-return) (org-cycle)))
+	      (t                                            (org-return))))
 
 (define-key org-mode-map (kbd "<return>") #'custom/org-return)
 
