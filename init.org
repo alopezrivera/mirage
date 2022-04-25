@@ -286,6 +286,42 @@ to the query at execution."
 
 #+end_src
 
+*** Retrieval
+**** get-point
+
+#+begin_src emacs-lisp
+
+(defun custom/get-point (command)
+  (interactive)
+  (save-excursion
+    (funcall command)
+    (point)))
+
+#+end_src
+
+**** active-region
+
+#+begin_src emacs-lisp
+
+;; Retrieve active region
+(defun custom/active-region (beg end)
+  (set-mark beg)
+  (goto-char end)
+  (activate-mark)
+  )
+
+#+end_src
+
+*** Operators
+**** <>
+
+#+begin_src emacs-lisp
+
+(defun <> (a b c)
+  (and (> b a) (> c b)))
+
+#+end_src
+
 * System
 ** File management
 *** dos2unix
