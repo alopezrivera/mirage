@@ -330,7 +330,6 @@ to the query at execution."
 (defun custom/dos2unix (&optional dir)
   (let ((dir (or dir (file-name-directory buffer-file-name)))
 	      (default-directory dir))
-	  (print dir)
     (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
 #+end_src
@@ -565,6 +564,7 @@ buffer is already narrowed, widen buffer."
   ([remap describe-key]      . helpful-key))
 
 #+end_src
+
 ** Live command display
 
 #+begin_src emacs-lisp
@@ -679,7 +679,6 @@ key binding input with C-g."
 	      (message-log-max nil))
     (progn (apply orig-fun args)
 	         (setq _message last-message)))
-  ;; (print (type-of message))
   (if (string-match-p (regexp-quote "C-g is undefined") _message)
       (keyboard-quit)
     (message _message)))
@@ -999,7 +998,6 @@ not empty. In any case, advance to next line."
 (defun custom/<-snippet (orig-fun &rest args)
   (interactive)
   (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-  (print args)
 	(if (not (string-equal line ""))
 	    (if (string-equal (substring line 0 1) "<")
 		(progn (save-excursion (move-beginning-of-line nil)
