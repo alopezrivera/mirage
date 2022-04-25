@@ -108,40 +108,8 @@
 #+end_src
 
 ** General purpose functions
-
-*** <>
-
-#+begin_src emacs-lisp
-
-(defun <> (a b c)
-  (and (> b a) (> c b)))
-
-#+end_src
-
-*** in-mode
-
-#+begin_src emacs-lisp
-
-(defun custom/in-mode (mode)
-  "Return t if Org Mode is currently active."
-  (string-equal major-mode mode))
-
-#+end_src
-
-*** active-region
-
-#+begin_src emacs-lisp
-
-;; Retrieve active region
-(defun custom/active-region (beg end)
-  (set-mark beg)
-  (goto-char end)
-  (activate-mark)
-  )
-
-#+end_src
-
-*** match-regexs
+*** Queries
+**** match-regexs
 
 #+begin_src emacs-lisp
 
@@ -155,7 +123,148 @@
 
 #+end_src
 
-*** current-theme
+**** at-point
+
+#+begin_src emacs-lisp
+
+(defun custom/at-point (go-to-point &optional position)
+  (let ((position (or position (point))))
+    (save-excursion
+      (funcall go-to-point)
+      (= position (point)))))
+
+#+end_src
+
+***** at-eol
+
+#+begin_src emacs-lisp
+
+(defun custom/at-eol (&optional position)
+  (custom/at-point 'end-of-line position))
+
+#+end_src
+
+***** at-bol
+
+#+begin_src emacs-lisp
+
+(defun custom/at-bol (&optional position)
+  (custom/at-point 'beginning-of-line position))
+
+#+end_src
+
+***** at-indent
+
+#+begin_src emacs-lisp
+
+(defun custom/at-indent (&optional position)
+  (custom/at-point 'back-to-indentation position))
+
+#+end_src
+**** relative-line
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line (query &optional number args)
+  "Return the result of a boolean query at the current
+line or another specified by its relative position to the
+current line.
+Optionally, `args' may be given as input to be passed
+to the query at execution."
+  (let ((number (or number 0)))
+    (save-excursion
+      (beginning-of-visual-line (+ number 1))
+      (if args
+	  (funcall query args)
+	(funcall query)))))
+
+#+end_src
+
+***** relative-line-regex
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-regex (pattern &optional number)
+  (custom/relative-line 'looking-at-p number pattern))
+
+#+end_src
+
+***** relative-line-empty
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-empty (&optional number)
+  (custom/relative-line-regex "[[:blank:]]*$" number))
+
+#+end_src
+
+***** relative-line-indented
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-indented (&optional number)
+  (custom/relative-line-regex "[[:blank:]]+.*$" number))
+
+#+end_src
+
+***** relative-line-org-list
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-org-list (&optional number)
+  (interactive)
+  (custom/relative-line 'org-at-item-p number))
+
+#+end_src
+
+***** relative-line-org-heading
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-org-heading (&optional number)
+  (interactive)
+  (custom/relative-line 'org-at-heading-p number))
+
+#+end_src
+
+***** relative-line-org-list-empty
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-org-list-empty (&optional number)
+  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$" number))
+
+#+end_src
+
+***** relative-line-org-heading-or-list
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-org-heading-or-list ()
+  (or (custom/relative-line-org-heading) (custom/relative-line-org-list)))
+
+#+end_src
+
+**** in-mode
+
+#+begin_src emacs-lisp
+
+(defun custom/in-mode (mode)
+  "Return t if Org Mode is currently active."
+  (string-equal major-mode mode))
+
+#+end_src
+
+***** in-org
+
+#+begin_src emacs-lisp
+
+(defun custom/in-org (cond)
+  "Return t if `cond' is t and Org Mode is active."
+  (and cond (custom/in-mode "org-mode")))
+
+#+end_src
+**** current-theme
 
 #+begin_src emacs-lisp
 
@@ -165,55 +274,7 @@
 
 #+end_src
 
-*** kill-current-buffer
-
-#+begin_src emacs-lisp
-
-(defun custom/kill-current-buffer ()
-  (interactive)
-  (kill-buffer (current-buffer)))
-
-#+end_src
-
-*** current-line-regex
-
-#+begin_src emacs-lisp
-
-(defun custom/current-line-regex (pattern)
-  (save-excursion
-    (beginning-of-line)
-    (looking-at-p pattern)))
-
-#+end_src
-
-**** current-line-empty
-
-#+begin_src emacs-lisp
-
-(defun custom/current-line-empty ()
-  (custom/current-line-regex "[[:blank:]]*$"))
-
-#+end_src
-
-**** current-line-empty-bullet
-
-#+begin_src emacs-lisp
-
-(defun custom/current-line-empty-bullet ()
-  (custom/current-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$"))
-
-#+end_src
-
-**** current-line-header-or-list
-
-#+begin_src emacs-lisp
-
-(defun custom/current-line-header-or-list ()
-  (custom/current-line-regex "[[:blank:]]*[-+1-9.)*]+.*$"))
-
-#+end_src
-
-*** current-window-number
+**** current-window-number
 
 #+begin_src emacs-lisp
 
