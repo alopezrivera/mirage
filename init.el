@@ -676,6 +676,7 @@ empty list item."
   (cond ((custom/relative-line-org-list-empty)        (progn (org-return) (move-beginning-of-line nil)))
 	      ((custom/relative-line-org-heading-or-list)   (progn (org-return) (org-cycle)))
 	      ((custom/relative-line-indented)              (progn (org-return) (org-cycle)))
+	      ((org-in-src-block-p)                         (progn (org-return) (org-cycle)))
 	      (t                                            (org-return))))
 
 (define-key org-mode-map (kbd "<return>") #'custom/org-return)
