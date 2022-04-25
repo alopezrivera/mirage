@@ -165,7 +165,7 @@
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line (query &optional number args)
+(defun custom/relative-line (query &optional number &rest args)
   "Return the result of a boolean query at the current
 line or another specified by its relative position to the
 current line.
@@ -174,9 +174,7 @@ to the query at execution."
   (let ((number (or number 0)))
     (save-excursion
       (beginning-of-visual-line (+ number 1))
-      (if args
-	  (funcall query args)
-	(funcall query)))))
+      (apply query args))))
 
 #+end_src
 
