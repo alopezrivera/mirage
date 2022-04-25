@@ -762,6 +762,82 @@ kill the current buffer and delete its window."
 #+end_src
 
 * Writing
+** Delete
+*** Region
+
+#+begin_src emacs-lisp
+
+(defun custom/delete-region ()
+  "Conditional region deletion.
+
+Default: `delete-region'
+
+If region starts at indented line, delete
+region and indent plus one character."
+  (interactive)
+  (save-excursion
+    (progn (setq beg (region-beginning) end (region-end))
+	         (if (custom/at-indent beg)
+		     (progn (beginning-of-visual-line)
+			    (delete-region (point) end)
+			    (delete-backward-char 1))
+		   (delete-region beg end)))))
+
+#+end_src
+
+*** Forward
+
+#+begin_src emacs-lisp
+
+(defun custom/del-forward ()
+  "Conditional forward deletion.
+
+Default: `delete-forward-char' 1
+
+If next line is empty, forward delete indent of 
+next line plus one character."
+  (interactive)
+  (if (and (custom/at-eol) (custom/relative-line-indented 1))
+      (progn (save-excursion
+	             (next-line)
+		     (back-to-indentation)
+		     (delete-region (point) (line-beginning-position)))
+	           (delete-forward-char 1))
+    (delete-forward-char 1)))
+
+(global-set-key (kbd "<deletechar>") 'custom/del-forward)
+
+#+end_src
+*** Backward
+
+#+begin_src emacs-lisp
+
+(defun custom/del-backward ()
+  "Conditional forward deletion.
+
+Default: `delete-backward-char' 1
+
+If area is active, delete area.
+
+If `multiple-cursors-mode' is active
+however, `delete-backward-char' 1.
+
+If cursor lies either `custom/at-indent'
+level or is preceded only by whitespace, 
+delete region from `point' to `line-beginning-position'."
+  (interactive)
+  (if multiple-cursors-mode
+      (if (region-active-p)
+	        (custom/delete-region)
+	      (if (and (or (custom/at-indent) (custom/relative-line-empty)) (not (custom/at-bol)))
+		  (delete-region (point) (line-beginning-position))
+		(delete-backward-char 1)))
+      (delete-backward-char 1)))
+
+(global-set-key (kbd "<backspace>") 'custom/del-backward)
+
+#+end_src
+
 ** Narrowing
 
 #+begin_src emacs-lisp
