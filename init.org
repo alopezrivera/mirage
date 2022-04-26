@@ -839,7 +839,7 @@ region and indent plus one character."
 
 #+begin_src emacs-lisp
 
-(defun custom/del-forward ()
+(defun custom/nimble-delete-forward ()
   "Conditional forward deletion.
 
 Default: `delete-forward-char' 1
@@ -855,99 +855,49 @@ next line plus one character."
 	           (delete-forward-char 1))
     (delete-forward-char 1)))
 
-(global-set-key (kbd "<deletechar>") 'custom/del-forward)
+(global-set-key (kbd "<deletechar>") 'custom/nimble-delete-forward)
 
 #+end_src
+
 *** Backward
 
 #+begin_src emacs-lisp
 
-(defun custom/del-backward ()
+(defun custom/nimble-delete-backward (orig-fun &rest args)
   "Conditional forward deletion.
 
 Default: `delete-backward-char' 1
 
-If area is active, delete area.
+If `multiple-cursors-mode' is active, `delete-backward-char' 1.
 
-If `multiple-cursors-mode' is active
-however, `delete-backward-char' 1.
+Else, if region is active, delete region. If Org Mode is active and 
+the previous line if not empty, `custom/nimble-delete-forward' from 
+the `end-of-visual-line' of the previous line.
 
-If cursor lies either `custom/at-indent'
-level or is preceded only by whitespace, 
-delete region from `point' to `line-beginning-position'."
-  (interactive)
+Else, if cursor lies either `custom/at-indent' level or is preceded only 
+by whitespace, delete region from `point' to `line-beginning-position'.
+
+Else, if cursor lies at the `end-of-visual-line' of a folded Org Mode
+heading, unfold heading and `delete-backward-char' 1."
   (if (not multiple-cursors-mode)
       (if (region-active-p)
-	        (custom/delete-region)
+	        (progn (custom/delete-region)
+		       (if (custom/in-org (not (custom/relative-line-empty -1)))
+			   (progn (next-line -1)
+				  (end-of-visual-line)
+				  (custom/nimble-delete-forward)
+				  )))
 	      (if (and (or (custom/at-indent) (custom/relative-line-empty)) (not (custom/at-bol)))
-		  (delete-region (point) (line-beginning-position))
-		(delete-backward-char 1)))
-      (delete-backward-char 1)))
-
-(global-set-key (kbd "<backspace>") 'custom/del-backward)
-
-#+end_src
-
-** Narrowing
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-`") 'widen)
-
-#+end_src
-** Undo, Redo
-*** Undo Tree
-
-#+begin_src emacs-lisp
-
-;; Undo Tree
-(use-package undo-tree
-  :bind (("M-/" . undo-tree-visualize)
-         :map undo-tree-visualizer-mode-map
-         ("RET" . undo-tree-visualizer-quit)
-         ("ESC" . undo-tree-visualizer-quit))
-  :config
-  (global-undo-tree-mode))
-
-#+end_src
-
-**** Visualize in side buffer
-
-#+begin_src emacs-lisp
-
-;; Visualize in side buffer
-(defun custom/undo-tree-split-side-by-side (orig-fun &rest args)
-  "Split undo-tree side-by-side"
-  (let ((split-height-threshold nil)
-        (split-width-threshold 0))
+		  (delete-region (point) (custom/get-point 'beginning-of-visual-line))
+		(if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
+		    (progn (beginning-of-visual-line) (end-of-line) (apply orig-fun args))
+		  (apply orig-fun args))))
     (apply orig-fun args)))
 
-(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
+(advice-add 'delete-backward-char :around #'custom/nimble-delete-backward)
 
 #+end_src
 
-*** Kill Ring Size
-
-#+begin_src emacs-lisp
-
-;; Increase kill ring size
-(setq kill-ring-max 200)
-
-#+end_src
-
-** Cut, Copy, Paste
-
-#+begin_src emacs-lisp
-
-;; Copy region with S-left click
-(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
-(global-set-key (kbd "S-<down-mouse-1>")  nil)
-
-;; Paste with mouse right click
-(global-set-key (kbd "<mouse-3>")        'yank)
-(global-set-key (kbd "<down-mouse-3>")    nil)
-
-#+end_src
 * Coding
 ** Execution
 *** Emacs Lisp
