@@ -1219,7 +1219,7 @@ function that sets `deactivate-mark' to t."
 
 (defun custom/org-cycle (orig-fun &rest args)
   (interactive)
-  (if (not (custom/relative-line-org-heading-or-list))
+  (if (or (not (custom/relative-line-org-heading-or-list)) (custom/relative-line-org-heading-empty))
       (apply orig-fun args)
     (progn (beginning-of-visual-line)
 	       (apply orig-fun args))))
