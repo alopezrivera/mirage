@@ -32,6 +32,7 @@
       '(
 	clm/toggle-command-log-buffer
 	counsel-M-x
+	custom/dynamic-home
 	custom/search-in-region
 	custom/smart-search
 	custom/swiper-multiple-cursors

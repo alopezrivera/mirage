@@ -194,9 +194,8 @@ to the query at execution."
 ;; Set width of side fringes
 (set-fringe-mode 0)
 
-;; Load Swiper
+;; Swiper
 (use-package swiper)
-
 (require 'swiper)
 
 ;; Smart search
@@ -546,8 +545,6 @@ delete region from `point' to `line-beginning-position'."
 	       ("C-;"         . mc/mark-previous-like-this)
 	       ("C-<mouse-1>" . mc/add-cursor-on-click))
   )
-
-;; Load package
 (require 'multiple-cursors)
 
 ;; Unknown commands file
@@ -664,9 +661,12 @@ not empty. In any case, advance to next line."
 
 (use-package magit)
 
-;; Load Org Mode
-(use-package org
-  :delight org-indent-mode)
+;; Org Mode
+(straight-use-package 'org)
+(require 'org)
+
+;; Delight
+(delight 'org-indent-mode)
 
 ;; Startup with inline images
 (setq org-startup-with-inline-images t)
@@ -696,8 +696,13 @@ empty list item."
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
+(defun custom/heading-respect-content ()
+  (interactive)
+  (outline-up-heading 0)
+  (org-insert-heading-respect-content))
+
 ;; Insert heading after current tree
-(define-key org-mode-map (kbd "S-<return>") 'org-insert-heading-respect-content)
+(define-key org-mode-map (kbd "S-<return>") 'custom/heading-respect-content)
 
 (defun custom/with-mark-active (&rest args)
   "Keep mark active after command. To be used as advice AFTER any
@@ -883,6 +888,27 @@ folded."
   (not (member lang '("emacs-lisp" "python"))))
 
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+;; Org Roam
+(straight-use-package 'org-roam)
+
+;; Directory
+(setq org-roam-directory "/home/roam")
+
+;; Org Roam UI
+(straight-use-package 'org-roam-ui)
+
+(setq org-roam-ui-follow t)
+
+;; Sync theme and UI
+(setq org-roam-ui-sync-theme nil)
+
+(setq org-roam-ui-open-on-start nil)
+
+(setq org-roam-ui-update-on-save t)
+
+;; Org Roam timestamps
+;; (straight-use-package 'org-roam-timestamps)
 
 ;; Org Agenda log mode
 (setq org-agenda-start-with-log-mode t)
