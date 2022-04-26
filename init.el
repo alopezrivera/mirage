@@ -9,7 +9,7 @@
 
 ;; Buffers opened at startup
 (defvar custom/background-buffers
-  '("~/.emacs.d/init.org" "/mnt/c/Users/xXY4n/Downloads/emacs/test.org"))
+  '("~/.emacs.d/init.org" "/home/emacs/test.org"))
 
 (defun custom/spawn-background-buffers ()
   (cl-loop for buffer in custom/background-buffers
@@ -44,14 +44,6 @@
 (load custom-file)
 
 (setq debug-on-error t)
-
-(defun custom/match-regexs (string patterns)
-  "Return t if all provided regex PATTERNS
-(provided as a list) match STRING."
-  (cl-loop for pattern in patterns
-	   if (not (string-match pattern string))
-	     return nil
-	   finally return t))
 
 (defun custom/at-point (go-to-point &optional position)
   (let ((position (or position (point))))
@@ -92,6 +84,12 @@ to the query at execution."
   (interactive)
   (custom/relative-line 'org-at-item-p number))
 
+(defun custom/relative-line-org-list-folded (&optional number)
+  "Returns non-nil if `point-at-eol' of current visual line
+is on a folded list item."
+  (interactive)
+  (custom/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
+
 (defun custom/relative-line-org-list-empty (&optional number)
   (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$" number))
 
@@ -99,11 +97,25 @@ to the query at execution."
   (interactive)
   (custom/relative-line 'org-at-heading-p number))
 
+(defun custom/relative-line-org-heading-folded (&optional number)
+  "Returns non-nil if `point-at-eol' of current visual line
+is on a folded heading."
+  (interactive)
+  (custom/relative-line (lambda () (and (org-at-heading-p) (invisible-p (point-at-eol)))) number))
+
 (defun custom/relative-line-org-heading-empty (&optional number)
   (custom/relative-line-regex "[[:blank:]]*[*]+[[:blank:]]*$" number))
 
 (defun custom/relative-line-org-heading-or-list ()
   (or (custom/relative-line-org-heading) (custom/relative-line-org-list)))
+
+(defun custom/match-regexs (string patterns)
+  "Return t if all provided regex PATTERNS
+(provided as a list) match STRING."
+  (cl-loop for pattern in patterns
+	   if (not (string-match pattern string))
+	     return nil
+	   finally return t))
 
 (defun custom/in-mode (mode)
   "Return t if Org Mode is currently active."
@@ -135,6 +147,18 @@ to the query at execution."
   (goto-char end)
   (activate-mark)
   )
+
+(defun custom/beginning-of-item ()
+  "Conditional move to beginning of item.
+
+Default: `beginning-of-line-text' of the current visual line.
+
+If a region is active, move to `beginning-of-visual-line'."
+  (interactive)
+  (if (not (region-active-p))
+      (progn (beginning-of-visual-line)
+	           (beginning-of-line-text))
+    (beginning-of-visual-line)))
 
 (defun <> (a b c)
   (and (> b a) (> c b)))
@@ -259,17 +283,17 @@ buffer is already narrowed, widen buffer."
 (use-package ivy
   :delight ivy-mode
   :bind (:map ivy-minibuffer-map
-	      ("TAB" . ivy-alt-done)
-	      ("C-l" . ivy-alt-done)
-	      ("C-j" . ivy-next-line)
-	      ("C-k" . ivy-previous-line)
-	      :map ivy-switch-buffer-map
-	      ("C-k" . ivy-previous-line)
-	      ("C-l" . ivy-done)
-	      ("C-d" . ivy-switch-buffer-kill)
-	      :map ivy-reverse-i-search-map
-	      ("C-k" . ivy-previous-line)
-	      ("C-d" . ivy-reverse-i-search-kill))
+	       ("TAB" . ivy-alt-done)
+	       ("C-l" . ivy-alt-done)
+	       ("C-j" . ivy-next-line)
+	       ("C-k" . ivy-previous-line)
+	       :map ivy-switch-buffer-map
+	       ("C-k" . ivy-previous-line)
+	       ("C-l" . ivy-done)
+	       ("C-d" . ivy-switch-buffer-kill)
+	       :map ivy-reverse-i-search-map
+	       ("C-k" . ivy-previous-line)
+	       ("C-d" . ivy-reverse-i-search-kill))
   :init (ivy-mode 1))
 
 ;; Completion candidate descriptions
@@ -311,8 +335,8 @@ Conditional:
   - Empty indented lines
   - Wrapped visual lines"
   (interactive)
-  (cond ((custom/in-org (custom/relative-line-org-heading-or-list))                               (beginning-of-visual-line))
-	      ((custom/relative-line-empty)                                                             (beginning-of-visual-line))
+  (cond ((custom/in-org (custom/relative-line-org-heading-or-list))                               (custom/beginning-of-item))
+	      ((custom/relative-line-empty)                                                             (custom/beginning-of-item))
 	      ((> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'back-to-indentation)) (beginning-of-visual-line))
 	      (t                                                                                        (back-to-indentation))))
 
@@ -441,12 +465,10 @@ region and indent plus one character."
     (progn (setq beg (region-beginning) end (region-end))
 	         (if (custom/at-indent beg)
 		     (progn (beginning-of-visual-line)
-			    (delete-region (point) end)
-			    (if (not (custom/relative-line-empty -1))
-				(delete-backward-char 1)))
+			    (delete-region (point) end))
 		   (delete-region beg end)))))
 
-(defun custom/del-forward ()
+(defun custom/nimble-delete-forward ()
   "Conditional forward deletion.
 
 Default: `delete-forward-char' 1
@@ -462,62 +484,40 @@ next line plus one character."
 	           (delete-forward-char 1))
     (delete-forward-char 1)))
 
-(global-set-key (kbd "<deletechar>") 'custom/del-forward)
+(global-set-key (kbd "<deletechar>") 'custom/nimble-delete-forward)
 
-(defun custom/del-backward ()
+(defun custom/nimble-delete-backward (orig-fun &rest args)
   "Conditional forward deletion.
 
 Default: `delete-backward-char' 1
 
-If area is active, delete area.
+If `multiple-cursors-mode' is active, `delete-backward-char' 1.
 
-If `multiple-cursors-mode' is active
-however, `delete-backward-char' 1.
+Else, if region is active, delete region. If Org Mode is active and 
+the previous line if not empty, `custom/nimble-delete-forward' from 
+the `end-of-visual-line' of the previous line.
 
-If cursor lies either `custom/at-indent'
-level or is preceded only by whitespace, 
-delete region from `point' to `line-beginning-position'."
-  (interactive)
+Else, if cursor lies either `custom/at-indent' level or is preceded only 
+by whitespace, delete region from `point' to `line-beginning-position'.
+
+Else, if cursor lies at the `end-of-visual-line' of a folded Org Mode
+heading, unfold heading and `delete-backward-char' 1."
   (if (not multiple-cursors-mode)
       (if (region-active-p)
-	        (custom/delete-region)
+	        (progn (custom/delete-region)
+		       (if (custom/in-org (not (custom/relative-line-empty -1)))
+			   (progn (next-line -1)
+				  (end-of-visual-line)
+				  (custom/nimble-delete-forward)
+				  )))
 	      (if (and (or (custom/at-indent) (custom/relative-line-empty)) (not (custom/at-bol)))
-		  (delete-region (point) (line-beginning-position))
-		(delete-backward-char 1)))
-      (delete-backward-char 1)))
-
-(global-set-key (kbd "<backspace>") 'custom/del-backward)
-
-(global-set-key (kbd "C-`") 'widen)
-
-;; Undo Tree
-(use-package undo-tree
-  :bind (("M-/" . undo-tree-visualize)
-         :map undo-tree-visualizer-mode-map
-         ("RET" . undo-tree-visualizer-quit)
-         ("ESC" . undo-tree-visualizer-quit))
-  :config
-  (global-undo-tree-mode))
-
-;; Visualize in side buffer
-(defun custom/undo-tree-split-side-by-side (orig-fun &rest args)
-  "Split undo-tree side-by-side"
-  (let ((split-height-threshold nil)
-        (split-width-threshold 0))
+		  (delete-region (point) (custom/get-point 'beginning-of-visual-line))
+		(if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
+		    (progn (beginning-of-visual-line) (end-of-line) (apply orig-fun args))
+		  (apply orig-fun args))))
     (apply orig-fun args)))
 
-(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
-
-;; Increase kill ring size
-(setq kill-ring-max 200)
-
-;; Copy region with S-left click
-(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
-(global-set-key (kbd "S-<down-mouse-1>")  nil)
-
-;; Paste with mouse right click
-(global-set-key (kbd "<mouse-3>")        'yank)
-(global-set-key (kbd "<down-mouse-3>")    nil)
+(advice-add 'delete-backward-char :around #'custom/nimble-delete-backward)
 
 ;; IELM
 (global-set-key (kbd "C-l") 'ielm)
@@ -678,7 +678,8 @@ not empty. In any case, advance to next line."
 empty list item."
   (interactive)
   (cond ((custom/relative-line-org-list-empty)        (progn (org-return) (move-beginning-of-line nil)))
-	      ((custom/relative-line-org-heading-or-list)   (progn (org-return) (org-cycle)))
+	      ((custom/relative-line-org-list)              (progn (org-return) (org-cycle)))
+	      ((custom/relative-line-org-heading-folded)    (progn (beginning-of-visual-line) (org-show-subtree) (end-of-line) (org-return)))
 	      ((custom/relative-line-indented)              (progn (org-return) (org-cycle)))
 	      ((org-in-src-block-p)                         (progn (org-return) (org-cycle)))
 	      (t                                            (org-return))))
@@ -687,8 +688,7 @@ empty list item."
 
 ;; org-meta-return
 (defun custom/org-meta-return ()
-  "`org-meta-return' unless in an
-empty list item."
+  "`org-meta-return' unless in an empty list item."
   (interactive)
   (cond ((org-in-src-block-p)                       (custom/org-return))
 	      ((custom/relative-line-org-list-empty)      (progn (org-meta-return) (next-line) (move-end-of-line nil)))
@@ -697,13 +697,27 @@ empty list item."
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
+(defun custom/org-self-insert-command (orig-fun &rest args)
+    (if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
+	      (progn (beginning-of-visual-line) 
+		     (org-show-subtree)
+		     (end-of-line)
+		     (org-return)
+		     (apply orig-fun args))
+      (apply orig-fun args)))
+
+(advice-add 'org-self-insert-command :around #'custom/org-self-insert-command)
+
 (defun custom/heading-respect-content ()
   (interactive)
-  (outline-up-heading 0)
-  (org-insert-heading-respect-content))
+  (if (org-current-level)
+      (progn (if (not (= 1 (org-current-level)))
+	               (outline-up-heading 0))
+             (org-insert-heading-respect-content))
+    (org-insert-heading-respect-content)))
 
 ;; Insert heading after current tree
-(define-key org-mode-map (kbd "S-<return>") 'custom/heading-respect-content)
+(define-key org-mode-map (kbd "M-<return>") 'custom/heading-respect-content)
 
 (defun custom/with-mark-active (&rest args)
   "Keep mark active after command. To be used as advice AFTER any
@@ -721,11 +735,21 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
 
 (defun custom/org-cycle (orig-fun &rest args)
+  "Conditional `org-cycle'.
+
+Default: `org-cycle'
+
+If cursor lies at `end-of-visual-line' of folded heading or list,
+move cursor to `end-of-line' of the current visual line and then
+call `org-cycle'."
   (interactive)
-  (if (or (not (custom/relative-line-org-heading-or-list)) (custom/relative-line-org-heading-empty))
-      (apply orig-fun args)
-    (progn (beginning-of-visual-line)
-	       (apply orig-fun args))))
+  (if (or (custom/relative-line-org-list-folded) (custom/relative-line-org-heading-folded))
+      (if (= (point) (custom/get-point 'end-of-visual-line))
+	      (progn (beginning-of-visual-line)
+		     (end-of-line)
+		     (apply orig-fun args))
+	    (apply orig-fun args))
+    (apply orig-fun args)))
 
 (advice-add 'org-cycle :around #'custom/org-cycle)
 
@@ -941,8 +965,7 @@ folded."
 (add-hook 'org-agenda-mode-hook 'custom/org-agenda-custom-bindings)
 
 ;; Set Org Agenda files
-(setq org-agenda-files '("~/.emacs.d/tasks.org"
-			 "~/.emacs.d/contacts.org"))
+(setq org-agenda-files '("/home/tasks.org"))
 
 (setq org-tag-alist
       '((:startgroup)

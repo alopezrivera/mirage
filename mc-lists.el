@@ -5,6 +5,7 @@
       '(
 	beginning-of-visual-line
 	custom/del-backward
+	custom/dynamic-end
 	custom/rectangular-region-multiple-cursors
 	custom/smart-comment
 	electric-newline-and-maybe-indent
