@@ -215,6 +215,15 @@ to the query at execution."
 
 #+end_src
 
+***** relative-line-org-list-empty
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-org-list-empty (&optional number)
+  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$" number))
+
+#+end_src
+
 ***** relative-line-org-heading
 
 #+begin_src emacs-lisp
@@ -225,12 +234,12 @@ to the query at execution."
 
 #+end_src
 
-***** relative-line-org-list-empty
+***** relative-line-org-heading-empty
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-org-list-empty (&optional number)
-  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$" number))
+(defun custom/relative-line-org-heading-empty (&optional number)
+  (custom/relative-line-regex "[[:blank:]]*[*]+[[:blank:]]*$" number))
 
 #+end_src
 
