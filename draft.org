@@ -1,5 +1,42 @@
 #+title:DRAFTS
 
+* org-backlog
+** Startup
+
+#+begin_src emacs-lisp
+
+;; Align tags
+(add-hook 'org-backlog #'org-set-tags-command)
+
+#+end_src
+
+** Display
+*** Tag indentation
+
+#+begin_src emacs-lisp
+
+;; Tag indentation
+(setq org-tags-column 70)
+
+#+end_src
+
+** Typefaces
+*** Headings
+
+- small
+- monospace
+- same color
+- equal
+  
+* relative-line-org-title
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-org-title (&optional number)
+  (custom/relative-line-regex "\\#\\+title:.*$" number))
+
+#+end_src
+
 * Performance profiling
 
 #+begin_src emacs-lisp
