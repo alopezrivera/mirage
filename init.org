@@ -1165,8 +1165,7 @@ empty list item."
 
 ;; org-meta-return
 (defun custom/org-meta-return ()
-  "`org-meta-return' unless in an
-empty list item."
+  "`org-meta-return' unless in an empty list item."
   (interactive)
   (cond ((org-in-src-block-p)                       (custom/org-return))
 	      ((custom/relative-line-org-list-empty)      (progn (org-meta-return) (next-line) (move-end-of-line nil)))
