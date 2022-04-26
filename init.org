@@ -48,7 +48,6 @@
 (setq default-directory "~/.emacs.d/")
 
 #+end_src
-
 ** System information
 *** Config directory
 
