@@ -161,6 +161,7 @@
   (custom/at-point 'back-to-indentation position))
 
 #+end_src
+
 **** relative-line
 
 #+begin_src emacs-lisp
@@ -544,6 +545,7 @@ buffer is already narrowed, widen buffer."
   :init (ivy-rich-mode 1))
 
 #+end_src
+
 *** Command suggestions
 
 #+begin_src emacs-lisp
