@@ -1188,8 +1188,13 @@ empty list item."
 
 #+begin_src emacs-lisp
 
+(defun custom/heading-respect-content ()
+  (interactive)
+  (outline-up-heading 0)
+  (org-insert-heading-respect-content))
+
 ;; Insert heading after current tree
-(define-key org-mode-map (kbd "S-<return>") 'org-insert-heading-respect-content)
+(define-key org-mode-map (kbd "S-<return>") 'custom/heading-respect-content)
 
 #+end_src
 
