@@ -1128,9 +1128,12 @@ not empty. In any case, advance to next line."
 
 #+begin_src emacs-lisp
 
-;; Load Org Mode
-(use-package org
-  :delight org-indent-mode)
+;; Org Mode
+(straight-use-package 'org)
+(require 'org)
+
+;; Delight
+(delight 'org-indent-mode)
 
 #+end_src
 
