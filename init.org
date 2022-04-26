@@ -643,8 +643,8 @@ Conditional:
   - Empty indented lines
   - Wrapped visual lines"
   (interactive)
-  (cond ((custom/in-org (custom/relative-line-org-heading-or-list))                               (beginning-of-visual-line))
-	      ((custom/relative-line-empty)                                                             (beginning-of-visual-line))
+  (cond ((custom/in-org (custom/relative-line-org-heading-or-list))                               (custom/beginning-of-item))
+	      ((custom/relative-line-empty)                                                             (custom/beginning-of-item))
 	      ((> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'back-to-indentation)) (beginning-of-visual-line))
 	      (t                                                                                        (back-to-indentation))))
 
