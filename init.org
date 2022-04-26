@@ -1176,17 +1176,37 @@ empty list item."
 
 #+end_src
 
+*** org-self-insert-command
+
+#+begin_src emacs-lisp
+
+(defun custom/org-self-insert-command (orig-fun &rest args)
+    (if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
+	      (progn (beginning-of-visual-line) 
+		     (org-show-subtree)
+		     (end-of-line)
+		     (org-return)
+		     (apply orig-fun args))
+      (apply orig-fun args)))
+
+(advice-add 'org-self-insert-command :around #'custom/org-self-insert-command)
+
+#+end_src
+
 *** Insert heading respecting content
 
 #+begin_src emacs-lisp
 
 (defun custom/heading-respect-content ()
   (interactive)
-  (outline-up-heading 0)
-  (org-insert-heading-respect-content))
+  (if (org-current-level)
+      (progn (if (not (= 1 (org-current-level)))
+	               (outline-up-heading 0))
+             (org-insert-heading-respect-content))
+    (org-insert-heading-respect-content)))
 
 ;; Insert heading after current tree
-(define-key org-mode-map (kbd "S-<return>") 'custom/heading-respect-content)
+(define-key org-mode-map (kbd "M-<return>") 'custom/heading-respect-content)
 
 #+end_src
 
