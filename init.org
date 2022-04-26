@@ -434,9 +434,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-;; Load Swiper
+;; Swiper
 (use-package swiper)
-
 (require 'swiper)
 
 #+end_src
@@ -959,8 +958,6 @@ delete region from `point' to `line-beginning-position'."
 	       ("C-;"         . mc/mark-previous-like-this)
 	       ("C-<mouse-1>" . mc/add-cursor-on-click))
   )
-
-;; Load package
 (require 'multiple-cursors)
 
 ;; Unknown commands file
@@ -1606,7 +1603,6 @@ folded."
 		 (org-agenda-files org-agenda-files)))))))
 
 #+end_src
-
 * Theme
 
 #+begin_src emacs-lisp
