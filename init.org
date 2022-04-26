@@ -1491,14 +1491,16 @@ folded."
 ;; Org Roam
 (straight-use-package 'org-roam)
 
+;; Directory
+(setq org-roam-directory "/home/roam")
+
 #+end_src
 
-*** Setup
+*** Startup
 
 #+begin_src emacs-lisp
 
-;; Directory
-(setq org-roam-directory "/home/roam")
+(org-roam-db-autosync-mode)
 
 #+end_src
 
