@@ -893,6 +893,7 @@ delete region from `point' to `line-beginning-position'."
 (setq kill-ring-max 200)
 
 #+end_src
+
 ** Cut, Copy, Paste
 
 #+begin_src emacs-lisp
@@ -1093,8 +1094,8 @@ not empty. In any case, advance to next line."
 
 #+begin_src emacs-lisp
 
-;; Require < to load snippet
 (defun custom/<-snippet (orig-fun &rest args)
+  "Require < before snippets."
   (interactive)
   (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 	(if (not (string-equal line ""))
