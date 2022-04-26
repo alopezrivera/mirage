@@ -9,8 +9,10 @@
 
 #+end_src
 
-* delete
-** backward
+* writing
+** undo
+** delete
+*** backward
 
 #+begin_src emacs-lisp
 
@@ -19,8 +21,9 @@
 
 #+end_src
 
-* at-point
-** at-bol
+* queries
+** at-point
+*** at-bol
 
 #+begin_src emacs-lisp
 
@@ -28,15 +31,15 @@
 
 #+end_src
 
-* relative-line
-** relative-line-empty
+** relative-line
+*** relative-line-empty
 
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-p") (lambda () (interactive) (print (custom/relative-line-empty))))
 
 #+end_src
 
-** relative-line-org-list
+*** relative-line-org-list
 
 - a
 - b
@@ -48,12 +51,14 @@
 
 #+end_src
 
-** relative-line-org-heading
+*** relative-line-org-heading
 
 #+begin_src emacs-lisp
 
 (global-set-key (kbd "C-p") (lambda () (interactive) (print (custom/relative-line-org-heading))))
 
 #+end_src
-*** contiguous subheading
+**** contiguous subheading
+
+* retrieval
 
