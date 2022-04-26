@@ -830,9 +830,7 @@ region and indent plus one character."
     (progn (setq beg (region-beginning) end (region-end))
 	         (if (custom/at-indent beg)
 		     (progn (beginning-of-visual-line)
-			    (delete-region (point) end)
-			    (if (not (custom/relative-line-empty -1))
-				(delete-backward-char 1)))
+			    (delete-region (point) end))
 		   (delete-region beg end)))))
 
 #+end_src
