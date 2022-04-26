@@ -442,7 +442,8 @@ region and indent plus one character."
 	         (if (custom/at-indent beg)
 		     (progn (beginning-of-visual-line)
 			    (delete-region (point) end)
-			    (delete-backward-char 1))
+			    (if (not (custom/relative-line-empty -1))
+				(delete-backward-char 1)))
 		   (delete-region beg end)))))
 
 (defun custom/del-forward ()
@@ -894,6 +895,8 @@ folded."
 
 ;; Directory
 (setq org-roam-directory "/home/roam")
+
+(org-roam-db-autosync-mode)
 
 ;; Org Roam UI
 (straight-use-package 'org-roam-ui)
