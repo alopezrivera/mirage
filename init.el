@@ -92,12 +92,15 @@ to the query at execution."
   (interactive)
   (custom/relative-line 'org-at-item-p number))
 
+(defun custom/relative-line-org-list-empty (&optional number)
+  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$" number))
+
 (defun custom/relative-line-org-heading (&optional number)
   (interactive)
   (custom/relative-line 'org-at-heading-p number))
 
-(defun custom/relative-line-org-list-empty (&optional number)
-  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$" number))
+(defun custom/relative-line-org-heading-empty (&optional number)
+  (custom/relative-line-regex "[[:blank:]]*[*]+[[:blank:]]*$" number))
 
 (defun custom/relative-line-org-heading-or-list ()
   (or (custom/relative-line-org-heading) (custom/relative-line-org-list)))
@@ -475,7 +478,7 @@ If cursor lies either `custom/at-indent'
 level or is preceded only by whitespace, 
 delete region from `point' to `line-beginning-position'."
   (interactive)
-  (if multiple-cursors-mode
+  (if (not multiple-cursors-mode)
       (if (region-active-p)
 	        (custom/delete-region)
 	      (if (and (or (custom/at-indent) (custom/relative-line-empty)) (not (custom/at-bol)))
@@ -643,8 +646,8 @@ not empty. In any case, advance to next line."
 
 (yas-global-mode 1)
 
-;; Require < to load snippet
 (defun custom/<-snippet (orig-fun &rest args)
+  "Require < before snippets."
   (interactive)
   (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 	(if (not (string-equal line ""))
@@ -713,7 +716,7 @@ function that sets `deactivate-mark' to t."
 
 (defun custom/org-cycle (orig-fun &rest args)
   (interactive)
-  (if (not (custom/relative-line-org-heading-or-list))
+  (if (or (not (custom/relative-line-org-heading-or-list)) (custom/relative-line-org-heading-empty))
       (apply orig-fun args)
     (progn (beginning-of-visual-line)
 	       (apply orig-fun args))))
