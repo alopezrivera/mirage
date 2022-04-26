@@ -1483,6 +1483,75 @@ folded."
 
 #+end_src
 
+** Org Roam
+
+#+begin_src emacs-lisp
+
+;; Org Roam
+(straight-use-package 'org-roam)
+
+#+end_src
+
+*** Setup
+
+#+begin_src emacs-lisp
+
+;; Directory
+(setq org-roam-directory "/home/roam")
+
+#+end_src
+
+*** org-roam-ui
+
+#+begin_src emacs-lisp
+
+;; Org Roam UI
+(straight-use-package 'org-roam-ui)
+
+#+end_src
+
+***** Follow
+
+#+begin_src emacs-lisp
+
+(setq org-roam-ui-follow t)
+
+#+end_src
+
+***** Theme
+
+#+begin_src emacs-lisp
+
+;; Sync theme and UI
+(setq org-roam-ui-sync-theme nil)
+
+#+end_src
+
+***** Startup
+
+#+begin_src emacs-lisp
+
+(setq org-roam-ui-open-on-start nil)
+
+#+end_src
+
+***** Update
+
+#+begin_src emacs-lisp
+
+(setq org-roam-ui-update-on-save t)
+
+#+end_src
+
+*** Timestamps
+
+#+begin_src emacs-lisp
+
+;; Org Roam timestamps
+;; (straight-use-package 'org-roam-timestamps)
+
+#+end_src
+
 ** Org Agenda
 *** Setup
 
