@@ -201,6 +201,18 @@ to the query at execution."
 
 #+end_src
 
+***** relative-line-org-list-folded
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-org-list-folded (&optional number)
+  "Returns non-nil if `point-at-eol' of current visual line
+is on a folded list item."
+  (interactive)
+  (custom/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
+
+#+end_src
+
 ***** relative-line-org-list-empty
 
 #+begin_src emacs-lisp
@@ -217,6 +229,18 @@ to the query at execution."
 (defun custom/relative-line-org-heading (&optional number)
   (interactive)
   (custom/relative-line 'org-at-heading-p number))
+
+#+end_src
+
+***** relative-line-org-heading-folded
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-org-heading-folded (&optional number)
+  "Returns non-nil if `point-at-eol' of current visual line
+is on a folded heading."
+  (interactive)
+  (custom/relative-line (lambda () (and (org-at-heading-p) (invisible-p (point-at-eol)))) number))
 
 #+end_src
 
