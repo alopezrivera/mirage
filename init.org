@@ -30,7 +30,7 @@
 
 ;; Buffers opened at startup
 (defvar custom/background-buffers
-  '("~/.emacs.d/init.org" "/mnt/c/Users/xXY4n/Downloads/emacs/test.org"))
+  '("~/.emacs.d/init.org" "/home/emacs/test.org"))
 
 (defun custom/spawn-background-buffers ()
   (cl-loop for buffer in custom/background-buffers
@@ -1594,8 +1594,7 @@ folded."
 #+begin_src emacs-lisp
 
 ;; Set Org Agenda files
-(setq org-agenda-files '("~/.emacs.d/tasks.org"
-			 "~/.emacs.d/contacts.org"))
+(setq org-agenda-files '("/home/tasks.org"))
 
 #+end_src
 
