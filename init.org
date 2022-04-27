@@ -1234,12 +1234,13 @@ not empty. In any case, advance to next line."
 
 ;; org-meta-return
 (defun custom/org-meta-return ()
-  "`org-meta-return' unless in an empty list item."
+  "Conditional `org-meta-return'."
   (interactive)
-  (cond ((org-in-src-block-p)                       (custom/org-return))
-	      ((custom/relative-line-org-list-empty)      (progn (org-meta-return) (next-line) (move-end-of-line nil)))
-	      ((custom/relative-line-org-heading-or-list) (progn (move-end-of-line nil) (org-meta-return)))
-	      (t                                          (org-meta-return))))
+  (cond ((custom/relative-line-org-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
+	      ((custom/relative-line-org-heading)    (custom/heading-respect-content))
+	      ((custom/relative-line-org-list)       (progn (end-of-line) (org-meta-return)))
+	      ((org-in-src-block-p)                  (custom/heading-respect-content))
+	      (t                                     (org-meta-return))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
