@@ -830,6 +830,8 @@ region and indent plus one character."
     (progn (setq beg (region-beginning) end (region-end))
 	         (if (custom/at-indent beg)
 		     (progn (beginning-of-visual-line)
+			    (if (not (custom/at-point 'beginning-of-buffer))
+				(left-char))
 			    (delete-region (point) end))
 		   (delete-region beg end)))))
 
@@ -881,12 +883,7 @@ Else, if cursor lies at the `end-of-visual-line' of a folded Org Mode
 heading, unfold heading and `delete-backward-char' 1."
   (if (not multiple-cursors-mode)
       (if (region-active-p)
-	        (progn (custom/delete-region)
-		       (if (custom/in-org (not (custom/relative-line-empty -1)))
-			   (progn (next-line -1)
-				  (end-of-visual-line)
-				  (custom/nimble-delete-forward)
-				  )))
+	        (custom/delete-region)
 	      (if (and (or (custom/at-indent) (custom/relative-line-empty)) (not (custom/at-bol)))
 		  (delete-region (point) (custom/get-point 'beginning-of-visual-line))
 		(if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
