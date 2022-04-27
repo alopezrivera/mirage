@@ -1269,10 +1269,11 @@ not empty. In any case, advance to next line."
 #+begin_src emacs-lisp
 
 (defun custom/heading-respect-content ()
+  "Conditional `org-insert-heading-respect-content'."
   (interactive)
   (if (org-current-level)
       (progn (if (not (= 1 (org-current-level)))
-	               (outline-up-heading 1))
+	               (outline-up-heading 0))
              (org-insert-heading-respect-content))
     (org-insert-heading-respect-content)))
 
