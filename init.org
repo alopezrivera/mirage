@@ -966,6 +966,7 @@ heading, unfold heading and `delete-backward-char' 1."
 #+end_src
 
 **** Buffer
+
 #+begin_src emacs-lisp
 
 ;; Buffer evaluation
@@ -1232,6 +1233,7 @@ empty list item."
 #+begin_src emacs-lisp
 
 (defun custom/org-self-insert-command (orig-fun &rest args)
+  "Conditional `org-self-insert-command'."
     (if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
 	      (progn (beginning-of-visual-line) 
 		     (org-show-subtree)
@@ -1281,6 +1283,7 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
 
 #+end_src
+
 ** Navigation
 
 #+begin_src emacs-lisp
@@ -1292,7 +1295,10 @@ Default: `org-cycle'
 
 If cursor lies at `end-of-visual-line' of folded heading or list,
 move cursor to `end-of-line' of the current visual line and then
-call `org-cycle'."
+call `org-cycle'.
+
+If cursor lies at a paragraph directly under a list item and not
+indented at the level of the previous list item, indent the paragraph."
   (interactive)
   (if (or (custom/relative-line-org-list-folded) (custom/relative-line-org-heading-folded))
       (if (= (point) (custom/get-point 'end-of-visual-line))
