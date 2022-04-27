@@ -1201,7 +1201,7 @@ empty list item."
   (interactive)
   (if (org-current-level)
       (progn (if (not (= 1 (org-current-level)))
-	               (outline-up-heading 0))
+	               (outline-up-heading 1))
              (org-insert-heading-respect-content))
     (org-insert-heading-respect-content)))
 
