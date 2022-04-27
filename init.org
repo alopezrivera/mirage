@@ -1191,14 +1191,31 @@ not empty. In any case, advance to next line."
 #+end_src
 
 ** Editing
+*** org-yank
+
+#+begin_src emacs-lisp
+
+(defun custom/org-yank (orig-fun &rest args)
+  "Conditional `org-yank'."
+  (if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
+      (progn (beginning-of-visual-line)
+	           (org-show-subtree)
+		   (end-of-line)
+		   (org-return)
+		   (apply orig-fun args))
+    (apply orig-fun args)))
+
+(advice-add 'org-yank :around #'custom/yank)
+
+#+end_src
+
 *** org-return
 
 #+begin_src emacs-lisp
 
 ;; org-return
 (defun custom/org-return ()
-  "`org-meta-return' unless in an
-empty list item."
+  "Conditional `org-meta-return'."
   (interactive)
   (cond ((custom/relative-line-org-list-empty)        (progn (org-return) (move-beginning-of-line nil)))
 	      ((custom/relative-line-org-list)              (progn (org-return) (org-cycle)))
