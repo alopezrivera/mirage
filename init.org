@@ -1331,6 +1331,23 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
+** Structure editing
+*** org-metaright
+
+#+begin_src emacs-lisp
+
+(defun custom/org-metaright (orig-fun &rest args)
+  (if (and (not (custom/relative-line-org-list)) (custom/relative-line-org-list -1))
+      (progn
+	      (end-of-line 0)
+	      (custom/org-return)
+	      (custom/nimble-delete-forward))
+    (apply orig-fun args)))
+
+(advice-add 'org-metaright :around #'custom/org-metaright)
+
+#+end_src
+
 ** Structure templates
 
 #+begin_src emacs-lisp
