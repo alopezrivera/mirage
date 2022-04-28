@@ -60,6 +60,9 @@
 (defun custom/at-indent (&optional position)
   (custom/at-point 'back-to-indentation position))
 
+(defun custom/org-at-ellipsis (&optional position)
+  (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line)))
+
 (defun custom/relative-line (query &optional number &rest args)
   "Return the result of a boolean query at the current
 line or another specified by its relative position to the
@@ -132,7 +135,7 @@ is on a folded heading."
 (defun custom/current-window-number ()
   "Retrieve the current window's number."
   (setq window (prin1-to-string (get-buffer-window (current-buffer))))
-  (string-match "^[^0-9]*\\([0-9]+\\)[^0-9]*$" window)
+  (string-match "^[^0-9]*\\([0-9]\{1-4\}\\).*$" window)
   (match-string 1 window))
 
 (defun custom/get-point (command)
@@ -446,8 +449,8 @@ kill the current buffer and delete its window."
   (let ((last-called (get this-command 'custom/last-call-time)))
     (if (and (eq last-command this-command)
              (<= (time-to-seconds (time-since last-called)) custom/double-escape-timeout))
-        (progn (kill-buffer)
-	             (delete-window))
+        (if (kill-buffer)
+	          (delete-window))
       (custom/escape-window-or-region)))
   (put this-command 'custom/last-call-time (current-time)))
 
@@ -698,9 +701,10 @@ not empty. In any case, advance to next line."
 ;; Startup with inline images
 (setq org-startup-with-inline-images t)
 
-(defun custom/org-yank (orig-fun &rest args)
-  "Conditional `org-yank'."
-  (if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
+(defun custom/org-edit-at-ellipsis (orig-fun &rest args)
+  "Execute commands invoked at an Org Mode heading's
+ellipsis in the first line under the heading."
+  (if (custom/org-at-ellipsis)
       (progn (beginning-of-visual-line)
 	           (org-show-subtree)
 		   (end-of-line)
@@ -708,15 +712,18 @@ not empty. In any case, advance to next line."
 		   (apply orig-fun args))
     (apply orig-fun args)))
 
-(advice-add 'org-yank :around #'custom/org-yank)
+(dolist (fn '(org-yank
+	            org-self-insert-command
+		    custom/nimble-delete-forward))
+  (advice-add fn :around #'custom/org-edit-at-ellipsis))
 
 ;; org-return
 (defun custom/org-return ()
-  "Conditional `org-meta-return'."
+  "Conditional `org-return'."
   (interactive)
   (cond ((custom/relative-line-org-list-empty)        (progn (org-return) (move-beginning-of-line nil)))
 	      ((custom/relative-line-org-list)              (progn (org-return) (org-cycle)))
-	      ((custom/relative-line-org-heading-folded)    (progn (beginning-of-visual-line) (org-show-subtree) (end-of-line) (org-return)))
+	      ((custom/org-at-ellipsis)                     (progn (beginning-of-visual-line) (org-show-subtree) (end-of-line) (org-return)))
 	      ((custom/relative-line-indented)              (progn (org-return) (org-cycle)))
 	      ((org-in-src-block-p)                         (progn (org-return) (org-cycle)))
 	      (t                                            (org-return))))
@@ -735,19 +742,18 @@ not empty. In any case, advance to next line."
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
-(defun custom/org-self-insert-command (orig-fun &rest args)
-  "Conditional `org-self-insert-command'."
-    (if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
-	      (progn (beginning-of-visual-line) 
-		     (org-show-subtree)
-		     (end-of-line)
-		     (org-return)
-		     (apply orig-fun args))
-      (apply orig-fun args)))
+(defun custom/org-insert-subheading ()
+  "Insert subheading respecting content."
+  (interactive)
+  (if (custom/org-at-ellipsis)
+      (progn (beginning-of-visual-line)
+	           (org-show-subtree)))
+  (custom/org-insert-heading-respect-content)
+  (org-cycle))
 
-(advice-add 'org-self-insert-command :around #'custom/org-self-insert-command)
+(define-key org-mode-map (kbd "S-<return>") 'custom/org-insert-subheading)
 
-(defun custom/heading-respect-content ()
+(defun custom/org-insert-heading-respect-content ()
   "Conditional `org-insert-heading-respect-content'."
   (interactive)
   (if (org-current-level)
@@ -757,7 +763,7 @@ not empty. In any case, advance to next line."
     (org-insert-heading-respect-content)))
 
 ;; Insert heading after current tree
-(define-key org-mode-map (kbd "M-<return>") 'custom/heading-respect-content)
+(define-key org-mode-map (kbd "M-<return>") 'custom/org-insert-heading-respect-content)
 
 (defun custom/with-mark-active (&rest args)
   "Keep mark active after command. To be used as advice AFTER any
