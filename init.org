@@ -1259,21 +1259,20 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-*** org-self-insert-command
+*** Insert subheading
 
 #+begin_src emacs-lisp
 
-(defun custom/org-self-insert-command (orig-fun &rest args)
-  "Conditional `org-self-insert-command'."
-    (if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
-	      (progn (beginning-of-visual-line) 
-		     (org-show-subtree)
-		     (end-of-line)
-		     (org-return)
-		     (apply orig-fun args))
-      (apply orig-fun args)))
+(defun custom/org-insert-subheading ()
+  "Insert subheading respecting content."
+  (interactive)
+  (if (custom/org-at-ellipsis)
+      (progn (beginning-of-visual-line)
+	           (org-show-subtree)))
+  (custom/org-insert-heading-respect-content)
+  (org-cycle))
 
-(advice-add 'org-self-insert-command :around #'custom/org-self-insert-command)
+(define-key org-mode-map (kbd "S-<return>") 'custom/org-insert-subheading)
 
 #+end_src
 
