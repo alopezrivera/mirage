@@ -147,6 +147,15 @@
 
 #+end_src
 
+***** org-at-ellipsis
+
+#+begin_src emacs-lisp
+
+(defun custom/org-at-ellipsis (&optional position)
+  (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line)))
+
+#+end_src
+
 **** relative-line
 
 #+begin_src emacs-lisp
