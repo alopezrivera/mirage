@@ -839,7 +839,7 @@ region and indent plus one character."
     (progn (setq beg (region-beginning) end (region-end))
 	         (if (custom/at-indent beg)
 		     (progn (beginning-of-visual-line)
-			    (if (not (custom/at-point 'beginning-of-buffer))
+			    (if (and (org-in-src-block-p) (not (custom/at-point 'beginning-of-buffer)))
 				(left-char))
 			    (delete-region (point) end))
 		   (delete-region beg end)))))
