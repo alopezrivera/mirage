@@ -812,8 +812,8 @@ kill the current buffer and delete its window."
   (let ((last-called (get this-command 'custom/last-call-time)))
     (if (and (eq last-command this-command)
              (<= (time-to-seconds (time-since last-called)) custom/double-escape-timeout))
-        (progn (kill-buffer)
-	             (delete-window))
+        (if (kill-buffer)
+	          (delete-window))
       (custom/escape-window-or-region)))
   (put this-command 'custom/last-call-time (current-time)))
 
