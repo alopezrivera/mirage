@@ -271,7 +271,7 @@ is on a folded heading."
 (provided as a list) match STRING."
   (cl-loop for pattern in patterns
 	   if (not (string-match pattern string))
-	     return nil
+	   return nil
 	   finally return t))
 
 #+end_src
@@ -281,7 +281,7 @@ is on a folded heading."
 #+begin_src emacs-lisp
 
 (defun custom/in-mode (mode)
-  "Return t if Org Mode is currently active."
+  "Return t if mode is currently active."
   (string-equal major-mode mode))
 
 #+end_src
@@ -291,7 +291,7 @@ is on a folded heading."
 #+begin_src emacs-lisp
 
 (defun custom/in-org (cond)
-  "Return t if `cond' is t and Org Mode is active."
+  "Return t if cond is t and Org Mode is active."
   (and cond (custom/in-mode "org-mode")))
 
 #+end_src
@@ -1205,7 +1205,7 @@ not empty. In any case, advance to next line."
 		   (apply orig-fun args))
     (apply orig-fun args)))
 
-(advice-add 'org-yank :around #'custom/yank)
+(advice-add 'org-yank :around #'custom/org-yank)
 
 #+end_src
 
