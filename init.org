@@ -1200,13 +1200,14 @@ not empty. In any case, advance to next line."
 #+end_src
 
 ** Editing
-*** org-yank
+*** At ellipsis
 
 #+begin_src emacs-lisp
 
-(defun custom/org-yank (orig-fun &rest args)
-  "Conditional `org-yank'."
-  (if (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line))
+(defun custom/org-edit-at-ellipsis (orig-fun &rest args)
+  "Execute commands invoked at an Org Mode heading's
+ellipsis in the first line under the heading."
+  (if (custom/org-at-ellipsis)
       (progn (beginning-of-visual-line)
 	           (org-show-subtree)
 		   (end-of-line)
@@ -1214,7 +1215,10 @@ not empty. In any case, advance to next line."
 		   (apply orig-fun args))
     (apply orig-fun args)))
 
-(advice-add 'org-yank :around #'custom/org-yank)
+(dolist (fn '(org-yank
+	            org-self-insert-command
+		    custom/nimble-delete-forward))
+  (advice-add fn :around #'custom/org-edit-at-ellipsis))
 
 #+end_src
 
