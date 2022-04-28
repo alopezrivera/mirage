@@ -1228,11 +1228,11 @@ ellipsis in the first line under the heading."
 
 ;; org-return
 (defun custom/org-return ()
-  "Conditional `org-meta-return'."
+  "Conditional `org-return'."
   (interactive)
   (cond ((custom/relative-line-org-list-empty)        (progn (org-return) (move-beginning-of-line nil)))
 	      ((custom/relative-line-org-list)              (progn (org-return) (org-cycle)))
-	      ((custom/relative-line-org-heading-folded)    (progn (beginning-of-visual-line) (org-show-subtree) (end-of-line) (org-return)))
+	      ((custom/org-at-ellipsis)                     (progn (beginning-of-visual-line) (org-show-subtree) (end-of-line) (org-return)))
 	      ((custom/relative-line-indented)              (progn (org-return) (org-cycle)))
 	      ((org-in-src-block-p)                         (progn (org-return) (org-cycle)))
 	      (t                                            (org-return))))
@@ -1281,7 +1281,7 @@ ellipsis in the first line under the heading."
 
 #+begin_src emacs-lisp
 
-(defun custom/heading-respect-content ()
+(defun custom/org-insert-heading-respect-content ()
   "Conditional `org-insert-heading-respect-content'."
   (interactive)
   (if (org-current-level)
@@ -1291,7 +1291,7 @@ ellipsis in the first line under the heading."
     (org-insert-heading-respect-content)))
 
 ;; Insert heading after current tree
-(define-key org-mode-map (kbd "M-<return>") 'custom/heading-respect-content)
+(define-key org-mode-map (kbd "M-<return>") 'custom/org-insert-heading-respect-content)
 
 #+end_src
 
