@@ -30,7 +30,7 @@
 
 ;; Buffers opened at startup
 (defvar custom/background-buffers
-  '("~/.emacs.d/init.org" "/home/emacs/test.org"))
+  '("~/.emacs.d/init.org" "~/.emacs.d/backlog.org" "/home/emacs/test.org"))
 
 (defun custom/spawn-background-buffers ()
   (cl-loop for buffer in custom/background-buffers
@@ -1250,29 +1250,12 @@ ellipsis in the first line under the heading."
   "Conditional `org-meta-return'."
   (interactive)
   (cond ((custom/relative-line-org-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
-	      ((custom/relative-line-org-heading)    (custom/heading-respect-content))
+	      ((custom/relative-line-org-heading)    (custom/org-insert-heading-respect-content))
 	      ((custom/relative-line-org-list)       (progn (end-of-line) (org-meta-return)))
-	      ((org-in-src-block-p)                  (custom/heading-respect-content))
+	      ((org-in-src-block-p)                  (custom/org-insert-heading-respect-content))
 	      (t                                     (org-meta-return))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
-
-#+end_src
-
-*** Insert subheading
-
-#+begin_src emacs-lisp
-
-(defun custom/org-insert-subheading ()
-  "Insert subheading respecting content."
-  (interactive)
-  (if (custom/org-at-ellipsis)
-      (progn (beginning-of-visual-line)
-	           (org-show-subtree)))
-  (custom/org-insert-heading-respect-content)
-  (org-cycle))
-
-(define-key org-mode-map (kbd "S-<return>") 'custom/org-insert-subheading)
 
 #+end_src
 
@@ -1281,7 +1264,7 @@ ellipsis in the first line under the heading."
 #+begin_src emacs-lisp
 
 (defun custom/org-insert-heading-respect-content ()
-  "Conditional `org-insert-heading-respect-content'."
+  "`org-insert-heading-respect-content' after current tree."
   (interactive)
   (if (org-current-level)
       (progn (if (not (= 1 (org-current-level)))
@@ -1397,9 +1380,9 @@ indented at the level of the previous list item, indent the paragraph."
 #+begin_src emacs-lisp
 
 ;; Justify equation labels - [fleqn]
-;; Preview page width      - \\setlength{\\textwidth}{10cm}
+;; Preview page width      - 10.5cm
 (setq org-format-latex-header
-      "\\documentclass[fleqn]{article}\n\\usepackage[usenames]{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]\n\\pagestyle{empty}             % do not remove\n% The settings below are copied from fullpage.sty\n\\setlength{\\textwidth}{10cm}\n\\addtolength{\\textwidth}{-3cm}\n\\setlength{\\oddsidemargin}{1.5cm}\n\\addtolength{\\oddsidemargin}{-2.54cm}\n\\setlength{\\evensidemargin}{\\oddsidemargin}\n\\setlength{\\textheight}{\\paperheight}\n\\addtolength{\\textheight}{-\\headheight}\n\\addtolength{\\textheight}{-\\headsep}\n\\addtolength{\\textheight}{-\\footskip}\n\\addtolength{\\textheight}{-3cm}\n\\setlength{\\topmargin}{1.5cm}\n\\addtolength{\\topmargin}{-2.54cm}")
+      "\\documentclass[fleqn]{article}\n\\usepackage[usenames]{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]\n\\pagestyle{empty}             % do not remove\n% The settings below are copied from fullpage.sty\n\\setlength{\\textwidth}{10.5cm}\n\\addtolength{\\textwidth}{-3cm}\n\\setlength{\\oddsidemargin}{1.5cm}\n\\addtolength{\\oddsidemargin}{-2.54cm}\n\\setlength{\\evensidemargin}{\\oddsidemargin}\n\\setlength{\\textheight}{\\paperheight}\n\\addtolength{\\textheight}{-\\headheight}\n\\addtolength{\\textheight}{-\\headsep}\n\\addtolength{\\textheight}{-\\footskip}\n\\addtolength{\\textheight}{-3cm}\n\\setlength{\\topmargin}{1.5cm}\n\\addtolength{\\topmargin}{-2.54cm}")
 
 #+end_src
 
