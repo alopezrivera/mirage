@@ -28,16 +28,37 @@
 - same color
 - equal
   
-* relative-line-org-title
+* Chamber
+** Sessions
+*** Persistence
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-org-title (&optional number)
-  (custom/relative-line-regex "\\#\\+title:.*$" number))
+;; workgroups
+;; (straight-use-package 'workgroups)
+
+;; burly
+;; (straight-use-package 'burly)
 
 #+end_src
 
-* Performance profiling
+*** Buffer management
+
+#+begin_src emacs-lisp
+
+;; perspectives
+(straight-use-package 'persp-mode)
+
+(setq persp-autokill-buffer-on-remove 'kill-weak)
+
+(add-hook 'window-setup-hook #'(lambda () (persp-mode 1)))
+
+;; burly
+(straight-use-package 'burly)
+
+#+end_src
+
+** Performance profiling
 
 #+begin_src emacs-lisp
 
@@ -47,7 +68,8 @@
 (setq esup-depth 0)
 
 #+end_src
-* pdf-tools
+
+** pdf-tools
 
 #+begin_src emacs-lisp
 
@@ -63,7 +85,8 @@
 (pdf-loader-install)
 
 #+end_src
-* auctex
+
+** auctex
 
 #+begin_src emacs-lisp
 
@@ -72,20 +95,7 @@
 
 #+end_src
 
-* org-download
-
-#+begin_src emacs-lisp
-
-;; org-download
-(use-package org-download)
-
-;; Add hooks
-(dolist (mode '(org-mode-hook
-		      dired-mode-hook))
-  (add-hook mode 'org-download-enable))
-
-#+end_src
-* treemacs
+** treemacs
 #+begin_src emacs-lisp
 
   (use-package treemacs
@@ -199,3 +209,14 @@
   ;;   :config (treemacs-set-scope-type 'Tabs))
 
 #+end_src
+* Dump
+** relative-line-org-title
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-org-title (&optional number)
+  (custom/relative-line-regex "\\#\\+title:.*$" number))
+
+#+end_src
+
+
