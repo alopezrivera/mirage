@@ -1320,7 +1320,23 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-*** org-meta-return
+**** org-metaright
+
+#+begin_src emacs-lisp
+
+(defun custom/org-metaright (orig-fun &rest args)
+  (if (and (not (custom/org-relative-line-list)) (custom/org-relative-line-list -1))
+      (progn
+	      (end-of-line 0)
+	      (custom/org-return)
+	      (custom/nimble-delete-forward))
+    (apply orig-fun args)))
+
+(advice-add 'org-metaright :around #'custom/org-metaright)
+
+#+end_src
+
+**** org-meta-return
 
 #+begin_src emacs-lisp
 
