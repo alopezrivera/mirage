@@ -1463,7 +1463,7 @@ of org-tempo templates."
 #+begin_src emacs-lisp
 
 ;; LaTeX structure templates
-(tempo-define-template "org-tempo-"
+(tempo-define-template "latex"
 		             '("#+NAME: eq:1" p "\n\\begin{equation}\n\\end{equation}" >)
 			     "<eq"
 			     "LaTeX equation template")
