@@ -152,16 +152,8 @@
 
 #+end_src
 
-***** org-at-ellipsis
-
-#+begin_src emacs-lisp
-
-(defun custom/org-at-ellipsis (&optional position)
-  (and (custom/relative-line-org-heading-folded) (custom/at-point 'end-of-visual-line)))
-
-#+end_src
-
-**** relative-line
+**** line
+***** relative-line
 
 #+begin_src emacs-lisp
 
@@ -642,7 +634,7 @@ buffer is already narrowed, widen buffer."
 
 * Navigation
 ** Text
-*** Home
+*** home
 
 #+begin_src emacs-lisp
 
@@ -680,7 +672,7 @@ Conditional:
 
 #+end_src
     
-*** End
+*** end
 
 #+begin_src emacs-lisp
 
@@ -843,7 +835,7 @@ kill the current buffer and delete its window."
 
 #+end_src
 
-* Writing
+* Editing
 ** Delete
 *** Region
 
@@ -1212,7 +1204,8 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
-** Startup
+** Setup
+*** Startup
 
 #+begin_src emacs-lisp
 
@@ -1221,30 +1214,182 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
-** Editing
-*** At ellipsis
+*** General purpose functions
+**** Queries
+***** at
+****** org-at-ellipsis
 
 #+begin_src emacs-lisp
 
-(defun custom/org-edit-at-ellipsis (orig-fun &rest args)
-  "Execute commands invoked at an Org Mode heading's
-ellipsis in the first line under the heading."
-  (if (custom/org-at-ellipsis)
-      (progn (beginning-of-visual-line)
-	           (org-show-subtree)
-		   (end-of-line)
-		   (org-return)
-		   (apply orig-fun args))
-    (apply orig-fun args)))
-
-(dolist (fn '(org-yank
-	            org-self-insert-command
-		    custom/nimble-delete-forward))
-  (advice-add fn :around #'custom/org-edit-at-ellipsis))
+(defun custom/org-at-ellipsis (&optional position)
+  (and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)))
 
 #+end_src
 
-*** org-return
+***** line
+****** org-relative-line-list
+
+#+begin_src emacs-lisp
+
+(defun custom/org-relative-line-list (&optional number)
+  (interactive)
+  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*.*$" number))
+
+#+end_src
+
+****** org-relative-line-list-folded
+
+#+begin_src emacs-lisp
+
+(defun custom/org-relative-line-list-folded (&optional number)
+  "Returns non-nil if `point-at-eol' of current visual line
+is on a folded list item."
+  (interactive)
+  (custom/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
+
+#+end_src
+
+****** org-relative-line-list-empty
+
+#+begin_src emacs-lisp
+
+(defun custom/org-relative-line-list-empty (&optional number)
+  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$" number))
+
+#+end_src
+
+****** org-relative-line-heading
+
+#+begin_src emacs-lisp
+
+(defun custom/org-relative-line-heading (&optional number)
+  (interactive)
+  (custom/relative-line 'org-at-heading-p number))
+
+#+end_src
+
+****** org-relative-line-heading-folded
+
+#+begin_src emacs-lisp
+
+(defun custom/org-relative-line-heading-folded (&optional number)
+  "Returns non-nil if `point-at-eol' of current visual line
+is on a folded heading."
+  (interactive)
+  (custom/relative-line (lambda () (and (org-at-heading-p) (invisible-p (point-at-eol)))) number))
+
+#+end_src
+
+****** org-relative-line-heading-empty
+
+#+begin_src emacs-lisp
+
+(defun custom/org-relative-line-heading-empty (&optional number)
+  (custom/relative-line-regex "[[:blank:]]*[*]+[[:blank:]]*$" number))
+
+#+end_src
+
+****** org-relative-line-heading-or-list
+
+#+begin_src emacs-lisp
+
+(defun custom/org-relative-line-heading-or-list ()
+  (or (custom/org-relative-line-heading) (custom/org-relative-line-list)))
+
+#+end_src
+** Navigation
+*** org-home
+
+#+begin_src emacs-lisp
+
+(defun custom/org-home ()
+   (interactive)
+   "Conditional homing in Org Mode."
+   (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
+         ((and (custom/region-multiline-visual) (org-in-src-block-p))                        (beginning-of-line))
+         ((and (region-active-p) (custom/org-at-ellipsis))                                   (beginning-of-visual-line))
+         ((custom/org-at-ellipsis)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+         ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
+         ((org-in-src-block-p)                                                               (back-to-indentation))
+         (t                                                                                  (custom/home))))
+
+(defvar custom/org-double-home-timeout 0.4)
+
+(defun custom/org-double-home ()
+  "Dynamic homing command with a timeout of `custom/org-double-home-timeout' seconds.
+- Single press: `custom/org-home' 
+- Double press: `beginning-of-visual-line'"
+  (interactive)
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (and (eq last-command this-command)	     
+             (<= (time-to-seconds (time-since last-called)) custom/org-double-home-timeout))
+        (if (< (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line))
+            (beginning-of-visual-line)
+          (beginning-of-line))
+      (custom/org-home)))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(define-key org-mode-map (kbd "<home>") 'custom/org-double-home)
+
+#+end_src
+
+** Editing
+*** Defaults
+**** No newline before headers
+
+#+begin_src emacs-lisp
+
+;; Do not insert newline before Org Mode headings
+(setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+
+#+end_src
+
+*** Text
+**** org-delete 
+
+#+begin_src emacs-lisp
+
+(defun custom/org-delete (orig-fun &rest args)
+  "Conditional backward deletion in Org Mode."
+  (cond ((and (custom/org-at-ellipsis) (custom/org-relative-line-heading 1)) (progn (next-line)
+	                                                                            (beginning-of-line-text)
+	                                                                            (apply orig-fun args)))
+        (t                                                                   (apply orig-fun args))))
+
+(advice-add 'custom/nimble-delete-forward :around #'custom/org-delete)
+
+#+end_src
+
+*** Structure
+**** org-cycle
+
+#+begin_src emacs-lisp
+
+(defun custom/org-cycle (orig-fun &rest args)
+  "Conditional `org-cycle'.
+
+Default: `org-cycle'
+
+If cursor lies at `end-of-visual-line' of folded heading or list,
+move cursor to `end-of-line' of the current visual line and then
+call `org-cycle'.
+
+If cursor lies at a paragraph directly under a list item and not
+indented at the level of the previous list item, indent the paragraph."
+  (interactive)
+  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
+      (if (= (point) (custom/get-point 'end-of-visual-line))
+	      (progn (beginning-of-visual-line)
+		     (end-of-line)
+		     (apply orig-fun args))
+	    (apply orig-fun args))
+    (apply orig-fun args)))
+
+(advice-add 'org-cycle :around #'custom/org-cycle)
+
+#+end_src
+
+**** org-return
 
 #+begin_src emacs-lisp
 
@@ -1289,7 +1434,7 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-*** Insert heading respecting content
+**** Insert heading respecting content
 
 #+begin_src emacs-lisp
 
@@ -1343,51 +1488,6 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-** Navigation
-
-#+begin_src emacs-lisp
-
-(defun custom/org-cycle (orig-fun &rest args)
-  "Conditional `org-cycle'.
-
-Default: `org-cycle'
-
-If cursor lies at `end-of-visual-line' of folded heading or list,
-move cursor to `end-of-line' of the current visual line and then
-call `org-cycle'.
-
-If cursor lies at a paragraph directly under a list item and not
-indented at the level of the previous list item, indent the paragraph."
-  (interactive)
-  (if (or (custom/relative-line-org-list-folded) (custom/relative-line-org-heading-folded))
-      (if (= (point) (custom/get-point 'end-of-visual-line))
-	      (progn (beginning-of-visual-line)
-		     (end-of-line)
-		     (apply orig-fun args))
-	    (apply orig-fun args))
-    (apply orig-fun args)))
-
-(advice-add 'org-cycle :around #'custom/org-cycle)
-
-#+end_src
-
-** Structure editing
-*** org-metaright
-
-#+begin_src emacs-lisp
-
-(defun custom/org-metaright (orig-fun &rest args)
-  (if (and (not (custom/relative-line-org-list)) (custom/relative-line-org-list -1))
-      (progn
-	      (end-of-line 0)
-	      (custom/org-return)
-	      (custom/nimble-delete-forward))
-    (apply orig-fun args)))
-
-(advice-add 'org-metaright :around #'custom/org-metaright)
-
-#+end_src
-
 ** Structure templates
 
 #+begin_src emacs-lisp
@@ -1419,6 +1519,7 @@ indented at the level of the previous list item, indent the paragraph."
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
 
 #+end_src
+
 ** LaTeX
 *** Header
 
