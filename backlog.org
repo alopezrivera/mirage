@@ -1,37 +1,50 @@
 #+title:Backlog
 #+STARTUP: overview
 -----
-home
-- decouple org and normal
-escape
-- error in scratch buffer
 
-org-metaright
+* Improvements
+** home
+
+- decouple org and normal
+- heading
+   - only go to beginning-of-visual-line if region has more than 2 lines
+   - OR double-home -> beginning of line text
+
+** org-metaright
 - do not outdent if at top level item
    - visual warning
 - paragraphs
    - freely indent to left and right
+- if not under list nor heading
+   - C-<return> l
+      - list
+   - C-<return> h
+      - heading
 
-org-return
+** org-return
 - if at middle of word inside list
    - new indented paragraph
+- if at begining of line text in heading or list
+   - return at beginning of visual line
+- reference
+   - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
 
-smart-comment
+** smart-comment
 - if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
-org-meta-return
+** org-meta-return
 - if at indented paragraph in list
    - turn paragraph into list item
 - if at non-empty line, turn entire non-empty line into either header or list item
 - if at middle of word inside list
    - new indented list item, break word and place second part in new item
   
-org-meta-arrows
+** org-meta-arrows
 - paragraphs up and down
    - https://stackoverflow.com/questions/31412903/emacs-switch-paragraphs-with-each-other
    - if no paragraph below or above, move by a line
 
-#+title:org-journal
+* TODO org-journal
 - minor mode
 - commands
    - time
@@ -55,13 +68,13 @@ org-meta-arrows
       - select thoughts for export
       - org-capture selected thoughts
 
-#+title:org-agenda
+* TODO org-agenda
 - super agenda
    - https://github.com/alphapapa/org-super-agenda
 - query language
    - https://github.com/alphapapa/org-ql
 	
-#+title:org-backlog
+* TODO org-backlog
 - minor mode
    - agenda file editing
 - headings
@@ -71,61 +84,6 @@ org-meta-arrows
    - all equal
 - setup
    - tag alignment
-
------
-
-* runtime
-
-- server
-   - emacs . in directories
-
-* editing
-
-- undo
-   - Record character number in current line relative to the end of the line
-   - If impossible to go to previous position, to recorded character number of previous line
-   - Org Mode
-      - restore visibility before undone command
-
-* minor modes
-
-- Aracne minor mode
-   - All key bindings
-      - Org Mode
-   - https://github.com/noctuid/general.el
-- mode line
-   - trouble switching on and off across modes
-   - no mode line minor mode
-      - https://github.com/hlissner/emacs-hide-mode-line
-
-* major modes
-
-- map mode
-   - screens
-      - key bindings
-         - commands
-         - packages
-            - redirect to list-packages
-   - key bindings
-      - rendered with svg-tag-mode
-         - search
-         - match bound command + docstrings
-
-* writing
-
-- Power Thesaurus
-   - https://github.com/SavchenkoValeriy/emacs-powerthesaurus
-- Screenwriting
-   - Fountain mode
-      - https://github.com/rnkn/fountain-mode/
-	   - https://www.youtube.com/watch?v=Be1hE_pQL4w
-- Spell checking
-   - Flyspell
-      - https://www.emacswiki.org/emacs/FlySpell
-	   - https://www.tenderisthebyte.com/blog/2019/06/09/spell-checking-emacs/
-	   - hunspell < aspell, however hunspell is currently widely used and maintained
-   - Language detection
-      - https://github.com/tmalsburg/guess-language.el
 
 * org
 
@@ -186,6 +144,66 @@ org-meta-arrows
 - tag formatting
 - org title
    - home
+
+* runtime
+
+- server
+   - emacs . in directories
+- startup
+   - command line arguments
+      - https://stackoverflow.com/a/2112346
+
+* editing
+
+- undo
+   - Record character number in current line relative to the end of the line
+   - If impossible to go to previous position, to recorded character number of previous line
+   - Org Mode
+      - restore visibility before undone command
+      - if previous command created heading
+         - undo heading creation and restore visibility
+
+* minor modes
+
+- Aracne minor mode
+   - All key bindings
+      - Org Mode
+   - https://github.com/noctuid/general.el
+- mode line
+   - trouble switching on and off across modes
+   - no mode line minor mode
+      - https://github.com/hlissner/emacs-hide-mode-line
+
+* major modes
+
+- map mode
+   - screens
+      - key bindings
+         - commands
+         - packages
+            - redirect to list-packages
+   - key bindings
+      - rendered with svg-tag-mode
+         - search
+         - match bound command + docstrings
+
+* writing
+
+- Power Thesaurus
+   - https://github.com/SavchenkoValeriy/emacs-powerthesaurus
+- Screenwriting
+   - Fountain mode
+      - https://github.com/rnkn/fountain-mode/
+         - https://www.youtube.com/watch?v=Be1hE_pQL4w
+- Spell checking
+   - Flyspell
+      - https://www.emacswiki.org/emacs/FlySpell
+         - https://www.tenderisthebyte.com/blog/2019/06/09/spell-checking-emacs/
+         - hunspell < aspell, however hunspell is currently widely used and maintained
+   - Language detection
+      - https://github.com/tmalsburg/guess-language.el
+- Hyperbole
+   - https://github.com/rswgnu/hyperbole
 
 * templating
 
@@ -279,11 +297,14 @@ org-meta-arrows
                - https://github.com/hlissner/emacs-solaire-mode
       - https://github.com/abo-abo/ace-window
    - https://github.com/Bad-ptr/persp-mode.el
-   - winner mode
    - burly
       - https://github.com/alphapapa/burly.el
    - org
       - https://stackoverflow.com/questions/6666862/org-mode-go-back-from-sparse-tree-to-previous-visibility
+   - golden ratio
+      - https://github.com/roman/golden-ratio.el
+
+
 - Window manager
    - desktop.el
    - WXEM
@@ -297,6 +318,7 @@ org-meta-arrows
 * navigation
 
 - evil mode
+   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 - narrow dwim
    - https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 
