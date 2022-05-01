@@ -1,5 +1,5 @@
 #+title:Theme
-#+STARTUP: content
+#+STARTUP: overview
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./theme.el :mkdirp yes
 
 * Typefaces
