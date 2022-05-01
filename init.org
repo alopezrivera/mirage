@@ -1445,6 +1445,17 @@ function that sets `deactivate-mark' to t."
 ;; Required as of Org 9.2
 (require 'org-tempo)
 
+;; Spacing advice
+(defun custom/tempo-breathe (orig-fun &rest args)
+  "Add a margin of one newline above and below the content 
+of org-tempo templates."
+  (if (string-equal "marker" (type-of (apply orig-fun args)))
+      (progn (newline)
+	         (newline)
+		 (previous-line))))
+
+(advice-add 'tempo-complete-tag :around #'custom/tempo-breathe)
+
 #+end_src
 
 *** LaTeX
