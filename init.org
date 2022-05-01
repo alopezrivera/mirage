@@ -1399,23 +1399,25 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-*** Insert subheading respecting content
+**** Insert subheading respecting content
 
 #+begin_src emacs-lisp
 
 (defun custom/org-insert-subheading-respect-content ()
   "`org-insert-subheading' respecting content."
   (interactive)
-  (if (custom/org-at-ellipsis)
+  (if (custom/org-relative-line-heading)
       (progn (beginning-of-visual-line)
-	           (org-show-subtree)))
+	           (org-show-children)))
+  (if (not (= 1 (org-current-level)))
+      (outline-up-heading 0))
   (org-insert-subheading '(4)))
 
 (define-key org-mode-map (kbd "S-<return>") 'custom/org-insert-subheading-respect-content)
 
 #+end_src
 
-*** Keep text selection after executing commands
+**** Keep text selection after executing commands
 
 #+begin_src emacs-lisp
 
