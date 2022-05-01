@@ -5,10 +5,14 @@
       '(
 	beginning-of-visual-line
 	custom/del-backward
-	custom/dynamic-end
+	custom/double-end
+	custom/double-home
 	custom/nimble-delete-forward
+	custom/org-nimble-delete-backward
+	custom/org-nimble-delete-forward
 	custom/rectangular-region-multiple-cursors
 	custom/smart-comment
+	custom/smart-mouse-rectangle
 	electric-newline-and-maybe-indent
 	end-of-visual-line
 	keyboard-escape-quit
@@ -34,7 +38,7 @@
       '(
 	clm/toggle-command-log-buffer
 	counsel-M-x
-	custom/dynamic-home
+	custom/nimble-delete-backward
 	custom/search-in-region
 	custom/smart-search
 	custom/swiper-multiple-cursors
