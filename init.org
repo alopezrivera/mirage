@@ -274,8 +274,7 @@ to the query at execution."
 (defun custom/active-region (beg end)
   (set-mark beg)
   (goto-char end)
-  (activate-mark)
-  )
+  (activate-mark))
 
 #+end_src
 
