@@ -108,7 +108,21 @@
 
 ** General purpose functions
 *** Queries
-**** at-point
+**** match-regexs
+
+#+begin_src emacs-lisp
+
+(defun custom/match-regexs (string patterns)
+  "Return t if all provided regex PATTERNS
+(provided as a list) match STRING."
+  (cl-loop for pattern in patterns
+	   if (not (string-match pattern string))
+	   return nil
+	   finally return t))
+
+#+end_src
+**** at
+***** at-point
 
 #+begin_src emacs-lisp
 
@@ -120,21 +134,12 @@
 
 #+end_src
 
-***** at-eol
+***** at-bovl
 
 #+begin_src emacs-lisp
 
-(defun custom/at-eol (&optional position)
-  (custom/at-point 'end-of-line position))
-
-#+end_src
-
-***** at-bol
-
-#+begin_src emacs-lisp
-
-(defun custom/at-bol (&optional position)
-  (custom/at-point 'beginning-of-line position))
+(defun custom/at-bovl (&optional position)
+  (custom/at-point 'beginning-of-visual-line position))
 
 #+end_src
 
