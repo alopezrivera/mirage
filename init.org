@@ -292,15 +292,6 @@ is on a folded heading."
 
 #+end_src
 
-***** in-org
-
-#+begin_src emacs-lisp
-
-(defun custom/in-org (cond)
-  "Return t if cond is t and Org Mode is active."
-  (and cond (custom/in-mode "org-mode")))
-
-#+end_src
 **** current-theme
 
 #+begin_src emacs-lisp
@@ -346,24 +337,6 @@ is on a folded heading."
   (goto-char end)
   (activate-mark)
   )
-
-#+end_src
-
-*** Movement
-**** beginning-of-item
-#+begin_src emacs-lisp
-
-(defun custom/beginning-of-item ()
-  "Conditional move to beginning of item.
-
-Default: `beginning-of-line-text' of the current visual line.
-
-If a region is active, move to `beginning-of-visual-line'."
-  (interactive)
-  (if (not (region-active-p))
-      (progn (beginning-of-visual-line)
-	           (beginning-of-line-text))
-    (beginning-of-visual-line)))
 
 #+end_src
 
