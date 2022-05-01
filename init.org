@@ -1354,7 +1354,27 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-*** Insert subheading
+**** org-edit-at-ellipsis
+
+#+begin_src emacs-lisp
+
+(defun custom/org-edit-at-ellipsis (orig-fun &rest args)
+  "Execute commands invoked at an Org Mode heading's
+ellipsis in the first line under the heading."
+  (if (custom/org-at-ellipsis)
+      (progn (beginning-of-visual-line)
+	           (org-show-children)
+		   (end-of-line)
+		   (org-return)
+		   (apply orig-fun args))
+    (apply orig-fun args)))
+
+(dolist (fn '(org-yank
+	            org-self-insert-command))
+  (advice-add fn :around #'custom/org-edit-at-ellipsis))
+
+#+end_src
+**** Insert subheading
 
 #+begin_src emacs-lisp
 
