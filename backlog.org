@@ -1,0 +1,422 @@
+#+title:Backlog
+#+STARTUP: overview
+-----
+home
+- decouple org and normal
+escape
+- error in scratch buffer
+
+org-metaright
+- do not outdent if at top level item
+   - visual warning
+- paragraphs
+   - freely indent to left and right
+
+org-return
+- if at middle of word inside list
+   - new indented paragraph
+
+smart-comment
+- if last arrow command was up or left, move up, if last arrow command was right or down, move down
+
+org-meta-return
+- if at indented paragraph in list
+   - turn paragraph into list item
+- if at non-empty line, turn entire non-empty line into either header or list item
+- if at middle of word inside list
+   - new indented list item, break word and place second part in new item
+  
+org-meta-arrows
+- paragraphs up and down
+   - https://stackoverflow.com/questions/31412903/emacs-switch-paragraphs-with-each-other
+   - if no paragraph below or above, move by a line
+
+#+title:org-journal
+- minor mode
+- commands
+   - time
+   - Navigation
+      - C-arrows
+   - New entry command
+      - C-n
+	 - org-capture
+- thoughts
+   - two buffers
+      - journal buffer list
+      - long form content
+         - separators
+            - -----
+         - lazy load
+   - show buffer list
+   - get long-form content form buffer if desired
+      - filter journal entry content
+- Functions
+   - Exports
+      - select thoughts for export
+      - org-capture selected thoughts
+
+#+title:org-agenda
+- super agenda
+   - https://github.com/alphapapa/org-super-agenda
+- query language
+   - https://github.com/alphapapa/org-ql
+	
+#+title:org-backlog
+- minor mode
+   - agenda file editing
+- headings
+   - small
+   - monospace
+   - same color
+   - all equal
+- setup
+   - tag alignment
+
+-----
+
+* runtime
+
+- server
+   - emacs . in directories
+
+* editing
+
+- undo
+   - Record character number in current line relative to the end of the line
+   - If impossible to go to previous position, to recorded character number of previous line
+   - Org Mode
+      - restore visibility before undone command
+
+* minor modes
+
+- Aracne minor mode
+   - All key bindings
+      - Org Mode
+   - https://github.com/noctuid/general.el
+- mode line
+   - trouble switching on and off across modes
+   - no mode line minor mode
+      - https://github.com/hlissner/emacs-hide-mode-line
+
+* major modes
+
+- map mode
+   - screens
+      - key bindings
+         - commands
+         - packages
+            - redirect to list-packages
+   - key bindings
+      - rendered with svg-tag-mode
+         - search
+         - match bound command + docstrings
+
+* writing
+
+- Power Thesaurus
+   - https://github.com/SavchenkoValeriy/emacs-powerthesaurus
+- Screenwriting
+   - Fountain mode
+      - https://github.com/rnkn/fountain-mode/
+	   - https://www.youtube.com/watch?v=Be1hE_pQL4w
+- Spell checking
+   - Flyspell
+      - https://www.emacswiki.org/emacs/FlySpell
+	   - https://www.tenderisthebyte.com/blog/2019/06/09/spell-checking-emacs/
+	   - hunspell < aspell, however hunspell is currently widely used and maintained
+   - Language detection
+      - https://github.com/tmalsburg/guess-language.el
+
+* org
+
+- org-ref
+   - https://github.com/jkitchin/org-ref
+- Roam
+   - https://www.orgroam.com/manual.html#Introduction
+   - bibtex
+      - https://github.com/org-roam/org-roam-bibtex
+      -https://github.com/tmalsburg/helm-bibtex
+   - UI
+      - deactivate when reloading org mode
+	
+- org to anki
+   - https://yiufung.net/post/anki-org/
+- org-calendar
+   - https://github.com/kiwanami/emacs-calfw
+   - sync
+      - https://www.youtube.com/watch?v=vO_RF2dK7M0
+	
+- presentations
+   - reveal
+      - https://gitlab.com/oer/emacs-reveal
+         - Nice code block transitions
+	 -https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
+   - ioslide
+      - https://github.com/coldnew/org-ioslide
+- Hugo
+   - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
+	
+- Table of contents
+   - https://github.com/snosov1/toc-org
+- Jump to heading with completion
+   - https://github.com/abo-abo/worf
+- Custom markup
+   - Org lists
+      - Current
+      - Face
+      - Default
+      - Indent
+         - org-indent
+         - Fixed
+   - org-indent for lists
+      - Same as list face
+   - Colors
+      - Red
+      - Blue
+      - Green
+   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Faces.html
+   - https://stackoverflow.com/questions/70707618/org-mode-how-to-change-color-of-list
+- Paragraphs inside list items
+   - indent-rigidly
+   - Indent written paragraph
+   - M-RET inside list
+      - Start line with hard indent at list item level
+      - https://emacs.stackexchange.com/questions/2735/how-to-format-fill-poorly-formatted-bullet-items-in-org-mode/2738
+
+- tag formatting
+- org title
+   - home
+
+* templating
+
+- yasnippet
+   - org-capture template
+- autotyping
+   - https://www.gnu.org/software/emacs/manual/html_mono/autotype.html
+   - https://sachachua.com/blog/2015/01/developing-emacs-micro-habits-text-automation/
+
+* IDE
+
+- lsp-mode
+- pipenv
+   - https://github.com/pwalsh/pipenv.el
+- code folding
+   - hideshow
+      - hideshowvis
+   - https://www.reddit.com/r/emacs/comments/746cd0/which_code_folding_package_do_you_use/
+- Project interaction
+   - projectile
+      - helm-projectile
+- Code inspection
+   - C-click
+   - jedi
+      - https://tkf.github.io/emacs-jedi/latest/
+         - https://www.jefftk.com/p/python-navigation-in-emacs
+   - elpy
+      - https://emacs.stackexchange.com/a/19194
+	
+- Structure editing
+   - M-arrows
+      - Reorder function definitions
+   - https://github.com/ethan-leba/tree-edit
+	
+- Autocompletion
+   - company-mode
+- smartparens
+   - https://github.com/Fuco1/smartparens
+- Syntax checking
+   - flycheck
+      - https://www.reddit.com/r/emacs/comments/931la6/tip_how_to_adopt_flycheck_as_your_new_best_friend/
+- Debugging
+   - dap-mode
+      - https://github.com/emacs-lsp/dap-mode
+
+- Pulsar
+   - https://protesilaos.com/emacs/pulsar
+- treemacs
+   - crtl+click
+      - open by side of last active buffer
+- minimap
+   - https://github.com/dengste/minimap
+- tab bar
+   - https://github.com/emacs-tw/awesome-emacs#tabbar
+	
+- C++
+   - https://github.com/Andersbakken/rtags
+- Code formatting
+   - https://github.com/raxod502/apheleia
+- Collaborative editing
+   - https://code.librehq.com/qhong/crdt.el
+- Annotations
+   - https://github.com/bastibe/annotate.el
+
+* latex
+
+- https://www.emacswiki.org/emacs/AUCTeX
+- https://www.gnu.org/software/auctex/manual/auctex.html#Multifile
+
+* email
+
+- mu4e
+   - Nano
+      - https://www.reddit.com/r/emacs/comments/mzgsm0/mu4e_look_and_feel/
+		
+* PDF
+
+- pdf-tools
+- org-noter
+   - https://github.com/weirdNox/org-noter
+
+* session
+
+- Frame, buffer configuration
+   - switch buffers
+      - numbers if > 2 buffers
+         - exclude certain buffers
+            - dedicated windows
+               - command-log-buffer
+            - expand on solaire file buffer discrimination
+               - https://github.com/hlissner/emacs-solaire-mode
+      - https://github.com/abo-abo/ace-window
+   - https://github.com/Bad-ptr/persp-mode.el
+   - winner mode
+   - burly
+      - https://github.com/alphapapa/burly.el
+   - org
+      - https://stackoverflow.com/questions/6666862/org-mode-go-back-from-sparse-tree-to-previous-visibility
+- Window manager
+   - desktop.el
+   - WXEM
+	
+- async
+   - https://github.com/jwiegley/emacs-async
+   - shells
+      - https://emacs.stackexchange.com/questions/299/how-can-i-run-an-async-process-in-the-background-without-popping-up-a-buffer
+         - https://github.com/ilya-babanov/emacs-bpr
+
+* navigation
+
+- evil mode
+- narrow dwim
+   - https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+
+* completion framework/incremental narrowing
+	
+- vertico
+   - https://github.com/minad/vertico
+- selectrum
+   - https://github.com/raxod502/selectrum
+- regex
+   - https://github.com/benma/visual-regexp-steroids.el/
+
+* commands
+
+- swiper
+   - C-s
+      - if minibuffer active and minibuffer mode same as commanded mode, switch to minibuffer
+- Conditional modifier keys
+   - https://stackoverflow.com/questions/20026083/how-to-use-escape-conditionally-as-a-modifier-key
+- Context-dependent commands
+   - https://lars.ingebrigtsen.no/2021/02/16/command-discovery-in-emacs/
+   - Double ESC
+      - quit
+      - https://www.emacswiki.org/emacs/KeyChord
+- Going back to previous cursor location
+   - Scroll below cursor
+- Record cursor position
+   - Text input
+- Go back to recorded position
+   - http://www.gnu.org/software/emacs/manual/html_node/emacs/Mark-Ring.html
+
+* theme
+
+- Highlight file windows
+   - https://github.com/hlissner/emacs-solaire-mode
+- restoring org visibility after theme change
+- https://stackoverflow.com/questions/6666862/org-mode-go-back-from-sparse-tree-to-previous-visibility
+- Frame dividers
+   - https://github.com/minad/org-modern
+- nano-writer
+   - https://github.com/rougier/nano-emacs/blob/master/nano-writer.el
+- nano extensions
+   - https://github.com/rougier/nano-emacs
+- Highlight current line only
+   - https://yannesposito.com/posts/0021-ia-writer-clone-within-doom-emacs/index.html
+- Reduce contrast
+   - https://www.emacswiki.org/emacs/AngryFruitSalad
+   - Modus
+      - https://protesilaos.com/emacs/modus-themes#h:51ba3547-b8c8-40d6-ba5a-4586477fd4ae
+- Free century gothic
+- Diacritics
+   - https://masteringemacs.org/article/diacritics-in-emacs
+- Transparent Emacs
+   - https://www.emacswiki.org/emacs/TransparentEmacs
+- Theme switch based on ambient light
+   - https://matthewbilyeu.com/blog/2018-04-09/setting-emacs-theme-based-on-ambient-light
+   - Linux
+      - iio-sensor-proxy
+
+special themes ---------------------------------------------------------------
+	
+- warm
+	- https://github.com/ThomasFKJorna/doom-emacs-config
+- warm pragmata
+	
+	- https://github.com/lumiknit/emacs-pragmatapro-ligatures
+	- https://fsd.it/shop/fonts/pragmatapro/
+	- https://github.com/lumiknit/emacs-parchment-theme
+	- custom svg tags
+	   - https://github.com/rougier/svg-lib
+	   - https://github.com/rougier/svg-tag-mode/tree/07640c97a1dcc305010a384fffdaa7788c342da7
+
+* package management
+
+- use-package + require
+   - Clean
+      - https://ianyepan.github.io/posts/setting-up-use-package/
+- el-patch
+   - https://github.com/raxod502/el-patch
+
+* performance
+
+- esup
+   - bug
+      - https://github.com/jschaf/esup
+      - https://github.com/jschaf/esup/issues/54
+- load to memory
+   - http://blog.binchen.org/posts/emacs-speed-up-1000.html
+
+* upgrade
+
+- emacs application framework
+   - https://github.com/emacs-eaf/emacs-application-framework
+- org-download
+   - https://github.com/abo-abo/org-download
+   - Figure directory
+   - Input with reference
+- vundo
+   - https://github.com/casouri/vundo
+- smooth scrolling
+   - https://github.com/io12/good-scroll.el
+   - https://www.reddit.com/r/emacs/comments/tv022a/smooth_scrolling_on_emacs_29_is_a_dream_come_true/
+- fzf
+   - https://github.com/junegunn/fzf
+- ripgrep
+   - https://github.com/dajva/rg.el
+
+* code reference
+
+- editing
+   - https://github.com/bbatsov/crux
+- completion at point
+   - https://with-emacs.com/
+- check
+   - https://emacs.amodernist.com/
+- awesome
+   - https://github.com/emacs-tw/awesome-emacs
+
+* paid
+
+• mathpix
+  - https://github.com/jethrokuan/mathpix.el
+
