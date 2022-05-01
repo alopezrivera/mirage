@@ -659,7 +659,7 @@ Conditional:
 
 (defvar custom/double-home-timeout 0.4)
 
-(defun custom/dynamic-home ()
+(defun custom/double-home ()
   "Dynamic homing command with a timeout of `custom/double-home-timeout' seconds.
 - Single press: `custom/home' 
 - Double press: `beginning-of-visual-line'"
@@ -671,7 +671,7 @@ Conditional:
       (custom/home)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<home>") 'custom/dynamic-home)
+(global-set-key (kbd "<home>") 'custom/double-home)
 
 #+end_src
     
@@ -682,7 +682,7 @@ Conditional:
 ;; Double end to go to the beginning of line
 (defvar custom/double-end-timeout 0.4)
 
-(defun custom/dynamic-end ()
+(defun custom/double-end ()
   "Move to end of visual line. If the command is repeated 
 within `custom/double-end-timeout' seconds, move to end
 of line."
@@ -694,7 +694,7 @@ of line."
       (end-of-visual-line)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<end>") 'custom/dynamic-end)
+(global-set-key (kbd "<end>") 'custom/double-end)
 
 #+end_src
 
@@ -804,7 +804,7 @@ mark if a region is active."
 ;; Global double escape
 (defvar custom/double-escape-timeout 1)
 
-(defun custom/escape ()
+(defun custom/double-escape ()
   "Execute `custom/escape-window-or-region'. If the command 
 is repeated within `custom/double-escape-timeout' seconds, 
 kill the current buffer and delete its window."
@@ -817,7 +817,7 @@ kill the current buffer and delete its window."
       (custom/escape-window-or-region)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<escape>") 'custom/escape)
+(global-set-key (kbd "<escape>") 'custom/double-escape)
 
 #+end_src
 
