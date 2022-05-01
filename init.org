@@ -618,14 +618,13 @@ Default: `back-to-indentation'
 
 Conditional:
 `beginning-of-visual-line'
-  - Org Mode headers
   - Empty indented lines
   - Wrapped visual lines"
   (interactive)
-  (cond ((custom/in-org (custom/relative-line-org-heading-or-list))                               (custom/beginning-of-item))
-	      ((custom/relative-line-empty)                                                             (custom/beginning-of-item))
-	      ((> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'back-to-indentation)) (beginning-of-visual-line))
-	      (t                                                                                        (back-to-indentation))))
+  (cond ((and (region-active-p) (> (custom/region-count-visual-lines) 1))                            (beginning-of-line))
+        ((custom/relative-line-empty)                                                                (beginning-of-line-text))
+        ((> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)) (beginning-of-visual-line))
+        (t                                                                                           (beginning-of-line-text))))
 
 (defvar custom/double-home-timeout 0.4)
 
@@ -637,7 +636,9 @@ Conditional:
   (let ((last-called (get this-command 'custom/last-call-time)))
     (if (and (eq last-command this-command)	     
              (<= (time-to-seconds (time-since last-called)) custom/double-home-timeout))
-        (beginning-of-visual-line)
+        (if (< (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line))
+            (beginning-of-visual-line)
+          (beginning-of-line))
       (custom/home)))
   (put this-command 'custom/last-call-time (current-time)))
 
