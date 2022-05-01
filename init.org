@@ -1272,8 +1272,23 @@ ellipsis in the first line under the heading."
              (org-insert-heading-respect-content))
     (org-insert-heading-respect-content)))
 
-;; Insert heading after current tree
 (define-key org-mode-map (kbd "M-<return>") 'custom/org-insert-heading-respect-content)
+
+#+end_src
+
+*** Insert subheading respecting content
+
+#+begin_src emacs-lisp
+
+(defun custom/org-insert-subheading-respect-content ()
+  "`org-insert-subheading' respecting content."
+  (interactive)
+  (if (custom/org-at-ellipsis)
+      (progn (beginning-of-visual-line)
+	           (org-show-subtree)))
+  (org-insert-subheading '(4)))
+
+(define-key org-mode-map (kbd "S-<return>") 'custom/org-insert-subheading-respect-content)
 
 #+end_src
 
