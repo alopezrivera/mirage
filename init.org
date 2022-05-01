@@ -197,88 +197,27 @@ to the query at execution."
 
 #+end_src
 
-***** relative-line-org-list
+**** region
+***** region-count-visual-lines
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-org-list (&optional number)
+(defun custom/region-count-visual-lines ()
+  "Count visual lines in an active region."
   (interactive)
-  (custom/relative-line 'org-at-item-p number))
+  (save-excursion 
+    (beginning-of-visual-line)
+    (count-screen-lines (region-beginning) (region-end))))
 
 #+end_src
 
-***** relative-line-org-list-folded
+***** region-multiline-visual
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-org-list-folded (&optional number)
-  "Returns non-nil if `point-at-eol' of current visual line
-is on a folded list item."
-  (interactive)
-  (custom/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
-
-#+end_src
-
-***** relative-line-org-list-empty
-
-#+begin_src emacs-lisp
-
-(defun custom/relative-line-org-list-empty (&optional number)
-  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$" number))
-
-#+end_src
-
-***** relative-line-org-heading
-
-#+begin_src emacs-lisp
-
-(defun custom/relative-line-org-heading (&optional number)
-  (interactive)
-  (custom/relative-line 'org-at-heading-p number))
-
-#+end_src
-
-***** relative-line-org-heading-folded
-
-#+begin_src emacs-lisp
-
-(defun custom/relative-line-org-heading-folded (&optional number)
-  "Returns non-nil if `point-at-eol' of current visual line
-is on a folded heading."
-  (interactive)
-  (custom/relative-line (lambda () (and (org-at-heading-p) (invisible-p (point-at-eol)))) number))
-
-#+end_src
-
-***** relative-line-org-heading-empty
-
-#+begin_src emacs-lisp
-
-(defun custom/relative-line-org-heading-empty (&optional number)
-  (custom/relative-line-regex "[[:blank:]]*[*]+[[:blank:]]*$" number))
-
-#+end_src
-
-***** relative-line-org-heading-or-list
-
-#+begin_src emacs-lisp
-
-(defun custom/relative-line-org-heading-or-list ()
-  (or (custom/relative-line-org-heading) (custom/relative-line-org-list)))
-
-#+end_src
-
-**** match-regexs
-
-#+begin_src emacs-lisp
-
-(defun custom/match-regexs (string patterns)
-  "Return t if all provided regex PATTERNS
-(provided as a list) match STRING."
-  (cl-loop for pattern in patterns
-	   if (not (string-match pattern string))
-	   return nil
-	   finally return t))
+(defun custom/region-multiline-visual ()
+  "Return t if a region is active and spans more than one visual line."
+  (and (region-active-p) (> (custom/region-count-visual-lines) 1)))
 
 #+end_src
 
