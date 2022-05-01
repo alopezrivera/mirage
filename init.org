@@ -321,7 +321,7 @@ is on a folded heading."
 (defun custom/current-window-number ()
   "Retrieve the current window's number."
   (setq window (prin1-to-string (get-buffer-window (current-buffer))))
-  (string-match "^[^0-9]*\\([0-9]\{1-4\}\\).*$" window)
+  (string-match "^[^0-9]*\\([0-9]+\\).*$" window)
   (match-string 1 window))
 
 #+end_src
