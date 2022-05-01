@@ -1276,6 +1276,14 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
+*** Insert subheading
+
+#+begin_src emacs-lisp
+
+(define-key org-mode-map (kbd "C-S-<return>") 'org-insert-subheading)
+
+#+end_src
+
 *** Insert heading respecting content
 
 #+begin_src emacs-lisp
