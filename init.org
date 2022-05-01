@@ -716,20 +716,37 @@ of line."
 (defun split-and-follow-horizontally ()
   (interactive)
   (split-window-below)
-  (balance-windows)
   (other-window 1))
 (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
 
 (defun split-and-follow-vertically ()
   (interactive)
   (split-window-right)
-  (balance-windows)
   (other-window 1))
 (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 
 #+end_src
 
-** Frame
+*** Window
+**** ace-window
+
+#+begin_src emacs-lisp
+
+;; ace-window
+(global-set-key (kbd "C-o") 'ace-window)
+
+#+end_src
+
+**** winner-mode
+
+#+begin_src emacs-lisp
+
+;; winner mode
+(winner-mode)
+
+#+end_src
+
+*** Frame
 
 #+begin_src emacs-lisp
 
