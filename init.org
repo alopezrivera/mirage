@@ -697,9 +697,9 @@ of line."
 (global-set-key (kbd "<end>") 'custom/double-end)
 
 #+end_src
-
-** Buffer
-*** Switching
+** Screen
+*** Buffer
+**** Switching
 
 #+begin_src emacs-lisp
 
@@ -708,7 +708,7 @@ of line."
 
 #+end_src
 
-*** Split and follow
+**** Split and follow
 
 #+begin_src emacs-lisp
 
