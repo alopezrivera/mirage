@@ -3,14 +3,37 @@
 -----
 
 * Improvements
-** home
+** lists
 
-- decouple org and normal
-- heading
-   - only go to beginning-of-visual-line if region has more than 2 lines
-   - OR double-home -> beginning of line text
+- readability
+   - larger bullets
+   - larger line spacing
+- backward delete
+   - unindent list
+
+#+begin_src emacs-lisp
+
+;; readability
+(add-text-properties (point-min) (point-max)
+                     '(line-spacing 0.25 line-height 1.25))
+
+#+end_src
+
+** regions
+
+- insert char -> delete region
+
+** org-return
+
+- if at end of new heading (empty tree)
+   - wrap first line of text in newlines
+      - 3x org-return
+      - move to 2nd line
+- reference
+   - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
 
 ** org-metaright
+
 - do not outdent if at top level item
    - visual warning
 - paragraphs
@@ -20,19 +43,15 @@
       - list
    - C-<return> h
       - heading
-
-** org-return
-- if at middle of word inside list
-   - new indented paragraph
-- if at begining of line text in heading or list
-   - return at beginning of visual line
-- reference
-   - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
-
+- if region spans multiple headers and beginning is not in beginning-of-visual-line
+   - expand region to beginning-of-visual-line before org-metaright
+     
 ** smart-comment
+
 - if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
 ** org-meta-return
+
 - if at indented paragraph in list
    - turn paragraph into list item
 - if at non-empty line, turn entire non-empty line into either header or list item
@@ -40,11 +59,13 @@
    - new indented list item, break word and place second part in new item
   
 ** org-meta-arrows
+
 - paragraphs up and down
    - https://stackoverflow.com/questions/31412903/emacs-switch-paragraphs-with-each-other
    - if no paragraph below or above, move by a line
 
 * TODO org-journal
+
 - minor mode
 - commands
    - time
@@ -69,12 +90,14 @@
       - org-capture selected thoughts
 
 * TODO org-agenda
+
 - super agenda
    - https://github.com/alphapapa/org-super-agenda
 - query language
    - https://github.com/alphapapa/org-ql
 	
 * TODO org-backlog
+
 - minor mode
    - agenda file editing
 - headings
