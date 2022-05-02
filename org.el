@@ -223,7 +223,6 @@ ellipsis in the first line under the heading."
 
 (defun custom/org-insert-heading-respect-content (orig-fun &rest args)
   "Support `org-insert-heading-respect-content' from any point in tree."
-  (print (org-current-level))
   (if (org-current-level)
       (progn (if (not (= 1 (org-current-level)))
 	               (outline-up-heading 0))
