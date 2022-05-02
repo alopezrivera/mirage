@@ -18,14 +18,14 @@
                      '(line-spacing 0.25 line-height 1.25))
 
 #+end_src
+** regions
+
+- insert char -> delete region
+
 ** kill-region
 
 - if region is active and beg is at beginning-of-line-text or indent
    - delete empty line after cut
-
-** regions
-
-- insert char -> delete region
 
 ** org-return
 
