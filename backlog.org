@@ -93,6 +93,10 @@
 
 - super agenda
    - https://github.com/alphapapa/org-super-agenda
+- modus-themes-org-agenda
+   - https://protesilaos.com/codelog/2021-06-02-modus-themes-org-agenda/
+- workflow
+   - http://cachestocaches.com/2016/9/my-workflow-org-agenda/
 - query language
    - https://github.com/alphapapa/org-ql
 	
@@ -167,7 +171,6 @@
 - tag formatting
 - org title
    - home
-
 * runtime
 
 - server
