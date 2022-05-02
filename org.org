@@ -107,6 +107,31 @@ is on a folded heading."
   (custom/relative-line 'org-at-heading-or-item-p number))
 
 #+end_src
+**** subtree
+***** subtree-empty
+
+#+begin_src emacs-lisp
+
+(defun custom/org-subtree-empty ()
+  "Return t if the current subtree consists of
+a `custom/region-empty'."
+  (if (org-element--cache-active-p)
+      (let* ((heading (org-element-lineage
+                       (or element (org-element-at-point))
+                       '(headline) t))
+	     (head (org-element-property :begin heading))
+	     (next (org-element-property :end   heading)))
+        (if (and heading next)
+	    (progn (save-excursion (goto-char next)
+				   (beginning-of-line 0)
+				   (setq end (point)))
+		   (if (= head end)
+		       t
+		     (save-excursion (goto-char head)
+				     (beginning-of-line 2)
+				     (custom/region-empty (point) next))))))))
+
+#+end_src
 
 * Navigation
 ** org-home
