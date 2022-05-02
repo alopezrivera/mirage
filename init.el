@@ -85,6 +85,12 @@ to the query at execution."
 (defun custom/relative-line-indented (&optional number)
   (custom/relative-line-regex "[[:blank:]]+.*$" number))
 
+(defun custom/region-empty (&optional beg end)
+  (let ((beg (or beg (region-beginning)))
+	(end (or end (region-end))))
+    (setq region (buffer-substring-no-properties beg end))
+    (print (string-match "\\`[[:space:]]*\\'$" region))))
+
 (defun custom/region-count-visual-lines ()
   "Count visual lines in an active region."
   (interactive)

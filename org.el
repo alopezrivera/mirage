@@ -16,7 +16,7 @@
   (custom/relative-line (lambda () (progn (beginning-of-line-text) (org-at-item-p)))  number))
 
 (defun custom/org-relative-line-list-empty (&optional number)
-  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]*$" number))
+  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]+$" number))
 
 (defun custom/org-relative-line-list-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
@@ -39,6 +39,25 @@ is on a folded heading."
 
 (defun custom/org-relative-line-heading-or-list (&optional number)
   (custom/relative-line 'org-at-heading-or-item-p number))
+
+(defun custom/org-subtree-empty ()
+  "Return t if the current subtree consists of
+a `custom/region-empty'."
+  (if (org-element--cache-active-p)
+      (let* ((heading (org-element-lineage
+                       (or element (org-element-at-point))
+                       '(headline) t))
+	     (head (org-element-property :begin heading))
+	     (next (org-element-property :end   heading)))
+        (if (and heading next)
+	    (progn (save-excursion (goto-char next)
+				   (beginning-of-line 0)
+				   (setq end (point)))
+		   (if (= head end)
+		       t
+		     (save-excursion (goto-char head)
+				     (beginning-of-line 2)
+				     (custom/region-empty (point) next))))))))
 
 (defun custom/org-home ()
      "Conditional homing in Org Mode.
@@ -132,7 +151,7 @@ one character."
 (defun custom/org-nimble-delete-backward ()
   "Org Mode complement to `custom/nimble-delete-backward'."
   (interactive)
-  (cond ((and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)) (progn (beginning-of-visual-line) (end-of-line) (apply orig-fun args)))
+  (cond ((and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)) (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
 	((or (custom/org-relative-line-heading-empty) (custom/org-relative-line-list-empty))   (delete-region (point) (custom/get-point 'end-of-line 0)))
 	((region-active-p)                                                                     (custom/org-delete-region))
         (t                                                                                     (custom/nimble-delete-backward))))
