@@ -198,6 +198,18 @@ to the query at execution."
   #+end_src
 
 **** region
+***** region-empty
+
+#+begin_src emacs-lisp
+
+(defun custom/region-empty (&optional beg end)
+  (let ((beg (or beg (region-beginning)))
+	(end (or end (region-end))))
+    (setq region (buffer-substring-no-properties beg end))
+    (print (string-match "\\`[[:space:]]*\\'$" region))))
+
+#+end_src
+
 ***** region-count-visual-lines
 
 #+begin_src emacs-lisp
