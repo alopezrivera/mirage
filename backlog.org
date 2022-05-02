@@ -18,6 +18,10 @@
                      '(line-spacing 0.25 line-height 1.25))
 
 #+end_src
+** kill-region
+
+- if region is active and beg is at beginning-of-line-text or indent
+   - delete empty line after cut
 
 ** regions
 
@@ -171,6 +175,11 @@
 - tag formatting
 - org title
    - home
+* rss
+
+- elfeed
+   - https://github.com/skeeto/elfeed
+
 * runtime
 
 - server
