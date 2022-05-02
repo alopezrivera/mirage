@@ -158,9 +158,9 @@
 #+begin_src emacs-lisp
 
 (defun custom/relative-line (query &optional number &rest args)
-  "Return the result of a boolean query at the current
-line or another specified by its relative position to the
-current line.
+  "Return the result of a boolean query at the beginning
+of the current visual line, or another specified by its
+relative position to the current line.
 Optionally, `args' may be given as input to be passed
 to the query at execution."
   (let ((number (or number 0)))
@@ -195,7 +195,7 @@ to the query at execution."
 (defun custom/relative-line-indented (&optional number)
   (custom/relative-line-regex "[[:blank:]]+.*$" number))
 
-#+end_src
+  #+end_src
 
 **** region
 ***** region-count-visual-lines
@@ -258,10 +258,10 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/get-point (command)
+(defun custom/get-point (command &rest args)
   (interactive)
   (save-excursion
-    (funcall command)
+    (apply command args)
     (point)))
 
 #+end_src
@@ -287,7 +287,6 @@ to the query at execution."
   (and (> b a) (> c b)))
 
 #+end_src
-
 * System
 ** File management
 *** dos2unix
