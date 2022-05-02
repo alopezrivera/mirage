@@ -890,22 +890,31 @@ kill the current buffer and delete its window."
 
 #+begin_src emacs-lisp
 
-(defun custom/delete-region ()
+(defun custom/@delete-region (query)
   "Conditional region deletion.
 
 Default: `delete-region'
 
-If region starts at indented line, delete
-region and indent plus one character."
+If region starts at the beginning of an
+indented line, delete region and indent.
+
+If `query', delete the region and its indent 
+plus one character."
+  (setq beg (region-beginning) end (region-end))
+  (if (custom/at-indent beg)
+	    (save-excursion (beginning-of-visual-line)
+                      (if (and query (not (bobp)) (not (custom/relative-line-empty -1)))
+                          (left-char))
+                      (delete-region (point) end))
+    (delete-region beg end)))
+
+(defun custom/delete-region ()
+  "If the region starts at the beginning of an 
+indented line and the current mode is derived from 
+`prog-mode',  delete the region and its indent plus 
+one character."
   (interactive)
-  (save-excursion
-    (progn (setq beg (region-beginning) end (region-end))
-	         (if (custom/at-indent beg)
-		     (progn (beginning-of-visual-line)
-			    (if (and (org-in-src-block-p) (not (custom/at-point 'beginning-of-buffer)))
-				(left-char))
-			    (delete-region (point) end))
-		   (delete-region beg end)))))
+  (custom/@delete-region (derived-mode-p 'prog-mode)))
 
 #+end_src
 
