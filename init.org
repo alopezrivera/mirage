@@ -930,13 +930,9 @@ Default: `delete-forward-char' 1
 If next line is empty, forward delete indent of 
 next line plus one character."
   (interactive)
-  (if (and (custom/at-eol) (custom/relative-line-indented 1))
-      (progn (save-excursion
-	             (next-line)
-		     (back-to-indentation)
-		     (delete-region (point) (line-beginning-position)))
-	           (delete-forward-char 1))
-    (delete-forward-char 1)))
+  (cond ((and (eolp) (custom/relative-line-indented 1)) (progn (setq beg (point)) (next-line) (back-to-indentation) (delete-region beg (point))))
+	      ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
+	      (t                                              (delete-forward-char 1))))
 
 (global-set-key (kbd "<deletechar>") 'custom/nimble-delete-forward)
 
