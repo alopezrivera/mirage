@@ -272,6 +272,7 @@ one character."
 (define-key org-mode-map (kbd "<backspace>") 'custom/org-nimble-delete-backward)
 
 #+end_src
+
 ** Code
 *** Smart comments
 
@@ -285,7 +286,6 @@ one character."
 ;; (define-key org-mode-map (kbd "M-;") #'custom/smart-comment)
 
 #+end_src
-
 
 ** Structure
 *** org-cycle
