@@ -571,18 +571,16 @@ If the current line is a wrapped visual line, home to
 - Double press: `beginning-of-visual-line'"
   (interactive)
   (let ((last-called (get this-command 'custom/last-call-time)))
-    (if (and (eq last-command this-command)	     
-             (<= (time-to-seconds (time-since last-called)) custom/double-home-timeout))
-        (if (< (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line))
-            (beginning-of-visual-line)
-          (beginning-of-line))
+    (if (and (eq last-command this-command)
+	           (<= (time-to-seconds (time-since last-called)) custom/double-home-timeout))
+	      (beginning-of-visual-line)
       (custom/home)))
   (put this-command 'custom/last-call-time (current-time)))
 
 (global-set-key (kbd "<home>") 'custom/double-home)
 
 #+end_src
-    
+
 *** end
 
 #+begin_src emacs-lisp
