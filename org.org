@@ -304,6 +304,10 @@ indented at the level of the previous list item, indent the paragraph."
   (cond ((custom/org-relative-line-list-empty)                                                   (progn (org-return t) (beginning-of-line)))
 	      ((and (custom/org-relative-line-heading)
 		    (custom/at-point (lambda () (beginning-of-visual-line) (beginning-of-line-text)))) (save-excursion (beginning-of-visual-line) (org-return t)))
+	      ((and (custom/org-relative-line-heading)
+		    (not (custom/org-at-ellipsis))
+		    (not (custom/org-relative-line-heading-empty))
+		    (eolp))                                                                            (progn (newline) (org-return t)))
 	      (t                                                                                       (org-return t))))
 
 (define-key org-mode-map (kbd "<return>") 'custom/org-return)
@@ -318,11 +322,11 @@ indented at the level of the previous list item, indent the paragraph."
 (defun custom/org-meta-return ()
   "Conditional `org-meta-return'."
   (interactive)
-  (cond ((custom/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
-	      ((custom/org-relative-line-heading)    (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
-	      ((custom/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
-	      ((org-in-src-block-p)                  (progn (org-insert-heading-respect-content) (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
-	      (t                                     (org-meta-return))))
+  (cond ((custom/org-relative-line-list-empty)          (progn (org-meta-return) (next-line) (end-of-line)))
+	      ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
+	      ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
+	      ((org-in-src-block-p)                           (progn (org-insert-heading-respect-content) (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	      (t                                              (org-meta-return))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
