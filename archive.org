@@ -1,5 +1,36 @@
 #+title:ARCHIVE
+STARTUP: overview
 
+* undo-tree
+
+#+begin_src emacs-lisp
+
+;; Undo Tree
+(use-package undo-tree
+  :bind (("M-/" . undo-tree-visualize)
+         :map undo-tree-visualizer-mode-map
+         ("RET" . undo-tree-visualizer-quit)
+         ("ESC" . undo-tree-visualizer-quit))
+  :config
+  (global-undo-tree-mode))
+
+#+end_src
+
+** Visualize in side buffer
+
+#+begin_src emacs-lisp
+
+;; Visualize in side buffer
+(defun custom/undo-tree-split-side-by-side (orig-fun &rest args)
+  "Split undo-tree side-by-side"
+  (let ((split-height-threshold nil)
+        (split-width-threshold 0))
+    (apply orig-fun args)))
+
+(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
+
+#+end_src
+ 
 * line-numbers-mode
 
 #+begin_src emacs-lisp
@@ -12,11 +43,11 @@
 
 ;; Exceptions
 (dolist (mode '(pdf-view-mode
-		    org-mode-hook
-		    term-mode-hook
-		    shell-mode-hook
-		    eshell-mode-hook
-		    undo-tree-visualizer-mode-hook))
+		  org-mode-hook
+		  term-mode-hook
+		  shell-mode-hook
+		  eshell-mode-hook
+		  undo-tree-visualizer-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 #+end_src
