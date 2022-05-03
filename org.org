@@ -219,8 +219,9 @@ Else, if `org-at-table-p', home to `org-table-beginning-of-field'."
    (interactive)
    (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
          ((and (custom/region-multiline-visual) (org-in-src-block-p))                        (beginning-of-line))
-         ((and (region-active-p) (custom/org-at-ellipsis))                                   (beginning-of-visual-line))
-         ((custom/org-at-ellipsis)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+         ((and (region-active-p) (custom/org-at-ellipsis-h))                                   (beginning-of-visual-line))
+         ((custom/org-at-ellipsis-h)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+	     ((custom/org-at-ellipsis-l)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
          ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
 	     ((and (org-in-src-block-p) (> (custom/get-point 'beginning-of-visual-line)
 					   (custom/get-point 'back-to-indentation)))             (beginning-of-visual-line))
@@ -304,7 +305,7 @@ one character."
 (defun custom/org-nimble-delete-forward ()
   "Org Mode complement to `custom/nimble-delete-forward'."
   (interactive)
-  (cond ((and (custom/org-at-ellipsis) (custom/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2) (beginning-of-line-text) (delete-forward-char 1)))
+  (cond ((and (custom/org-at-ellipsis-h) (custom/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2) (beginning-of-line-text) (delete-forward-char 1)))
 	      (t (custom/nimble-delete-forward))))
 
 (define-key org-mode-map (kbd "<deletechar>") 'custom/org-nimble-delete-forward)
@@ -396,17 +397,20 @@ indented at the level of the previous list item, indent the paragraph."
 	       (save-excursion (beginning-of-visual-line)
 			       (org-return t)))
 	      ((and (custom/org-relative-line-heading)
-		    (not (custom/org-at-ellipsis))
+		    (not (custom/org-at-ellipsis-h))
 		    (not (custom/org-relative-line-heading-empty))
 		    (eolp))
-	       (progn (newline)
-		      (org-return t)))
+	       (progn (newline 2)
+		      (if (custom/org-subtree-empty)
+			  (progn (newline)
+				 (previous-line)))))
 	      (t
 	       (org-return t))))
 
 (define-key org-mode-map (kbd "<return>") 'custom/org-return)
 
 #+end_src
+
 *** org-meta-return
 
 #+begin_src emacs-lisp
@@ -501,7 +505,7 @@ region, and proceed to execute `org-meta<arrows>'."
 (defun custom/org-edit-at-ellipsis (orig-fun &rest args)
   "Execute commands invoked at an Org Mode heading's
 ellipsis in the first line under the heading."
-  (if (custom/org-at-ellipsis)
+  (if (custom/org-at-ellipsis-h)
       (progn (beginning-of-visual-line)
 	           (org-show-children)
 		   (end-of-line)
