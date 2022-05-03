@@ -146,6 +146,38 @@ a `custom/region-empty'."
 #+end_src
 
 * Navigation
+** org-end
+
+#+begin_src emacs-lisp
+
+(defun custom/org-end ()
+  "Conditional end in Org Mode.
+
+Default: `custom/end'
+
+If `org-at-table-p', go to `org-table-end-of-field'."
+  (cond ((org-at-table-p) (org-table-end-of-field 1))
+	    (t                (end-of-visual-line))))
+
+(defvar custom/org-double-end-timeout 0.4)
+
+(defun custom/org-double-end ()
+  "Dynamic homing command with a timeout of `custom/org-double-end-timeout' seconds.
+- Single press: `custom/org-home' 
+- Double press: `beginning-of-visual-line'"
+  (interactive)
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (and (eq last-command this-command)	     
+             (<= (time-to-seconds (time-since last-called)) custom/org-double-end-timeout)
+	         (not (org-at-table-p)))
+        (progn (beginning-of-visual-line) (end-of-line))
+      (custom/org-end)))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(define-key org-mode-map (kbd "<end>") 'custom/org-double-end)
+
+#+end_src
+
 ** org-home
 
 #+begin_src emacs-lisp
