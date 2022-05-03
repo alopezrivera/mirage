@@ -30,10 +30,6 @@
 
 ** org-return
 
-- if at end of new heading (empty tree)
-   - wrap first line of text in newlines
-      - 3x org-return
-      - move to 2nd line
 - reference
    - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
 
@@ -52,6 +48,7 @@
 ** org-meta-arrows
 
 - paragraphs up and down
+- if paragraphs not under list
    - https://stackoverflow.com/questions/31412903/emacs-switch-paragraphs-with-each-other
    - if no paragraph below or above, move by a line
 
