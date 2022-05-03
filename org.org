@@ -518,6 +518,15 @@ ellipsis in the first line under the heading."
   (advice-add fn :around #'custom/org-edit-at-ellipsis))
 
 #+end_src
+
+*** Insert heading
+
+#+begin_src emacs-lisp
+
+(define-key org-mode-map (kbd "M-S-<return>") 'org-insert-heading)
+
+#+end_src
+
 *** Insert subheading
 
 #+begin_src emacs-lisp
