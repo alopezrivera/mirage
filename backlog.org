@@ -125,6 +125,12 @@ Emacs Org Mode which adds paragraph support to ~org-metaright~, ~org-metaleft~,
 - if paragraphs not under list
    - https://stackoverflow.com/questions/31412903/emacs-switch-paragraphs-with-each-other
    - if no paragraph below or above, move by a line
+** org-subtree-empty
+
+- lazy
+   - current line empty -> go to next line -> ... ->
+      - next header: t
+      - line not empty: nil
 
 * TODO org-agenda
 
