@@ -47,7 +47,6 @@
   (and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)))
 
 #+end_src
-
 **** line
 ***** org-relative-line-list
 
@@ -186,9 +185,6 @@ If `org-at-table-p', go to `org-table-end-of-field'."
      "Conditional homing in Org Mode.
 
 Default: `custom/home'
-
-Importantly, `org-in-src-block-p' gives false positives as of Org Mode 9.5.3.
-All conditionals which depend on it are therefore left last.
 
 If a multi-visual-line region is active and the cursor lies on a heading or
 list item, home to `beginning-of-visual-line'.
