@@ -8,6 +8,11 @@
 ;; Startup with inline images
 (setq org-startup-with-inline-images t)
 
+;; `org-in-src-block-p' gives false positives as of Org Mode 9.5.3. For
+;; this reason, determine if cursor in src block with the more reliable
+;; `org-babel-where-is-src-block-head'
+(advice-add 'org-in-src-block-p :override 'org-babel-where-is-src-block-head)
+
 (defun custom/org-at-ellipsis (&optional position)
   (and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)))
 
@@ -59,13 +64,36 @@ a `custom/region-empty'."
 				     (beginning-of-line 2)
 				     (custom/region-empty (point) next))))))))
 
+(defun custom/org-end ()
+  "Conditional end in Org Mode.
+
+Default: `custom/end'
+
+If `org-at-table-p', go to `org-table-end-of-field'."
+  (cond ((org-at-table-p) (org-table-end-of-field 1))
+	    (t                (end-of-visual-line))))
+
+(defvar custom/org-double-end-timeout 0.4)
+
+(defun custom/org-double-end ()
+  "Dynamic homing command with a timeout of `custom/org-double-end-timeout' seconds.
+- Single press: `custom/org-home' 
+- Double press: `beginning-of-visual-line'"
+  (interactive)
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (and (eq last-command this-command)	     
+             (<= (time-to-seconds (time-since last-called)) custom/org-double-end-timeout)
+	         (not (org-at-table-p)))
+        (progn (beginning-of-visual-line) (end-of-line))
+      (custom/org-end)))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(define-key org-mode-map (kbd "<end>") 'custom/org-double-end)
+
 (defun custom/org-home ()
      "Conditional homing in Org Mode.
 
 Default: `custom/home'
-
-Importantly, `org-in-src-block-p' gives false positives as of Org Mode 9.5.3.
-All conditionals which depend on it are therefore left last.
 
 If a multi-visual-line region is active and the cursor lies on a heading or
 list item, home to `beginning-of-visual-line'.
@@ -84,7 +112,9 @@ Else, if the cursor lies on at heading or list, home to `beginning-of-line-text'
 Else, if the cursor lies in a source code block, and the current line is a wrapped
 visual line, home to `beginning-of-visual-line'.
 
-Else, if the cursor lies in a source code block, home `back-to-indentation'."
+Else, if the cursor lies in a source code block, home `back-to-indentation'.
+
+Else, if `org-at-table-p', home to `org-table-beginning-of-field'."
    (interactive)
    (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
          ((and (custom/region-multiline-visual) (org-in-src-block-p))                        (beginning-of-line))
@@ -94,6 +124,7 @@ Else, if the cursor lies in a source code block, home `back-to-indentation'."
 	     ((and (org-in-src-block-p) (> (custom/get-point 'beginning-of-visual-line)
 					   (custom/get-point 'back-to-indentation)))             (beginning-of-visual-line))
          ((org-in-src-block-p)                                                               (back-to-indentation))
+	     ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
          (t                                                                                  (custom/home))))
 
 (defvar custom/org-double-home-timeout 0.4)
@@ -105,7 +136,8 @@ Else, if the cursor lies in a source code block, home `back-to-indentation'."
   (interactive)
   (let ((last-called (get this-command 'custom/last-call-time)))
     (if (and (eq last-command this-command)	     
-             (<= (time-to-seconds (time-since last-called)) custom/org-double-home-timeout))
+             (<= (time-to-seconds (time-since last-called)) custom/org-double-home-timeout)
+	         (not (org-at-table-p)))
 	    (beginning-of-line)
       (custom/org-home)))
   (put this-command 'custom/last-call-time (current-time)))

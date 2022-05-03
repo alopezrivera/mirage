@@ -55,8 +55,7 @@
 
 (defun custom/org-title-setup () 
   (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :font title-typeface :height 2.074 :weight 'bold :foreground 'unspecified)))
-;; :inherit 'org-level-8
+    (set-face-attribute 'org-document-title nil :font title-typeface :height 250 :weight 'bold :foreground 'unspecified)))
 
 (add-hook 'org-mode-hook #'custom/org-title-setup)
 
@@ -237,7 +236,7 @@
 (setq org-hidden-keywords '(title))
 
 ;; Markup
-(setq org-hide-emphasis-markers t)
+(setq org-hide-emphasis-markers nil)
 
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ▾")
