@@ -179,6 +179,15 @@ to the query at execution."
 
 #+end_src
 
+***** relative-line-list
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-list (&optional number)
+  (custom/relative-line-regex "^[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+.*$" number))
+
+#+end_src
+
 ***** relative-line-empty
 
 #+begin_src emacs-lisp
@@ -197,6 +206,16 @@ to the query at execution."
 
   #+end_src
 
+***** relative-line-list-numeric
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-list-numeric (&optional number)
+  (custom/relative-line-regex "^[[:blank:]]*[0-9.)]+[[:blank:]]+.*$" number))
+
+#+end_src
+
+  
 **** region
 ***** region-empty
 
