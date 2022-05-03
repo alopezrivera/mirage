@@ -202,10 +202,10 @@ list item, home to `beginning-of-visual-line'.
 Else, if a multi-visual-line region is active and the cursor lies on a source code
 block, home to `beginning-of-line'.
 
-Else, if a region is active the cursor lies `custom/org-at-ellipsis', home to
+Else, if a region is active the cursor lies `custom/org-at-ellipsis-h', home to
 `beginning-of-visual-line'.
 
-Else, if the cursor lies `custom/org-at-ellipsis' (no active region), home to
+Else, if the cursor lies `custom/org-at-ellipsis-h' (no active region), home to
 the `beginning-of-line-text' of the heading's visual line.
 
 Else, if the cursor lies on at heading or list, home to `beginning-of-line-text'.
