@@ -175,7 +175,9 @@ Else, if the cursor lies on at heading or list, home to `beginning-of-line-text'
 Else, if the cursor lies in a source code block, and the current line is a wrapped
 visual line, home to `beginning-of-visual-line'.
 
-Else, if the cursor lies in a source code block, home `back-to-indentation'."
+Else, if the cursor lies in a source code block, home `back-to-indentation'.
+
+Else, if `org-at-table-p', home to `org-table-beginning-of-field'."
    (interactive)
    (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
          ((and (custom/region-multiline-visual) (org-in-src-block-p))                        (beginning-of-line))
@@ -185,6 +187,7 @@ Else, if the cursor lies in a source code block, home `back-to-indentation'."
 	     ((and (org-in-src-block-p) (> (custom/get-point 'beginning-of-visual-line)
 					   (custom/get-point 'back-to-indentation)))             (beginning-of-visual-line))
          ((org-in-src-block-p)                                                               (back-to-indentation))
+	     ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
          (t                                                                                  (custom/home))))
 
 (defvar custom/org-double-home-timeout 0.4)
@@ -196,7 +199,8 @@ Else, if the cursor lies in a source code block, home `back-to-indentation'."
   (interactive)
   (let ((last-called (get this-command 'custom/last-call-time)))
     (if (and (eq last-command this-command)	     
-             (<= (time-to-seconds (time-since last-called)) custom/org-double-home-timeout))
+             (<= (time-to-seconds (time-since last-called)) custom/org-double-home-timeout)
+	         (not (org-at-table-p)))
 	    (beginning-of-line)
       (custom/org-home)))
   (put this-command 'custom/last-call-time (current-time)))
