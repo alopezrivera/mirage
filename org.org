@@ -26,6 +26,18 @@
 
 ** General purpose functions
 *** Queries
+**** in
+***** org-in-src-block-p
+
+#+begin_src emacs-lisp
+
+;; `org-in-src-block-p' gives false positives as of Org Mode 9.5.3. For
+;; this reason, determine if cursor in src block with the more reliable
+;; `org-babel-where-is-src-block-head'
+(advice-add 'org-in-src-block-p :override 'org-babel-where-is-src-block-head)
+
+#+end_src
+
 **** at
 ***** org-at-ellipsis
 
