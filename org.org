@@ -39,14 +39,24 @@
 #+end_src
 
 **** at
-***** org-at-ellipsis
+***** org-at-ellipsis-h
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-ellipsis (&optional position)
+(defun custom/org-at-ellipsis-h (&optional position)
   (and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)))
 
 #+end_src
+
+***** org-at-ellipsis-l
+
+#+begin_src emacs-lisp
+
+(defun custom/org-at-ellipsis-l (&optional position)
+  (and (custom/org-relative-line-list-folded) (custom/at-point 'end-of-visual-line)))
+
+#+end_src
+
 **** line
 ***** org-relative-line-list
 
