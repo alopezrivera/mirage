@@ -326,19 +326,33 @@ indented at the level of the previous list item, indent the paragraph."
 (defun custom/org-return ()
   "Conditional `org-return'."
   (interactive)
-  (cond ((custom/org-relative-line-list-empty)                                                   (progn (org-return t) (beginning-of-line)))
+  (cond ((custom/org-relative-line-list-empty)
+	        (progn (delete-region
+			(custom/get-point 'beginning-of-line)
+			(custom/get-point 'end-of-line))
+		       (org-return)))
+	      ((and (or (custom/org-relative-line-list -1)
+			(custom/relative-line-indented -1))
+		    (bolp))
+	       (org-return))
 	      ((and (custom/org-relative-line-heading)
-		    (custom/at-point (lambda () (beginning-of-visual-line) (beginning-of-line-text)))) (save-excursion (beginning-of-visual-line) (org-return t)))
+		    (custom/at-point (lambda ()
+				       (beginning-of-visual-line)
+				       (beginning-of-line-text))))
+	       (save-excursion (beginning-of-visual-line)
+			       (org-return t)))
 	      ((and (custom/org-relative-line-heading)
 		    (not (custom/org-at-ellipsis))
 		    (not (custom/org-relative-line-heading-empty))
-		    (eolp))                                                                            (progn (newline) (org-return t)))
-	      (t                                                                                       (org-return t))))
+		    (eolp))
+	       (progn (newline)
+		      (org-return t)))
+	      (t
+	       (org-return t))))
 
 (define-key org-mode-map (kbd "<return>") 'custom/org-return)
 
 #+end_src
-
 *** org-meta-return
 
 #+begin_src emacs-lisp
