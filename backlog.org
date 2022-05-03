@@ -18,6 +18,7 @@
                      '(line-spacing 0.25 line-height 1.25))
 
 #+end_src
+
 ** regions
 
 - insert char -> delete region
@@ -38,6 +39,76 @@
 
 ** org-metaright
 
+- asdasd
+   - asasdasd
+      - asdasdad
+   - asdasd
+sdasd
+
+- asd
+
+
+1. 
+2. 
+3. 
+4. 
+5. 
+6. 
+7. 
+8. 
+9. a
+10. a
+    asd
+     - qwe
+     - a
+       asda
+
+
+#+begin_src emacs-lisp
+
+;; (setq-default indent-tabs-mode nil)
+;; (setq-default tab-width 8)
+;; (setq indent-line-function 'insert-tab)
+
+(defun custom/org-metaarrow (orig-fun &rest args)
+  (interactive)
+  (if (and (not (custom/org-relative-line-list))
+           (custom/relative-line-list -1))
+      (progn (if (custom/relative-line-indented)
+		     (save-excursion (beginning-of-line-text)
+				     (setq std-indent (+ 2 org-list-indent-offset))
+				     (setq indent (length (buffer-substring-no-properties (point) (custom/get-point 'beginning-of-line))))
+				     (setq visind (mod indent std-indent)))
+	           (setq visind 0))
+		 (if (> visind 0)
+		     (progn (right-char)
+			    (setq back (point))
+			    (beginning-of-line-text)
+			    (insert " ")
+			    (goto-char back)))
+	         (org-toggle-item (point))
+		 (if (custom/relative-line-indented)
+		     (progn (org-outdent-item)
+			    (org-indent-item))
+		   (progn (org-indent-item)
+			  (org-outdent-item)))
+		 (ignore-errors (apply orig-fun args))
+		 (org-toggle-item (point))
+		 (if (custom/relative-line-indented)
+		     (progn (left-char)
+			    (setq back (point))
+			    (beginning-of-line-text)
+			    (delete-backward-char 1)
+			    (goto-char back)))
+		 )
+    (apply orig-fun args)))
+
+(advice-add 'org-metaleft :around #'custom/org-metaarrow)
+(advice-remove 'org-metaright #'custom/org-metaright)
+(advice-add 'org-metaright :around #'custom/org-metaarrow)
+
+#+end_src
+
 - do not outdent if at top level item
    - visual warning
 - paragraphs
@@ -47,9 +118,16 @@
       - list
    - C-<return> h
       - heading
+sasdasd
 - if region spans multiple headers and beginning is not in beginning-of-visual-line
    - expand region to beginning-of-visual-line before org-metaright
-     
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-p") 'org-indent-line)
+
+#+end_src
+
 ** smart-comment
 
 - if last arrow command was up or left, move up, if last arrow command was right or down, move down
@@ -67,6 +145,29 @@
 - paragraphs up and down
    - https://stackoverflow.com/questions/31412903/emacs-switch-paragraphs-with-each-other
    - if no paragraph below or above, move by a line
+
+* TODO org-agenda
+
+- super agenda
+   - https://github.com/alphapapa/org-super-agenda
+- modus-themes-org-agenda
+   - https://protesilaos.com/codelog/2021-06-02-modus-themes-org-agenda/
+- workflow
+   - http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+- query language
+   - https://github.com/alphapapa/org-ql
+	
+* TODO org-backlog
+
+- minor mode
+   - agenda file editing
+- headings
+   - small
+   - monospace
+   - same color
+   - all equal
+- setup
+   - tag alignment
 
 * TODO org-journal
 
@@ -93,29 +194,6 @@
       - select thoughts for export
       - org-capture selected thoughts
 
-* TODO org-agenda
-
-- super agenda
-   - https://github.com/alphapapa/org-super-agenda
-- modus-themes-org-agenda
-   - https://protesilaos.com/codelog/2021-06-02-modus-themes-org-agenda/
-- workflow
-   - http://cachestocaches.com/2016/9/my-workflow-org-agenda/
-- query language
-   - https://github.com/alphapapa/org-ql
-	
-* TODO org-backlog
-
-- minor mode
-   - agenda file editing
-- headings
-   - small
-   - monospace
-   - same color
-   - all equal
-- setup
-   - tag alignment
-
 * org
 
 - org-ref
@@ -124,7 +202,7 @@
    - https://www.orgroam.com/manual.html#Introduction
    - bibtex
       - https://github.com/org-roam/org-roam-bibtex
-      -https://github.com/tmalsburg/helm-bibtex
+      - https://github.com/tmalsburg/helm-bibtex
    - UI
       - deactivate when reloading org mode
 	
@@ -436,6 +514,7 @@ special themes ---------------------------------------------------------------
 
 * performance
 
+- defer load time
 - esup
    - bug
       - https://github.com/jschaf/esup
