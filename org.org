@@ -264,9 +264,9 @@ one character."
 (defun custom/org-nimble-delete-backward ()
   "Org Mode complement to `custom/nimble-delete-backward'."
   (interactive)
-  (cond ((and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)) (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
+  (cond ((region-active-p)                                                                     (custom/org-delete-region))
+	((and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)) (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
 	((or (custom/org-relative-line-heading-empty) (custom/org-relative-line-list-empty))   (delete-region (point) (custom/get-point 'end-of-line 0)))
-	((region-active-p)                                                                     (custom/org-delete-region))
         (t                                                                                     (custom/nimble-delete-backward))))
 
 (define-key org-mode-map (kbd "<backspace>") 'custom/org-nimble-delete-backward)
