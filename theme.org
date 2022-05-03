@@ -382,7 +382,7 @@
 (setq org-hidden-keywords '(title))
 
 ;; Markup
-(setq org-hide-emphasis-markers t)
+(setq org-hide-emphasis-markers nil)
 
 #+end_src
 ** Ellipsis
