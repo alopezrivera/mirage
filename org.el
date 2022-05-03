@@ -16,7 +16,7 @@
   (custom/relative-line (lambda () (progn (beginning-of-line-text) (org-at-item-p)))  number))
 
 (defun custom/org-relative-line-list-empty (&optional number)
-  (custom/relative-line-regex "[[:blank:]]*[-+1-9.)]+[[:blank:]]+$" number))
+  (custom/relative-line-regex "[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+$" number))
 
 (defun custom/org-relative-line-list-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
@@ -151,9 +151,9 @@ one character."
 (defun custom/org-nimble-delete-backward ()
   "Org Mode complement to `custom/nimble-delete-backward'."
   (interactive)
-  (cond ((and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)) (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
+  (cond ((region-active-p)                                                                     (custom/org-delete-region))
+	((and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)) (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
 	((or (custom/org-relative-line-heading-empty) (custom/org-relative-line-list-empty))   (delete-region (point) (custom/get-point 'end-of-line 0)))
-	((region-active-p)                                                                     (custom/org-delete-region))
         (t                                                                                     (custom/nimble-delete-backward))))
 
 (define-key org-mode-map (kbd "<backspace>") 'custom/org-nimble-delete-backward)
@@ -193,14 +193,29 @@ indented at the level of the previous list item, indent the paragraph."
 (defun custom/org-return ()
   "Conditional `org-return'."
   (interactive)
-  (cond ((custom/org-relative-line-list-empty)                                                   (progn (org-return t) (beginning-of-line)))
+  (cond ((custom/org-relative-line-list-empty)
+	        (progn (delete-region
+			(custom/get-point 'beginning-of-line)
+			(custom/get-point 'end-of-line))
+		       (org-return)))
+	      ((and (or (custom/org-relative-line-list -1)
+			(custom/relative-line-indented -1))
+		    (bolp))
+	       (org-return))
 	      ((and (custom/org-relative-line-heading)
-		    (custom/at-point (lambda () (beginning-of-visual-line) (beginning-of-line-text)))) (save-excursion (beginning-of-visual-line) (org-return t)))
+		    (custom/at-point (lambda ()
+				       (beginning-of-visual-line)
+				       (beginning-of-line-text))))
+	       (save-excursion (beginning-of-visual-line)
+			       (org-return t)))
 	      ((and (custom/org-relative-line-heading)
 		    (not (custom/org-at-ellipsis))
 		    (not (custom/org-relative-line-heading-empty))
-		    (eolp))                                                                            (progn (newline) (org-return t)))
-	      (t                                                                                       (org-return t))))
+		    (eolp))
+	       (progn (newline)
+		      (org-return t)))
+	      (t
+	       (org-return t))))
 
 (define-key org-mode-map (kbd "<return>") 'custom/org-return)
 
@@ -215,6 +230,69 @@ indented at the level of the previous list item, indent the paragraph."
 	      (t                                              (org-meta-return))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
+
+(defun custom/org-meta-arrows-h (orig-fun &rest args)
+  "Paragraph indentation with `org-meta<arrows>'.
+Furthermore, if a region is active and its
+beginning lies on an Org Mode heading, create
+a new region spanning from the `beginning-of-line'
+where beg was found to the end of the original
+region, and proceed to execute `org-meta<arrows>'."
+  (interactive)
+  (if (and (not (custom/org-relative-line-list))
+           (custom/relative-line-list -1))
+      (progn ;; If the paragraph is indented,
+	         ;; assume it will have a visual
+	         ;; indent as the one created by this
+	         ;; function, and revert it before
+	         ;; turning paragraph into item.
+	         (if (custom/relative-line-indented)
+		     (progn (right-char)
+			    (setq back (point))
+			    (beginning-of-line-text)
+			    (insert " ")
+			    (goto-char back)))
+	         ;; Hitch the item ride
+	         (org-toggle-item (point))
+		 ;; If cursor has remained at bol,
+		 ;; move to `beginning-of-line-text'
+		 (if (bolp) (beginning-of-line-text))
+		 ;; Execute `org-meta<arrow>'
+		 (ignore-errors (apply orig-fun args))
+		 ;; Drop off
+		 (org-toggle-item (point))
+		 ;; Ensure cursor remains at
+		 ;; `beginning-of-line-text'
+		 (if (bolp) (beginning-of-line-text))
+		 (if (custom/relative-line-indented)
+		     (progn (left-char 1)
+			    (setq back (point))
+			    (beginning-of-line-text)
+			    (delete-backward-char 1)
+			    (goto-char back)
+			    ))
+		 )
+    ;; Furthermore, if a region is active and its
+    ;; beginning lies on an Org Mode heading, create
+    ;; a new region spanning from the `beginning-of-line'
+    ;; where beg was found to the end of the original
+    ;; region, and proceed to execute `org-meta<arrows>'.
+    (if (region-active-p)
+	      (let ((beg (region-beginning))
+		    (end (region-end)))
+		   (save-excursion (deactivate-mark)
+				   (goto-char beg)
+				   (if (custom/org-relative-line-heading)
+				       (set-mark (custom/get-point 'beginning-of-line))
+				     (set-mark beg))
+				   (goto-char end)
+				   (apply orig-fun args)
+				   (deactivate-mark)
+				   ))
+      (apply orig-fun args))))
+
+(advice-add 'org-metaleft :around #'custom/org-meta-arrows-h)
+(advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
 
 (defun custom/org-edit-at-ellipsis (orig-fun &rest args)
   "Execute commands invoked at an Org Mode heading's

@@ -79,11 +79,17 @@ to the query at execution."
 (defun custom/relative-line-regex (pattern &optional number)
   (custom/relative-line 'looking-at-p number pattern))
 
+(defun custom/relative-line-list (&optional number)
+  (custom/relative-line-regex "^[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+.*$" number))
+
 (defun custom/relative-line-empty (&optional number)
   (custom/relative-line-regex "[[:blank:]]*$" number))
 
 (defun custom/relative-line-indented (&optional number)
   (custom/relative-line-regex "[[:blank:]]+.*$" number))
+
+(defun custom/relative-line-list-numeric (&optional number)
+  (custom/relative-line-regex "^[[:blank:]]*[0-9.)]+[[:blank:]]+.*$" number))
 
 (defun custom/region-empty (&optional beg end)
   (let ((beg (or beg (region-beginning)))
@@ -292,6 +298,23 @@ buffer is already narrowed, widen buffer."
   :delight command-log-mode)
 (global-command-log-mode)
 
+;; Double end to go to the beginning of line
+(defvar custom/double-end-timeout 0.4)
+
+(defun custom/double-end ()
+  "Move to end of visual line. If the command is repeated 
+within `custom/double-end-timeout' seconds, move to end
+of line."
+  (interactive)
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (and (eq last-command this-command)
+             (<= (time-to-seconds (time-since last-called)) custom/double-end-timeout))
+        (progn (beginning-of-visual-line) (end-of-line))
+      (end-of-visual-line)))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(global-set-key (kbd "<end>") 'custom/double-end)
+
 (defun custom/home ()
   "Conditional homing. 
 
@@ -303,6 +326,7 @@ If the current line is a wrapped visual line, home to
 `beginning-of-visual-line'."
   (interactive)
   (cond ((custom/relative-line-empty)                                                                (beginning-of-line))
+	      ((custom/relative-line-list)                                                                 (beginning-of-line-text))
 	      ((custom/relative-line-indented)                                                             (back-to-indentation))
         ((< (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)) (beginning-of-visual-line))
         (t                                                                                           (beginning-of-line-text))))
@@ -323,23 +347,6 @@ If the current line is a wrapped visual line, home to
 
 (global-set-key (kbd "<home>") 'custom/double-home)
 
-;; Double end to go to the beginning of line
-(defvar custom/double-end-timeout 0.4)
-
-(defun custom/double-end ()
-  "Move to end of visual line. If the command is repeated 
-within `custom/double-end-timeout' seconds, move to end
-of line."
-  (interactive)
-  (let ((last-called (get this-command 'custom/last-call-time)))
-    (if (and (eq last-command this-command)
-             (<= (time-to-seconds (time-since last-called)) custom/double-end-timeout))
-        (progn (beginning-of-visual-line) (end-of-line))
-      (end-of-visual-line)))
-  (put this-command 'custom/last-call-time (current-time)))
-
-(global-set-key (kbd "<end>") 'custom/double-end)
-
 (defun custom/previous-line (orig-fun &rest args)
   "If a region is active and the current mode is derived 
 from `prog-mode', arrow-up `back-to-indentation' 
@@ -350,6 +357,16 @@ of `previous-line'."
     (apply orig-fun args)))
 
 (advice-add 'previous-line :around #'custom/previous-line)
+
+(defun custom/beginning-of-line-text (orig-fun &rest args)
+  "Correctly go to `beginning-of-line-text' in numbered lists."
+  (interactive)
+  (if (custom/relative-line-list-numeric)
+      (progn (beginning-of-line)
+	           (re-search-forward "^[[:blank:]]*[1-9.)]+[[:blank:]]\\{1\\}"))
+    (apply orig-fun args)))
+
+(advice-add 'beginning-of-line-text :around #'custom/beginning-of-line-text)
 
 ;; Unset secondary overlay key bindings
 (global-unset-key [M-mouse-1])

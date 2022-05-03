@@ -10,6 +10,7 @@
 	custom/nimble-delete-forward
 	custom/org-nimble-delete-backward
 	custom/org-nimble-delete-forward
+	custom/org-undo
 	custom/rectangular-region-multiple-cursors
 	custom/smart-comment
 	custom/smart-mouse-rectangle
