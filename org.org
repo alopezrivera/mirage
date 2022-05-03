@@ -371,6 +371,75 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
+*** org-meta-arrows
+
+#+begin_src emacs-lisp
+
+(defun custom/org-meta-arrows-h (orig-fun &rest args)
+  "Paragraph indentation with `org-meta<arrows>'.
+Furthermore, if a region is active and its
+beginning lies on an Org Mode heading, create
+a new region spanning from the `beginning-of-line'
+where beg was found to the end of the original
+region, and proceed to execute `org-meta<arrows>'."
+  (interactive)
+  (if (and (not (custom/org-relative-line-list))
+           (custom/relative-line-list -1))
+      (progn ;; If the paragraph is indented,
+	         ;; assume it will have a visual
+	         ;; indent as the one created by this
+	         ;; function, and revert it before
+	         ;; turning paragraph into item.
+	         (if (custom/relative-line-indented)
+		     (progn (right-char)
+			    (setq back (point))
+			    (beginning-of-line-text)
+			    (insert " ")
+			    (goto-char back)))
+	         ;; Hitch the item ride
+	         (org-toggle-item (point))
+		 ;; If cursor has remained at bol,
+		 ;; move to `beginning-of-line-text'
+		 (if (bolp) (beginning-of-line-text))
+		 ;; Execute `org-meta<arrow>'
+		 (ignore-errors (apply orig-fun args))
+		 ;; Drop off
+		 (org-toggle-item (point))
+		 ;; Ensure cursor remains at
+		 ;; `beginning-of-line-text'
+		 (if (bolp) (beginning-of-line-text))
+		 (if (custom/relative-line-indented)
+		     (progn (left-char 1)
+			    (setq back (point))
+			    (beginning-of-line-text)
+			    (delete-backward-char 1)
+			    (goto-char back)
+			    ))
+		 )
+    ;; Furthermore, if a region is active and its
+    ;; beginning lies on an Org Mode heading, create
+    ;; a new region spanning from the `beginning-of-line'
+    ;; where beg was found to the end of the original
+    ;; region, and proceed to execute `org-meta<arrows>'.
+    (if (region-active-p)
+	      (let ((beg (region-beginning))
+		    (end (region-end)))
+		   (save-excursion (deactivate-mark)
+				   (goto-char beg)
+				   (if (custom/org-relative-line-heading)
+				       (set-mark (custom/get-point 'beginning-of-line))
+				     (set-mark beg))
+				   (goto-char end)
+				   (apply orig-fun args)
+				   (deactivate-mark)
+				   ))
+      (apply orig-fun args))))
+
+(advice-add 'org-metaleft :around #'custom/org-meta-arrows-h)
+(advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
+
+#+end_src
+
 *** org-edit-at-ellipsis
 
 #+begin_src emacs-lisp
