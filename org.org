@@ -133,7 +133,7 @@ is on a folded heading."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-subtree-empty ()
+(defun custom/org-subtree-empty (&optional element)
   "Return t if the current subtree consists of
 a `custom/region-empty'."
   (if (org-element--cache-active-p)
