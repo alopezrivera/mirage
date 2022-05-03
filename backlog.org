@@ -93,6 +93,9 @@ Emacs Org Mode which adds paragraph support to ~org-metaright~, ~org-metaleft~,
 ** regions
 
 - insert char -> delete region
+- org mode
+   - insert markup delimiter
+      - wrap region in delimiter
 
 ** kill-region
 
