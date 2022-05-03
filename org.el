@@ -13,8 +13,11 @@
 ;; `org-babel-where-is-src-block-head'
 (advice-add 'org-in-src-block-p :override 'org-babel-where-is-src-block-head)
 
-(defun custom/org-at-ellipsis (&optional position)
+(defun custom/org-at-ellipsis-h (&optional position)
   (and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)))
+
+(defun custom/org-at-ellipsis-l (&optional position)
+  (and (custom/org-relative-line-list-folded) (custom/at-point 'end-of-visual-line)))
 
 (defun custom/org-relative-line-list (&optional number)
   (interactive)
@@ -45,7 +48,7 @@ is on a folded heading."
 (defun custom/org-relative-line-heading-or-list (&optional number)
   (custom/relative-line 'org-at-heading-or-item-p number))
 
-(defun custom/org-subtree-empty ()
+(defun custom/org-subtree-empty (&optional element)
   "Return t if the current subtree consists of
 a `custom/region-empty'."
   (if (org-element--cache-active-p)
@@ -101,10 +104,10 @@ list item, home to `beginning-of-visual-line'.
 Else, if a multi-visual-line region is active and the cursor lies on a source code
 block, home to `beginning-of-line'.
 
-Else, if a region is active the cursor lies `custom/org-at-ellipsis', home to
+Else, if a region is active the cursor lies `custom/org-at-ellipsis-h', home to
 `beginning-of-visual-line'.
 
-Else, if the cursor lies `custom/org-at-ellipsis' (no active region), home to
+Else, if the cursor lies `custom/org-at-ellipsis-h' (no active region), home to
 the `beginning-of-line-text' of the heading's visual line.
 
 Else, if the cursor lies on at heading or list, home to `beginning-of-line-text'.
@@ -118,8 +121,9 @@ Else, if `org-at-table-p', home to `org-table-beginning-of-field'."
    (interactive)
    (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
          ((and (custom/region-multiline-visual) (org-in-src-block-p))                        (beginning-of-line))
-         ((and (region-active-p) (custom/org-at-ellipsis))                                   (beginning-of-visual-line))
-         ((custom/org-at-ellipsis)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+         ((and (region-active-p) (custom/org-at-ellipsis-h))                                   (beginning-of-visual-line))
+         ((custom/org-at-ellipsis-h)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+	     ((custom/org-at-ellipsis-l)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
          ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
 	     ((and (org-in-src-block-p) (> (custom/get-point 'beginning-of-visual-line)
 					   (custom/get-point 'back-to-indentation)))             (beginning-of-visual-line))
@@ -175,7 +179,7 @@ one character."
 (defun custom/org-nimble-delete-forward ()
   "Org Mode complement to `custom/nimble-delete-forward'."
   (interactive)
-  (cond ((and (custom/org-at-ellipsis) (custom/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2) (beginning-of-line-text) (delete-forward-char 1)))
+  (cond ((and (custom/org-at-ellipsis-h) (custom/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2) (beginning-of-line-text) (delete-forward-char 1)))
 	      (t (custom/nimble-delete-forward))))
 
 (define-key org-mode-map (kbd "<deletechar>") 'custom/org-nimble-delete-forward)
@@ -241,11 +245,13 @@ indented at the level of the previous list item, indent the paragraph."
 	       (save-excursion (beginning-of-visual-line)
 			       (org-return t)))
 	      ((and (custom/org-relative-line-heading)
-		    (not (custom/org-at-ellipsis))
+		    (not (custom/org-at-ellipsis-h))
 		    (not (custom/org-relative-line-heading-empty))
 		    (eolp))
-	       (progn (newline)
-		      (org-return t)))
+	       (progn (newline 2)
+		      (if (custom/org-subtree-empty)
+			  (progn (newline)
+				 (previous-line)))))
 	      (t
 	       (org-return t))))
 
@@ -258,7 +264,7 @@ indented at the level of the previous list item, indent the paragraph."
   (cond ((custom/org-relative-line-list-empty)          (progn (org-meta-return) (next-line) (end-of-line)))
 	      ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
 	      ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
-	      ((org-in-src-block-p)                           (progn (org-insert-heading-respect-content) (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	      ((org-in-src-block-p)                           (org-insert-heading-respect-content))
 	      (t                                              (org-meta-return))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
@@ -329,7 +335,7 @@ region, and proceed to execute `org-meta<arrows>'."
 (defun custom/org-edit-at-ellipsis (orig-fun &rest args)
   "Execute commands invoked at an Org Mode heading's
 ellipsis in the first line under the heading."
-  (if (custom/org-at-ellipsis)
+  (if (custom/org-at-ellipsis-h)
       (progn (beginning-of-visual-line)
 	           (org-show-children)
 		   (end-of-line)
@@ -340,6 +346,8 @@ ellipsis in the first line under the heading."
 (dolist (fn '(org-yank
 	            org-self-insert-command))
   (advice-add fn :around #'custom/org-edit-at-ellipsis))
+
+(define-key org-mode-map (kbd "M-S-<return>") 'org-insert-heading)
 
 (defun custom/org-insert-subheading ()
   "Support `org-insert-subheading' from any point in tree."
@@ -356,11 +364,17 @@ ellipsis in the first line under the heading."
 
 (defun custom/org-insert-heading-respect-content (orig-fun &rest args)
   "Support `org-insert-heading-respect-content' from any point in tree."
+  (setq insert-margin (not (custom/org-subtree-empty)))
   (if (org-current-level)
       (progn (if (not (= 1 (org-current-level)))
 	               (outline-up-heading 0))
              (apply orig-fun args))
-    (apply orig-fun args)))
+    (apply orig-fun args))
+  (delete-forward-char 1)
+  (if insert-margin
+      (progn (beginning-of-visual-line)
+	           (org-return)
+		   (beginning-of-line-text))))
 
 (advice-add 'org-insert-heading-respect-content :around #'custom/org-insert-heading-respect-content)
 
@@ -370,9 +384,15 @@ ellipsis in the first line under the heading."
   (if (custom/org-relative-line-heading)
       (progn (beginning-of-visual-line)
 	           (org-show-children)))
+  (setq insert-margin (not (custom/org-subtree-empty)))
   (if (not (= 1 (org-current-level)))
       (outline-up-heading 0))
-  (org-insert-subheading '(4)))
+  (org-insert-subheading '(4))
+  (delete-forward-char 1)
+  (if insert-margin
+      (progn (beginning-of-visual-line)
+	           (org-return)
+		   (beginning-of-line-text))))
 
 (define-key org-mode-map (kbd "M-<return>") 'custom/org-insert-subheading-respect-content)
 
