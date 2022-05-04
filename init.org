@@ -215,7 +215,6 @@ to the query at execution."
 
 #+end_src
 
-  
 **** region
 ***** region-empty
 
