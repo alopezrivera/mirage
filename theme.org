@@ -390,9 +390,11 @@
 #+begin_src emacs-lisp
 
 ;; Change ellipsis ("...") to remove clutter
-(setq org-ellipsis " ▾")
+;; Other: ▾
+(setq org-ellipsis " ⧨")
 
 #+end_src
+
 ** LaTeX
 *** Equation preview scale
 
