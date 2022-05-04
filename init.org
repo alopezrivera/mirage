@@ -830,7 +830,7 @@ not empty. In any case, advance to next line."
 #+begin_src emacs-lisp
 
 ;; ace-window
-(global-set-key (kbd "C-o") 'ace-window)
+(global-set-key (kbd "C-x o") 'ace-window)
 
 #+end_src
 
