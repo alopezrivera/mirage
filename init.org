@@ -148,7 +148,7 @@
 #+begin_src emacs-lisp
 
 (defun custom/at-indent (&optional position)
-  (custom/at-point 'back-to-indentation position))
+  (and (custom/relative-line-indented) (custom/at-point 'back-to-indentation position)))
 
 #+end_src
 
