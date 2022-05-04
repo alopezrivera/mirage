@@ -1006,9 +1006,9 @@ If cursor lies either `custom/at-indent' or is preceded only by
 whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
-      (cond ((region-active-p)                                                       (custom/delete-region))
-	          ((and (or (custom/at-indent) (custom/relative-line-empty)) (not (bolp))) (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-	          (t                                                                       (delete-backward-char 1)))
+      (cond ((region-active-p)  (custom/delete-region))
+	          ((custom/at-indent) (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+		  (t                  (delete-backward-char 1)))
     (delete-backward-char 1)))
 
 (global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
