@@ -277,7 +277,8 @@ a new region spanning from the `beginning-of-line'
 where beg was found to the end of the original
 region, and proceed to execute `org-meta<arrows>'."
   (interactive)
-  (if (and (not (custom/org-relative-line-list))
+  (if (and (not (custom/org-relative-line-heading))
+           (not (custom/org-relative-line-list))
            (custom/relative-line-list -1))
       (progn ;; If the paragraph is indented,
 	         ;; assume it will have a visual
@@ -324,8 +325,8 @@ region, and proceed to execute `org-meta<arrows>'."
 				       (set-mark (custom/get-point 'beginning-of-line))
 				     (set-mark beg))
 				   (goto-char end)
+				   (end-of-visual-line)
 				   (apply orig-fun args)
-				   (deactivate-mark)
 				   ))
       (apply orig-fun args))))
 

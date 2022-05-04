@@ -81,7 +81,7 @@
                     (org-level-6 . 1.2)
                     (org-level-7 . 1.2)
                     (org-level-8 . 1.2)))
-         (set-face-attribute (car face) nil :font heading-typeface :weight 'regular :height (cdr face)))))
+         (set-face-attribute (car face) nil :font heading-typeface :weight 'bold :height (cdr face)))))
 
 (add-hook 'org-mode-hook #'custom/org-header-setup)
 
@@ -239,7 +239,8 @@
 (setq org-hide-emphasis-markers nil)
 
 ;; Change ellipsis ("...") to remove clutter
-(setq org-ellipsis " ▾")
+;; Other: ▾
+(setq org-ellipsis " ⧨")
 
 (plist-put org-format-latex-options :scale 1.5)
 
