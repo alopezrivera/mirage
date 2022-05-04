@@ -63,7 +63,7 @@
   (custom/at-point 'beginning-of-visual-line position))
 
 (defun custom/at-indent (&optional position)
-  (custom/at-point 'back-to-indentation position))
+  (and (custom/relative-line-indented) (custom/at-point 'back-to-indentation position)))
 
 (defun custom/relative-line (query &optional number &rest args)
   "Return the result of a boolean query at the beginning
@@ -83,7 +83,7 @@ to the query at execution."
   (custom/relative-line-regex "^[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+.*$" number))
 
 (defun custom/relative-line-empty (&optional number)
-  (custom/relative-line-regex "[[:blank:]]*$" number))
+  (custom/relative-line-regex "[[:space:]]+$" number))
 
 (defun custom/relative-line-indented (&optional number)
   (custom/relative-line-regex "[[:blank:]]+.*$" number))
@@ -275,6 +275,9 @@ buffer is already narrowed, widen buffer."
   :bind
   (("<menu>" . counsel-M-x))
   :init (ivy-rich-mode 1))
+
+;; Override `custom/nimble-delete-backward' in Ivy minibuffers
+(define-key ivy-minibuffer-map (kbd "<backspace>") 'ivy-backward-delete-char)
 
 ;; Command suggestions
 (use-package which-key
@@ -480,7 +483,7 @@ not empty. In any case, advance to next line."
 (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 
 ;; ace-window
-(global-set-key (kbd "C-o") 'ace-window)
+(global-set-key (kbd "C-x o") 'ace-window)
 
 ;; winner mode
 (winner-mode)
@@ -602,9 +605,9 @@ If cursor lies either `custom/at-indent' or is preceded only by
 whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
-      (cond ((region-active-p)                                                       (custom/delete-region))
-	          ((and (or (custom/at-indent) (custom/relative-line-empty)) (not (bolp))) (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-	          (t                                                                       (delete-backward-char 1)))
+      (cond ((region-active-p)  (custom/delete-region))
+	          ((custom/at-indent) (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+		  (t                  (delete-backward-char 1)))
     (delete-backward-char 1)))
 
 (global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
