@@ -489,8 +489,8 @@ region, and proceed to execute `org-meta<arrows>'."
 				       (set-mark (custom/get-point 'beginning-of-line))
 				     (set-mark beg))
 				   (goto-char end)
+				   (end-of-visual-line)
 				   (apply orig-fun args)
-				   (deactivate-mark)
 				   ))
       (apply orig-fun args))))
 
