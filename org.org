@@ -370,6 +370,14 @@ Else, if `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src 
 
+** previous-line
+
+#+begin_src emacs-lisp
+
+(define-key org-mode-map (kbd "<up>") (lambda () (interactive) (custom/previous-line (org-in-src-block-p))))
+
+#+end_src
+
 * Editing
 ** Text
 *** Undo
