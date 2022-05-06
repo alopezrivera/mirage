@@ -644,18 +644,20 @@ If the current line is a wrapped visual line, home to
 
 #+begin_src emacs-lisp
 
-(defun custom/previous-line (orig-fun &rest args)
+(defun custom/previous-line (cond)
   "If a region is active and the current mode is derived 
 from `prog-mode', arrow-up `back-to-indentation' 
 of `previous-line'."
-  (if (and (region-active-p) (derived-mode-p 'prog-mode))
-      (progn (apply orig-fun args)
+  (interactive)
+  (if (and (region-active-p) cond)
+      (progn (previous-line)
 	           (back-to-indentation))
-    (apply orig-fun args)))
+    (previous-line)))
 
-(advice-add 'previous-line :around #'custom/previous-line)
+(global-set-key (kbd "<up>") (lambda () (interactive) (custom/previous-line (derived-mode-p 'prog-mode))))
 
 #+end_src
+
 *** beginning-of-line-text
 
 #+begin_src emacs-lisp
