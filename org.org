@@ -1181,7 +1181,18 @@ folded."
 #+begin_src emacs-lisp
 
 ;; Set Org Agenda files
-(setq org-agenda-files '("~/.emacs.d/" "/home/"))
+(with-eval-after-load 'org-agenda
+  (setq org-agenda-files '("~/.emacs.d/" "/home/")))
+
+#+end_src
+
+*** Configuration
+
+#+begin_src emacs-lisp
+
+(defmacro custom/org-agenda-bind (key command)
+  `(with-eval-after-load 'org-agenda
+       (define-key org-agenda-mode-map (kbd ,key) ,command)))
 
 #+end_src
 
@@ -1194,6 +1205,8 @@ folded."
 (defun custom/org-agenda-todo-done ()
   (interactive)
   (org-agenda-todo 'done))
+
+(custom/org-agenda-bind "d" 'custom/org-agenda-todo-done)
 
 #+end_src
 
@@ -1263,24 +1276,14 @@ folded."
 
 #+end_src
 *** Navigation
+**** Visit
 
 #+begin_src emacs-lisp
 
-;; Set custom Org Agenda key bindings
-(defun custom/org-agenda-custom-bindings ()
-  ;; (local-set-key (kbd "<escape>") 'org-agenda-quit)
-  (local-set-key (kbd "C-a") #'custom/org-agenda-restart)
-  (local-set-key (kbd "d")   #'custom/org-agenda-todo-done))
-
-(add-hook 'org-agenda-mode-hook 'custom/org-agenda-custom-bindings)
-
-;; Restart Org Agenda
-(defun custom/org-agenda-restart ()
-  (interactive)
-  (org-agenda-quit) 
-  (org-agenda))
+(custom/org-agenda-bind "<tab>" 'org-agenda-recenter)
 
 #+end_src
+
 ** Classification
 *** Global tags
 
