@@ -57,12 +57,12 @@
 
 #+end_src
 
-***** org-at-ellipsis-l
+***** org-at-keyword
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-ellipsis-l (&optional position)
-  (and (custom/org-relative-line-list-folded) (custom/at-point 'end-of-visual-line)))
+(defun custom/org-at-keyword (&optional number)
+  (custom/relative-line-regex "^#+.*$" number))
 
 #+end_src
 
