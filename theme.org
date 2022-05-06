@@ -66,7 +66,21 @@
 #+end_src
 
 ** Org Mode
-*** Text
+*** Title
+
+#+begin_src emacs-lisp
+
+;; Title face
+
+(defun custom/org-title-setup ()
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-document-title nil :font title-typeface :height 300 :weight 'regular :foreground 'unspecified)))
+
+(add-hook 'org-mode-hook #'custom/org-title-setup)
+
+#+end_src
+
+*** Body
 
 #+begin_src emacs-lisp
 
@@ -95,18 +109,6 @@
 
 #+end_src
 
-*** Title
-#+begin_src emacs-lisp
-
-;; Title face
-
-(defun custom/org-title-setup () 
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :font title-typeface :height 250 :weight 'bold :foreground 'unspecified)))
-
-(add-hook 'org-mode-hook #'custom/org-title-setup)
-
-#+end_src
 *** Headings
 
 #+begin_src emacs-lisp
