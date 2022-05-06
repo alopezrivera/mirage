@@ -194,7 +194,11 @@ a `custom/region-empty'."
 
 #+end_src
 
-*** Outline editing
+*** TODO Outline editing
+
+- deprecated cl warning
+   - find dependency
+
 **** Get
 ***** outline-overlay-data
 
@@ -390,7 +394,18 @@ Else, if `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-*** Delete
+*** TODO Delete
+
+- if at beginning of empty heading and a heading lies below
+   - bring next heading to level of current one
+      - delete newline + stars of the next heading
+- delete empty heading
+   - go to previous line
+   - delete newline
+      - maybe cycle previous
+- backward delete at beginning of list item
+   - unindent list
+
 **** Region
 
 #+begin_src emacs-lisp
