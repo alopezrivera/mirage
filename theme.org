@@ -23,8 +23,8 @@
 
 #+begin_src emacs-lisp
 
-;; Title face
-(setq title-typeface "Century Gothic")
+;; Titles
+(setq title-typeface "Latin Modern Roman 17")
 
 ;; Heading face
 (setq heading-typeface "Century Gothic")
