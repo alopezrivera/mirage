@@ -233,7 +233,7 @@ If USE-MARKERS is set, return the positions as markers."
 (defun custom/org-save-outline-state ()
   "Save org outline state in `custom/org-outline-state'.
 It can be recovered afterwards with `custom/org-recover-outline-state'."
-  (setq custom/org-outline-state (org-outline-overlay-data t)))
+  (setq custom/org-outline-state (custom/org-outline-overlay-data t)))
 
 (defun custom/org-install-save-outline-state ()
   "Configure org to preserve the outline state at revert-buffer."
@@ -271,10 +271,11 @@ DATA should have been made by `org-outline-overlay-data'."
   "Save org outline state in `custom/org-outline-state'.
 It can be recovered afterwards with `custom/org-recover-outline-state'."
   (when custom/org-outline-state
-    (org-set-outline-overlay-data custom/org-outline-state)
+    (custom/org-set-outline-overlay-data custom/org-outline-state)
     (setq custom/org-outline-state nil)))
 
 #+end_src
+
 * Navigation
 ** org-end
 
