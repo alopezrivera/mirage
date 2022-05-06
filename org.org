@@ -138,13 +138,28 @@ is on a folded heading."
 
 #+end_src
 **** subtree
+***** subtree-blank
+
+#+begin_src emacs-lisp
+
+(defun custom/org-subtree-blank ()
+  "Return t if the current subtree consists of
+a `custom/region-empty'."
+  (interactive)
+  (apply #'custom/region-empty (custom/org-subtree-region)))
+
+#+end_src
+
 ***** subtree-empty
 
 #+begin_src emacs-lisp
 
-(defun custom/org-subtree-empty (&optional element)
-  "Return t if the current subtree consists of
-a `custom/region-empty'."
+(defun custom/org-subtree-empty ()
+  (interactive)
+  (string-equal "" (custom/org-subtree-content)))
+
+#+end_src
+
   (if (org-element--cache-active-p)
       (let* ((heading (org-element-lineage
                        (or element (org-element-at-point))
