@@ -392,8 +392,7 @@
 #+begin_src emacs-lisp
 
 ;; Change ellipsis ("...") to remove clutter
-;; Other: ▾
-(setq org-ellipsis " ⧨")
+(setq org-ellipsis " ♢")
 
 #+end_src
 
