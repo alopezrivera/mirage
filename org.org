@@ -258,16 +258,6 @@ Else, if `org-at-table-p', home to `org-table-beginning-of-field'."
 #+end_src 
 
 * Editing
-** Defaults
-*** No newline before headers
-
-#+begin_src emacs-lisp
-
-;; Do not insert newline before Org Mode headings
-(setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
-
-#+end_src
-
 ** Text
 *** Undo
 
@@ -534,6 +524,9 @@ ellipsis in the first line under the heading."
 #+begin_src emacs-lisp
 
 (define-key org-mode-map (kbd "M-S-<return>") 'org-insert-heading)
+
+;; Do not insert newline before Org Mode headings
+(setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
 #+end_src
 
