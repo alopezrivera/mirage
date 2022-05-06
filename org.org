@@ -175,9 +175,83 @@ a `custom/region-empty'."
 		     (save-excursion (goto-char head)
 				     (beginning-of-line 2)
 				     (custom/region-empty (point) next))))))))
+*** Outline editing
+**** Get
+***** outline-overlay-data
+
+#+begin_src emacs-lisp
+
+(defun custom/org-outline-overlay-data (&optional use-markers)
+  "Return a list of the locations of all outline overlays.
+These are overlays with the `invisible' property value `outline'.
+The return value is a list of cons cells, with start and stop
+positions for each overlay.
+If USE-MARKERS is set, return the positions as markers."
+  (let (beg end)
+    (org-with-wide-buffer
+     (delq nil
+       (mapcar (lambda (o)
+             (when (eq (overlay-get o 'invisible) 'outline)
+               (setq beg (overlay-start o)
+                 end (overlay-end o))
+               (and beg end (> end beg)
+                (if use-markers
+                (cons (copy-marker beg)
+                      (copy-marker end t))
+                  (cons beg end)))))
+           (overlays-in (point-min) (point-max)))))))
 
 #+end_src
 
+***** save-outline-state
+
+#+begin_src emacs-lisp
+
+(defun custom/org-save-outline-state ()
+  "Save org outline state in `custom/org-outline-state'.
+It can be recovered afterwards with `custom/org-recover-outline-state'."
+  (setq custom/org-outline-state (org-outline-overlay-data t)))
+
+(defun custom/org-install-save-outline-state ()
+  "Configure org to preserve the outline state at revert-buffer."
+  (add-hook 'before-revert-hook #'custom/org-save-outline-state nil t)
+  (add-hook 'after-revert-hook #'custom/org-restore-outline-state nil t))
+
+(add-hook 'org-mode-hook #'custom/org-install-save-outline-state)
+
+#+end_src
+
+**** Set
+***** set-outline-overlay-data
+
+#+begin_src emacs-lisp
+
+(defun custom/org-set-outline-overlay-data (data)
+  "Create visibility overlays for all positions in DATA.
+DATA should have been made by `org-outline-overlay-data'."
+  (org-with-wide-buffer
+   (org-show-all)
+   (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
+
+(defvar-local custom/org-outline-state nil
+  "Place for saving org outline state before reverting the buffer.")
+
+(put 'custom/org-outline-state 'permanent-local t)
+
+#+end_src
+
+***** restore-outline-state
+
+#+begin_src emacs-lisp
+
+(defun custom/org-restore-outline-state ()
+  "Save org outline state in `custom/org-outline-state'.
+It can be recovered afterwards with `custom/org-recover-outline-state'."
+  (when custom/org-outline-state
+    (org-set-outline-overlay-data custom/org-outline-state)
+    (setq custom/org-outline-state nil)))
+
+#+end_src
 * Navigation
 ** org-end
 
