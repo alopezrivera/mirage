@@ -160,21 +160,40 @@ a `custom/region-empty'."
 
 #+end_src
 
+*** Retrieval
+**** subtree-region
+
+#+begin_src emacs-lisp
+
+(defun custom/org-subtree-region (&optional element)
+  "Retrieve the beginning and end of the current subtree."
   (if (org-element--cache-active-p)
       (let* ((heading (org-element-lineage
                        (or element (org-element-at-point))
                        '(headline) t))
 	     (head (org-element-property :begin heading))
 	     (next (org-element-property :end   heading)))
-        (if (and heading next)
-	    (progn (save-excursion (goto-char next)
-				   (beginning-of-line 0)
-				   (setq end (point)))
-		   (if (= head end)
-		       t
-		     (save-excursion (goto-char head)
+	  (if (and heading next)
+	      (progn (save-excursion (goto-char head)
 				     (beginning-of-line 2)
-				     (custom/region-empty (point) next))))))))
+				     (setq beg (point)))
+		     (save-excursion (goto-char next)
+				     (beginning-of-line)
+				     (setq end (max beg (point))))
+		     (list beg end))))))
+
+#+end_src
+
+**** subtree-content
+
+#+begin_src emacs-lisp
+
+(defun custom/org-subtree-content ()
+  "Retrieve the content of the current subtree."
+  (setq content (apply #'buffer-substring-no-properties (custom/org-subtree-region))))
+
+#+end_src
+
 *** Outline editing
 **** Get
 ***** outline-overlay-data
