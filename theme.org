@@ -389,6 +389,21 @@
 #+end_src
 ** Ellipsis
 
+Candidates:
+- triangles
+  ▼
+  ▾
+  ▿
+- rhomboids
+  ⬙
+  ⟡
+  ⬥
+  ♦
+  ♢
+- non-compliant
+  ⧨
+-----
+
 #+begin_src emacs-lisp
 
 ;; Change ellipsis ("...") to remove clutter
