@@ -662,18 +662,28 @@ ellipsis in the first line under the heading."
 #+begin_src emacs-lisp
 
 (defun custom/org-insert-heading-respect-content (orig-fun &rest args)
-  "Support `org-insert-heading-respect-content' from any point in tree."
-  (setq insert-margin (not (custom/org-subtree-empty)))
+  "Support `org-insert-heading-respect-content' from any point in tree.
+
+Furthermore, if the previous heading is folded, `org-hide-entry'"
+  (setq insert-margin (not (custom/org-subtree-blank)))
   (if (org-current-level)
       (progn (if (not (= 1 (org-current-level)))
 	               (outline-up-heading 0))
              (apply orig-fun args))
     (apply orig-fun args))
-  (delete-forward-char 1)
   (if insert-margin
       (progn (beginning-of-visual-line)
 	           (org-return)
-		   (beginning-of-line-text))))
+		   (beginning-of-line-text)))
+  (save-excursion (org-previous-visible-heading 1)
+		        (if (and (custom/org-relative-line-heading-folded) (custom/org-relative-line-heading))
+			    (org-hide-entry)))
+  (undo-boundary)
+  (print (custom/last-change))
+  (if (and (not (custom/org-subtree-empty)) (string-equal "\n" (custom/last-change)))
+      (let (buffer-undo-list)
+	         (save-excursion (next-line)
+				 (delete-backward-char 1)))))
 
 (advice-add 'org-insert-heading-respect-content :around #'custom/org-insert-heading-respect-content)
 
