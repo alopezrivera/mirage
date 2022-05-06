@@ -296,10 +296,17 @@ to the query at execution."
 
 #+end_src
 
-**** active-region
+**** last-change
 
 #+begin_src emacs-lisp
 
+(defun custom/last-change ()
+  "Retrieve last change in current buffer."
+  (setq last-change (nth 1 buffer-undo-list))
+  (print last-change)
+  (let ((beg         (car last-change))
+        (end         (cdr last-change)))
+    (buffer-substring-no-properties beg end)))
 
 #+end_src
 
