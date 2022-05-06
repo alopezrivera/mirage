@@ -321,29 +321,25 @@ Default: `custom/home'
 If a multi-visual-line region is active and the cursor lies on a heading or
 list item, home to `beginning-of-visual-line'.
 
-Else, if a multi-visual-line region is active and the cursor lies on a source code
-block, home to `beginning-of-line'.
-
-Else, if a region is active the cursor lies `custom/org-at-ellipsis-h', home to
+If a region is active the cursor lies `custom/org-at-ellipsis-h', home to
 `beginning-of-visual-line'.
 
-Else, if the cursor lies `custom/org-at-ellipsis-h' (no active region), home to
+If the cursor lies `custom/org-at-ellipsis-h' (no active region), home to
 the `beginning-of-line-text' of the heading's visual line.
 
-Else, if the cursor lies on at heading or list, home to `beginning-of-line-text'.
+If the cursor lies on at heading or list, home to `beginning-of-line-text'.
 
-Else, if the cursor lies in a source code block, and the current line is a wrapped
+If the cursor lies in a source code block, and the current line is a wrapped
 visual line, home to `beginning-of-visual-line'.
 
-Else, if the cursor lies in a source code block, home `back-to-indentation'.
+If the cursor lies in a source code block, home `back-to-indentation'.
 
-Else, if `org-at-table-p', home to `org-table-beginning-of-field'."
+If `org-at-table-p', home to `org-table-beginning-of-field'."
    (interactive)
    (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
-         ((and (custom/region-multiline-visual) (org-in-src-block-p))                        (beginning-of-line))
-         ((and (region-active-p) (custom/org-at-ellipsis-h))                                   (beginning-of-visual-line))
-         ((custom/org-at-ellipsis-h)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
-	     ((custom/org-at-ellipsis-l)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+         ((and (region-active-p) (custom/org-at-ellipsis-h))                                 (beginning-of-visual-line))
+         ((custom/org-at-ellipsis-h)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+	     ((custom/org-at-ellipsis-l)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
          ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
 	     ((and (org-in-src-block-p) (> (custom/get-point 'beginning-of-visual-line)
 					   (custom/get-point 'back-to-indentation)))             (beginning-of-visual-line))
