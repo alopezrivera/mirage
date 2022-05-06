@@ -529,10 +529,76 @@ indented at the level of the previous list item, indent the paragraph."
   (cond ((custom/org-relative-line-list-empty)          (progn (org-meta-return) (next-line) (end-of-line)))
 	      ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
 	      ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
-	      ((org-in-src-block-p)                           (org-insert-heading-respect-content))
-	      (t                                              (org-meta-return))))
+	      ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
+	      (t                                              (org-insert-heading-respect-content))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
+
+#+end_src
+
+*** org-paragraph
+
+#+begin_src emacs-lisp
+
+(defun custom/org-paragraph-toggle ()
+  (interactive)
+  (if (not (custom/org-relative-line-list))
+      (progn ;; If the paragraph is indented,
+	           ;; assume it will have a visual
+	           ;; indent as the one created by this
+             ;; function, and revert it before
+             ;; turning paragraph into item.
+	           (if (custom/relative-line-indented)
+	               (progn (setq back (+ (point) 1))
+		              (beginning-of-line-text)
+			      (insert " ")
+			      (goto-char back)))
+		   ;; Record whether cursor is at `bolp'
+		   ;; or `custom/at-indent'
+		   (setq bol (or (bolp) (custom/at-indent)))
+             ;; Turn into item
+	           (org-toggle-item (point))
+		   ;; If cursor was at either `bolp'
+		   ;; or `custom/at-indent', move to
+		   ;; `beginning-of-line-text'
+		   (if bol (beginning-of-line-text)))
+    (progn ;; Drop off
+           (org-toggle-item (point))
+		 ;; Ensure cursor remains at
+		 ;; `beginning-of-line-text'
+		 (if (bolp) (beginning-of-line-text))
+		 (if (custom/relative-line-indented)
+		     (progn (setq back (- (point) 1))
+			    (beginning-of-line-text)
+			    (delete-backward-char 1)
+			    (goto-char back)
+			    )))))
+
+(defvar custom/org-paragraph-ignore-errors t
+  "Ignore errors in `org-paragraph' calls.")
+
+(defun custom/org-paragraph (command &rest args)
+  "Org Mode hitch-hiking paragraphs."
+  (if (and (not (custom/org-relative-line-heading))
+           (not (custom/org-relative-line-list))
+           (custom/relative-line-list -1))
+      (progn
+        ;; Hitch ride
+	      (custom/org-paragraph-toggle)
+	      ;; Execute command
+	      (if custom/org-paragraph-ignore-errors
+		  (ignore-errors (apply command args))
+		(apply command args))
+	      ;; Drop off
+	      (custom/org-paragraph-toggle))))
+
+(defun custom/org-paragraph-indent ()
+  (interactive)
+  (custom/org-paragraph 'org-indent-item))
+
+(defun custom/org-paragraph-outdent ()
+  (interactive)
+  (custom/org-paragraph 'org-outdent-item))
 
 #+end_src
 
@@ -551,37 +617,7 @@ region, and proceed to execute `org-meta<arrows>'."
   (if (and (not (custom/org-relative-line-heading))
            (not (custom/org-relative-line-list))
            (custom/relative-line-list -1))
-      (progn ;; If the paragraph is indented,
-	         ;; assume it will have a visual
-	         ;; indent as the one created by this
-	         ;; function, and revert it before
-	         ;; turning paragraph into item.
-	         (if (custom/relative-line-indented)
-		     (progn (right-char)
-			    (setq back (point))
-			    (beginning-of-line-text)
-			    (insert " ")
-			    (goto-char back)))
-	         ;; Hitch the item ride
-	         (org-toggle-item (point))
-		 ;; If cursor has remained at bol,
-		 ;; move to `beginning-of-line-text'
-		 (if (bolp) (beginning-of-line-text))
-		 ;; Execute `org-meta<arrow>'
-		 (ignore-errors (apply orig-fun args))
-		 ;; Drop off
-		 (org-toggle-item (point))
-		 ;; Ensure cursor remains at
-		 ;; `beginning-of-line-text'
-		 (if (bolp) (beginning-of-line-text))
-		 (if (custom/relative-line-indented)
-		     (progn (left-char 1)
-			    (setq back (point))
-			    (beginning-of-line-text)
-			    (delete-backward-char 1)
-			    (goto-char back)
-			    ))
-		 )
+      (custom/org-paragraph orig-fun args)
     ;; Furthermore, if a region is active and its
     ;; beginning lies on an Org Mode heading, create
     ;; a new region spanning from the `beginning-of-line'
