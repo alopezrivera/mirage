@@ -1,34 +1,183 @@
 #+title:Backlog
 #+STARTUP: overview
 -----
-* metopa
 
-- org-meta arrows
-   - bug at end of line
-      - operate from (end of line | left-char)
+* References
+** Workflows
 
-- decouple hitch from indentation
-   - indentation: advice hitch
-   - hitch: advice org-meta-arrows
+- Rougier
+   - https://www.labri.fr/perso/nrougier/GTD/index.html
+
+- Mathematics
+   - https://tony-zorman.com/posts/phd-workflow/2022-05-01-my-phd-workflow.html
+https://castel.dev/post/research-workflow/
+     
+** Emacs Lisp
+
+- interactive
+   - http://xahlee.info/emacs/emacs_manual/elisp/Interactive-Codes.html
+- performance
+   - https://nullprogram.com/blog/2017/01/30/
+
+** Org Mode
+
+- https://orgmode.org/worg/org-hacks.html
+  
+** Configs
+
+-  https://github.com/alhassy/emacs.d
+-  https://yannesposito.com/
+-  https://github.com/rougier/notebook-mode
+-  https://github.com/ThomasFKJorna/doom-emacs-config
+  
+
+* Storm
+
+- Return
+   - beginning of non-empty list
+      - same as headings
+   - empty heading
+      - delete heading and subtree
+- headings
+   - heading from current line
+- lists
+   - custom/org-toggle-paragraph
+   - custom/org-indent-paragraph
+   - custom/org-outdent-paragraph
+
+* Improvements
+** regions
+
+- insert char -> delete region
+- org mode
+   - insert markup delimiter
+      - wrap region in delimiter
+        
+*** kill-region
+
+- if region is active and beg is at beginning-of-line-text or indent
+   - delete empty line after cut
+
+*** yank-region
+
+- mouse 3 in region -> yank
+
+** typefaces
+
+- symbols
+   - unicode-fonts
+      - https://emacs.stackexchange.com/questions/251/line-height-with-unicode-characters
+
+** org-subtree-empty
+
+- lazy
+   - current line empty -> go to next line -> ... ->
+      - next header: t
+      - line not empty: nil
+        
+** DONE org-delete
+CLOSED: [2022-05-06 Fri 17:09]
+:LOGBOOK:
+- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:09]
+:END:
+
+- if at beginning of empty heading and a heading lies below
+   - bring next heading to level of current one
+      - delete newline + stars of the next heading
+- delete empty heading
+   - go to previous line
+   - delete newline
+      - maybe cycle previous
+
+** DONE org-outline
+CLOSED: [2022-05-06 Fri 17:09]
+:LOGBOOK:
+- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:09]
+:END:
+
+- deprecated cl warning
+   - find dependency
+     
+** DONE lists
+CLOSED: [2022-05-06 Fri 17:09]
+:LOGBOOK:
+- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:09]
+:END:
+
+- readability
+   - larger bullets
+   - larger line spacing
+- backward delete
+   - unindent list
+
+#+begin_src emacs-lisp
+
+;; readability
+(add-text-properties (point-min) (point-max)
+                     '(line-spacing 0.25 line-height 1.25))
+
+#+end_src
+
+** DONE org-return
+CLOSED: [2022-05-06 Fri 17:09]
+:LOGBOOK:
+- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:09]
+:END:
+
+- reference
+   - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
+
+** DONE org-meta-return
+CLOSED: [2022-05-06 Fri 17:09]
+:LOGBOOK:
+- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:09]
+:END:
+
+- list paragraphs
+   - custom/org-toggle-paragraph
+      - keep cursor in place
+
+- bugs
+   - if at empty heading or heading separated by more than 1 empty line from next
+      - star is inserted in line of next heading
+         - "* " is inserted in line of next heading
+   - cycle previous heading to remove spurious separation line
+
+- if list not empty -> move contents to new item
+- if after list
+   - create list item from current line
+- if before list
+   - create list item at top of list
+
+- if at indented paragraph in list
+   - turn paragraph into list item
+- if at non-empty line, turn entire non-empty line into either header or list item
+- if at middle of word inside list
+   - new indented list item, break word and place second part in new item
+  
+** DONE smart-comment
+CLOSED: [2022-05-06 Fri 17:11]
+:LOGBOOK:
+- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:11]
+:END:
+
+- if last arrow command was up or left, move up, if last arrow command was right or down, move down
+
+  
+* org-paragraph
+
 - up, down
-- if not list
-- separate region metaright advice
-   - advice org-meta-arrows
-
-#+title:metopa
+#+title:org-paragraph
 
 Org Mode paragraphs hitch-hiking their way to first class structural
 editing citizenship.
 
-#+begin_quote
-Base de madera en la que se fija un escudo, usada como elemento decorativo.
+org-paragraph is a minor mode for Emacs Org Mode which adds primitives
+to manipulate paragraphs using the Org Mode struct infrastructure.
+Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
+~org-metaleft~, ~org-metaup~ and ~org-metadown~.
 
-~Wooden base to which a shield is fixed, used as a decorative element~
-#+end_quote
-
-metopa (met(a)o(rg)pa(ragraphs), Spanish: /mɛtəʊpɑː/) is a minor mode for
-Emacs Org Mode which adds paragraph support to ~org-metaright~, ~org-metaleft~,
-~org-metaup~ and ~org-metadown~.
+-----
 
 #+begin_src emacs-lisp
 
@@ -73,65 +222,6 @@ Emacs Org Mode which adds paragraph support to ~org-metaright~, ~org-metaleft~,
 
 #+end_src
 
-* Improvements
-** lists
-
-- readability
-   - larger bullets
-   - larger line spacing
-- backward delete
-   - unindent list
-
-#+begin_src emacs-lisp
-
-;; readability
-(add-text-properties (point-min) (point-max)
-                     '(line-spacing 0.25 line-height 1.25))
-
-#+end_src
-
-** regions
-
-- insert char -> delete region
-- org mode
-   - insert markup delimiter
-      - wrap region in delimiter
-
-** kill-region
-
-- if region is active and beg is at beginning-of-line-text or indent
-   - delete empty line after cut
-
-** org-return
-
-- reference
-   - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
-
-** smart-comment
-
-- if last arrow command was up or left, move up, if last arrow command was right or down, move down
-
-** org-meta-return
-
-- if at indented paragraph in list
-   - turn paragraph into list item
-- if at non-empty line, turn entire non-empty line into either header or list item
-- if at middle of word inside list
-   - new indented list item, break word and place second part in new item
-  
-** org-meta-arrows
-
-- paragraphs up and down
-- if paragraphs not under list
-   - https://stackoverflow.com/questions/31412903/emacs-switch-paragraphs-with-each-other
-   - if no paragraph below or above, move by a line
-** org-subtree-empty
-
-- lazy
-   - current line empty -> go to next line -> ... ->
-      - next header: t
-      - line not empty: nil
-
 * TODO org-agenda
 
 - super agenda
@@ -142,6 +232,11 @@ Emacs Org Mode which adds paragraph support to ~org-metaright~, ~org-metaleft~,
    - http://cachestocaches.com/2016/9/my-workflow-org-agenda/
 - query language
    - https://github.com/alphapapa/org-ql
+
+- configs
+   - https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
+- interaction
+   - https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html
 	
 * TODO org-backlog
 
@@ -262,8 +357,15 @@ Emacs Org Mode which adds paragraph support to ~org-metaright~, ~org-metaleft~,
       - if previous command created heading
          - undo heading creation and restore visibility
 
+* file management
+
+- Org refile
+   - https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
+
 * minor modes
 
+- mode-specific typefaces
+   - https://emacs.stackexchange.com/questions/3038/using-a-different-font-for-each-major-mode
 - Aracne minor mode
    - All key bindings
       - Org Mode
@@ -383,6 +485,7 @@ Emacs Org Mode which adds paragraph support to ~org-metaright~, ~org-metaleft~,
 - pdf-tools
 - org-noter
    - https://github.com/weirdNox/org-noter
+   - https://www.youtube.com/watch?v=lCc3UoQku-E
 
 * session
 
@@ -398,8 +501,6 @@ Emacs Org Mode which adds paragraph support to ~org-metaright~, ~org-metaleft~,
    - https://github.com/Bad-ptr/persp-mode.el
    - burly
       - https://github.com/alphapapa/burly.el
-   - org
-      - https://stackoverflow.com/questions/6666862/org-mode-go-back-from-sparse-tree-to-previous-visibility
    - golden ratio
       - https://github.com/roman/golden-ratio.el
 
