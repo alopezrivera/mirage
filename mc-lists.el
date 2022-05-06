@@ -9,6 +9,7 @@
 	custom/double-home
 	custom/nimble-delete-forward
 	custom/org-double-end
+	custom/org-double-home
 	custom/org-nimble-delete-backward
 	custom/org-nimble-delete-forward
 	custom/org-undo

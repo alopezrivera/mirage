@@ -15,6 +15,7 @@
  '(jdee-db-requested-breakpoint-face-colors (cons "#1c1f2b" "#c3e88d"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#1c1f2b" "#676E95"))
  '(objed-cursor-color "#ff5370")
+ '(org-agenda-files nil)
  '(package-selected-packages
    '(org nano-faces nano-base-colors org-element org-indent yasnippet-snippets yasnippet pyvenv lsp-ui lsp-mode org-fragtog magit auctex org-download vundo quelpa-use-package quelpa rectangular-region-mode circadian solar svg-tag-mode org-modern treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs autothemer autotheme general helpful ivy-rich undo-tree rainbow-mode delight which-key whic-key rainbow-delimiters org-autolist org-autolist-mode org-superstar multiple-cursors adaptive-wrap visual-fill-column org-bullets doom-themes olivetti doom-modeline swipereval- counsel ivy command-log-mode use-package))
  '(pdf-view-midnight-colors (cons "#EEFFFF" "#292D3E"))

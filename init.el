@@ -95,7 +95,7 @@ to the query at execution."
   (let ((beg (or beg (region-beginning)))
 	(end (or end (region-end))))
     (setq region (buffer-substring-no-properties beg end))
-    (print (string-match "\\`[[:space:]]*\\'$" region))))
+    (string-match "\\`[[:space:]]*\\'$" region)))
 
 (defun custom/region-count-visual-lines ()
   "Count visual lines in an active region."
@@ -128,11 +128,12 @@ to the query at execution."
     (apply command args)
     (point)))
 
-;; Retrieve active region
-(defun custom/active-region (beg end)
-  (set-mark beg)
-  (goto-char end)
-  (activate-mark))
+(defun custom/last-change ()
+  "Retrieve last change in current buffer."
+  (setq last-change (nth 1 buffer-undo-list))
+  (let ((beg         (car last-change))
+        (end         (cdr last-change)))
+    (buffer-substring-no-properties beg end)))
 
 (defun <> (a b c)
   (and (> b a) (> c b)))
@@ -350,16 +351,17 @@ If the current line is a wrapped visual line, home to
 
 (global-set-key (kbd "<home>") 'custom/double-home)
 
-(defun custom/previous-line (orig-fun &rest args)
+(defun custom/previous-line (cond)
   "If a region is active and the current mode is derived 
 from `prog-mode', arrow-up `back-to-indentation' 
 of `previous-line'."
-  (if (and (region-active-p) (derived-mode-p 'prog-mode))
-      (progn (apply orig-fun args)
+  (interactive)
+  (if (and (region-active-p) cond)
+      (progn (previous-line)
 	           (back-to-indentation))
-    (apply orig-fun args)))
+    (previous-line)))
 
-(advice-add 'previous-line :around #'custom/previous-line)
+(global-set-key (kbd "<up>") (lambda () (interactive) (custom/previous-line (derived-mode-p 'prog-mode))))
 
 (defun custom/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
@@ -675,6 +677,15 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 ;; enable-theme
 (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
+
+(defun custom/org-mode (orig-fun &rest args)
+  (if (custom/in-mode "org-mode")
+      (progn (custom/org-save-outline-state)
+	           (apply orig-fun args)
+		   (custom/org-restore-outline-state))
+    (apply orig-fun args)))
+
+(advice-add 'org-mode :around #'custom/org-mode)
 
 ;; Reload Org Mode
 (defun custom/org-theme-reload ()

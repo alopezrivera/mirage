@@ -7,8 +7,8 @@
 ;; Variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Latin Modern Roman"  :height 115 :weight 'regular)
 
-;; Title face
-(setq title-typeface "Century Gothic")
+;; Titles
+(setq title-typeface "Latin Modern Roman 17")
 
 ;; Heading face
 (setq heading-typeface "Century Gothic")
@@ -27,6 +27,14 @@
 ;; Symbol library
 (use-package all-the-icons
   :if (display-graphic-p))
+
+;; Title face
+
+(defun custom/org-title-setup ()
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-document-title nil :font title-typeface :height 300 :weight 'regular :foreground 'unspecified)))
+
+(add-hook 'org-mode-hook #'custom/org-title-setup)
 
 (defun custom/org-pitch-setup ()
   (with-eval-after-load 'org-faces
@@ -50,14 +58,6 @@
     (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
 
 (add-hook 'org-indent-mode-hook #'custom/org-pitch-setup)
-
-;; Title face
-
-(defun custom/org-title-setup () 
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :font title-typeface :height 250 :weight 'bold :foreground 'unspecified)))
-
-(add-hook 'org-mode-hook #'custom/org-title-setup)
 
 ;; Use levels 1 through 4
 (setq org-n-level-faces 4)
@@ -202,6 +202,16 @@
 	   ;; Major modes
 	   (emacs-lisp-mode "EL" :major)))
 
+;; Title keyword
+(setq org-hidden-keywords '(title))
+
+;; Markup
+(setq org-hide-emphasis-markers nil)
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
+
 (use-package org-modern)
 
 (add-hook 'org-mode-hook #'org-modern-mode)
@@ -213,12 +223,6 @@
 ;; Priorities
 (setq org-modern-priority nil)
 
-;; Vertical table line width
-(setq org-modern-table-vertical 1)
-
-;; Horizontal table line width
-(setq org-modern-table-horizontal 1)
-
 (setq org-modern-list '((?+ . "-")
 			      (?- . "•")
 			      (?* . "▶")))
@@ -226,21 +230,14 @@
 ;; List indentation
 (setq-default org-list-indent-offset 1)
 
-;; (add-hook 'org-mode-hook (lambda () (variable-pitch-mode 1)))
+;; Vertical table line width
+(setq org-modern-table-vertical 1)
 
-(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
-
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
-;; Title keyword
-(setq org-hidden-keywords '(title))
-
-;; Markup
-(setq org-hide-emphasis-markers nil)
+;; Horizontal table line width
+(setq org-modern-table-horizontal 1)
 
 ;; Change ellipsis ("...") to remove clutter
-;; Other: ▾
-(setq org-ellipsis " ⧨")
+(setq org-ellipsis " ♢")
 
 (plist-put org-format-latex-options :scale 1.5)
 
