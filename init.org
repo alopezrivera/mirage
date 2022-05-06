@@ -1165,6 +1165,26 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 #+begin_src emacs-lisp
 
+(with-eval-after-load 'org
+  (let ((*outline-data* nil))
+    (defun custom/org-save-outline-state (&optional arg type)
+      (setq *outline-data* (custom/org-outline-overlay-data t)))
+
+    (defun custom/org-restore-outline-state (&optional arg)
+      (when *outline-data*
+	      (custom/org-set-outline-overlay-data *outline-data*)
+	      (setq *outline-data* nil)))))
+
+(defun custom/org-mode (orig-fun &rest args)
+  (print (custom/in-mode "org-mode"))
+  (if (custom/in-mode "org-mode")
+      (progn (custom/org-save-outline-state)
+	           (apply orig-fun args)
+		   (custom/org-restore-outline-state))
+    (apply orig-fun args)))
+
+(advice-add 'org-mode :around #'custom/org-mode)
+
 ;; Reload Org Mode
 (defun custom/org-theme-reload ()
   (if (custom/in-mode "org-mode")
