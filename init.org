@@ -224,7 +224,7 @@ to the query at execution."
   (let ((beg (or beg (region-beginning)))
 	(end (or end (region-end))))
     (setq region (buffer-substring-no-properties beg end))
-    (print (string-match "\\`[[:space:]]*\\'$" region))))
+    (string-match "\\`[[:space:]]*\\'$" region)))
 
 #+end_src
 
@@ -303,7 +303,6 @@ to the query at execution."
 (defun custom/last-change ()
   "Retrieve last change in current buffer."
   (setq last-change (nth 1 buffer-undo-list))
-  (print last-change)
   (let ((beg         (car last-change))
         (end         (cdr last-change)))
     (buffer-substring-no-properties beg end)))
@@ -1027,7 +1026,7 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 #+end_src
 
-** Cut, Copy, Paste
+** Kill, save, yank
 
 #+begin_src emacs-lisp
 
@@ -1165,18 +1164,7 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 #+begin_src emacs-lisp
 
-(with-eval-after-load 'org
-  (let ((*outline-data* nil))
-    (defun custom/org-save-outline-state (&optional arg type)
-      (setq *outline-data* (custom/org-outline-overlay-data t)))
-
-    (defun custom/org-restore-outline-state (&optional arg)
-      (when *outline-data*
-	      (custom/org-set-outline-overlay-data *outline-data*)
-	      (setq *outline-data* nil)))))
-
 (defun custom/org-mode (orig-fun &rest args)
-  (print (custom/in-mode "org-mode"))
   (if (custom/in-mode "org-mode")
       (progn (custom/org-save-outline-state)
 	           (apply orig-fun args)
