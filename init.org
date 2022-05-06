@@ -300,11 +300,6 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-;; Retrieve active region
-(defun custom/active-region (beg end)
-  (set-mark beg)
-  (goto-char end)
-  (activate-mark))
 
 #+end_src
 
