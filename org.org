@@ -474,7 +474,11 @@ one character."
 #+end_src
 
 ** Structure
-*** org-paragraph
+*** TODO org-paragraph
+
+- if paragraphs not under list
+   - https://stackoverflow.com/questions/31412903/emacs-switch-paragraphs-with-each-other
+   - if no paragraph below or above, move by a line
 
 #+begin_src emacs-lisp
 
@@ -570,7 +574,10 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-*** org-return
+*** TODO org-return
+
+- reference
+   - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
 
 #+begin_src emacs-lisp
 
@@ -608,7 +615,29 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-*** org-meta-return
+*** TODO org-meta-return
+
+- list paragraphs
+   - custom/org-toggle-paragraph
+      - keep cursor in place
+
+- bugs
+   - if at empty heading or heading separated by more than 1 empty line from next
+      - star is inserted in line of next heading
+         - "* " is inserted in line of next heading
+   - cycle previous heading to remove spurious separation line
+
+- if list not empty -> move contents to new item
+- if after list
+   - create list item from current line
+- if before list
+   - create list item at top of list
+
+- if at indented paragraph in list
+   - turn paragraph into list item
+- if at non-empty line, turn entire non-empty line into either header or list item
+- if at middle of word inside list
+   - new indented list item, break word and place second part in new item
 
 #+begin_src emacs-lisp
 
