@@ -1027,6 +1027,14 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 #+end_src
 
+** Selection
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-a") 'mark-whole-buffer)
+
+#+end_src
+
 ** Undo, Redo
 *** Kill ring
 
