@@ -400,7 +400,7 @@ indented at the level of the previous list item, indent the paragraph."
 		    (not (custom/org-relative-line-heading-empty))
 		    (eolp))
 	       (progn (newline 2)
-		      (if (custom/org-subtree-empty)
+		      (if (custom/org-subtree-blank)
 			  (progn (newline)
 				 (previous-line)))))
 	      (t
@@ -581,7 +581,7 @@ ellipsis in the first line under the heading."
   (if (custom/org-relative-line-heading)
       (progn (beginning-of-visual-line)
 	           (org-show-children)))
-  (setq insert-margin (not (custom/org-subtree-empty)))
+  (setq insert-margin (not (custom/org-subtree-blank)))
   (if (not (= 1 (org-current-level)))
       (outline-up-heading 0))
   (org-insert-subheading '(4))
