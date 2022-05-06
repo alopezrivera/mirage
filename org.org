@@ -216,7 +216,7 @@ If USE-MARKERS is set, return the positions as markers."
        (mapcar (lambda (o)
              (when (eq (overlay-get o 'invisible) 'outline)
                (setq beg (overlay-start o)
-                 end (overlay-end o))
+                     end (overlay-end o))
                (and beg end (> end beg)
                 (if use-markers
                 (cons (copy-marker beg)
@@ -730,7 +730,6 @@ Furthermore, if the previous heading is folded, `org-hide-entry'"
 		        (if (and (custom/org-relative-line-heading-folded) (custom/org-relative-line-heading))
 			    (org-hide-entry)))
   (undo-boundary)
-  (print (custom/last-change))
   (if (and (not (custom/org-subtree-empty)) (string-equal "\n" (custom/last-change)))
       (let (buffer-undo-list)
 	         (save-excursion (next-line)
