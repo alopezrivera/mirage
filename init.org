@@ -723,7 +723,9 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 (define-key mc/keymap (kbd "<down-mouse-1>")  nil)
 
 #+end_src
-*** Smart comments
+*** TODO Smart comments
+
+- if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
 #+begin_src emacs-lisp
 
