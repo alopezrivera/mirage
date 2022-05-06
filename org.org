@@ -364,8 +364,8 @@ indented at the level of the previous list item, indent the paragraph."
 		 (end-of-line)
 		 (apply orig-fun args))
 	(apply orig-fun args))
-    (if (org-in-src-block-p)
-	(org-indent-line)
+    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
+	      (org-indent-line)
       (apply orig-fun args))))
 
 (advice-add 'org-cycle :around #'custom/org-cycle)
