@@ -298,7 +298,36 @@
 #+end_src
 
 * Org Mode
-** org-modern
+** Setup
+*** Hidden
+
+#+begin_src emacs-lisp
+
+;; Title keyword
+(setq org-hidden-keywords '(title))
+
+;; Markup
+(setq org-hide-emphasis-markers nil)
+
+#+end_src
+
+*** visual-line
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+#+end_src
+
+*** org-indent
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
+
+#+end_src
+
+*** org-modern
 
 #+begin_src emacs-lisp
 
@@ -309,7 +338,7 @@
 
 #+end_src
 
-*** Defaults
+**** Defaults
 
 #+begin_src emacs-lisp
 
@@ -321,7 +350,41 @@
 
 #+end_src
 
-*** Tables
+** Lists
+*** Markers
+
+#+begin_src emacs-lisp
+
+(setq org-modern-list '((?+ . "-")
+			      (?- . "•")
+			      (?* . "▶")))
+
+#+end_src
+
+*** Indentation
+
+#+begin_src emacs-lisp
+
+;; List indentation
+(setq-default org-list-indent-offset 1)
+
+#+end_src
+
+*** TODO Line spacing
+
+- readability
+   - larger bullets
+   - larger line spacing
+
+#+begin_src emacs-lisp :tangle nil
+
+;; readability
+(add-text-properties (point-min) (point-max)
+                     '(line-spacing 0.25 line-height 1.25))
+
+#+end_src
+
+** Tables
 
 #+begin_src emacs-lisp
 
@@ -333,60 +396,6 @@
 
 #+end_src
 
-*** Lists
-**** Markers
-
-#+begin_src emacs-lisp
-
-(setq org-modern-list '((?+ . "-")
-			      (?- . "•")
-			      (?* . "▶")))
-
-#+end_src
-
-**** Indentation
-
-#+begin_src emacs-lisp
-
-;; List indentation
-(setq-default org-list-indent-offset 1)
-
-#+end_src
-
-** variable-pitch
-
-#+begin_src emacs-lisp
-
-;; (add-hook 'org-mode-hook (lambda () (variable-pitch-mode 1)))
-
-#+end_src
-
-** org-indent
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
-
-#+end_src
-
-** visual-line
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
-#+end_src
-
-** Hidden
-#+begin_src emacs-lisp
-
-;; Title keyword
-(setq org-hidden-keywords '(title))
-
-;; Markup
-(setq org-hide-emphasis-markers nil)
-
-#+end_src
 ** Ellipsis
 
 Candidates:
@@ -419,7 +428,6 @@ Candidates:
 (plist-put org-format-latex-options :scale 1.5)
 
 #+end_src
-
 * Modus
 
 #+begin_src emacs-lisp
