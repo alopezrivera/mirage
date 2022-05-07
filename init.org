@@ -48,6 +48,7 @@
 (setq default-directory "~/.emacs.d/")
 
 #+end_src
+
 ** System information
 *** Config directory
 
@@ -318,7 +319,6 @@ to the query at execution."
   (and (> b a) (> c b)))
 
 #+end_src
-
 * System
 ** File management
 *** dos2unix
