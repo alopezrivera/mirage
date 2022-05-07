@@ -258,17 +258,18 @@ buffer is already narrowed, widen buffer."
 (use-package ivy
   :delight ivy-mode
   :bind (:map ivy-minibuffer-map
-	       ("TAB" . ivy-alt-done)
-	       ("C-l" . ivy-alt-done)
-	       ("C-j" . ivy-next-line)
-	       ("C-k" . ivy-previous-line)
+	       ("TAB"  . ivy-alt-done)
+	       ("<up>" . ivy-previous-line-or-history)
+	       ("C-l"  . ivy-alt-done)
+	       ("C-j"  . ivy-next-line)
+	       ("C-k"  . ivy-previous-line)
 	       :map ivy-switch-buffer-map
-	       ("C-k" . ivy-previous-line)
-	       ("C-l" . ivy-done)
-	       ("C-d" . ivy-switch-buffer-kill)
+	       ("C-k"  . ivy-previous-line)
+	       ("C-l"  . ivy-done)
+	       ("C-d"  . ivy-switch-buffer-kill)
 	       :map ivy-reverse-i-search-map
-	       ("C-k" . ivy-previous-line)
-	       ("C-d" . ivy-reverse-i-search-kill))
+	       ("C-k"  . ivy-previous-line)
+	       ("C-d"  . ivy-reverse-i-search-kill))
   :init (ivy-mode 1))
 
 ;; Completion candidate descriptions
@@ -326,12 +327,19 @@ Default: `beginning-of-line-text'
 
 If the current line is empty, home to `beginning-of-line'.
 
+If the current line holds a list item, home back to `beginning-of-line-text'.
+
+If the current line is indented, home `back-to-indentation'.
+
+If the current mode is derived from `prog-mode', home `back-to-indentation'.
+
 If the current line is a wrapped visual line, home to
 `beginning-of-visual-line'."
   (interactive)
   (cond ((custom/relative-line-empty)                                                                (beginning-of-line))
 	      ((custom/relative-line-list)                                                                 (beginning-of-line-text))
 	      ((custom/relative-line-indented)                                                             (back-to-indentation))
+	      ((derived-mode-p 'prog-mode)                                                                 (back-to-indentation))
         ((< (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)) (beginning-of-visual-line))
         (t                                                                                           (beginning-of-line-text))))
 
@@ -353,12 +361,12 @@ If the current line is a wrapped visual line, home to
 
 (defun custom/previous-line (cond)
   "If a region is active and the current mode is derived 
-from `prog-mode', arrow-up `back-to-indentation' 
-of `previous-line'."
+from `prog-mode', arrow-up to `end-of-visual-line' of
+`previous-line'."
   (interactive)
   (if (and (region-active-p) cond)
       (progn (previous-line)
-	           (back-to-indentation))
+	           (end-of-visual-line))
     (previous-line)))
 
 (global-set-key (kbd "<up>") (lambda () (interactive) (custom/previous-line (derived-mode-p 'prog-mode))))
@@ -613,6 +621,8 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
     (delete-backward-char 1)))
 
 (global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
+
+(global-set-key (kbd "C-a") 'mark-whole-buffer)
 
 ;; Increase kill ring size
 (setq kill-ring-max 200)

@@ -167,29 +167,25 @@ Default: `custom/home'
 If a multi-visual-line region is active and the cursor lies on a heading or
 list item, home to `beginning-of-visual-line'.
 
-Else, if a multi-visual-line region is active and the cursor lies on a source code
-block, home to `beginning-of-line'.
-
-Else, if a region is active the cursor lies `custom/org-at-ellipsis-h', home to
+If a region is active the cursor lies `custom/org-at-ellipsis-h', home to
 `beginning-of-visual-line'.
 
-Else, if the cursor lies `custom/org-at-ellipsis-h' (no active region), home to
+If the cursor lies `custom/org-at-ellipsis-h' (no active region), home to
 the `beginning-of-line-text' of the heading's visual line.
 
-Else, if the cursor lies on at heading or list, home to `beginning-of-line-text'.
+If the cursor lies on at heading or list, home to `beginning-of-line-text'.
 
-Else, if the cursor lies in a source code block, and the current line is a wrapped
+If the cursor lies in a source code block, and the current line is a wrapped
 visual line, home to `beginning-of-visual-line'.
 
-Else, if the cursor lies in a source code block, home `back-to-indentation'.
+If the cursor lies in a source code block, home `back-to-indentation'.
 
-Else, if `org-at-table-p', home to `org-table-beginning-of-field'."
+If `org-at-table-p', home to `org-table-beginning-of-field'."
    (interactive)
    (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
-         ((and (custom/region-multiline-visual) (org-in-src-block-p))                        (beginning-of-line))
-         ((and (region-active-p) (custom/org-at-ellipsis-h))                                   (beginning-of-visual-line))
-         ((custom/org-at-ellipsis-h)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
-	     ((custom/org-at-ellipsis-l)                        (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+         ((and (region-active-p) (custom/org-at-ellipsis-h))                                 (beginning-of-visual-line))
+         ((custom/org-at-ellipsis-h)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+	     ((custom/org-at-ellipsis-l)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
          ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
 	     ((and (org-in-src-block-p) (> (custom/get-point 'beginning-of-visual-line)
 					   (custom/get-point 'back-to-indentation)))             (beginning-of-visual-line))
@@ -475,9 +471,9 @@ Furthermore, if the previous heading is folded, `org-hide-entry'"
       (progn (beginning-of-visual-line)
 	           (org-return)
 		   (beginning-of-line-text)))
-  (save-excursion (org-previous-visible-heading 1)
+  (save-excursion (org-backward-heading-same-level 1)
 		        (if (and (custom/org-relative-line-heading-folded) (custom/org-relative-line-heading))
-			    (org-hide-entry)))
+			    (outline-hide-subtree)))
   (undo-boundary)
   (if (and (not (custom/org-subtree-empty)) (string-equal "\n" (custom/last-change)))
       (let (buffer-undo-list)
@@ -726,12 +722,19 @@ folded."
 (global-set-key (kbd "C-c a") (lambda () (interactive) (org-agenda)))
 
 ;; Set Org Agenda files
-(setq org-agenda-files '("~/.emacs.d/" "/home/"))
+(with-eval-after-load 'org-agenda
+  (setq org-agenda-files '("~/.emacs.d/" "/home/")))
+
+(defmacro custom/org-agenda-bind (key command)
+  `(with-eval-after-load 'org-agenda
+       (define-key org-agenda-mode-map (kbd ,key) ,command)))
 
 ;; Mark items as done
 (defun custom/org-agenda-todo-done ()
   (interactive)
   (org-agenda-todo 'done))
+
+(custom/org-agenda-bind "d" 'custom/org-agenda-todo-done)
 
 ;; Org Agenda log mode
 (setq org-agenda-start-with-log-mode t)
@@ -786,19 +789,7 @@ folded."
 		((org-agenda-overriding-header "Cancelled Projects")
 		 (org-agenda-files org-agenda-files)))))))
 
-;; Set custom Org Agenda key bindings
-(defun custom/org-agenda-custom-bindings ()
-  ;; (local-set-key (kbd "<escape>") 'org-agenda-quit)
-  (local-set-key (kbd "C-a") #'custom/org-agenda-restart)
-  (local-set-key (kbd "d")   #'custom/org-agenda-todo-done))
-
-(add-hook 'org-agenda-mode-hook 'custom/org-agenda-custom-bindings)
-
-;; Restart Org Agenda
-(defun custom/org-agenda-restart ()
-  (interactive)
-  (org-agenda-quit) 
-  (org-agenda))
+(custom/org-agenda-bind "<tab>" 'org-agenda-recenter)
 
 (setq org-tag-alist
       '((:startgroup)
