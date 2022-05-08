@@ -751,14 +751,18 @@ preceding non-empty line.
 If the previous subtree is not empty,
 insert a margin of 1 empty line."
   (interactive)
-  (setq insert-margin (not (custom/org-subtree-blank)))
   (if (not (org-current-level))
       (insert "* ")
     (org-insert-heading))
+  (save-excursion (org-backward-heading-same-level 1)
+		        (setq insert-margin (not (custom/org-subtree-blank))))
   (if insert-margin
       (progn (beginning-of-visual-line)
 	           (org-return)
-		   (beginning-of-line-text))))
+		   (beginning-of-line-text)))
+  (save-excursion (org-backward-heading-same-level 1)
+		        (if (and (custom/org-relative-line-heading-folded) (custom/org-relative-line-heading))
+			    (outline-hide-subtree))))
 
 (define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading)
 
