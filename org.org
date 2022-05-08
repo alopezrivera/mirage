@@ -195,6 +195,29 @@ a `custom/region-empty'."
 
 #+end_src
 
+**** get-title-file
+
+#+begin_src emacs-lisp
+
+(defun custom/org-get-title-file (file)
+  (with-current-buffer (find-file-noselect file)
+       (custom/org-get-title-current-buffer)))
+
+#+end_src
+
+**** get-title-current-buffer
+
+#+begin_src emacs-lisp
+
+(defun custom/org-get-title-current-buffer ()
+    (nth 1
+     (assoc "TITLE"
+      (org-element-map (org-element-parse-buffer 'greater-element)
+          '(keyword)
+        #'custom/get-keyword-key-value))))
+
+#+end_src
+
 *** TODO Outline editing
 
 - deprecated cl warning
