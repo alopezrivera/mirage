@@ -211,6 +211,9 @@ it if it does not exist."
     (if (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))
 	  (if custom/org-diary-open-in-new-window
 	      (find-file-other-window entry)
+       (if custom/org-diary-open-in-new-window
+	      (progn (find-file-other-window entry)
+		     (custom/window-resize-fraction custom/org-diary-new-window-fraction))
 	    (find-file entry))
       (progn (find-file entry)
 	         (custom/org-diary-init time)))))
