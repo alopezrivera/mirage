@@ -9,8 +9,9 @@
 
 ;; Buffers opened at startup
 (defvar custom/background-buffers
-  '("~/.emacs.d/init.org"
-    "~/.emacs.d/org.org"
+  '("~/.emacs.d/org.org"
+    "~/.emacs.d/init.org"
+    "~/.emacs.d/theme.org"
     "~/.emacs.d/org-diary.org"
     "~/.emacs.d/backlog.org"
     "/home/emacs/test.org"))
