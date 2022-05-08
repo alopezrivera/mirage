@@ -2,7 +2,7 @@
 
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 50))
-(add-to-list 'default-frame-alist '(width  . 70))
+(add-to-list 'default-frame-alist '(width  . 60))
 
 ;; Initial buffer
 (setq initial-buffer-choice nil)
@@ -48,6 +48,11 @@
 (load custom-file)
 
 (setq debug-on-error t)
+
+(defun custom/window-resize-fraction (fr)
+  "Resize window to a fraction of the frame width."
+  (interactive)
+  (window-resize nil (- (truncate (* fr (frame-width))) (window-width)) t))
 
 (defun custom/match-regexs (string patterns)
   "Return t if all provided regex PATTERNS
