@@ -11,7 +11,7 @@
 (defvar custom/background-buffers
   '("~/.emacs.d/init.org"
     "~/.emacs.d/org.org"
-    "~/.emacs.d/diary.org"
+    "~/.emacs.d/org-diary.org"
     "~/.emacs.d/backlog.org"
     "/home/emacs/test.org"))
 

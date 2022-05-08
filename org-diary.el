@@ -19,6 +19,7 @@
   "Set up Org Diary entry."
   (interactive)
   (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
+  (insert "#+CREATED: ")
   (org-time-stamp-inactive '(16))
   (insert "\n\n"))
 
@@ -113,7 +114,7 @@ it does not exist."
 
 (global-set-key (kbd "C-c d") 'custom/org-diary-today)
 
-(define-key org-mode-map (kbd "C-c d")     'custom/org-diary-insert-time-hhmm)
+(define-key org-mode-map (kbd "C-d")     'custom/org-diary-insert-time-hhmm)
 (define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
 (define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 
