@@ -310,6 +310,15 @@ to the query at execution."
 
 #+end_src
 
+**** visible-buffers
+
+#+begin_src emacs-lisp
+
+(defun custom/visible-buffers ()
+  (cl-delete-duplicates (mapcar #'window-buffer (window-list))))
+
+#+end_src
+
 *** Operators
 **** <>
 
