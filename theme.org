@@ -375,6 +375,7 @@
 - readability
    - larger bullets
    - larger line spacing
+   - smaller font size
 
 #+begin_src emacs-lisp :tangle nil
 
