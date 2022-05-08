@@ -27,7 +27,8 @@
   (custom/relative-line (lambda () (progn (beginning-of-line-text) (org-at-item-p)))  number))
 
 (defun custom/org-relative-line-list-empty (&optional number)
-  (custom/relative-line-regex "[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+$" number))
+  (and (custom/org-relative-line-list)
+       (custom/relative-line-regex "[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+$" number)))
 
 (defun custom/org-relative-line-list-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
@@ -81,6 +82,17 @@ a `custom/region-empty'."
 (defun custom/org-subtree-content ()
   "Retrieve the content of the current subtree."
   (setq content (apply #'buffer-substring-no-properties (custom/org-subtree-region))))
+
+(defun custom/org-get-title-file (file)
+  (with-current-buffer (find-file-noselect file)
+       (custom/org-get-title-current-buffer)))
+
+(defun custom/org-get-title-current-buffer ()
+    (nth 1
+     (assoc "TITLE"
+      (org-element-map (org-element-parse-buffer 'greater-element)
+          '(keyword)
+        #'custom/get-keyword-key-value))))
 
 (defun custom/org-outline-overlay-data (&optional use-markers)
   "Return a list of the locations of all outline overlays.
@@ -186,6 +198,9 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
          ((and (region-active-p) (custom/org-at-ellipsis-h))                                 (beginning-of-visual-line))
          ((custom/org-at-ellipsis-h)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
 	     ((custom/org-at-ellipsis-l)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+	     ((and (custom/org-relative-line-heading-or-list)
+		   (> (custom/get-point 'beginning-of-visual-line)
+		      (custom/get-point 'beginning-of-line-text)))                               (beginning-of-visual-line))
          ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
 	     ((and (org-in-src-block-p) (> (custom/get-point 'beginning-of-visual-line)
 					   (custom/get-point 'back-to-indentation)))             (beginning-of-visual-line))
@@ -439,10 +454,36 @@ ellipsis in the first line under the heading."
 	            org-self-insert-command))
   (advice-add fn :around #'custom/org-edit-at-ellipsis))
 
-(define-key org-mode-map (kbd "M-S-<return>") 'org-insert-heading)
-
 ;; Do not insert newline before Org Mode headings
 (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+
+(defun custom/org-insert-heading ()
+  "Conditional `org-insert-heading'.
+
+If cursor is outside top level heading,
+insert heading at point, without removing
+any of the previous space.
+
+`org-insert-heading' will automatically
+remove all [[:space:]] until the first
+preceding non-empty line.
+If the previous subtree is not empty,
+insert a margin of 1 empty line."
+  (interactive)
+  (if (not (org-current-level))
+      (insert "* ")
+    (org-insert-heading))
+  (save-excursion (org-backward-heading-same-level 1)
+		        (setq insert-margin (not (custom/org-subtree-blank))))
+  (if insert-margin
+      (progn (beginning-of-visual-line)
+	           (org-return)
+		   (beginning-of-line-text)))
+  (save-excursion (org-backward-heading-same-level 1)
+		        (if (and (custom/org-relative-line-heading-folded) (custom/org-relative-line-heading))
+			    (outline-hide-subtree))))
+
+(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading)
 
 (defun custom/org-insert-subheading ()
   "Support `org-insert-subheading' from any point in tree."
@@ -460,13 +501,13 @@ ellipsis in the first line under the heading."
 (defun custom/org-insert-heading-respect-content (orig-fun &rest args)
   "Support `org-insert-heading-respect-content' from any point in tree.
 
-Furthermore, if the previous heading is folded, `org-hide-entry'"
+Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
   (setq insert-margin (not (custom/org-subtree-blank)))
   (if (org-current-level)
       (progn (if (not (= 1 (org-current-level)))
 	               (outline-up-heading 0))
              (apply orig-fun args))
-    (apply orig-fun args))
+    (insert "* "))
   (if insert-margin
       (progn (beginning-of-visual-line)
 	           (org-return)
@@ -621,6 +662,8 @@ matches the current theme."
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 
+(require 'org-diary (concat config-directory "org-diary.el"))
+
 ;; Language packages
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -719,7 +762,7 @@ folded."
 (straight-use-package 'org-roam-timestamps)
 
 ;; Org Agenda
-(global-set-key (kbd "C-c a") (lambda () (interactive) (org-agenda)))
+(global-set-key (kbd "C-c a") 'org-agenda)
 
 ;; Set Org Agenda files
 (with-eval-after-load 'org-agenda

@@ -9,7 +9,11 @@
 
 ;; Buffers opened at startup
 (defvar custom/background-buffers
-  '("~/.emacs.d/init.org" "~/.emacs.d/org.org" "~/.emacs.d/backlog.org" "/home/emacs/test.org"))
+  '("~/.emacs.d/init.org"
+    "~/.emacs.d/org.org"
+    "~/.emacs.d/diary.org"
+    "~/.emacs.d/backlog.org"
+    "/home/emacs/test.org"))
 
 (defun custom/spawn-background-buffers ()
   (cl-loop for buffer in custom/background-buffers
@@ -50,7 +54,7 @@
 (provided as a list) match STRING."
   (cl-loop for pattern in patterns
 	   if (not (string-match pattern string))
-	   return nil
+	      return nil
 	   finally return t))
 
 (defun custom/at-point (go-to-point &optional position)
@@ -134,6 +138,14 @@ to the query at execution."
   (let ((beg         (car last-change))
         (end         (cdr last-change)))
     (buffer-substring-no-properties beg end)))
+
+(defun custom/visible-buffers ()
+  (cl-delete-duplicates (mapcar #'window-buffer (window-list))))
+
+(defun custom/get-keyword-key-value (kwd)
+   (let ((data (cadr kwd)))
+     (list (plist-get data :key)
+           (plist-get data :value))))
 
 (defun <> (a b c)
   (and (> b a) (> c b)))
@@ -700,7 +712,14 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 ;; Reload Org Mode
 (defun custom/org-theme-reload ()
   (if (custom/in-mode "org-mode")
-      (org-mode)))
+      (org-mode)
+    (progn
+      (setq window (get-buffer-window (current-buffer)))
+      (cl-loop for buffer in (custom/visible-buffers)
+	             collect (select-window (get-buffer-window buffer))
+	 	     if (custom/in-mode "org-mode")
+		        return (org-mode))
+      (select-window window))))
 
 (add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
 
