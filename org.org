@@ -82,7 +82,8 @@
 #+begin_src emacs-lisp
 
 (defun custom/org-relative-line-list-empty (&optional number)
-  (custom/relative-line-regex "[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+$" number))
+  (and (custom/org-relative-line-list)
+       (custom/relative-line-regex "[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+$" number)))
 
 #+end_src
 
