@@ -1,0 +1,292 @@
+#+title:Org Diary
+#+STARTUP: overview
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ./org-diary.el :mkdirp yes
+
+* Setup
+** Variables
+
+#+begin_src emacs-lisp
+
+(defvar custom/org-diary-directory "/home/journal/diary/"
+  "Org Diary directory.")
+
+(defvar custom/org-diary-time-format-file  "%d.%m.%Y"
+  "Org Diary time format: file names.")
+
+(defvar custom/org-diary-time-format-title "%d/%m/%Y"
+  "Org Diary time format: entry titles.")
+
+(defvar custom/org-diary-file-format (concat custom/org-diary-directory
+					  custom/org-diary-time-format-file
+					  ".org")
+  "Org Diary file name format.")
+
+(defvar custom/org-diary-open-in-new-window t
+  "Open diary entries in new window.")
+
+#+end_src
+
+** Initialization
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-init (time)
+  "Set up Org Diary entry."
+  (interactive)
+  (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
+  (org-time-stamp-inactive '(16))
+  (insert "\n\n"))
+
+#+end_src
+
+* Internal
+** Time
+*** TODO parse-time
+
+1. find separator indices in time string
+    - <any code><separator>% -> regex match group
+    - assoc list ((code . pos in time list))
+2. split string at each separator -> list of values
+3. parallel lists -> ("<code 1>" ...) ("<value 1>" ...)
+4. transform assoc list -> ("<code 1>" . decode-method-1)
+5. decode string chunks to time values
+     
+   for i in range <parallel lists>
+       time-value-list[i] = (apply (assoc tr-assoc-list code-list[i]) value-list[i])
+         
+6. sort codes to match time list order -> apply sort to value list
+
+-----
+
+- auxiliary variables: year, month, day, hour, minute, second
+   - assoc list ((code . auxiliary-variable))
+   - if auxiliary variable written -> do not overwrite (in case of redundant codes such as %u (numeric day of the week) and %a (abbreviated name of the day of the week)
+
+for code in codes
+   if regex-match %code
+      sep = regex-match %code<sep>% else(eol) ""
+      value = regex-match %code<value><sep>
+      time-value = (apply (assoc tr-assoc-list code-list[i]) value-list[i])
+      (setq (assoc code-auxv-dict code) time-value)
+aux variables -> time list
+
+-----
+#+title:Draft (rough)
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-parse-time (string)
+  "Parse time string. Currently hardcoded to parse time
+strings in the format `%d/%m/%Y'."
+  (let ((dmy (cl-loop for n in (split-string string "/")
+		            collect (string-to-number n))))
+    (encode-time (list 0 0 0 (nth 0 dmy) (nth 1 dmy) (nth 2 dmy) nil nil nil))))
+
+#+end_src
+
+*** time-string-file
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-time-string-file (time)
+  (format-time-string custom/org-diary-file-format time))
+
+#+end_src
+
+*** time-string-title
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-time-string-title (time)
+  (format-time-string custom/org-diary-time-format-title time))
+
+#+end_src
+
+** Queries
+*** TODO buffer-entry
+
+- generalize for different file time string formats
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-buffer-entry (buffer)
+  (string-match-p "^[0-9]\\{2\\}\\.[0-9]\\{2\\}\\.[0-9]\\{4\\}\\.org" (file-name-nondirectory buffer)))
+
+#+end_src
+
+*** in-entry
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-in-entry ()
+  "Return t if current buffer is an `custom/org-diary-buffer-entry'."
+  (custom/org-diary-buffer-entry buffer-file-name))
+
+#+end_src
+
+*** entry-time
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-entry-time ()
+  (let ((title (custom/org-get-title-current-buffer)))
+    (custom/org-diary-parse-time title)))
+
+#+end_src
+
+*** entry-time
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-entry-date ()
+  "Retrieve the time of the current Org Diary
+file in `custom/org-diary-time-format-file'."
+  (custom/org-diary-time-string-file (custom/org-diary-entry-time)))
+
+#+end_src
+
+*** entry-unsaved-buffer
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-entry-unsaved-buffer (time)
+  "Return t if the Org Diary entry for TIME exists
+in an unsaved buffer."
+  (let ((file (custom/org-diary-time-string-file time)))
+    (cl-loop for buffer in (buffer-list)
+	           if (and (buffer-file-name buffer)
+			   (string-equal file (buffer-file-name buffer))) return t
+		   finally return nil)))
+
+#+end_src
+
+* Exploration
+** TODO org-diary-browse
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-browse ()
+  "Org Agenda-like list of diary entries.
+Options:
+- org-recenter -> show diary at point in side by side window
+- enter -> jump to diary entry at point
+- quit -> quit and return to previous window config, buffer and visibility
+  - org-agenda -> save current window config, visibility"
+  (interactive))
+
+#+end_src
+
+** TODO org-diary-thoughts
+
+- Two buffers
+   - Diary buffer list
+   - Long form content
+      - Separators
+         - -----
+      - Lazy load
+         1. show buffer list
+         2. get long-form content from buffer if desired
+             1. Save as aux
+             2. Delete when closing
+- Functions
+   - Exports
+      - select thoughts for export
+      - org-capture selected thoughts
+
+* Navigation
+** org-diary-visit
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-visit (time &optional number)
+  "Open the Org Diary entry of the spencified time, creating
+it if it does not exist."
+  (interactive)
+  (if number (setq time (time-add (days-to-time number) time)))
+  (let ((entry (custom/org-diary-time-string-file time)))
+    (if (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))
+	  (if custom/org-diary-open-in-new-window
+	      (find-file-other-window entry)
+	    (find-file entry))
+      (progn (find-file entry)
+	         (custom/org-diary-init time)))))
+
+#+end_src
+
+** org-diary-today
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-today (&optional number)
+  "Open the Org Diary entry for today, creating it if
+it does not exist."
+  (interactive)
+  (custom/org-diary-visit (current-time) number))
+
+#+end_src
+
+** org-diary-jump
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-jump (number)
+  (interactive)
+  (let ((custom/org-diary-open-in-new-window (not (custom/org-diary-in-entry)))
+	  (time-jump (time-add (custom/org-diary-entry-time) (days-to-time number))))
+       (custom/org-diary-visit time-jump)))
+
+#+end_src
+
+** org-diary-prior
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-prior ()
+  (interactive)
+  (custom/org-diary-jump -1))
+
+#+end_src
+
+** org-diary-next
+
+#+begin_src emacs-lisp
+(defun custom/org-diary-next ()
+  (interactive)
+  (custom/org-diary-jump 1))
+
+#+end_src
+
+* Bindings
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-c d") 'custom/org-diary-today)
+
+(define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
+(define-key org-mode-map (kbd "C-<next>") 'custom/org-diary-next)
+
+#+end_src
+
+* Mode
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary ()
+  "Org Diary minor mode.
+
+Activate when visiting files matching pattern.
+
+Bindings:
+- C-<up>   -> previous entry if it exists
+- C-<down> -> next entry if it exists
+- C-n      -> new entry")
+
+#+end_src
+
+* Declare
+
+#+begin_src emacs-lisp
+
+(provide 'org-diary)
+
+#+end_src

@@ -1057,6 +1057,14 @@ matches the current theme."
 
 #+end_src
 
+* Org Diary
+
+#+begin_src emacs-lisp
+
+(require 'org-diary (concat config-directory "org-diary.el"))
+
+#+end_src
+
 * Org Babel
 ** Languages
 
