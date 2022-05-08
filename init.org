@@ -112,6 +112,18 @@
 #+end_src
 
 ** General purpose functions
+*** Display
+**** window-resize-fraction
+
+#+begin_src emacs-lisp
+
+(defun custom/window-resize-fraction (fr)
+  "Resize window to a fraction of the frame width."
+  (interactive)
+  (window-resize nil (- (truncate (* fr (frame-width))) (window-width)) t))
+
+#+end_src
+
 *** Queries
 **** match-regexs
 
