@@ -293,6 +293,14 @@ it does not exist."
 
 #+end_src
 
+* Startup
+
+#+begin_src emacs-lisp
+
+(add-hook 'after-init-hook (lambda () (custom/org-diary-today t)))
+
+#+end_src
+
 * Mode
 
 #+begin_src emacs-lisp
