@@ -202,14 +202,13 @@ Options:
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-visit (time &optional number)
+(defun custom/org-diary-visit (time &optional full-screen)
   "Open the Org Diary entry of the spencified time, creating
 it if it does not exist."
   (interactive)
-  (if number (setq time (time-add (days-to-time number) time)))
   (let ((entry (custom/org-diary-time-string-file time)))
        (setq init (not (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))))
-       (if custom/org-diary-open-in-new-window
+       (if (and custom/org-diary-open-in-new-window (not full-screen))
 	      (progn (find-file-other-window entry)
 		     (custom/window-resize-fraction custom/org-diary-new-window-fraction))
 	    (find-file entry))
@@ -221,11 +220,11 @@ it if it does not exist."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-today (&optional number)
+(defun custom/org-diary-today (&optional full-screen)
   "Open the Org Diary entry for today, creating it if
 it does not exist."
   (interactive)
-  (custom/org-diary-visit (current-time) number))
+  (custom/org-diary-visit (current-time) full-screen))
 
 #+end_src
 
