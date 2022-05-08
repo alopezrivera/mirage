@@ -102,10 +102,20 @@ it does not exist."
   (interactive)
   (custom/org-diary-jump 1))
 
+(defun custom/org-diary-insert-time (format)
+  "Insert current time using the given FORMAT."
+  (insert (format-time-string format (current-time))))
+
+(defun custom/org-diary-insert-time-hhmm ()
+  "Insert current time using the given FORMAT."
+  (interactive)
+  (custom/org-diary-insert-time "%H:%M"))
+
 (global-set-key (kbd "C-c d") 'custom/org-diary-today)
 
+(define-key org-mode-map (kbd "C-c d")     'custom/org-diary-insert-time-hhmm)
 (define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
-(define-key org-mode-map (kbd "C-<next>") 'custom/org-diary-next)
+(define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 
 (defun custom/org-diary ()
   "Org Diary minor mode.
