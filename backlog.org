@@ -37,14 +37,6 @@ https://castel.dev/post/research-workflow/
 - Return
    - beginning of non-empty list
       - same as headings
-   - empty heading
-      - delete heading and subtree
-- headings
-   - heading from current line
-- lists
-   - custom/org-toggle-paragraph
-   - custom/org-indent-paragraph
-   - custom/org-outdent-paragraph
 
 * Improvements
 ** regions
