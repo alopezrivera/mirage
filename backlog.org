@@ -29,8 +29,8 @@ https://castel.dev/post/research-workflow/
 -  https://yannesposito.com/
 -  https://github.com/rougier/notebook-mode
 -  https://github.com/ThomasFKJorna/doom-emacs-config
-  
 
+  
 * Storm
 
 - Return

@@ -118,7 +118,7 @@
 (provided as a list) match STRING."
   (cl-loop for pattern in patterns
 	   if (not (string-match pattern string))
-	   return nil
+	      return nil
 	   finally return t))
 
 #+end_src
