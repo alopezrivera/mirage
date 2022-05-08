@@ -15,6 +15,9 @@
 (defvar custom/org-diary-open-in-new-window t
   "Open diary entries in new window.")
 
+(defvar custom/org-diary-new-window-fraction 0.3
+  "New Org Diary window width as a fraction of the frame width.")
+
 (defun custom/org-diary-init (time)
   "Set up Org Diary entry."
   (interactive)
@@ -70,24 +73,23 @@ Options:
   - org-agenda -> save current window config, visibility"
   (interactive))
 
-(defun custom/org-diary-visit (time &optional number)
+(defun custom/org-diary-visit (time &optional full-screen)
   "Open the Org Diary entry of the spencified time, creating
 it if it does not exist."
   (interactive)
-  (if number (setq time (time-add (days-to-time number) time)))
   (let ((entry (custom/org-diary-time-string-file time)))
-    (if (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))
-	  (if custom/org-diary-open-in-new-window
-	      (find-file-other-window entry)
+       (setq init (not (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))))
+       (if (and custom/org-diary-open-in-new-window (not full-screen))
+	      (progn (find-file-other-window entry)
+		     (custom/window-resize-fraction custom/org-diary-new-window-fraction))
 	    (find-file entry))
-      (progn (find-file entry)
-	         (custom/org-diary-init time)))))
+       (if init (custom/org-diary-init time))))
 
-(defun custom/org-diary-today (&optional number)
+(defun custom/org-diary-today (&optional full-screen)
   "Open the Org Diary entry for today, creating it if
 it does not exist."
   (interactive)
-  (custom/org-diary-visit (current-time) number))
+  (custom/org-diary-visit (current-time) full-screen))
 
 (defun custom/org-diary-jump (number)
   (interactive)
@@ -117,6 +119,8 @@ it does not exist."
 (define-key org-mode-map (kbd "C-d")     'custom/org-diary-insert-time-hhmm)
 (define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
 (define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
+
+(add-hook 'after-init-hook (lambda () (custom/org-diary-today t)))
 
 (defun custom/org-diary ()
   "Org Diary minor mode.
