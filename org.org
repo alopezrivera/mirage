@@ -1208,15 +1208,16 @@ folded."
 #+end_src
 
 * Org Agenda
+** Setup
+*** Startup
 
 #+begin_src emacs-lisp
 
 ;; Org Agenda
-(global-set-key (kbd "C-c a") (lambda () (interactive) (org-agenda)))
+(global-set-key (kbd "C-c a") 'org-agenda)
 
 #+end_src
 
-** Setup
 *** Agenda files
 
 #+begin_src emacs-lisp
@@ -1377,4 +1378,3 @@ folded."
 	(sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
 #+end_src
-
