@@ -25,10 +25,11 @@ https://castel.dev/post/research-workflow/
   
 ** Configs
 
--  https://github.com/alhassy/emacs.d
--  https://yannesposito.com/
--  https://github.com/rougier/notebook-mode
--  https://github.com/ThomasFKJorna/doom-emacs-config
+- https://github.com/alhassy/emacs.d
+- https://yannesposito.com/
+- https://github.com/rougier/notebook-mode
+- https://github.com/ThomasFKJorna/doom-emacs-config
+- https://github.com/rougier/dotemacs
 
   
 * Storm
@@ -52,6 +53,8 @@ https://castel.dev/post/research-workflow/
 - org mode
    - insert markup delimiter
       - wrap region in delimiter
+- if region empty and <backspace>
+   - exit region
         
 *** kill-region
 
@@ -293,6 +296,8 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
    - https://github.com/kiwanami/emacs-calfw
    - sync
       - https://www.youtube.com/watch?v=vO_RF2dK7M0
+   - hyperscheduler
+      - https://github.com/dmitrym0/org-hyperscheduler/
 	
 - presentations
    - reveal
@@ -473,6 +478,10 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 - https://www.emacswiki.org/emacs/AUCTeX
 - https://www.gnu.org/software/auctex/manual/auctex.html#Multifile
+- latexmk
+   - auctex replacements
+      - https://www.gnu.org/software/auctex/manual/auctex.html#Starting-a-Command
+        https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
 
 * email
 
