@@ -1317,7 +1317,28 @@ folded."
 
 #+end_src
 *** Navigation
-**** Visit
+**** TODO Visit
+
+- org-recenter -> unfold -> move away -> fold back
+   - arrows -> fold previous item
+   - recenter -> unfold item
+- currently- 
+   - org-recenter -> all todo items unfolded
+
+#+begin_src emacs-lisp :tangle nil
+
+(defun custom/org-agenda-recenter (arg)
+  (interactive "P")
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (eq last-command this-command)
+        (progn (custom/org-restore-outline-state)
+	       (org-agenda-recenter arg))
+      (progn (custom/org-save-outline-state)
+	     (org-agenda-recenter arg))))
+  (put this-command 'custom/last-call-time (current-time)))
+
+
+#+end_src
 
 #+begin_src emacs-lisp
 
