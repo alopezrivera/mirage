@@ -794,13 +794,13 @@ insert a margin of 1 empty line."
 (defun custom/org-insert-heading-respect-content (orig-fun &rest args)
   "Support `org-insert-heading-respect-content' from any point in tree.
 
-Furthermore, if the previous heading is folded, `org-hide-entry'"
+Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
   (setq insert-margin (not (custom/org-subtree-blank)))
   (if (org-current-level)
       (progn (if (not (= 1 (org-current-level)))
 	               (outline-up-heading 0))
              (apply orig-fun args))
-    (apply orig-fun args))
+    (insert "* "))
   (if insert-margin
       (progn (beginning-of-visual-line)
 	           (org-return)
