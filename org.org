@@ -719,8 +719,34 @@ ellipsis in the first line under the heading."
 
 (define-key org-mode-map (kbd "M-S-<return>") 'org-insert-heading)
 
+#+begin_src emacs-lisp
+
 ;; Do not insert newline before Org Mode headings
 (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+
+(defun custom/org-insert-heading ()
+  "Conditional `org-insert-heading'.
+
+If cursor is outside top level heading,
+insert heading at point, without removing
+any of the previous space.
+
+`org-insert-heading' will automatically
+remove all [[:space:]] until the first
+preceding non-empty line.
+If the previous subtree is not empty,
+insert a margin of 1 empty line."
+  (interactive)
+  (setq insert-margin (not (custom/org-subtree-blank)))
+  (if (not (org-current-level))
+      (insert "* ")
+    (org-insert-heading))
+  (if insert-margin
+      (progn (beginning-of-visual-line)
+	           (org-return)
+		   (beginning-of-line-text))))
+
+(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading)
 
 #+end_src
 
