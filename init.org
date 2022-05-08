@@ -319,6 +319,17 @@ to the query at execution."
 
 #+end_src
 
+**** get-keyword-key-value
+
+#+begin_src emacs-lisp
+
+(defun custom/get-keyword-key-value (kwd)
+   (let ((data (cadr kwd)))
+     (list (plist-get data :key)
+           (plist-get data :value))))
+
+#+end_src
+
 *** Operators
 **** <>
 
