@@ -1205,7 +1205,14 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 ;; Reload Org Mode
 (defun custom/org-theme-reload ()
   (if (custom/in-mode "org-mode")
-      (org-mode)))
+      (org-mode)
+    (progn
+      (setq window (get-buffer-window (current-buffer)))
+      (cl-loop for buffer in (custom/visible-buffers)
+	             collect (select-window (get-buffer-window buffer))
+	 	     if (custom/in-mode "org-mode")
+		        return (org-mode))
+      (select-window window))))
 
 (add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
 
