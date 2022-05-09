@@ -2,6 +2,12 @@
 #+STARTUP: overview
 -----
 
+- diary list spacing
+- subrepo, multirepo
+- latex
+- owo
+- org-paragraph v
+
 * References
 ** Workflows
 
@@ -518,7 +524,9 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
    - https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 
 * completion framework/incremental narrowing
-	
+
+- rank commands by usage
+
 - vertico
    - https://github.com/minad/vertico
 - selectrum
