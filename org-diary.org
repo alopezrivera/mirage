@@ -322,11 +322,16 @@ Options:
 	     (if current-buffer
 		 (find-file entry)
 	       (progn (find-file-other-window entry)
-	              (custom/window-resize-fraction custom/org-diary-new-window-fraction))))
+	              (if (not (ignore-errors (custom/window-resize-fraction custom/org-diary-new-window-fraction)))
+			  (delete-other-windows)))))
        ;; Initialize
        (if init (custom/org-diary-init time))
        ;; Save buffer
-       (if (and init save) (save-buffer))))
+       (if (and init save) (save-buffer))
+       ;; Enable `org-diary-mode'
+       (custom/org-diary-mode)
+       ;; Go to end of buffer
+       (end-of-buffer)))
 
 #+end_src
 
