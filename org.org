@@ -503,6 +503,9 @@ one character."
    - https://stackoverflow.com/questions/31412903/emacs-switch-paragraphs-with-each-other
    - if no paragraph below or above, move by a line
 
+**** Internal
+***** org-paragraph-toggle
+
 #+begin_src emacs-lisp
 
 (defun custom/org-paragraph-toggle ()
@@ -529,7 +532,7 @@ one character."
 		   (if bol (beginning-of-line-text)))
     (progn ;; Drop off
            (org-toggle-item (point))
-		 ;; Ensure cursor remains at
+	         ;; Ensure cursor remains at
 		 ;; `beginning-of-line-text'
 		 (if (bolp) (beginning-of-line-text))
 		 (if (custom/relative-line-indented)
@@ -539,8 +542,20 @@ one character."
 			    (goto-char back)
 			    )))))
 
+#+end_src
+
+**** Variables
+
+#+begin_src emacs-lisp
+
 (defvar custom/org-paragraph-ignore-errors t
   "Ignore errors in `org-paragraph' calls.")
+
+#+end_src
+
+**** org-paragraph
+
+#+begin_src emacs-lisp
 
 (defun custom/org-paragraph (command &rest args)
   "Org Mode hitch-hiking paragraphs."
@@ -557,9 +572,21 @@ one character."
 	      ;; Drop off
 	      (custom/org-paragraph-toggle))))
 
+#+end_src
+
+**** org-paragraph-indent
+
+#+begin_src emacs-lisp
+
 (defun custom/org-paragraph-indent ()
   (interactive)
   (custom/org-paragraph 'org-indent-item))
+
+#+end_src
+
+**** org-paragraph-outdent
+
+#+begin_src emacs-lisp
 
 (defun custom/org-paragraph-outdent ()
   (interactive)
@@ -684,7 +711,7 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-*** org-meta-arrows
+*** org-meta-arrows-h
 
 #+begin_src emacs-lisp
 
@@ -719,7 +746,7 @@ region, and proceed to execute `org-meta<arrows>'."
 				   ))
       (apply orig-fun args))))
 
-(advice-add 'org-metaleft :around #'custom/org-meta-arrows-h)
+(advice-add 'org-metaleft  :around #'custom/org-meta-arrows-h)
 (advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
 
 #+end_src
