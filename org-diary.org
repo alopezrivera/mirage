@@ -21,7 +21,7 @@
 					  ".org")
   "Org Diary file name format.")
 
-(defvar custom/org-diary-open-in-new-window t
+(defvar custom/org-diary-visit-in-new-window t
   "Open diary entries in new window.")
 
 (defvar custom/org-diary-new-window-fraction 0.3
@@ -224,7 +224,7 @@ it if it does not exist."
   "Open the Org Diary entry for today, creating it if
 it does not exist."
   (interactive)
-  (custom/org-diary-visit (current-time) full-screen))
+  (custom/org-diary-visit (current-time) arg))
 
 #+end_src
 
@@ -234,7 +234,7 @@ it does not exist."
 
 (defun custom/org-diary-jump (number)
   (interactive)
-  (let ((custom/org-diary-open-in-new-window (not (custom/org-diary-in-entry)))
+  (let ((custom/org-diary-visit-in-new-window (not (custom/org-diary-in-entry)))
 	  (time-jump (time-add (custom/org-diary-entry-time) (days-to-time number))))
        (custom/org-diary-visit time-jump)))
 
