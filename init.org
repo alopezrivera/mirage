@@ -228,7 +228,7 @@ to the query at execution."
 #+begin_src emacs-lisp
 
 (defun custom/relative-line-list-numeric (&optional number)
-  (custom/relative-line-regex "^[[:blank:]]*[0-9.)]+[[:blank:]]+.*$" number))
+  (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.)]\\{1\\}[[:blank:]]+.*$" number))
 
 #+end_src
 
