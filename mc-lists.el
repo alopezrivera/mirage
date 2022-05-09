@@ -51,6 +51,7 @@
 	mouse-save-then-kill
 	mouse-set-region
 	mouse-start-rectangle
+	org-babel-tangle
 	org-ctrl-c-ctrl-c
 	org-metadown
 	swiper

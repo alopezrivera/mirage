@@ -90,7 +90,7 @@ to the query at execution."
   (custom/relative-line 'looking-at-p number pattern))
 
 (defun custom/relative-line-list (&optional number)
-  (custom/relative-line-regex "^[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+.*$" number))
+  (custom/relative-line-regex "^[[:blank:]]*\\([0-9]+[.\\)]\\{1\\}\\|[-+*]\\{1\\}\\)[[:blank:]]+.*$" number))
 
 (defun custom/relative-line-empty (&optional number)
   (custom/relative-line-regex "[[:space:]]+$" number))
@@ -98,8 +98,11 @@ to the query at execution."
 (defun custom/relative-line-indented (&optional number)
   (custom/relative-line-regex "[[:blank:]]+.*$" number))
 
-(defun custom/relative-line-list-numeric (&optional number)
-  (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.)]\\{1\\}[[:blank:]]+.*$" number))
+(defun custom/relative-line-list-ordered (&optional number)
+  (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+.*$" number))
+
+(defun custom/relative-line-list-unordered (&optional number)
+  (custom/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+.*$" number))
 
 (defun custom/region-empty (&optional beg end)
   (let ((beg (or beg (region-beginning)))
@@ -277,6 +280,8 @@ buffer is already narrowed, widen buffer."
 ;; M-RET: multiple-cursors-mode
 (define-key swiper-map (kbd "M-<return>") 'custom/swiper-multiple-cursors)
 
+(global-set-key (kbd "C-c w") 'whitespace-mode)
+
 ;; Ivy completion framework
 (use-package counsel)
 (use-package ivy
@@ -410,7 +415,7 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 (defun custom/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
   (interactive)
-  (if (custom/relative-line-list-numeric)
+  (if (custom/relative-line-list-ordered)
       (progn (beginning-of-line)
 	           (re-search-forward "^[[:blank:]]*[1-9.)]+[[:blank:]]\\{1\\}"))
     (apply orig-fun args)))

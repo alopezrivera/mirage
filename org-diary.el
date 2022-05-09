@@ -1,30 +1,90 @@
-(defvar custom/org-diary-directory "/home/journal/diary/"
-  "Org Diary directory.")
+(defgroup custom/org-diary-mode-group nil
+  "Group for customization"
+  :prefix "custom/org-diary-")
 
-(defvar custom/org-diary-time-format-file  "%d.%m.%Y"
-  "Org Diary time format: file names.")
+(define-minor-mode custom/org-diary-mode
+  "Org Diary minor mode."
+  :init-value 1
+  :lighter " Diary"
+  :group 'custom/org-diary-mode-group
 
-(defvar custom/org-diary-time-format-title "%d/%m/%Y"
-  "Org Diary time format: entry titles.")
+  (when (bound-and-true-p custom/org-diary-mode)
+    (custom/org-diary-typeset))
+  (when (not (bound-and-true-p custom/org-diary-mode))
+    (custom/org-diary-font-lock-remove)))
 
-(defvar custom/org-diary-file-format (concat custom/org-diary-directory
+(define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
+
+(defcustom custom/org-diary-directory "/home/journal/diary/"
+  "Org Diary directory."
+  :group 'custom/org-diary-mode-group)
+
+(defcustom custom/org-diary-time-format-file  "%d.%m.%Y"
+  "Org Diary time format: file names."
+  :group 'custom/org-diary-mode-group)
+
+(defcustom custom/org-diary-time-format-title "%d/%m/%Y"
+  "Org Diary time format: entry titles."
+  :group 'custom/org-diary-mode-group)
+
+(defcustom custom/org-diary-file-format (concat custom/org-diary-directory
 					  custom/org-diary-time-format-file
 					  ".org")
-  "Org Diary file name format.")
+  "Org Diary file name format."
+  :group 'custom/org-diary-mode-group)
 
-(defvar custom/org-diary-visit-in-new-window t
-  "Open diary entries in new window.")
+(defcustom custom/org-diary-visit-in-new-window t
+  "Open diary entries in new window."
+  :group 'custom/org-diary-mode-group)
 
-(defvar custom/org-diary-new-window-fraction 0.3
-  "New Org Diary window width as a fraction of the frame width.")
+(defcustom custom/org-diary-new-window-fraction 0.3
+  "New Org Diary window width as a fraction of the frame width."
+  :group 'custom/org-diary-mode-group)
 
-(defun custom/org-diary-init (time)
-  "Set up Org Diary entry."
-  (interactive)
-  (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
-  (insert "#+CREATED: ")
-  (org-time-stamp-inactive '(16))
-  (insert "\n\n\n"))
+(defun custom/org-diary-typeset ()
+  (variable-pitch-mode)
+  (custom/org-diary-font-lock-add)
+  (custom/org-diary-line-padding))
+
+(defface custom/org-diary-typeface-hhmm
+  '((nil :foreground "#eb07b6" :inherit 'fixed-pitch))
+  "Org Diary typeface for hh:mm time stamps."
+  :group 'custom/org-diary-mode-group)
+
+(defcustom custom/org-diary-keyword-hhmm '("[0-9]\\{2\\}:[0-9]\\{2\\}.*$" . 'custom/org-diary-typeface-hhmm)
+  "Org Diary hh:mm typeface keyword."
+  :group 'custom/org-diary-mode-group)
+
+(defcustom custom/org-diary-keywords (list custom/org-diary-keyword-hhmm)
+  "Org Diary font-lock keywords.")
+
+(defun custom/org-diary-font-lock-add ()
+  (font-lock-add-keywords nil custom/org-diary-keywords)
+  (font-lock-fontify-buffer))
+
+(defun custom/org-diary-font-lock-remove ()
+  (font-lock-remove-keywords nil custom/org-diary-keywords)
+  (font-lock-fontify-buffer))
+
+(defcustom custom/org-diary-line-padding 2
+  "Org Diary line padding factor."
+  :group 'custom/org-diary-mode-group)
+
+(defun custom/org-diary-line-padding ()
+  "Set padding between Org Diary entry lines."
+  ;; remove padding overlays if they already exist
+  (let ((overlays (overlays-at (point-min))))
+    (while overlays
+      (let ((overlay (car overlays)))
+        (if (overlay-get overlay 'is-padding-overlay)
+            (delete-overlay overlay)))
+      (setq overlays (cdr overlays))))
+  ;; add a new padding overlay
+  (let ((padding-overlay (make-overlay (point-min) (point-max))))
+    (overlay-put padding-overlay 'is-padding-overlay t)
+    (overlay-put padding-overlay 'line-spacing (* .1 custom/org-diary-line-padding))
+    (overlay-put padding-overlay 'line-height (+ 1 (* .1 custom/org-diary-line-padding))))
+  (setq mark-active nil))
 
 (defun custom/org-diary-parse-time (string)
   "Parse time string. Currently hardcoded to parse time
@@ -94,11 +154,16 @@ Options:
 	     (if current-buffer
 		 (find-file entry)
 	       (progn (find-file-other-window entry)
-	              (custom/window-resize-fraction custom/org-diary-new-window-fraction))))
+	              (if (not (ignore-errors (custom/window-resize-fraction custom/org-diary-new-window-fraction)))
+			  (delete-other-windows)))))
        ;; Initialize
        (if init (custom/org-diary-init time))
        ;; Save buffer
-       (if (and init save) (save-buffer))))
+       (if (and init save) (save-buffer))
+       ;; Enable `org-diary-mode'
+       (custom/org-diary-mode)
+       ;; Go to end of buffer
+       (end-of-buffer)))
 
 (defun custom/org-diary-today (&optional arg)
   "Open the Org Diary entry for today, creating it if
@@ -120,6 +185,14 @@ it does not exist."
   (interactive)
   (custom/org-diary-jump 1))
 
+(defun custom/org-diary-init (time)
+  "Set up Org Diary entry."
+  (interactive)
+  (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
+  (insert "#+CREATED: ")
+  (org-time-stamp-inactive '(16))
+  (insert "\n\n\n"))
+
 (defun custom/org-diary-insert-time (format)
   "Insert current time using the given FORMAT."
   (insert (format-time-string format (current-time))))
@@ -129,8 +202,8 @@ it does not exist."
   (interactive)
   (custom/org-diary-insert-time "%H:%M"))
 
-(defun custom/org-diary ()
-  "Org Diary minor mode.
+(defun custom/org-diary (&optional arg)
+  "Org Diary entry point.
 
 Activate when visiting files matching pattern.
 
@@ -140,10 +213,12 @@ Bindings:
 - C-n      -> new entry"
   (interactive)
   (if (custom/org-diary-in-entry)
-      (delete-window)
-    (custom/org-diary-today)))
+      (progn (custom/org-diary-mode 0)
+	       (delete-window))
+    (progn (custom/org-diary-today arg)
+	     (custom/org-diary-mode 1))))
 
-(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(4))))
+(add-hook 'after-init-hook (lambda () (custom/org-diary '(4))))
 
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 

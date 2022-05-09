@@ -145,11 +145,28 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
     (custom/org-set-outline-overlay-data custom/org-outline-state)
     (setq custom/org-outline-state nil)))
 
+(defface custom/variable-pitch-marker
+  '((nil :inherit 'fixed-pitch))
+  "List marker typeface.")
+
+(defface custom/variable-pitch-indent
+  '((nil :inherit 'fixed-pitch :invisible t))
+  "Indent typeface.")
+
+(defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
+					    ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
+					    ("^[[:blank:]]+"                                      0 'custom/variable-pitch-indent))
+  "Variable pitch font-lock keywords.")
+
+(font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
+
+;; (font-lock-fontify-buffer)
+
 (defun custom/org-indent--compute-prefixes ()
   "Recompute line prefixes for regular text to
 match the indentation of the parent heading."
   (dotimes (n org-indent--deepest-level)
-      (let ((indentation (if (<= n 1) 0 1)))
+      (let ((indentation (if (= n 0) 0 1)))
         (aset org-indent--text-line-prefixes
 	        n
 	        (org-add-props
@@ -423,10 +440,11 @@ indented at the level of the previous list item, indent the paragraph."
   "Conditional `org-meta-return'."
   (interactive)
   (cond ((custom/org-relative-line-list-empty)          (progn (org-meta-return) (next-line) (end-of-line)))
-	      ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
-	      ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
-	      ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
-	      (t                                              (org-insert-heading-respect-content))))
+	    ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
+	    ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
+	    ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
+	    ((custom/relative-line-indented)                (custom/org-paragraph-toggle))
+	    (t                                              (org-insert-heading-respect-content))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
