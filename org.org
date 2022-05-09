@@ -763,10 +763,11 @@ indented at the level of the previous list item, indent the paragraph."
   "Conditional `org-meta-return'."
   (interactive)
   (cond ((custom/org-relative-line-list-empty)          (progn (org-meta-return) (next-line) (end-of-line)))
-	      ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
-	      ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
-	      ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
-	      (t                                              (org-insert-heading-respect-content))))
+	    ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
+	    ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
+	    ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
+	    ((custom/relative-line-indented)                (custom/org-paragraph-toggle))
+	    (t                                              (org-insert-heading-respect-content))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
