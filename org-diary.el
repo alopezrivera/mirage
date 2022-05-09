@@ -75,22 +75,26 @@ Options:
 
 (defun custom/org-diary-visit (time &optional arg)
   "Open the Org Diary entry corresponding to the specified time.
+-             '(0):  noselect
 - C-u         '(4):  visit in current buffer
 - C-u C-u     '(16): save new entry after initialiation
 - C-u C-u C-u '(64): visit in current buffer and save new entry after initialization"
   (interactive)
   (let ((entry          (custom/org-diary-time-string-file time))
 	    (save           (or (equal arg '(16)) (equal arg '(64))))
+	    (noselect       (equal arg '(1)))
 	    (current-buffer (if arg
 				(or (equal arg '(4)) (equal arg '(64)))
 			      (not custom/org-diary-visit-in-new-window))))
        ;; Whether to initialize the diary entry
        (setq init (not (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))))
        ;; Open entry
-       (if current-buffer
-	       (find-file entry)
-	     (progn (find-file-other-window entry)
-	            (custom/window-resize-fraction custom/org-diary-new-window-fraction)))
+       (if noselect
+	       (find-file-noselect entry)
+	     (if current-buffer
+		 (find-file entry)
+	       (progn (find-file-other-window entry)
+	              (custom/window-resize-fraction custom/org-diary-new-window-fraction))))
        ;; Initialize
        (if init (custom/org-diary-init time))
        ;; Save buffer
@@ -139,7 +143,7 @@ Bindings:
       (delete-window)
     (custom/org-diary-today)))
 
-(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(64))))
+(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(4))))
 
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
