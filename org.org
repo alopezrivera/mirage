@@ -751,6 +751,25 @@ region, and proceed to execute `org-meta<arrows>'."
 
 #+end_src
 
+*** TODO org-meta-arrows-v
+
+- paragraphs
+- save visibility of current tree
+   - cycle back to visibility of current tree
+      - hide spurious white lines
+
+#+begin_src emacs-lisp
+
+(defun custom/org-meta-arrows-v (orig-fun &rest args)
+  (interactive)
+  (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l)) (progn (beginning-of-visual-line) (end-of-line)))
+  (apply orig-fun args))
+
+(advice-add 'org-metaup   :around #'custom/org-meta-arrows-v)
+(advice-add 'org-metadown :around #'custom/org-meta-arrows-v)
+
+#+end_src
+
 *** org-edit-at-ellipsis
 
 #+begin_src emacs-lisp
