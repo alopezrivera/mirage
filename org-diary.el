@@ -24,7 +24,7 @@
   (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
   (insert "#+CREATED: ")
   (org-time-stamp-inactive '(16))
-  (insert "\n\n"))
+  (insert "\n\n\n"))
 
 (defun custom/org-diary-parse-time (string)
   "Parse time string. Currently hardcoded to parse time

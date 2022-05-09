@@ -99,7 +99,7 @@ to the query at execution."
   (custom/relative-line-regex "[[:blank:]]+.*$" number))
 
 (defun custom/relative-line-list-numeric (&optional number)
-  (custom/relative-line-regex "^[[:blank:]]*[0-9.)]+[[:blank:]]+.*$" number))
+  (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.)]\\{1\\}[[:blank:]]+.*$" number))
 
 (defun custom/region-empty (&optional beg end)
   (let ((beg (or beg (region-beginning)))
