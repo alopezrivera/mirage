@@ -125,14 +125,6 @@ it does not exist."
   (interactive)
   (custom/org-diary-insert-time "%H:%M"))
 
-(global-set-key (kbd "C-c d") 'custom/org-diary-today)
-
-(define-key org-mode-map (kbd "C-d")     'custom/org-diary-insert-time-hhmm)
-(define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
-(define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
-
-(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(64))))
-
 (defun custom/org-diary ()
   "Org Diary minor mode.
 
@@ -141,6 +133,18 @@ Activate when visiting files matching pattern.
 Bindings:
 - C-<up>   -> previous entry if it exists
 - C-<down> -> next entry if it exists
-- C-n      -> new entry")
+- C-n      -> new entry"
+  (interactive)
+  (if (custom/org-diary-in-entry)
+      (delete-window)
+    (custom/org-diary-today)))
+
+(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(64))))
+
+(global-set-key (kbd "C-c d") 'custom/org-diary)
+
+(define-key org-mode-map (kbd "C-d")     'custom/org-diary-insert-time-hhmm)
+(define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
+(define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 
 (provide 'org-diary)
