@@ -301,6 +301,42 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 #+end_src
 
 * Display
+** Variable pitch
+*** Markers
+
+#+begin_src emacs-lisp
+
+(defface custom/marker-typeface
+  '((nil :inherit 'fixed-pitch))
+  "List marker typeface")
+
+(font-lock-add-keywords
+ 'org-mode
+ '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/typeface-marker))
+ 'append)
+
+(font-lock-add-keywords
+ 'org-mode
+ '(("^[[:blank:]]*[.+]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/typeface-marker))
+ 'append)
+
+#+end_src
+
+*** Paragraphs
+
+#+begin_src emacs-lisp
+
+(defface custom/typeface-indent-paragraph
+  '((nil :inherit 'fixed-pitch :invisible t))
+  "Face for bluuet of plain list")
+
+(font-lock-add-keywords
+ 'org-mode
+ '(("^[[:blank:]]+" 0 'custom/typeface-indent-paragraph))
+ 'append)
+
+#+end_src
+
 ** org-indent--compute-prefixes
 
 #+begin_src emacs-lisp
