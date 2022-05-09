@@ -450,8 +450,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-;; Set width of side fringes
-(set-fringe-mode 0)
+;; Fringe mode
+(set-fringe-mode nil)
 
 #+end_src
 
