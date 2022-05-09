@@ -365,27 +365,33 @@ indented at the level of the previous list item, indent the paragraph."
 (defun custom/org-return ()
   "Conditional `org-return'."
   (interactive)
-  (cond ((custom/org-relative-line-list-empty)
+  (cond ;; Empty list
+        ((custom/org-relative-line-list-empty)
 	        (progn (delete-region
 			(custom/get-point 'beginning-of-line)
 			(custom/get-point 'end-of-line))
 		       (org-return)))
+	      ;; Beginning of non-empty list
 	      ((and (custom/org-relative-line-list)
 		    (custom/at-point (lambda ()
 				       (beginning-of-visual-line)
 				       (beginning-of-line-text))))
-	       (save-excursion (beginning-of-visual-line)
-			       (org-return t)))
+	       (progn (beginning-of-visual-line)
+		      (org-return)
+		      (beginning-of-line-text)))
+	      ;; At bol after list or indented text
 	      ((and (or (custom/org-relative-line-list -1)
 			(custom/relative-line-indented -1))
 		    (bolp))
 	       (org-return))
+	      ;; Beginning of heading
 	      ((and (custom/org-relative-line-heading)
 		    (custom/at-point (lambda ()
 				       (beginning-of-visual-line)
 				       (beginning-of-line-text))))
 	       (save-excursion (beginning-of-visual-line)
 			       (org-return t)))
+	      ;; At eol of non-empty heading
 	      ((and (custom/org-relative-line-heading)
 		    (not (custom/org-at-ellipsis-h))
 		    (not (custom/org-relative-line-heading-empty))
