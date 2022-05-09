@@ -3,6 +3,29 @@
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./org-diary.el :mkdirp yes
 
 * Setup
+** Mode
+
+#+begin_src emacs-lisp
+
+(defgroup custom/org-diary-mode-group nil
+  "Group for customization"
+  :prefix "custom/org-diary-")
+
+(define-minor-mode custom/org-diary-mode
+  "Org Diary minor mode."
+  :init-value 1
+  :lighter " Diary"
+  :group 'custom/org-diary-mode-group
+
+  (when (bound-and-true-p custom/org-diary-mode)
+    (custom/org-diary-typeset))
+  (when (not (bound-and-true-p custom/org-diary-mode))
+    (custom/org-diary-font-lock-remove)))
+
+(define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
+
+#+end_src
+
 ** Variables
 
 #+begin_src emacs-lisp
