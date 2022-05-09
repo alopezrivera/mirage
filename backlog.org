@@ -31,12 +31,6 @@ https://castel.dev/post/research-workflow/
 - https://github.com/ThomasFKJorna/doom-emacs-config
 - https://github.com/rougier/dotemacs
 
-  
-* Storm
-
-- Return
-   - beginning of non-empty list
-      - same as headings
 
 * Improvements
 ** regions
