@@ -263,7 +263,7 @@ one character."
 (defun custom/org-nimble-delete-backward ()
   "Org Mode complement to `custom/nimble-delete-backward'."
   (interactive)
-  (cond ((region-active-p)                                                                     (custom/org-delete-region))
+  (cond ((and (region-active-p) (not (custom/region-empty)))                                   (custom/org-delete-region))
 	((and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)) (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
 	((or (custom/org-relative-line-heading-empty) (custom/org-relative-line-list-empty))   (delete-region (point) (custom/get-point 'end-of-line 0)))
         (t                                                                                     (custom/nimble-delete-backward))))
@@ -301,7 +301,7 @@ one character."
 		   (if bol (beginning-of-line-text)))
     (progn ;; Drop off
            (org-toggle-item (point))
-		 ;; Ensure cursor remains at
+	         ;; Ensure cursor remains at
 		 ;; `beginning-of-line-text'
 		 (if (bolp) (beginning-of-line-text))
 		 (if (custom/relative-line-indented)
@@ -442,8 +442,16 @@ region, and proceed to execute `org-meta<arrows>'."
 				   ))
       (apply orig-fun args))))
 
-(advice-add 'org-metaleft :around #'custom/org-meta-arrows-h)
+(advice-add 'org-metaleft  :around #'custom/org-meta-arrows-h)
 (advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
+
+(defun custom/org-meta-arrows-v (orig-fun &rest args)
+  (interactive)
+  (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l)) (progn (beginning-of-visual-line) (end-of-line)))
+  (apply orig-fun args))
+
+(advice-add 'org-metaup   :around #'custom/org-meta-arrows-v)
+(advice-add 'org-metadown :around #'custom/org-meta-arrows-v)
 
 (defun custom/org-edit-at-ellipsis (orig-fun &rest args)
   "Execute commands invoked at an Org Mode heading's

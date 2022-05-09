@@ -12,7 +12,7 @@
 					  ".org")
   "Org Diary file name format.")
 
-(defvar custom/org-diary-open-in-new-window t
+(defvar custom/org-diary-visit-in-new-window t
   "Open diary entries in new window.")
 
 (defvar custom/org-diary-new-window-fraction 0.3
@@ -73,29 +73,40 @@ Options:
   - org-agenda -> save current window config, visibility"
   (interactive))
 
-(defun custom/org-diary-visit (time &optional full-screen)
-  "Open the Org Diary entry of the spencified time, creating
-it if it does not exist."
+(defun custom/org-diary-visit (time &optional arg)
+  "Open the Org Diary entry corresponding to the specified time.
+- C-u         '(4):  visit in current buffer
+- C-u C-u     '(16): save new entry after initialiation
+- C-u C-u C-u '(64): visit in current buffer and save new entry after initialization"
   (interactive)
-  (let ((entry (custom/org-diary-time-string-file time)))
+  (let ((entry          (custom/org-diary-time-string-file time))
+	    (save           (or (equal arg '(16)) (equal arg '(64))))
+	    (current-buffer (if arg
+				(or (equal arg '(4)) (equal arg '(64)))
+			      (not custom/org-diary-visit-in-new-window))))
+       ;; Whether to initialize the diary entry
        (setq init (not (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))))
-       (if (and custom/org-diary-open-in-new-window (not full-screen))
-	      (progn (find-file-other-window entry)
-		     (custom/window-resize-fraction custom/org-diary-new-window-fraction))
-	    (find-file entry))
-       (if init (custom/org-diary-init time))))
+       ;; Open entry
+       (if current-buffer
+	       (find-file entry)
+	     (progn (find-file-other-window entry)
+	            (custom/window-resize-fraction custom/org-diary-new-window-fraction)))
+       ;; Initialize
+       (if init (custom/org-diary-init time))
+       ;; Save buffer
+       (if (and init save) (save-buffer))))
 
-(defun custom/org-diary-today (&optional full-screen)
+(defun custom/org-diary-today (&optional arg)
   "Open the Org Diary entry for today, creating it if
 it does not exist."
   (interactive)
-  (custom/org-diary-visit (current-time) full-screen))
+  (custom/org-diary-visit (current-time) arg))
 
 (defun custom/org-diary-jump (number)
   (interactive)
-  (let ((custom/org-diary-open-in-new-window (not (custom/org-diary-in-entry)))
+  (let ((custom/org-diary-visit-in-new-window (not (custom/org-diary-in-entry)))
 	  (time-jump (time-add (custom/org-diary-entry-time) (days-to-time number))))
-       (custom/org-diary-visit time-jump)))
+       (custom/org-diary-visit time-jump '(4))))
 
 (defun custom/org-diary-prior ()
   (interactive)
@@ -120,7 +131,7 @@ it does not exist."
 (define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
 (define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 
-(add-hook 'after-init-hook (lambda () (custom/org-diary-today t)))
+(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(64))))
 
 (defun custom/org-diary ()
   "Org Diary minor mode.

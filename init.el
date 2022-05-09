@@ -103,7 +103,7 @@ to the query at execution."
 
 (defun custom/region-empty (&optional beg end)
   (let ((beg (or beg (region-beginning)))
-	(end (or end (region-end))))
+	  (end (or end (region-end))))
     (setq region (buffer-substring-no-properties beg end))
     (string-match "\\`[[:space:]]*\\'$" region)))
 
@@ -384,10 +384,22 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
   (interactive)
   (if (and (region-active-p) cond)
       (progn (previous-line)
+	           (point-to-register 'region-up-register)
 	           (end-of-visual-line))
     (previous-line)))
 
 (global-set-key (kbd "<up>") (lambda () (interactive) (custom/previous-line (derived-mode-p 'prog-mode))))
+
+(defun custom/region-up-register ()
+  "Move cursor to `region-up-register', defined in
+`custom/previous-line'."
+  (interactive)
+  (let ((end (region-end)))
+    (ignore-errors (jump-to-register 'region-up-register))
+    (set-register 'region-up-register nil)
+    (push-mark end)))
+
+(global-set-key (kbd "S-<home>") 'custom/region-up-register)
 
 (defun custom/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
@@ -633,9 +645,9 @@ If cursor lies either `custom/at-indent' or is preceded only by
 whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
-      (cond ((region-active-p)  (custom/delete-region))
-	          ((custom/at-indent) (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-		  (t                  (delete-backward-char 1)))
+      (cond ((and (region-active-p) (not (custom/region-empty))) (custom/delete-region))
+	          ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+		  (t                                                   (delete-backward-char 1)))
     (delete-backward-char 1)))
 
 (global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
