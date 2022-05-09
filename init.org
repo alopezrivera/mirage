@@ -410,20 +410,6 @@ to the query at execution."
 
 #+end_src
 
-** Mode line
-
-#+begin_src emacs-lisp
-
-(defun custom/hide-modeline ()
-  (interactive)
-  (if mode-line-format
-      (setq mode-line-format nil)
-    (doom-modeline-mode)))
-
-(global-set-key (kbd "M-m") #'custom/hide-modeline)
-
-#+end_src
-
 ** Centering
 
 #+begin_src emacs-lisp
@@ -442,6 +428,20 @@ to the query at execution."
 
 ;; Programming modes
 (add-hook 'prog-mode-hook 'olivetti-mode)
+
+#+end_src
+
+** Mode line
+
+#+begin_src emacs-lisp
+
+(defun custom/hide-modeline ()
+  (interactive)
+  (if mode-line-format
+      (setq mode-line-format nil)
+    (doom-modeline-mode)))
+
+(global-set-key (kbd "M-m") #'custom/hide-modeline)
 
 #+end_src
 
