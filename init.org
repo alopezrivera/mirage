@@ -201,7 +201,7 @@ to the query at execution."
 #+begin_src emacs-lisp
 
 (defun custom/relative-line-list (&optional number)
-  (custom/relative-line-regex "^[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+.*$" number))
+  (custom/relative-line-regex "^[[:blank:]]*\\([0-9]+[.\\)]\\{1\\}\\|[-+*]\\{1\\}\\)[[:blank:]]+.*$" number))
 
 #+end_src
 
@@ -223,12 +223,21 @@ to the query at execution."
 
   #+end_src
 
-***** relative-line-list-numeric
+***** relative-line-list-ordered
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-list-numeric (&optional number)
-  (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.)]\\{1\\}[[:blank:]]+.*$" number))
+(defun custom/relative-line-list-ordered (&optional number)
+  (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+.*$" number))
+
+#+end_src
+
+***** relative-line-list-unordered
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-list-unordered (&optional number)
+  (custom/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+.*$" number))
 
 #+end_src
 
@@ -746,7 +755,7 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 (defun custom/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
   (interactive)
-  (if (custom/relative-line-list-numeric)
+  (if (custom/relative-line-list-ordered)
       (progn (beginning-of-line)
 	           (re-search-forward "^[[:blank:]]*[1-9.)]+[[:blank:]]\\{1\\}"))
     (apply orig-fun args)))
