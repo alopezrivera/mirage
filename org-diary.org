@@ -414,12 +414,12 @@ it does not exist."
 
 #+end_src
 
-* Mode
+* Diary
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary ()
-  "Org Diary minor mode.
+(defun custom/org-diary (&optional arg)
+  "Org Diary entry point.
 
 Activate when visiting files matching pattern.
 
