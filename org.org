@@ -300,6 +300,26 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
+* Display
+** org-indent--compute-prefixes
+
+#+begin_src emacs-lisp
+
+(defun custom/org-indent--compute-prefixes ()
+  "Recompute line prefixes for regular text to
+match the indentation of the parent heading."
+  (dotimes (n org-indent--deepest-level)
+      (let ((indentation (if (<= n 1) 0 1)))
+        (aset org-indent--text-line-prefixes
+	        n
+	        (org-add-props
+	           (concat (make-string (+ n indentation) ?\s))
+		    nil 'face 'org-indent)))))
+
+(advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
+
+                  #+end_src
+
 * Navigation
 ** org-end
 
