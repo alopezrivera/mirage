@@ -239,7 +239,7 @@ to the query at execution."
 
 (defun custom/region-empty (&optional beg end)
   (let ((beg (or beg (region-beginning)))
-	(end (or end (region-end))))
+	  (end (or end (region-end))))
     (setq region (buffer-substring-no-properties beg end))
     (string-match "\\`[[:space:]]*\\'$" region)))
 
