@@ -379,6 +379,20 @@ it does not exist."
 #+end_src
 
 * Editing
+** Initialization
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-init (time)
+  "Set up Org Diary entry."
+  (interactive)
+  (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
+  (insert "#+CREATED: ")
+  (org-time-stamp-inactive '(16))
+  (insert "\n\n\n"))
+
+#+end_src
+
 ** insert-time
 
 #+begin_src emacs-lisp
