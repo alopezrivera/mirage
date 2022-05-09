@@ -438,7 +438,7 @@ Bindings:
 
 #+begin_src emacs-lisp
 
-(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(4))))
+(add-hook 'after-init-hook (lambda () (custom/org-diary '(4))))
 
 #+end_src
 
