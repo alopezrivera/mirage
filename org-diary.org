@@ -58,17 +58,63 @@
 
 #+end_src
 
-** Initialization
+* Display
+** Typefaces
+*** typeset
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-init (time)
-  "Set up Org Diary entry."
-  (interactive)
-  (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
-  (insert "#+CREATED: ")
-  (org-time-stamp-inactive '(16))
-  (insert "\n\n\n"))
+(defun custom/org-diary-typeset ()
+  (variable-pitch-mode)
+  (custom/org-diary-font-lock-add)
+  (custom/org-diary-line-padding))
+
+#+end_src
+
+*** font-lock
+**** hh:mm
+
+#+begin_src emacs-lisp
+
+(defface custom/org-diary-typeface-hhmm
+  '((nil :foreground "#eb07b6" :inherit 'fixed-pitch))
+  "Org Diary typeface for hh:mm time stamps."
+  :group 'custom/org-diary-mode-group)
+
+(defcustom custom/org-diary-keyword-hhmm '("[0-9]\\{2\\}:[0-9]\\{2\\}.*$" . 'custom/org-diary-typeface-hhmm)
+  "Org Diary hh:mm typeface keyword."
+  :group 'custom/org-diary-mode-group)
+
+#+end_src
+
+**** keywords
+
+#+begin_src emacs-lisp
+
+(defcustom custom/org-diary-keywords (list custom/org-diary-keyword-hhmm)
+  "Org Diary font-lock keywords.")
+
+#+end_src
+
+**** font-lock-add
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-font-lock-add ()
+  (font-lock-add-keywords nil custom/org-diary-keywords)
+  (font-lock-fontify-buffer))
+
+#+end_src
+
+**** font-lock-remove
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-font-lock-remove ()
+  (font-lock-remove-keywords nil custom/org-diary-keywords)
+  (font-lock-fontify-buffer))
+
+#+end_src
 
 #+end_src
 
