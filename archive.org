@@ -31,27 +31,6 @@ STARTUP: overview
 
 #+end_src
  
-* line-numbers-mode
-
-#+begin_src emacs-lisp
-
-;; Line numbers: display globally
-(global-display-line-numbers-mode t)
-
-;; Display column number
-(column-number-mode)
-
-;; Exceptions
-(dolist (mode '(pdf-view-mode
-		  org-mode-hook
-		  term-mode-hook
-		  shell-mode-hook
-		  eshell-mode-hook
-		  undo-tree-visualizer-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
-
-#+end_src
-
 * use-package
 
 #+begin_src emacs-lisp

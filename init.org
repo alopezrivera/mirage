@@ -454,6 +454,36 @@ to the query at execution."
 
 #+end_src
 
+** Line numbers
+
+#+begin_src emacs-lisp
+
+;; Line numbers by side
+(global-set-key (kbd "C-c l") 'global-display-line-numbers-mode)
+
+;; Display by default
+(global-display-line-numbers-mode)
+
+;; Exceptions
+(dolist (mode '(pdf-view-mode
+		   org-mode-hook
+		   term-mode-hook
+		   shell-mode-hook
+		   eshell-mode-hook
+		   undo-tree-visualizer-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+#+end_src
+
+** Column numbers
+
+#+begin_src emacs-lisp
+
+;; Display column number
+(column-number-mode)
+
+#+end_src
+
 * Guidance
 ** Search
 *** Swiper
