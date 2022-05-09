@@ -30,25 +30,31 @@
 
 #+begin_src emacs-lisp
 
-(defvar custom/org-diary-directory "/home/journal/diary/"
-  "Org Diary directory.")
+(defcustom custom/org-diary-directory "/home/journal/diary/"
+  "Org Diary directory."
+  :group 'custom/org-diary-mode-group)
 
-(defvar custom/org-diary-time-format-file  "%d.%m.%Y"
-  "Org Diary time format: file names.")
+(defcustom custom/org-diary-time-format-file  "%d.%m.%Y"
+  "Org Diary time format: file names."
+  :group 'custom/org-diary-mode-group)
 
-(defvar custom/org-diary-time-format-title "%d/%m/%Y"
-  "Org Diary time format: entry titles.")
+(defcustom custom/org-diary-time-format-title "%d/%m/%Y"
+  "Org Diary time format: entry titles."
+  :group 'custom/org-diary-mode-group)
 
-(defvar custom/org-diary-file-format (concat custom/org-diary-directory
+(defcustom custom/org-diary-file-format (concat custom/org-diary-directory
 					  custom/org-diary-time-format-file
 					  ".org")
-  "Org Diary file name format.")
+  "Org Diary file name format."
+  :group 'custom/org-diary-mode-group)
 
-(defvar custom/org-diary-visit-in-new-window t
-  "Open diary entries in new window.")
+(defcustom custom/org-diary-visit-in-new-window t
+  "Open diary entries in new window."
+  :group 'custom/org-diary-mode-group)
 
-(defvar custom/org-diary-new-window-fraction 0.3
-  "New Org Diary window width as a fraction of the frame width.")
+(defcustom custom/org-diary-new-window-fraction 0.3
+  "New Org Diary window width as a fraction of the frame width."
+  :group 'custom/org-diary-mode-group)
 
 #+end_src
 
