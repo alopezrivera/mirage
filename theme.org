@@ -104,10 +104,20 @@
     (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
     (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
 
-    ;; Indent
+(add-hook 'org-mode-hook #'custom/org-typefaces-body)
+
+#+end_src
+
+*** Indent
+
+#+begin_src emacs-lisp
+
+(defun custom/org-typeface-indent ()
+  "Indent typeface used in `org-indent-mode' and `visual-line-mode'."
+  (with-eval-after-load 'org-indent-mode
     (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))))
 
-(add-hook 'org-indent-mode-hook #'custom/org-pitch-setup)
+(add-hook 'org-mode-hook #'custom/org-typeface-indent)
 
 #+end_src
 
