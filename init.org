@@ -568,6 +568,14 @@ buffer is already narrowed, widen buffer."
 
 #+end_src
 
+** Diagnosis
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-c w") 'whitespace-mode)
+
+#+end_src
+
 ** Completion
 *** Ivy
 
