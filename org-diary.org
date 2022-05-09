@@ -292,26 +292,6 @@ it does not exist."
 
 #+end_src
 
-* Bindings
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-c d") 'custom/org-diary-today)
-
-(define-key org-mode-map (kbd "C-d")     'custom/org-diary-insert-time-hhmm)
-(define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
-(define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
-
-#+end_src
-
-* Startup
-
-#+begin_src emacs-lisp
-
-(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(64))))
-
-#+end_src
-
 * Mode
 
 #+begin_src emacs-lisp
@@ -324,7 +304,31 @@ Activate when visiting files matching pattern.
 Bindings:
 - C-<up>   -> previous entry if it exists
 - C-<down> -> next entry if it exists
-- C-n      -> new entry")
+- C-n      -> new entry"
+  (interactive)
+  (if (custom/org-diary-in-entry)
+      (delete-window)
+    (custom/org-diary-today)))
+
+#+end_src
+
+* Startup
+
+#+begin_src emacs-lisp
+
+(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(64))))
+
+#+end_src
+
+* Bindings
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-c d") 'custom/org-diary)
+
+(define-key org-mode-map (kbd "C-d")     'custom/org-diary-insert-time-hhmm)
+(define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
+(define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 
 #+end_src
 
