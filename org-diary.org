@@ -429,8 +429,10 @@ Bindings:
 - C-n      -> new entry"
   (interactive)
   (if (custom/org-diary-in-entry)
-      (delete-window)
-    (custom/org-diary-today)))
+      (progn (custom/org-diary-mode 0)
+	       (delete-window))
+    (progn (custom/org-diary-today arg)
+	     (custom/org-diary-mode 1))))
 
 #+end_src
 
