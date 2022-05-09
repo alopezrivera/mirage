@@ -780,9 +780,16 @@ region, and proceed to execute `org-meta<arrows>'."
 *** TODO org-meta-arrows-v
 
 - paragraphs
-- save visibility of current tree
-   - cycle back to visibility of current tree
-      - hide spurious white lines
+- visibility change when heading visibility is CHILDREN
+   - save previous visibility
+      - custom/org-subtree-state
+         - overlay = overlays-in subtree-beg subtree-end
+         - overlay-properties?
+   - org-meta-v
+   - if post visibility is not equal to previous
+      - cycle back to previous visibility
+   - rough
+      - visibility change -> assume prev was CHILDREN -> 2 x org-cycle-internal-local
 
 #+begin_src emacs-lisp
 
