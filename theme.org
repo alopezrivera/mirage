@@ -376,12 +376,30 @@
    - larger bullets
    - larger line spacing
    - smaller font size
+- ov
+   - https://github.com/emacsorphanage/ov
 
 #+begin_src emacs-lisp :tangle nil
 
-;; readability
-(add-text-properties (point-min) (point-max)
-                     '(line-spacing 0.25 line-height 1.25))
+;; Set the padding between lines
+(defvar line-padding 1)
+(defun add-line-padding ()
+  "Add extra padding between lines"
+  ;; remove padding overlays if they already exist
+  (let ((overlays (overlays-at (point-min))))
+    (while overlays
+      (let ((overlay (car overlays)))
+        (if (overlay-get overlay 'is-padding-overlay)
+            (delete-overlay overlay)))
+      (setq overlays (cdr overlays))))
+  ;; add a new padding overlay
+  (let ((padding-overlay (make-overlay (point-min) (point-max))))
+    (overlay-put padding-overlay 'is-padding-overlay t)
+    (overlay-put padding-overlay 'line-spacing (* .1 line-padding))
+    (overlay-put padding-overlay 'line-height (+ 1 (* .1 line-padding))))
+  (setq mark-active nil))
+
+(add-hook 'buffer-list-update-hook 'add-line-padding)
 
 #+end_src
 
@@ -429,6 +447,7 @@ Candidates:
 (plist-put org-format-latex-options :scale 1.5)
 
 #+end_src
+
 * Modus
 
 #+begin_src emacs-lisp
