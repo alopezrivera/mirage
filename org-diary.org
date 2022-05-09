@@ -320,7 +320,7 @@ Bindings:
 
 #+begin_src emacs-lisp
 
-(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(64))))
+(add-hook 'after-init-hook (lambda () (custom/org-diary-today '(4))))
 
 #+end_src
 
