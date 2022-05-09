@@ -301,38 +301,25 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 * Display
 ** Variable pitch
-*** Markers
 
 #+begin_src emacs-lisp
 
-(defface custom/marker-typeface
+(defface custom/variable-pitch-marker
   '((nil :inherit 'fixed-pitch))
-  "List marker typeface")
+  "List marker typeface.")
 
-(font-lock-add-keywords
- 'org-mode
- '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/typeface-marker))
- 'append)
-
-(font-lock-add-keywords
- 'org-mode
- '(("^[[:blank:]]*[.+]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/typeface-marker))
- 'append)
-
-#+end_src
-
-*** Paragraphs
-
-#+begin_src emacs-lisp
-
-(defface custom/typeface-indent-paragraph
+(defface custom/variable-pitch-indent
   '((nil :inherit 'fixed-pitch :invisible t))
-  "Face for bluuet of plain list")
+  "Indent typeface.")
 
-(font-lock-add-keywords
- 'org-mode
- '(("^[[:blank:]]+" 0 'custom/typeface-indent-paragraph))
- 'append)
+(defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
+					    ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
+					    ("^[[:blank:]]+"                                      0 'custom/variable-pitch-indent))
+  "Variable pitch font-lock keywords.")
+
+(font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
+
+;; (font-lock-fontify-buffer)
 
 #+end_src
 
