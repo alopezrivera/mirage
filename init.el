@@ -185,14 +185,6 @@ to the query at execution."
 
 (advice-add 'yes-or-no-p :override 'y-or-n-p)
 
-(defun custom/hide-modeline ()
-  (interactive)
-  (if mode-line-format
-      (setq mode-line-format nil)
-    (doom-modeline-mode)))
-
-(global-set-key (kbd "M-m") #'custom/hide-modeline)
-
 ;; Center text
 (use-package olivetti
   :delight olivetti-mode
@@ -208,23 +200,19 @@ to the query at execution."
 ;; Programming modes
 (add-hook 'prog-mode-hook 'olivetti-mode)
 
-;; Set width of side fringes
-(set-fringe-mode 0)
+(defun custom/hide-modeline ()
+  (interactive)
+  (if mode-line-format
+      (setq mode-line-format nil)
+    (doom-modeline-mode)))
 
-;; Line numbers by side
+(global-set-key (kbd "M-m") #'custom/hide-modeline)
+
+;; Fringe mode
+(set-fringe-mode nil)
+
+;; Display line numbers by side
 (global-set-key (kbd "C-c l") 'global-display-line-numbers-mode)
-
-;; Display by default
-(global-display-line-numbers-mode)
-
-;; Exceptions
-(dolist (mode '(pdf-view-mode
-		   org-mode-hook
-		   term-mode-hook
-		   shell-mode-hook
-		   eshell-mode-hook
-		   undo-tree-visualizer-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;; Display column number
 (column-number-mode)

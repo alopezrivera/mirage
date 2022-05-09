@@ -466,8 +466,11 @@ region, and proceed to execute `org-meta<arrows>'."
 
 (defun custom/org-meta-arrows-v (orig-fun &rest args)
   (interactive)
-  (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l)) (progn (beginning-of-visual-line) (end-of-line)))
-  (apply orig-fun args))
+  (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+      (progn (beginning-of-visual-line) (end-of-line)))
+  (apply orig-fun args)
+  (if (custom/org-relative-line-heading-folded)
+      (outline-hide-subtree)))
 
 (advice-add 'org-metaup   :around #'custom/org-meta-arrows-v)
 (advice-add 'org-metadown :around #'custom/org-meta-arrows-v)

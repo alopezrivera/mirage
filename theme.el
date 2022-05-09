@@ -62,10 +62,10 @@
 (add-hook 'org-indent-mode-hook #'custom/org-pitch-setup)
 
 ;; Use levels 1 through 8
-(setq org-n-level-faces 4)
+(setq org-n-level-faces 8)
 
 ;; Do not cycle header style after 8th level
-(setq org-cycle-level-faces t)
+(setq org-cycle-level-faces nil)
 
 ;; Hide leading stars
 (setq org-hide-leading-starts t)
@@ -79,10 +79,10 @@
                     (org-level-2 . 1.4)
                     (org-level-3 . 1.3)
                     (org-level-4 . 1.2)
-                    (org-level-5 . 1.2)
-                    (org-level-6 . 1.2)
-                    (org-level-7 . 1.2)
-                    (org-level-8 . 1.2)))
+                    (org-level-5 . 1.15)
+                    (org-level-6 . 1.10)
+                    (org-level-7 . 1.05)
+                    (org-level-8 . 1.00)))
          (set-face-attribute (car face) nil :font heading-typeface :weight 'bold :height (cdr face)))))
 
 (add-hook 'org-mode-hook #'custom/org-header-setup)
