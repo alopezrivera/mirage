@@ -44,7 +44,7 @@ strings in the format `%d/%m/%Y'."
 
 (defun custom/org-diary-in-entry ()
   "Return t if current buffer is an `custom/org-diary-buffer-entry'."
-  (custom/org-diary-buffer-entry buffer-file-name))
+  (ignore-errors (custom/org-diary-buffer-entry buffer-file-name)))
 
 (defun custom/org-diary-entry-time ()
   (let ((title (custom/org-get-title-current-buffer)))
