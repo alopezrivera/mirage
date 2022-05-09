@@ -10,6 +10,7 @@ STARTUP: overview
 (add-hook 'org-backlog #'org-set-tags-command)
 
 #+end_src
+
 ** Display
 *** Tag indentation
 
@@ -27,22 +28,8 @@ STARTUP: overview
 - monospace
 - same color
 - equal
-* Improvements
-** org-metaright
 
-#+begin_src emacs-lisp
-
-(defun custom/org-metaright (orig-fun &rest args)
-  (if (and (not (custom/org-relative-line-list)) (custom/org-relative-line-list -1))
-      (progn (end-of-line 0)
-	     (custom/org-return)
-	     (custom/nimble-delete-forward))
-    (apply orig-fun args)))
-
-(advice-add 'org-metaright :around #'custom/org-metaright)
-
-#+end_src
-* Chamber
+* chamber
 ** Sessions
 *** Persistence
 
@@ -221,15 +208,6 @@ STARTUP: overview
   ;;   :after (treemacs)
   ;;   :ensure t
   ;;   :config (treemacs-set-scope-type 'Tabs))
-
-#+end_src
-* Dump
-** relative-line-org-title
-
-#+begin_src emacs-lisp
-
-(defun custom/relative-line-org-title (&optional number)
-  (custom/relative-line-regex "\\#\\+title:.*$" number))
 
 #+end_src
 
