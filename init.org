@@ -402,6 +402,7 @@ to the query at execution."
 (setq visible-bell t)
 
 #+end_src
+
 *** Confirmations
 
 #+begin_src emacs-lisp
