@@ -211,6 +211,24 @@ to the query at execution."
 ;; Set width of side fringes
 (set-fringe-mode 0)
 
+;; Line numbers by side
+(global-set-key (kbd "C-c l") 'global-display-line-numbers-mode)
+
+;; Display by default
+(global-display-line-numbers-mode)
+
+;; Exceptions
+(dolist (mode '(pdf-view-mode
+		   org-mode-hook
+		   term-mode-hook
+		   shell-mode-hook
+		   eshell-mode-hook
+		   undo-tree-visualizer-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+;; Display column number
+(column-number-mode)
+
 ;; Swiper
 (use-package swiper)
 (require 'swiper)

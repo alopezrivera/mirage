@@ -145,6 +145,19 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
     (custom/org-set-outline-overlay-data custom/org-outline-state)
     (setq custom/org-outline-state nil)))
 
+(defun custom/org-indent--compute-prefixes ()
+  "Recompute line prefixes for regular text to
+match the indentation of the parent heading."
+  (dotimes (n org-indent--deepest-level)
+      (let ((indentation (if (<= n 1) 0 1)))
+        (aset org-indent--text-line-prefixes
+	        n
+	        (org-add-props
+	           (concat (make-string (+ n indentation) ?\s))
+		    nil 'face 'org-indent)))))
+
+(advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
+
 (defun custom/org-end ()
   "Conditional end in Org Mode.
 

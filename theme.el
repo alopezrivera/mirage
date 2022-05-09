@@ -49,21 +49,23 @@
 
     ;; Lists
     (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))
 
     ;; Meta
     (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
     (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
     (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
+    (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)
+
+    ;; Indent
+    (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))))
 
 (add-hook 'org-indent-mode-hook #'custom/org-pitch-setup)
 
-;; Use levels 1 through 4
+;; Use levels 1 through 8
 (setq org-n-level-faces 4)
 
-;; Do not cycle header style after 4th level
-(setq org-cycle-level-faces nil)
+;; Do not cycle header style after 8th level
+(setq org-cycle-level-faces t)
 
 ;; Hide leading stars
 (setq org-hide-leading-starts t)
@@ -229,6 +231,12 @@
 
 ;; List indentation
 (setq-default org-list-indent-offset 1)
+
+;; ov
+(straight-use-package 'ov)
+(require 'ov)
+
+(ov-regexp "setq" 100 550)
 
 ;; Vertical table line width
 (setq org-modern-table-vertical 1)
