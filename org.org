@@ -375,7 +375,9 @@ If `org-at-table-p', go to `org-table-end-of-field'."
 
 #+end_src
 
-** org-home
+** TODO org-home
+
+- home in invisible tags -> to beginning of tag text
 
 #+begin_src emacs-lisp
 
