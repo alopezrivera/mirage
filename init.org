@@ -6,6 +6,9 @@
 
 ;;; -*- lexical-binding: t; -*-
 
+;; Initial buffer
+(setq initial-buffer-choice "/home/dfki/backlog.org")
+
 ;; Startup buffers
 (defvar custom/startup-buffers
   '("/home/emacs/test.org"
@@ -28,9 +31,6 @@
 *** Buffers
 
 #+begin_src emacs-lisp
-
-;; Initial buffer
-(setq initial-buffer-choice nil)
 
 ;; Background buffers
 (defvar custom/background-buffers
