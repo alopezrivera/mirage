@@ -1547,7 +1547,19 @@ folded."
 (with-eval-after-load 'org-agenda
   (require 'calfw-org))
 
-(global-set-key (kbd "C-c c") 'cfw:open-org-calendar)
+#+end_src
+
+** org-calendar
+
+#+begin_src emacs-lisp
+
+(defun custom/org-calendar ()
+  (interactive)
+  (require 'org-agenda)
+  (let ((inhibit-message t))
+       (cfw:open-org-calendar)))
+
+(global-set-key (kbd "C-c c") 'custom/org-calendar)
 
 #+end_src
 
