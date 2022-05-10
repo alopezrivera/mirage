@@ -5,10 +5,13 @@
 #+latex_class_options: [twocolumn]
 -----
 
+- org-agenda
+   - low effort tasks
+
 - org-meta-arrows-h
 - org-meta-return
-   - empty top level
-      - region empty error
+   - top level at bottom of doc
+      - (org-current-level) check insufficient
 
 - latex
    - class, style file access
@@ -241,6 +244,8 @@ CLOSED: [2022-05-06 Fri 17:11]
 - org-ref
    - https://github.com/jkitchin/org-ref
 - create entry
+   - org-noter
+      - headings from section titles
    - biblatex entry
       - title
       - author
@@ -323,8 +328,6 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 * TODO org-agenda
 
-- agenda
-   - low effort tasks
 - super agenda
    - https://github.com/alphapapa/org-super-agenda
 - modus-themes-org-agenda
@@ -419,7 +422,12 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
    - command line arguments
       - https://stackoverflow.com/a/2112346
 
-        
+* display
+
+- vertical padding
+   - https://stackoverflow.com/questions/25040666/vertical-padding-or-margin-on-emacs-buffer
+     
+
 * IDE
 
 - lsp-mode
