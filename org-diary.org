@@ -59,18 +59,17 @@
 #+end_src
 
 * Display
-** Typefaces
-*** typeset
+** Typeset
 
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-typeset ()
   (variable-pitch-mode)
-  (custom/org-diary-font-lock-add)
-  (custom/org-diary-line-padding))
+  (custom/org-diary-font-lock-add))
 
 #+end_src
 
+** Typefaces
 *** font-lock
 **** hh:mm
 
@@ -116,9 +115,11 @@
 
 #+end_src
 
-** Line padding
+** TODO Line padding
 
-#+begin_src emacs-lisp
+- mouse click bug -> cursor about 2 lines below mouse
+
+#+begin_src emacs-lisp :tangle nil
 
 (defcustom custom/org-diary-line-padding 1.25
   "Org Diary line padding factor."
