@@ -1,5 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
 
+;; Startup buffers
+(defvar custom/startup-buffers
+  '("/home/emacs/test.org"
+    "/home/dfki/backlog.org"))
+
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 50))
 (add-to-list 'default-frame-alist '(width  . 60))
@@ -7,20 +12,19 @@
 ;; Initial buffer
 (setq initial-buffer-choice nil)
 
-;; Buffers opened at startup
+;; Background buffers
 (defvar custom/background-buffers
   '("~/.emacs.d/org.org"
     "~/.emacs.d/init.org"
     "~/.emacs.d/theme.org"
-    "~/.emacs.d/org-diary.org"
     "~/.emacs.d/backlog.org"
-    "/home/emacs/test.org"))
+    "~/.emacs.d/org-diary.org"))
 
-(defun custom/spawn-background-buffers ()
-  (cl-loop for buffer in custom/background-buffers
+(defun custom/spawn-startup-buffers ()
+  (cl-loop for buffer in (append custom/startup-buffers custom/background-buffers)
 	   collect (find-file-noselect buffer)))
 
-(add-hook 'after-init-hook #'custom/spawn-background-buffers)
+(add-hook 'after-init-hook #'custom/spawn-startup-buffers)
 
 ;; Default directory
 (setq default-directory "~/.emacs.d/")
