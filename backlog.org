@@ -1,9 +1,22 @@
 #+title:Backlog
 #+STARTUP: overview
 -----
+#+latex_class: pbusiness
+#+latex_class_options: [twocolumn]
+-----
 
-- subrepo, multirepo
+- org-meta-arrows-h
+- org-meta-return
+   - empty top level
+      - region empty error
+
 - latex
+   - class, style file access
+      - https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te
+   - latexmkrc -> load class from different directory
+      - https://stackoverflow.com/a/64860253
+   - org-latex-pdf-process -> latexmk
+- subrepo, multirepo
 - owo
 - org-paragraph
 
@@ -15,6 +28,12 @@
 - https://github.com/rougier/notebook-mode
 - https://github.com/ThomasFKJorna/doom-emacs-config
 - https://github.com/rougier/dotemacs
+- https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
+
+** Features
+
+- completion at point
+   - https://with-emacs.com/
 
 ** Org Mode
 
@@ -27,7 +46,7 @@
 
 - Mathematics
    - https://tony-zorman.com/posts/phd-workflow/2022-05-01-my-phd-workflow.html
-https://castel.dev/post/research-workflow/
+   - https://castel.dev/post/research-workflow/
      
 ** Emacs Lisp
 
@@ -38,10 +57,6 @@ https://castel.dev/post/research-workflow/
 - editing
    - https://github.com/bbatsov/crux
 
-** Completion
-
-- completion at point
-   - https://with-emacs.com/
      
 
 * Utilities
@@ -171,6 +186,7 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 - if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
+  
 * Modes
 ** minor modes
 
@@ -203,13 +219,50 @@ CLOSED: [2022-05-06 Fri 17:11]
       - https://www.gnu.org/software/auctex/manual/auctex.html#Starting-a-Command
         https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
 
+#+title:Org
+
+#+begin_src emacs-lisp
+
+(setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
+			        "xelatex -interaction nonstopmode %f"))
+
+#+end_src
+
 * pdf
 
 - pdf-tools
 - org-noter
    - https://github.com/weirdNox/org-noter
    - https://www.youtube.com/watch?v=lCc3UoQku-E
+- follow-mode
      
+* bibliography
+
+- org-ref
+   - https://github.com/jkitchin/org-ref
+- create entry
+   - biblatex entry
+      - title
+      - author
+      - date
+      - modifiable
+   - sync biblatex entry
+      - #+title
+      - #+author
+      - #+date
+
+* org
+
+- Jump to heading with completion
+   - https://github.com/abo-abo/worf
+
+- Table of contents
+   - https://github.com/snosov1/toc-org
+   - imenu-list
+      - https://github.com/rougier/dotemacs/blob/master/dotemacs.org#sidebar
+- tag formatting
+
+* org export
 * org-paragraph
 
 - up, down
@@ -340,36 +393,18 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 - UI
    - deactivate when reloading org mode
 
-* org
-
-- Jump to heading with completion
-   - https://github.com/abo-abo/worf
-
-- Table of contents
-   - https://github.com/snosov1/toc-org
-   - imenu-list
-      - https://github.com/rougier/dotemacs/blob/master/dotemacs.org#sidebar
-- tag formatting
-
-* org bib
-
-- org-ref
-   - https://github.com/jkitchin/org-ref
-
-* org export
 
 - org to anki
    - https://yiufung.net/post/anki-org/
 - presentations
-   - reveal
-      - https://gitlab.com/oer/emacs-reveal
-         - Nice code block transitions
-	 -https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
+   - revealXS
+      - https://www.youtube.com/watch?v=avtiR0AUVlo
+      - Nice code block transitions
+         - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
    - ioslide
       - https://github.com/coldnew/org-ioslide
 - Hugo
    - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
-
 * mode line
 
 - trouble switching on and off across modes
