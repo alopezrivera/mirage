@@ -1557,6 +1557,7 @@ folded."
 #+begin_src emacs-lisp
 
 (defun custom/org-calendar ()
+  "Open `calfw' Org Agenda calendar."
   (interactive)
   (require 'org-agenda)
   (let ((inhibit-message t))
