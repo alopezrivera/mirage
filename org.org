@@ -1366,8 +1366,6 @@ folded."
 #+end_src
 
 * Org Agenda
-** Setup
-*** Startup
 
 #+begin_src emacs-lisp
 
