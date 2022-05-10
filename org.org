@@ -1543,10 +1543,12 @@ folded."
 
 (straight-use-package 'calfw)
 (straight-use-package 'calfw-org)
+(straight-use-package 'calfw-ical)
 
 ;; org-agenda configuration is lost otherwise
 (with-eval-after-load 'org-agenda
-  (require 'calfw-org))
+  (require 'calfw-org)
+  (require 'calfw-ical))
 
 #+end_src
 
