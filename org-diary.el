@@ -43,8 +43,7 @@
 
 (defun custom/org-diary-typeset ()
   (variable-pitch-mode)
-  (custom/org-diary-font-lock-add)
-  (custom/org-diary-line-padding))
+  (custom/org-diary-font-lock-add))
 
 (defface custom/org-diary-typeface-hhmm
   '((nil :foreground "#eb07b6" :inherit 'fixed-pitch))
@@ -65,26 +64,6 @@
 (defun custom/org-diary-font-lock-remove ()
   (font-lock-remove-keywords nil custom/org-diary-keywords)
   (font-lock-fontify-buffer))
-
-(defcustom custom/org-diary-line-padding 1.25
-  "Org Diary line padding factor."
-  :group 'custom/org-diary-mode-group)
-
-(defun custom/org-diary-line-padding ()
-  "Set padding between Org Diary entry lines."
-  ;; remove padding overlays if they already exist
-  (let ((overlays (overlays-at (point-min))))
-    (while overlays
-      (let ((overlay (car overlays)))
-        (if (overlay-get overlay 'is-padding-overlay)
-            (delete-overlay overlay)))
-      (setq overlays (cdr overlays))))
-  ;; add a new padding overlay
-  (let ((padding-overlay (make-overlay (point-min) (point-max))))
-    (overlay-put padding-overlay 'is-padding-overlay t)
-    (overlay-put padding-overlay 'line-spacing (* .1 custom/org-diary-line-padding))
-    (overlay-put padding-overlay 'line-height (+ 1 (* .1 custom/org-diary-line-padding))))
-  (setq mark-active nil))
 
 (defun custom/org-diary-parse-time (string)
   "Parse time string. Currently hardcoded to parse time
@@ -214,7 +193,8 @@ Bindings:
   (interactive)
   (if (custom/org-diary-in-entry)
       (progn (custom/org-diary-mode 0)
-	       (delete-window))
+	       (if (not (ignore-errors (delete-window)))
+		   (bury-buffer)))
     (progn (custom/org-diary-today arg)
 	     (custom/org-diary-mode 1))))
 

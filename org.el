@@ -160,8 +160,6 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
 
-;; (font-lock-fontify-buffer)
-
 (defun custom/org-indent--compute-prefixes ()
   "Recompute line prefixes for regular text to
 match the indentation of the parent heading."
