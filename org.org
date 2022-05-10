@@ -300,7 +300,9 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 #+end_src
 
 * Display
-** Variable pitch
+** TODO Variable pitch
+
+- control over indentation of wrapped headings
 
 #+begin_src emacs-lisp
 
@@ -721,6 +723,9 @@ indented at the level of the previous list item, indent the paragraph."
 
 *** TODO org-meta-return
 
+- on non-empty line
+   - insert heading at line
+
 - list paragraphs
    - custom/org-toggle-paragraph
       - keep cursor in place
@@ -760,7 +765,11 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-*** org-meta-arrows-h
+*** TODO org-meta-arrows-h
+
+- asd
+   - asdasd
+   - asdasd
 
 #+begin_src emacs-lisp
 
