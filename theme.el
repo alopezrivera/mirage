@@ -236,12 +236,6 @@
 ;; List indentation
 (setq-default org-list-indent-offset 1)
 
-;; ov
-(straight-use-package 'ov)
-(require 'ov)
-
-(ov-regexp "setq" 100 550)
-
 ;; Vertical table line width
 (setq org-modern-table-vertical 1)
 
