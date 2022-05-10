@@ -1126,7 +1126,18 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 #+end_src
 
-** Undo, Redo
+** TODO Undo, Redo
+
+- vundo
+- undo-fu
+- Back
+   - Record character number in current line relative to the end of the line
+   - If impossible to go to previous position, to recorded character number of previous line
+   - Org Mode
+      - restore visibility before undone command
+      - if previous command created heading
+         - undo heading creation and restore visibility
+
 *** Kill ring
 
 #+begin_src emacs-lisp
