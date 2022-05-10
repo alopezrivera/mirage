@@ -383,28 +383,6 @@
 
 #+end_src
 
-*** TODO Line spacing
-
-- readability
-   - larger bullets
-   - larger line spacing
-   - smaller font size
-- ov
-   - https://github.com/emacsorphanage/ov
-
-**** Overlays
-***** ov
-
-#+begin_src emacs-lisp
-
-;; ov
-(straight-use-package 'ov)
-(require 'ov)
-
-(ov-regexp "setq" 100 550)
-
-#+end_src
-
 ** Tables
 
 #+begin_src emacs-lisp
