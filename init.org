@@ -951,6 +951,14 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
+**** split-width-threshold
+
+#+begin_src emacs-lisp
+
+(setq split-width-threshold 70)
+
+#+end_src
+
 *** Frame
 
 #+begin_src emacs-lisp
