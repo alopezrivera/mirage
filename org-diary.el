@@ -11,7 +11,8 @@
   (when (bound-and-true-p custom/org-diary-mode)
     (custom/org-diary-typeset))
   (when (not (bound-and-true-p custom/org-diary-mode))
-    (custom/org-diary-font-lock-remove)))
+    (custom/org-diary-font-lock-remove)
+    (variable-pitch-mode 0)))
 
 (define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
 
@@ -200,7 +201,7 @@ Bindings:
 
 (add-hook 'after-init-hook (lambda () (custom/org-diary '(4))))
 
-(add-hook 'org-mode-hook (lambda () (if custom/org-diary-mode (custom/org-diary-mode))))
+(add-hook 'org-mode-hook (lambda () (if (custom/org-diary-in-entry) (custom/org-diary-mode))))
 
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
