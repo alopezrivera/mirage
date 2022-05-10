@@ -406,6 +406,7 @@ to the query at execution."
 (menu-bar-mode -1)
 
 #+end_src
+
 ** Warnings
 *** Visible bell
 
