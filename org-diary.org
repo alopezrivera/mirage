@@ -20,7 +20,8 @@
   (when (bound-and-true-p custom/org-diary-mode)
     (custom/org-diary-typeset))
   (when (not (bound-and-true-p custom/org-diary-mode))
-    (custom/org-diary-font-lock-remove)))
+    (custom/org-diary-font-lock-remove)
+    (variable-pitch-mode 0)))
 
 (define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
 
