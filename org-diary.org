@@ -120,7 +120,7 @@
 
 #+begin_src emacs-lisp
 
-(defcustom custom/org-diary-line-padding 2
+(defcustom custom/org-diary-line-padding 1.25
   "Org Diary line padding factor."
   :group 'custom/org-diary-mode-group)
 
