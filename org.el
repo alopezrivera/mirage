@@ -570,7 +570,7 @@ insert a margin of 1 empty line."
 
 Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
   (setq insert-margin (and (org-current-level) (not (custom/org-subtree-blank))))
-  (if (org-current-level)
+  (if (org-current-level) ;; MERGE
       (progn (if (not (= 1 (org-current-level)))
 	               (outline-up-heading 0))
              (apply orig-fun args))
@@ -833,7 +833,8 @@ folded."
 
 ;; Set Org Agenda files
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-files '("~/.emacs.d/" "/home/")))
+  (setq org-agenda-files '("~/.emacs.d/"
+			       "/home/dfki/backlog.org")))
 
 (defmacro custom/org-agenda-bind (key command)
   `(with-eval-after-load 'org-agenda
@@ -864,14 +865,14 @@ folded."
 	 ((todo "NEXT"
 		((org-agenda-overriding-header "Next Tasks")))))
 
- 	("W" "Work Tasks" tags-todo "+work-email")
+ 	("w" "Work Tasks" tags-todo "work")
 
 	("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
 	 ((org-agenda-overriding-header "Low Effort Tasks")
 	  (org-agenda-max-todos 20)
 	  (org-agenda-files org-agenda-files)))
 
-	("w" "Workflow Status"
+	("s" "Workflow Status"
 	 ((todo "WAIT"
 		((org-agenda-overriding-header "Waiting on External")
 		 (org-agenda-files org-agenda-files)))
@@ -905,9 +906,9 @@ folded."
       '((:startgroup)
 	;; Put mutually exclusive tags here
 	(:endgroup)
-	("@errand"  . ?E)
-	("@home"    . ?H)
-	("@work"    . ?W)
+	("errand"   . ?e)
+	("home"     . ?h)
+	("work"     . ?w)
 	("agenda"   . ?a)
 	("planning" . ?p)
 	("publish"  . ?P)

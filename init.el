@@ -1,5 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 
+;; Initial buffer
+(setq initial-buffer-choice "/home/dfki/backlog.org")
+
 ;; Startup buffers
 (defvar custom/startup-buffers
   '("/home/emacs/test.org"
@@ -8,9 +11,6 @@
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 50))
 (add-to-list 'default-frame-alist '(width  . 60))
-
-;; Initial buffer
-(setq initial-buffer-choice nil)
 
 ;; Background buffers
 (defvar custom/background-buffers
@@ -542,6 +542,8 @@ not empty. In any case, advance to next line."
 
 ;; winner mode
 (winner-mode)
+
+(setq split-width-threshold 70)
 
 ;; Create new frame
 (global-set-key (kbd "C-S-n") 'make-frame-command)
