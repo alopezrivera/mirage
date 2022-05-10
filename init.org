@@ -40,11 +40,11 @@
     "~/.emacs.d/backlog.org"
     "~/.emacs.d/org-diary.org"))
 
-(defun custom/spawn-background-buffers ()
-  (cl-loop for buffer in custom/background-buffers
+(defun custom/spawn-startup-buffers ()
+  (cl-loop for buffer in (append custom/startup-buffers custom/background-buffers)
 	   collect (find-file-noselect buffer)))
 
-(add-hook 'after-init-hook #'custom/spawn-background-buffers)
+(add-hook 'after-init-hook #'custom/spawn-startup-buffers)
 
 #+end_src
 
