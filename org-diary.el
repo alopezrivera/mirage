@@ -66,7 +66,7 @@
   (font-lock-remove-keywords nil custom/org-diary-keywords)
   (font-lock-fontify-buffer))
 
-(defcustom custom/org-diary-line-padding 2
+(defcustom custom/org-diary-line-padding 1.25
   "Org Diary line padding factor."
   :group 'custom/org-diary-mode-group)
 
@@ -219,6 +219,8 @@ Bindings:
 	     (custom/org-diary-mode 1))))
 
 (add-hook 'after-init-hook (lambda () (custom/org-diary '(4))))
+
+(add-hook 'org-mode-hook (lambda () (if custom/org-diary-mode (custom/org-diary-mode))))
 
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
