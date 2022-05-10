@@ -2,13 +2,24 @@
 #+STARTUP: overview
 -----
 
-- diary list spacing
 - subrepo, multirepo
 - latex
 - owo
-- org-paragraph v
+- org-paragraph
 
 * References
+** Configs
+
+- https://github.com/alhassy/emacs.d
+- https://yannesposito.com/
+- https://github.com/rougier/notebook-mode
+- https://github.com/ThomasFKJorna/doom-emacs-config
+- https://github.com/rougier/dotemacs
+
+** Org Mode
+
+- https://orgmode.org/worg/org-hacks.html
+  
 ** Workflows
 
 - Rougier
@@ -24,18 +35,20 @@ https://castel.dev/post/research-workflow/
    - http://xahlee.info/emacs/emacs_manual/elisp/Interactive-Codes.html
 - performance
    - https://nullprogram.com/blog/2017/01/30/
+- editing
+   - https://github.com/bbatsov/crux
 
-** Org Mode
+** Completion
 
-- https://orgmode.org/worg/org-hacks.html
-  
-** Configs
+- completion at point
+   - https://with-emacs.com/
+     
 
-- https://github.com/alhassy/emacs.d
-- https://yannesposito.com/
-- https://github.com/rougier/notebook-mode
-- https://github.com/ThomasFKJorna/doom-emacs-config
-- https://github.com/rougier/dotemacs
+* Utilities
+** overlays
+
+- ov
+   - https://github.com/emacsorphanage/ov
 
 
 * Improvements
@@ -158,7 +171,45 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 - if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
-  
+* Modes
+** minor modes
+
+- Aracne minor mode
+   - All key bindings
+      - Org Mode
+   - https://github.com/noctuid/general.el
+
+** major modes
+
+- map mode
+   - screens
+      - key bindings
+         - commands
+         - packages
+            - redirect to list-packages
+   - key bindings
+      - rendered with svg-tag-mode
+         - search
+         - match bound command + docstrings
+
+
+
+* latex
+
+- https://www.emacswiki.org/emacs/AUCTeX
+- https://www.gnu.org/software/auctex/manual/auctex.html#Multifile
+- latexmk
+   - auctex replacements
+      - https://www.gnu.org/software/auctex/manual/auctex.html#Starting-a-Command
+        https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
+
+* pdf
+
+- pdf-tools
+- org-noter
+   - https://github.com/weirdNox/org-noter
+   - https://www.youtube.com/watch?v=lCc3UoQku-E
+     
 * org-paragraph
 
 - up, down
@@ -219,6 +270,8 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 * TODO org-agenda
 
+- agenda
+   - low effort tasks
 - super agenda
    - https://github.com/alphapapa/org-super-agenda
 - modus-themes-org-agenda
@@ -270,27 +323,43 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
       - select thoughts for export
       - org-capture selected thoughts
 
+* TODO org-calendar
+
+- https://github.com/kiwanami/emacs-calfw
+- sync
+   - https://www.youtube.com/watch?v=vO_RF2dK7M0
+- hyperscheduler
+   - https://github.com/dmitrym0/org-hyperscheduler/
+
+* TODO org-roam
+
+- https://www.orgroam.com/manual.html#Introduction
+- bibtex
+   - https://github.com/org-roam/org-roam-bibtex
+   - https://github.com/tmalsburg/helm-bibtex
+- UI
+   - deactivate when reloading org mode
+
 * org
+
+- Jump to heading with completion
+   - https://github.com/abo-abo/worf
+
+- Table of contents
+   - https://github.com/snosov1/toc-org
+   - imenu-list
+      - https://github.com/rougier/dotemacs/blob/master/dotemacs.org#sidebar
+- tag formatting
+
+* org bib
 
 - org-ref
    - https://github.com/jkitchin/org-ref
-- Roam
-   - https://www.orgroam.com/manual.html#Introduction
-   - bibtex
-      - https://github.com/org-roam/org-roam-bibtex
-      - https://github.com/tmalsburg/helm-bibtex
-   - UI
-      - deactivate when reloading org mode
-	
+
+* org export
+
 - org to anki
    - https://yiufung.net/post/anki-org/
-- org-calendar
-   - https://github.com/kiwanami/emacs-calfw
-   - sync
-      - https://www.youtube.com/watch?v=vO_RF2dK7M0
-   - hyperscheduler
-      - https://github.com/dmitrym0/org-hyperscheduler/
-	
 - presentations
    - reveal
       - https://gitlab.com/oer/emacs-reveal
@@ -300,41 +369,12 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
       - https://github.com/coldnew/org-ioslide
 - Hugo
    - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
-	
-- Table of contents
-   - https://github.com/snosov1/toc-org
-- Jump to heading with completion
-   - https://github.com/abo-abo/worf
-- Custom markup
-   - Org lists
-      - Current
-      - Face
-      - Default
-      - Indent
-         - org-indent
-         - Fixed
-   - org-indent for lists
-      - Same as list face
-   - Colors
-      - Red
-      - Blue
-      - Green
-   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Faces.html
-   - https://stackoverflow.com/questions/70707618/org-mode-how-to-change-color-of-list
-- Paragraphs inside list items
-   - indent-rigidly
-   - Indent written paragraph
-   - M-RET inside list
-      - Start line with hard indent at list item level
-      - https://emacs.stackexchange.com/questions/2735/how-to-format-fill-poorly-formatted-bullet-items-in-org-mode/2738
 
-- tag formatting
-- org title
-   - home
-* rss
+* mode line
 
-- elfeed
-   - https://github.com/skeeto/elfeed
+- trouble switching on and off across modes
+- no mode line minor mode
+   - https://github.com/hlissner/emacs-hide-mode-line
 
 * runtime
 
@@ -344,73 +384,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
    - command line arguments
       - https://stackoverflow.com/a/2112346
 
-* editing
-
-- undo
-   - Record character number in current line relative to the end of the line
-   - If impossible to go to previous position, to recorded character number of previous line
-   - Org Mode
-      - restore visibility before undone command
-      - if previous command created heading
-         - undo heading creation and restore visibility
-
-* file management
-
-- Org refile
-   - https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
-
-* minor modes
-
-- mode-specific typefaces
-   - https://emacs.stackexchange.com/questions/3038/using-a-different-font-for-each-major-mode
-- Aracne minor mode
-   - All key bindings
-      - Org Mode
-   - https://github.com/noctuid/general.el
-- mode line
-   - trouble switching on and off across modes
-   - no mode line minor mode
-      - https://github.com/hlissner/emacs-hide-mode-line
-
-* major modes
-
-- map mode
-   - screens
-      - key bindings
-         - commands
-         - packages
-            - redirect to list-packages
-   - key bindings
-      - rendered with svg-tag-mode
-         - search
-         - match bound command + docstrings
-
-* writing
-
-- Power Thesaurus
-   - https://github.com/SavchenkoValeriy/emacs-powerthesaurus
-- Screenwriting
-   - Fountain mode
-      - https://github.com/rnkn/fountain-mode/
-         - https://www.youtube.com/watch?v=Be1hE_pQL4w
-- Spell checking
-   - Flyspell
-      - https://www.emacswiki.org/emacs/FlySpell
-         - https://www.tenderisthebyte.com/blog/2019/06/09/spell-checking-emacs/
-         - hunspell < aspell, however hunspell is currently widely used and maintained
-   - Language detection
-      - https://github.com/tmalsburg/guess-language.el
-- Hyperbole
-   - https://github.com/rswgnu/hyperbole
-
-* templating
-
-- yasnippet
-   - org-capture template
-- autotyping
-   - https://www.gnu.org/software/emacs/manual/html_mono/autotype.html
-   - https://sachachua.com/blog/2015/01/developing-emacs-micro-habits-text-automation/
-
+        
 * IDE
 
 - lsp-mode
@@ -466,27 +440,49 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 - Annotations
    - https://github.com/bastibe/annotate.el
 
-* latex
+* writing
 
-- https://www.emacswiki.org/emacs/AUCTeX
-- https://www.gnu.org/software/auctex/manual/auctex.html#Multifile
-- latexmk
-   - auctex replacements
-      - https://www.gnu.org/software/auctex/manual/auctex.html#Starting-a-Command
-        https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
+- Power Thesaurus
+   - https://github.com/SavchenkoValeriy/emacs-powerthesaurus
+- Screenwriting
+   - Fountain mode
+      - https://github.com/rnkn/fountain-mode/
+         - https://www.youtube.com/watch?v=Be1hE_pQL4w
+- Spell checking
+   - Flyspell
+      - https://www.emacswiki.org/emacs/FlySpell
+         - https://www.tenderisthebyte.com/blog/2019/06/09/spell-checking-emacs/
+         - hunspell < aspell, however hunspell is currently widely used and maintained
+   - Language detection
+      - https://github.com/tmalsburg/guess-language.el
+- Hyperbole
+   - https://github.com/rswgnu/hyperbole
 
+* templating
+
+- yasnippet
+   - org-capture template
+- autotyping
+   - https://www.gnu.org/software/emacs/manual/html_mono/autotype.html
+   - https://sachachua.com/blog/2015/01/developing-emacs-micro-habits-text-automation/
+
+* file management
+
+- Org refile
+   - https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
+
+     
+* rss
+
+- elfeed
+   - https://github.com/skeeto/elfeed
+     
 * email
 
 - mu4e
    - Nano
       - https://www.reddit.com/r/emacs/comments/mzgsm0/mu4e_look_and_feel/
 		
-* PDF
-
-- pdf-tools
-- org-noter
-   - https://github.com/weirdNox/org-noter
-   - https://www.youtube.com/watch?v=lCc3UoQku-E
 
 * session
 
@@ -581,7 +577,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
    - Linux
       - iio-sensor-proxy
 
-special themes ---------------------------------------------------------------
+#+title:Special themes
 	
 - warm
 	- https://github.com/ThomasFKJorna/doom-emacs-config
@@ -594,6 +590,7 @@ special themes ---------------------------------------------------------------
 	   - https://github.com/rougier/svg-lib
 	   - https://github.com/rougier/svg-tag-mode/tree/07640c97a1dcc305010a384fffdaa7788c342da7
 
+             
 * package management
 
 - use-package + require
@@ -612,6 +609,7 @@ special themes ---------------------------------------------------------------
 - load to memory
    - http://blog.binchen.org/posts/emacs-speed-up-1000.html
 
+     
 * upgrade
 
 - emacs application framework
@@ -629,20 +627,4 @@ special themes ---------------------------------------------------------------
    - https://github.com/junegunn/fzf
 - ripgrep
    - https://github.com/dajva/rg.el
-
-* code reference
-
-- editing
-   - https://github.com/bbatsov/crux
-- completion at point
-   - https://with-emacs.com/
-- check
-   - https://emacs.amodernist.com/
-- awesome
-   - https://github.com/emacs-tw/awesome-emacs
-
-* paid
-
-• mathpix
-  - https://github.com/jethrokuan/mathpix.el
 
