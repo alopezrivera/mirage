@@ -6,6 +6,11 @@
 
 ;;; -*- lexical-binding: t; -*-
 
+;; Startup buffers
+(defvar custom/startup-buffers
+  '("/home/emacs/test.org"
+    "/home/dfki/backlog.org"))
+
 #+end_src
 
 * Setup
