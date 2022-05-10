@@ -1515,9 +1515,9 @@ folded."
       '((:startgroup)
 	;; Put mutually exclusive tags here
 	(:endgroup)
-	("@errand"  . ?E)
-	("@home"    . ?H)
-	("@work"    . ?W)
+	("errand"   . ?e)
+	("home"     . ?h)
+	("work"     . ?w)
 	("agenda"   . ?a)
 	("planning" . ?p)
 	("publish"  . ?P)
