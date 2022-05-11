@@ -766,8 +766,8 @@ indented at the level of the previous list item, indent the paragraph."
 - if at indented paragraph in list
    - turn paragraph into list item
 - if at non-empty line, turn entire non-empty line into either header or list item
-- if at middle of word inside list
-   - new indented list item, break word and place second part in new item
+   - if at middle of word inside list
+      - new indented list item, break word and place second part in new item
 
 #+begin_src emacs-lisp
 
