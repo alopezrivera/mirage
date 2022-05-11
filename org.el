@@ -244,15 +244,11 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
    (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
          ((and (region-active-p) (custom/org-at-ellipsis-h))                                 (beginning-of-visual-line))
          ((custom/org-at-ellipsis-h)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
-	     ((custom/org-at-ellipsis-l)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
-	     ((and (custom/org-relative-line-heading-or-list)
-		   (> (custom/get-point 'beginning-of-visual-line)
-		      (custom/get-point 'beginning-of-line-text)))                               (beginning-of-visual-line))
+	    ((custom/org-at-ellipsis-l)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+	    ((custom/relative-line-wrapped)                                                     (beginning-of-visual-line))
          ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
-	     ((and (org-in-src-block-p) (> (custom/get-point 'beginning-of-visual-line)
-					   (custom/get-point 'back-to-indentation)))             (beginning-of-visual-line))
          ((org-in-src-block-p)                                                               (back-to-indentation))
-	     ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
+	    ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
          (t                                                                                  (custom/home))))
 
 (defvar custom/org-double-home-timeout 0.4)
@@ -365,13 +361,6 @@ or outdenting with `org-metaleft'."
 		;; Push mark
 		(push-mark (+ mark shift)))
     (apply command args)))
-
-;; (defun custom/org-smart-comment ()
-;;   "`smart-comment' in modes derived from `prog-mode'."
-;;   (interactive)
-;;   (custom/@smart-comment (org-in-src-block-p)))
-
-;; (define-key org-mode-map (kbd "M-;") #'custom/smart-comment)
 
 (defun custom/org-paragraph-toggle ()
   (interactive)
@@ -623,14 +612,6 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaleft  :after #'custom/with-mark-active)
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
-
-(defun custom/org-indent-region ()
-  (interactive)
-  (save-excursion (org-babel-mark-block)
-		      (org-indent-region (region-beginning) (region-end))
-		      (deactivate-mark)))
-
-(define-key org-mode-map (kbd "C-\\") 'custom/org-indent-region)
 
 ;; Required as of Org 9.2
 (require 'org-tempo)

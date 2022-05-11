@@ -96,6 +96,9 @@ to the query at execution."
 (defun custom/relative-line-empty (&optional number)
   (custom/relative-line-regex "[[:space:]]+$" number))
 
+(defun custom/relative-line-wrapped ()
+  (> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)))
+
 (defun custom/relative-line-indented (&optional number)
   (custom/relative-line-regex "[[:blank:]]+.*$" number))
 
@@ -366,12 +369,12 @@ If the current mode is derived from `prog-mode', home `back-to-indentation'.
 If the current line is a wrapped visual line, home to
 `beginning-of-visual-line'."
   (interactive)
-  (cond ((custom/relative-line-empty)                                                                (beginning-of-line))
-	      ((custom/relative-line-list)                                                                 (beginning-of-line-text))
-	      ((custom/relative-line-indented)                                                             (back-to-indentation))
-	      ((derived-mode-p 'prog-mode)                                                                 (back-to-indentation))
-        ((< (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)) (beginning-of-visual-line))
-        (t                                                                                           (beginning-of-line-text))))
+  (cond ((custom/relative-line-empty)    (beginning-of-line))
+	    ((custom/relative-line-list)     (beginning-of-line-text))
+	    ((custom/relative-line-indented) (back-to-indentation))
+	    ((derived-mode-p 'prog-mode)     (back-to-indentation))
+	    ((custom/relative-line-wrapped)  (beginning-of-visual-line))
+        (t                               (beginning-of-line-text))))
 
 (defvar custom/double-home-timeout 0.4)
 
