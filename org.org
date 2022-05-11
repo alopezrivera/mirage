@@ -776,54 +776,29 @@ indented at the level of the previous list item, indent the paragraph."
   "Conditional `org-meta-return'."
   (interactive)
   (cond ((custom/org-relative-line-list-empty)          (progn (org-meta-return) (next-line) (end-of-line)))
-	    ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
-	    ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
-	    ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
-	    ((custom/relative-line-indented)                (custom/org-paragraph-toggle))
-	    (t                                              (org-insert-heading-respect-content))))
+	   ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
+	   ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
+	   ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
+	   ((custom/relative-line-indented)                (custom/org-paragraph-toggle))
+	   (t                                              (org-insert-heading-respect-content))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
 #+end_src
 
-*** TODO org-meta-arrows-h
-
-- asd
-   - asdasd
-   - asdasd
+*** org-meta-arrows-h
 
 #+begin_src emacs-lisp
 
 (defun custom/org-meta-arrows-h (orig-fun &rest args)
   "Paragraph indentation with `org-meta<arrows>'.
 Furthermore, if a region is active and its
-beginning lies on an Org Mode heading, create
-a new region spanning from the `beginning-of-line'
-where beg was found to the end of the original
-region, and proceed to execute `org-meta<arrows>'."
+beginning lies on an Org Mode heading,
+`custom/org-command-expand-region' to execute ORIG-FUN."
   (interactive)
-  (if (and (not (custom/org-relative-line-heading))
-           (not (custom/org-relative-line-list))
-           (custom/relative-line-list -1))
-      (custom/org-paragraph orig-fun args)
-    ;; Furthermore, if a region is active and its
-    ;; beginning lies on an Org Mode heading, create
-    ;; a new region spanning from the `beginning-of-line'
-    ;; where beg was found to the end of the original
-    ;; region, and proceed to execute `org-meta<arrows>'.
-    (if (region-active-p)
-	      (let ((beg (region-beginning))
-		    (end (region-end)))
-		   (save-excursion (deactivate-mark)
-				   (goto-char beg)
-				   (if (custom/org-relative-line-heading)
-				       (set-mark (custom/get-point 'beginning-of-line))
-				     (set-mark beg))
-				   (goto-char end)
-				   (end-of-visual-line)
-				   (apply orig-fun args)
-				   ))
-      (apply orig-fun args))))
+  (cond ((custom/org-at-list-paragraph) (custom/org-paragraph orig-fun args))
+	    ((region-active-p)              (custom/org-indent-region orig-fun args))
+	    (t                              (apply orig-fun args))))
 
 (advice-add 'org-metaleft  :around #'custom/org-meta-arrows-h)
 (advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
