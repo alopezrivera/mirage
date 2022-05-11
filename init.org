@@ -210,6 +210,15 @@ to the query at execution."
 
 #+end_src
 
+***** relative-line-wrapped
+
+#+begin_src emacs-lisp
+
+(defun custom/relative-line-wrapped ()
+  (> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)))
+
+#+end_src
+
 ***** relative-line-indented
 
 #+begin_src emacs-lisp
