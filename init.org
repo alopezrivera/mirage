@@ -156,15 +156,6 @@
 
 #+end_src
 
-***** at-bovl
-
-#+begin_src emacs-lisp
-
-(defun custom/at-bovl (&optional position)
-  (custom/at-point 'beginning-of-visual-line position))
-
-#+end_src
-
 ***** at-indent
 
 #+begin_src emacs-lisp
