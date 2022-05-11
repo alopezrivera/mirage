@@ -1049,7 +1049,7 @@ kill the current buffer and delete its window."
 
 #+begin_src emacs-lisp
 
-(defun custom/@delete-region (query)
+(defun custom/@delete-hungry (query)
   "Conditional region deletion.
 
 Default: `delete-region'
