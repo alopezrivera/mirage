@@ -514,7 +514,9 @@ to the query at execution."
 
 #+end_src
 
-**** Narrow search
+**** TODO Narrow search
+
+- C-r in swiper -> quit, widen
 
 #+begin_src emacs-lisp
 
