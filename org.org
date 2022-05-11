@@ -929,7 +929,13 @@ insert a margin of 1 empty line."
 
 #+end_src
 
-*** Insert heading respecting content
+*** TODO Insert heading respecting content
+
+Merge:
+- at top of empty doc
+  (not (org-current-level))
+- top level at bottom of doc
+  (not indented)
 
 #+begin_src emacs-lisp
 
