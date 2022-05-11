@@ -65,8 +65,16 @@
   (custom/relative-line-regex "^#+.*$" number))
 
 #+END_src 
+***** at-heading
 
-***** at-bol-list
+#+begin_src emacs-lisp
+
+(defun custom/org-at-heading (&optional point)
+  (let ((point (or point (point))))
+    (save-excursion (goto-char point) (custom/org-relative-line-heading))))
+
+#+end_src
+
 
 #+begin_src emacs-lisp
 
