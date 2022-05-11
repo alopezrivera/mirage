@@ -1377,13 +1377,19 @@ folded."
 
 #+end_src
 
-*** Agenda files
+** Setup
+*** TODO Agenda files
+
+- recursive search
+   - (directory-files-recursively "/home/" "\\.org$")
+   - https://stackoverflow.com/questions/11384516/how-to-make-all-org-files-under-a-folder-added-in-agenda-list-automatically
 
 #+begin_src emacs-lisp
 
 ;; Set Org Agenda files
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-files '("~/.emacs.d/" "/home/")))
+  (setq org-agenda-files '("~/.emacs.d/"
+			       "/home/dfki/backlog.org")))
 
 #+end_src
 
@@ -1423,7 +1429,9 @@ folded."
 
 #+end_src
 
-**** Custom agenda views
+**** TODO Custom agenda views
+
+- low effort tasks
 
 #+begin_src emacs-lisp
 
@@ -1442,10 +1450,12 @@ folded."
 
  	("w" "Work Tasks" tags-todo "work")
 
-	("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-	 ((org-agenda-overriding-header "Low Effort Tasks")
-	  (org-agenda-max-todos 20)
-	  (org-agenda-files org-agenda-files)))
+	("e" "Emacs Tasks" tags-todo "emacs")
+
+	;; ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+	 ;; ((org-agenda-overriding-header "Low Effort Tasks")
+	  ;; (org-agenda-max-todos 20)
+	  ;; (org-agenda-files org-agenda-files)))
 
 	("s" "Workflow Status"
 	 ((todo "WAIT"
