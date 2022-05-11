@@ -6,24 +6,11 @@
 #+latex_class_options: [twocolumn]
 -----
 
-- relative-line -> line
-
 - bugs
    - org-agenda
-      - time-log of headings
-         - folding after setting element as done (time log)
-            - Cached element is incorrect
-            - LOOGBOOK :END: keeps ellipsis when unfolded
-         - org-meta-return not working after time-logged headings
    - multiple-cursor-rectangle
       - if over folded Org Mode headings, do not create cursors in folded trees
 
-- org-agenda
-   - low effort tasks
-   - categories
-      - https://karl-voit.at/2019/09/25/categories-versus-tags/
-
-- org-meta-arrows-h
 - org-meta-return
    - top level at bottom of doc
       - (org-current-level) check insufficient
@@ -85,6 +72,10 @@
 
 
 * Improvements
+** code
+
+- relative-line -> line
+
 ** regions
 
 - insert char -> delete region
@@ -355,6 +346,18 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 #+end_src
 
 * TODO org-agenda
+
+- bug
+- time-log of headings
+   - folding after setting element as done (time log)
+      - Cached element is incorrect
+      - LOOGBOOK :END: keeps ellipsis when unfolded
+   - org-meta-return not working after time-logged headings
+
+- org-agenda
+   - low effort tasks
+   - categories
+      - https://karl-voit.at/2019/09/25/categories-versus-tags/
 
 - super agenda
    - https://github.com/alphapapa/org-super-agenda
