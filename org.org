@@ -645,20 +645,6 @@ or outdenting with `org-metaleft'."
 
 #+end_src
 
-** Code
-*** Smart comments
-
-#+begin_src emacs-lisp
-
-;; (defun custom/org-smart-comment ()
-;;   "`smart-comment' in modes derived from `prog-mode'."
-;;   (interactive)
-;;   (custom/@smart-comment (org-in-src-block-p)))
-
-;; (define-key org-mode-map (kbd "M-;") #'custom/smart-comment)
-
-#+end_src
-
 ** Structure
 *** TODO org-paragraph
 
