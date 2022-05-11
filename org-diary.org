@@ -1,5 +1,6 @@
 #+title:Org Diary
 #+STARTUP: overview
+#+FILETAGS: :emacs:
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./org-diary.el :mkdirp yes
 
 * Setup
