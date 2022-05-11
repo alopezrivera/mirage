@@ -210,7 +210,9 @@ to the query at execution."
 
 #+end_src
 
-***** relative-line-wrapped
+***** TODO relative-line-wrapped
+
+- &optional number
 
 #+begin_src emacs-lisp
 
