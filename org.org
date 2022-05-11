@@ -75,6 +75,9 @@
 
 #+end_src
 
+***** TODO at-bol-list
+
+- &option point
 
 #+begin_src emacs-lisp
 
@@ -83,7 +86,9 @@
 
 #+END_src 
 
-***** at-bol-heading
+***** TODO at-bol-heading
+
+- &option point
 
 #+begin_src emacs-lisp
 
@@ -92,7 +97,9 @@
 
 #+END_src 
 
-***** at-eol-heading
+***** TODO at-eol-heading
+
+- &option point
 
 #+begin_src emacs-lisp
 
