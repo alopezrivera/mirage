@@ -335,6 +335,8 @@ or outdenting with `org-metaleft'."
 	
 	        ;; Determine mark
 	        (setq mark (if (= pos beg) end beg))
+		;; Count lines in region
+		(setq lines (count-screen-lines beg end))
 
 		;; Get initial cursor position wrt bol
 		(setq relative-pos-0 (- pos (custom/get-point 'beginning-of-line)))
@@ -354,20 +356,14 @@ or outdenting with `org-metaleft'."
 		;; Calculate cursor displacement wrt bol
 		(setq relative-disp (- relative-pos-1 relative-pos-0))
 
-		;; (print "========================")
-		;; (print relative-disp)
-		;; (print (* relative-disp (count-screen-lines (region-beginning) end)))
-		;; (print "========================")
-		
 		;; Calculate mark shift
 		(cond
 		 ((custom/org-at-heading beg)  (setq shift disp))
 		 ((= mark beg)                 (setq shift relative-disp))
-		 ((= mark end)                 (setq shift (* relative-disp (count-screen-lines (region-beginning) end)))))
+		 ((= mark end)                 (setq shift (* relative-disp lines))))
 
 		;; Push mark
-		(push-mark (+ mark shift))
-		)
+		(push-mark (+ mark shift)))
     (apply command args)))
 
 ;; (defun custom/org-smart-comment ()
@@ -575,7 +571,7 @@ insert a margin of 1 empty line."
 
 Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
   (setq insert-margin (and (org-current-level) (not (custom/org-subtree-blank))))
-  (if (org-current-level) ;; MERGE
+  (if (org-current-level)
       (progn (if (not (= 1 (org-current-level)))
 	               (outline-up-heading 0))
              (apply orig-fun args))
