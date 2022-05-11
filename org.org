@@ -1064,21 +1064,6 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-* Coding
-** indent-region
-
-#+begin_src emacs-lisp
-
-(defun custom/org-indent-region ()
-  (interactive)
-  (save-excursion (org-babel-mark-block)
-		      (org-indent-region (region-beginning) (region-end))
-		      (deactivate-mark)))
-
-(define-key org-mode-map (kbd "C-\\") 'custom/org-indent-region)
-
-#+end_src
-
 * Structure templates
 
 #+begin_src emacs-lisp
