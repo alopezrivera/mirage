@@ -591,6 +591,7 @@ one character."
 - regions spanning headings
    - nested headings
       - indent of 1 for every heading from top level in region
+- bad interaction with wrapped lines
 
 #+begin_src emacs-lisp
 
