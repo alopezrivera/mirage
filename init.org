@@ -1067,13 +1067,13 @@ plus one character."
                       (delete-region (point) end))
     (delete-region beg end)))
 
-(defun custom/delete-region ()
+(defun custom/delete-hungry ()
   "If the region starts at the beginning of an 
 indented line and the current mode is derived from 
 `prog-mode',  delete the region and its indent plus 
 one character."
   (interactive)
-  (custom/@delete-region (derived-mode-p 'prog-mode)))
+  (custom/@delete-hungry (derived-mode-p 'prog-mode)))
 
 #+end_src
 
@@ -1114,7 +1114,7 @@ If cursor lies either `custom/at-indent' or is preceded only by
 whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
-      (cond ((and (region-active-p) (not (custom/region-empty))) (custom/delete-region))
+      (cond ((and (region-active-p) (not (custom/region-empty))) (custom/delete-hungry))
 	          ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
 		  (t                                                   (delete-backward-char 1)))
     (delete-backward-char 1)))

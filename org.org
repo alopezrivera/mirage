@@ -516,17 +516,17 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 - backward delete at beginning of list item
    - unindent list
 
-**** Region
+**** Hungry
 
 #+begin_src emacs-lisp
 
-(defun custom/org-delete-region ()
+(defun custom/org-delete-hungry ()
   "If the region starts at the beginning of an 
 indented line and the cursor lies on an Org Mode
 src block, delete the region and its indent plus 
 one character."
   (interactive)
-  (custom/@delete-region (org-in-src-block-p)))
+  (custom/@delete-hungry (org-in-src-block-p)))
 
 #+end_src
 
@@ -551,7 +551,7 @@ one character."
 (defun custom/org-nimble-delete-backward ()
   "Org Mode complement to `custom/nimble-delete-backward'."
   (interactive)
-  (cond ((and (region-active-p) (not (custom/region-empty)))                                   (custom/org-delete-region))
+  (cond ((and (region-active-p) (not (custom/region-empty)))                                   (custom/org-delete-hungry))
 	((and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)) (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
 	((or (custom/org-relative-line-heading-empty) (custom/org-relative-line-list-empty))   (delete-region (point) (custom/get-point 'end-of-line 0)))
         (t                                                                                     (custom/nimble-delete-backward))))
