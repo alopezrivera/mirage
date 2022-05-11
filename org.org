@@ -119,7 +119,7 @@
 #+end_src
 
 **** line
-***** org-relative-line-list
+***** relative-line-list
 
 #+begin_src emacs-lisp
 
@@ -129,7 +129,7 @@
 
 #+end_src
 
-***** org-relative-line-list-empty
+***** relative-line-list-empty
 
 #+begin_src emacs-lisp
 
@@ -139,7 +139,7 @@
 
 #+end_src
 
-***** org-relative-line-list-folded
+***** relative-line-list-folded
 
 #+begin_src emacs-lisp
 
@@ -151,7 +151,7 @@ is on a folded list item."
 
 #+end_src
 
-***** org-relative-line-heading
+***** relative-line-heading
 
 #+begin_src emacs-lisp
 
@@ -161,7 +161,7 @@ is on a folded list item."
 
 #+end_src
 
-***** org-relative-line-heading-empty
+***** relative-line-heading-empty
 
 #+begin_src emacs-lisp
 
@@ -170,7 +170,7 @@ is on a folded list item."
 
 #+end_src
 
-***** org-relative-line-heading-folded
+***** relative-line-heading-folded
 
 #+begin_src emacs-lisp
 
@@ -182,7 +182,7 @@ is on a folded heading."
 
 #+end_src
 
-***** org-relative-line-heading-or-list
+***** relative-line-heading-or-list
 
 #+begin_src emacs-lisp
 
@@ -523,18 +523,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-*** TODO Delete
-
-- if at beginning of empty heading and a heading lies below
-   - bring next heading to level of current one
-      - delete newline + stars of the next heading
-- delete empty heading
-   - go to previous line
-   - delete newline
-      - maybe cycle previous
-- backward delete at beginning of list item
-   - unindent list
-
+*** Delete
 **** Hungry
 
 #+begin_src emacs-lisp
@@ -563,7 +552,17 @@ one character."
 
 #+end_src
 
-**** Backward
+**** TODO Backward
+
+- if at beginning of empty heading and a heading lies below
+   - bring next heading to level of current one
+      - delete newline + stars of the next heading
+- delete empty heading
+   - go to previous line
+   - delete newline
+      - maybe cycle previous
+- backward delete at beginning of list item
+   - unindent list
 
 #+begin_src emacs-lisp
 
