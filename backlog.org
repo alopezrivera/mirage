@@ -1,12 +1,27 @@
 #+title:Backlog
 #+STARTUP: overview
+#+FILETAGS: :emacs:
 -----
 #+latex_class: pbusiness
 #+latex_class_options: [twocolumn]
 -----
 
+- relative-line -> line
+
+- bugs
+   - org-agenda
+      - time-log of headings
+         - folding after setting element as done (time log)
+            - Cached element is incorrect
+            - LOOGBOOK :END: keeps ellipsis when unfolded
+         - org-meta-return not working after time-logged headings
+   - multiple-cursor-rectangle
+      - if over folded Org Mode headings, do not create cursors in folded trees
+
 - org-agenda
    - low effort tasks
+   - categories
+      - https://karl-voit.at/2019/09/25/categories-versus-tags/
 
 - org-meta-arrows-h
 - org-meta-return
@@ -392,14 +407,6 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
       - select thoughts for export
       - org-capture selected thoughts
 
-* TODO org-calendar
-
-- https://github.com/kiwanami/emacs-calfw
-- sync
-   - https://www.youtube.com/watch?v=vO_RF2dK7M0
-- hyperscheduler
-   - https://github.com/dmitrym0/org-hyperscheduler/
-
 * TODO org-roam
 
 - https://www.orgroam.com/manual.html#Introduction
@@ -408,19 +415,18 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
    - https://github.com/tmalsburg/helm-bibtex
 - UI
    - deactivate when reloading org mode
+     
+* TODO org-calendar
 
+- Google Calendar sync
+   - https://github.com/myuhe/org-gcal.el
+   - https://github.com/kiwanami/emacs-calfw#for-ical-google-calendar-users
 
-- org to anki
-   - https://yiufung.net/post/anki-org/
-- presentations
-   - revealXS
-      - https://www.youtube.com/watch?v=avtiR0AUVlo
-      - Nice code block transitions
-         - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
-   - ioslide
-      - https://github.com/coldnew/org-ioslide
-- Hugo
-   - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
+- sync
+   - https://www.youtube.com/watch?v=vO_RF2dK7M0
+- hyperscheduler
+   - https://github.com/dmitrym0/org-hyperscheduler/
+
 * mode line
 
 - trouble switching on and off across modes
@@ -666,6 +672,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
    - http://blog.binchen.org/posts/emacs-speed-up-1000.html
 
      
+
 * upgrade
 
 - emacs application framework
@@ -683,4 +690,13 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
    - https://github.com/junegunn/fzf
 - ripgrep
    - https://github.com/dajva/rg.el
+
+
+* note-taking
+
+- howm
+   - http://howm.osdn.jp/index.html
+- emacs-wiki
+- org-brain
+
 
