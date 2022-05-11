@@ -16,11 +16,30 @@
 (defun custom/org-at-ellipsis-l (&optional position)
   (and (custom/org-relative-line-list-folded) (custom/at-point 'end-of-visual-line)))
 
-(defun custom/org-at-ellipsis-h (&optional position)
+(defun custom/org-at-ellipsis-h (&optional position) 
   (and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)))
 
 (defun custom/org-at-keyword (&optional number)
   (custom/relative-line-regex "^#+.*$" number))
+
+(defun custom/org-at-heading (&optional point)
+  (let ((point (or point (point))))
+    (save-excursion (goto-char point) (custom/org-relative-line-heading))))
+
+(defun custom/org-at-bol-list () 
+  (and (custom/org-relative-line-list) (custom/at-point 'beginning-of-line-text)))
+
+(defun custom/org-at-bol-heading () 
+  (and (custom/org-relative-line-heading) (custom/at-point (lambda () (beginning-of-visual-line) (beginning-of-line-text)))))
+
+(defun custom/org-at-eol-heading ()
+  (and (custom/org-relative-line-heading) (eolp) (not (custom/org-at-ellipsis-h)) (not (custom/org-relative-line-heading-empty))))
+
+(defun custom/org-at-list-paragraph ()
+  (and (not (custom/org-relative-line-heading)) (not (custom/org-relative-line-list)) (custom/relative-line-list -1)))
+
+(defun custom/org-after-list-or-indent ()
+  (or (custom/org-relative-line-list -1) (custom/relative-line-indented -1)))
 
 (defun custom/org-relative-line-list (&optional number)
   (interactive)
@@ -272,13 +291,13 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 (define-key org-mode-map (kbd "C-/") 'custom/org-undo)
 
-(defun custom/org-delete-region ()
+(defun custom/org-delete-hungry ()
   "If the region starts at the beginning of an 
 indented line and the cursor lies on an Org Mode
 src block, delete the region and its indent plus 
 one character."
   (interactive)
-  (custom/@delete-region (org-in-src-block-p)))
+  (custom/@delete-hungry (org-in-src-block-p)))
 
 (defun custom/org-nimble-delete-forward ()
   "Org Mode complement to `custom/nimble-delete-forward'."
@@ -291,12 +310,65 @@ one character."
 (defun custom/org-nimble-delete-backward ()
   "Org Mode complement to `custom/nimble-delete-backward'."
   (interactive)
-  (cond ((and (region-active-p) (not (custom/region-empty)))                                   (custom/org-delete-region))
+  (cond ((and (region-active-p) (not (custom/region-empty)))                                   (custom/org-delete-hungry))
 	((and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)) (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
 	((or (custom/org-relative-line-heading-empty) (custom/org-relative-line-list-empty))   (delete-region (point) (custom/get-point 'end-of-line 0)))
         (t                                                                                     (custom/nimble-delete-backward))))
 
 (define-key org-mode-map (kbd "<backspace>") 'custom/org-nimble-delete-backward)
+
+(defun custom/org-indent-region (command &rest args)
+  "Indent Org Mode region.
+
+If the region spans Org Mode headings or items:
+1. Extend region by pushing `region-beginning' to its
+`beginning-of-visual-line'
+2. Execute COMMAND
+3. Restore the region to its previous limits, shifting
+its limits to match shifts in the position of the
+text it spans, such as when indenting with `org-metaright'
+or outdenting with `org-metaleft'."
+  (if (or (custom/org-relative-line-heading) (custom/org-relative-line-list))
+      (let ((beg (region-beginning))
+	         (end (region-end))
+		 (pos (point)))
+	
+	        ;; Determine mark
+	        (setq mark (if (= pos beg) end beg))
+
+		;; Get initial cursor position wrt bol
+		(setq relative-pos-0 (- pos (custom/get-point 'beginning-of-line)))
+		;; Execute command
+		(save-excursion (goto-char beg)
+				(push-mark (custom/get-point 'beginning-of-line))
+		 		(goto-char end)
+				(end-of-visual-line)
+				(apply command args))
+		;; Get aftermath cursor position
+		(setq pos-1 (point))
+		;; Calculate cursor displacement
+		(setq disp (- pos-1 pos))
+		
+           ;; Get aftermath cursor position wrt bol
+		(setq relative-pos-1 (- pos-1 (custom/get-point 'beginning-of-line)))
+		;; Calculate cursor displacement wrt bol
+		(setq relative-disp (- relative-pos-1 relative-pos-0))
+
+		;; (print "========================")
+		;; (print relative-disp)
+		;; (print (* relative-disp (count-screen-lines (region-beginning) end)))
+		;; (print "========================")
+		
+		;; Calculate mark shift
+		(cond
+		 ((custom/org-at-heading beg)  (setq shift disp))
+		 ((= mark beg)                 (setq shift relative-disp))
+		 ((= mark end)                 (setq shift (* relative-disp (count-screen-lines (region-beginning) end)))))
+
+		;; Push mark
+		(push-mark (+ mark shift))
+		)
+    (apply command args)))
 
 ;; (defun custom/org-smart-comment ()
 ;;   "`smart-comment' in modes derived from `prog-mode'."
@@ -393,43 +465,12 @@ indented at the level of the previous list item, indent the paragraph."
 (defun custom/org-return ()
   "Conditional `org-return'."
   (interactive)
-  (cond ;; Empty list
-        ((custom/org-relative-line-list-empty)
-	        (progn (delete-region
-			(custom/get-point 'beginning-of-line)
-			(custom/get-point 'end-of-line))
-		       (org-return)))
-	      ;; Beginning of non-empty list
-	      ((and (custom/org-relative-line-list)
-		    (custom/at-point (lambda ()
-				       (beginning-of-visual-line)
-				       (beginning-of-line-text))))
-	       (progn (beginning-of-visual-line)
-		      (org-return)
-		      (beginning-of-line-text)))
-	      ;; At bol after list or indented text
-	      ((and (or (custom/org-relative-line-list -1)
-			(custom/relative-line-indented -1))
-		    (bolp))
-	       (org-return))
-	      ;; Beginning of heading
-	      ((and (custom/org-relative-line-heading)
-		    (custom/at-point (lambda ()
-				       (beginning-of-visual-line)
-				       (beginning-of-line-text))))
-	       (save-excursion (beginning-of-visual-line)
-			       (org-return t)))
-	      ;; At eol of non-empty heading
-	      ((and (custom/org-relative-line-heading)
-		    (not (custom/org-at-ellipsis-h))
-		    (not (custom/org-relative-line-heading-empty))
-		    (eolp))
-	       (progn (newline 2)
-		      (if (custom/org-subtree-blank)
-			  (progn (newline)
-				 (previous-line)))))
-	      (t
-	       (org-return t))))
+  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
+	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
+	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
+	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
+	    (t                                              (org-return t))))
 
 (define-key org-mode-map (kbd "<return>") 'custom/org-return)
 
@@ -438,59 +479,23 @@ indented at the level of the previous list item, indent the paragraph."
   "Conditional `org-meta-return'."
   (interactive)
   (cond ((custom/org-relative-line-list-empty)          (progn (org-meta-return) (next-line) (end-of-line)))
-	    ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
-	    ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
-	    ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
-	    ((custom/relative-line-indented)                (custom/org-paragraph-toggle))
-	    (t                                              (org-insert-heading-respect-content))))
+	   ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
+	   ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
+	   ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
+	   ((custom/relative-line-indented)                (custom/org-paragraph-toggle))
+	   (t                                              (org-insert-heading-respect-content))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
 
 (defun custom/org-meta-arrows-h (orig-fun &rest args)
   "Paragraph indentation with `org-meta<arrows>'.
 Furthermore, if a region is active and its
-beginning lies on an Org Mode heading, create
-a new region spanning from the `beginning-of-line'
-where beg was found to the end of the original
-region, and proceed to execute `org-meta<arrows>'."
+beginning lies on an Org Mode heading,
+`custom/org-command-expand-region' to execute ORIG-FUN."
   (interactive)
-  (if (and (not (custom/org-relative-line-heading))
-           (not (custom/org-relative-line-list))
-           (custom/relative-line-list -1))
-      (custom/org-paragraph orig-fun args)
-    ;; Furthermore, if a region is active and its
-    ;; beginning lies on an Org Mode heading, create
-    ;; a new region spanning from the `beginning-of-line'
-    ;; where beg was found to the end of the original
-    ;; region, and proceed to execute `org-meta<arrows>'.
-    (if (and (region-active-p) (or (custom/org-relative-line-heading) (custom/org-relative-line-list)))
-	    (let ((beg (region-beginning))
-		  (end (region-end))
-		  (pos (point)))
-		 (save-excursion (goto-char (min beg end))
-				 (push-mark (custom/get-point 'beginning-of-line))
-				 (goto-char end)
-				 (end-of-visual-line)
-				 (apply orig-fun args))
-		 ;; Push mark back
-		 (print "====================")
-		 (print (= pos beg))
-		 (print (- (point) pos))
-		 (print (if (> (- (point) pos) 0) 1 -1))
-		 (print  (+ (if (= pos beg) end beg) (- (point) pos) (if (> (- (point) pos) 0) -1 1)))
-		 (print "====================")
-		 (let ((mark (if (= pos beg) end beg))
-		       (disp (- (point) pos)))
-		      (setq <-> (- (abs disp) 1))
-		      (setq +-  (/ disp (abs disp)))
-		      (push-mark (+ mark disp (* +- <->)))
-		      ;; (push-mark (+ mark disp (if (> disp 0) -1 1))) !!!!!!
-		      )
-		 ;; (progn (goto-char beg)
-			;; (set-mark (point)))
-		 ;; (goto-char (+ pos disp))
-		 )
-    (apply orig-fun args))))
+  (cond ((custom/org-at-list-paragraph) (custom/org-paragraph orig-fun args))
+	    ((region-active-p)              (custom/org-indent-region orig-fun args))
+	    (t                              (apply orig-fun args))))
 
 (advice-add 'org-metaleft  :around #'custom/org-meta-arrows-h)
 (advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
@@ -867,10 +872,12 @@ folded."
 
  	("w" "Work Tasks" tags-todo "work")
 
-	("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-	 ((org-agenda-overriding-header "Low Effort Tasks")
-	  (org-agenda-max-todos 20)
-	  (org-agenda-files org-agenda-files)))
+	("e" "Emacs Tasks" tags-todo "emacs")
+
+	;; ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+	 ;; ((org-agenda-overriding-header "Low Effort Tasks")
+	  ;; (org-agenda-max-todos 20)
+	  ;; (org-agenda-files org-agenda-files)))
 
 	("s" "Workflow Status"
 	 ((todo "WAIT"

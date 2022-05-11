@@ -67,17 +67,14 @@
 	      return nil
 	   finally return t))
 
-(defun custom/at-point (go-to-point &optional position)
-  (let ((position (or position (point))))
+(defun custom/at-point (go-to-point &optional point)
+  (let ((point (or point (point))))
     (save-excursion
       (funcall go-to-point)
-      (= position (point)))))
+      (= point (point)))))
 
-(defun custom/at-bovl (&optional position)
-  (custom/at-point 'beginning-of-visual-line position))
-
-(defun custom/at-indent (&optional position)
-  (and (custom/relative-line-indented) (custom/at-point 'back-to-indentation position)))
+(defun custom/at-indent (&optional point)
+  (and (custom/relative-line-indented) (custom/at-point 'back-to-indentation point)))
 
 (defun custom/relative-line (query &optional number &rest args)
   "Return the result of a boolean query at the beginning
@@ -114,16 +111,16 @@ to the query at execution."
     (setq region (buffer-substring-no-properties beg end))
     (string-match "\\`[[:space:]]*\\'$" region)))
 
+(defun custom/region-multiline-visual ()
+  "Return t if a region is active and spans more than one visual line."
+  (and (region-active-p) (> (custom/region-count-visual-lines) 1)))
+
 (defun custom/region-count-visual-lines ()
   "Count visual lines in an active region."
   (interactive)
   (save-excursion 
     (beginning-of-visual-line)
     (count-screen-lines (region-beginning) (region-end))))
-
-(defun custom/region-multiline-visual ()
-  "Return t if a region is active and spans more than one visual line."
-  (and (region-active-p) (> (custom/region-count-visual-lines) 1)))
 
 (defun custom/in-mode (mode)
   "Return t if mode is currently active."
@@ -609,7 +606,10 @@ kill the current buffer and delete its window."
 
 (global-set-key (kbd "<escape>") 'custom/double-escape)
 
-(defun custom/@delete-region (query)
+(defun custom/delete-line ()
+  (delete-region (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line)))
+
+(defun custom/@delete-hungry (query)
   "Conditional region deletion.
 
 Default: `delete-region'
@@ -627,13 +627,13 @@ plus one character."
                       (delete-region (point) end))
     (delete-region beg end)))
 
-(defun custom/delete-region ()
+(defun custom/delete-hungry ()
   "If the region starts at the beginning of an 
 indented line and the current mode is derived from 
 `prog-mode',  delete the region and its indent plus 
 one character."
   (interactive)
-  (custom/@delete-region (derived-mode-p 'prog-mode)))
+  (custom/@delete-hungry (derived-mode-p 'prog-mode)))
 
 (defun custom/nimble-delete-forward ()
   "Conditional forward deletion.
@@ -662,7 +662,7 @@ If cursor lies either `custom/at-indent' or is preceded only by
 whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
-      (cond ((and (region-active-p) (not (custom/region-empty))) (custom/delete-region))
+      (cond ((and (region-active-p) (not (custom/region-empty))) (custom/delete-hungry))
 	          ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
 		  (t                                                   (delete-backward-char 1)))
     (delete-backward-char 1)))

@@ -21,12 +21,14 @@
 	keyboard-escape-quit
 	kill-rectangle
 	kill-region
+	org-babel-execute-src-block
 	org-backward-sentence
 	org-cycle
 	org-delete-char
 	org-end-of-line
 	org-forward-sentence
 	org-meta-return
+	org-metaleft
 	org-metaright
 	org-self-insert-command
 	org-shiftright
@@ -48,6 +50,7 @@
 	dabbrev-expand
 	eval-last-sexp
 	mouse-drag-mode-line
+	mouse-drag-vertical-line
 	mouse-save-then-kill
 	mouse-set-region
 	mouse-start-rectangle
