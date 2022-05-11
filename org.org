@@ -40,9 +40,13 @@
 
 **** at
 ***** at-ellipsis-l
-n_s rc emacs-lisp
- cu stom/org-at-ellipsis-l (&optional position) (custom/org-relative-line-list-folded) (custom/at-point 'end-of-visual-line)))
-src 
+
+#+begin_src emacs-lisp
+
+(defun custom/org-at-ellipsis-l (&optional position)
+  (and (custom/org-relative-line-list-folded) (custom/at-point 'end-of-visual-line)))
+
+#+end_src 
 
 ***** at-ellipsis-h
 
