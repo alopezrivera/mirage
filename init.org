@@ -1046,6 +1046,17 @@ kill the current buffer and delete its window."
 * Editing
 ** Delete
 *** Region
+**** line
+
+#+begin_src emacs-lisp
+
+(defun custom/delete-line ()
+  (delete-region (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line)))
+
+#+end_src
+
+**** point-to-bol
+*** Hungry
 
 #+begin_src emacs-lisp
 
