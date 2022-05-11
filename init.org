@@ -250,6 +250,16 @@ to the query at execution."
 
 #+end_src
 
+***** region-multiline-visual
+
+#+begin_src emacs-lisp
+
+(defun custom/region-multiline-visual ()
+  "Return t if a region is active and spans more than one visual line."
+  (and (region-active-p) (> (custom/region-count-visual-lines) 1)))
+
+#+end_src
+
 ***** region-count-visual-lines
 
 #+begin_src emacs-lisp
@@ -260,16 +270,6 @@ to the query at execution."
   (save-excursion 
     (beginning-of-visual-line)
     (count-screen-lines (region-beginning) (region-end))))
-
-#+end_src
-
-***** region-multiline-visual
-
-#+begin_src emacs-lisp
-
-(defun custom/region-multiline-visual ()
-  "Return t if a region is active and spans more than one visual line."
-  (and (region-active-p) (> (custom/region-count-visual-lines) 1)))
 
 #+end_src
 
