@@ -815,6 +815,7 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 #+end_src
 *** TODO Smart comments
 
+- if region is active and cursor is in empty line, region is not commented
 - if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
 #+begin_src emacs-lisp
