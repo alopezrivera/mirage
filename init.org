@@ -148,11 +148,11 @@
 
 #+begin_src emacs-lisp
 
-(defun custom/at-point (go-to-point &optional position)
-  (let ((position (or position (point))))
+(defun custom/at-point (go-to-point &optional point)
+  (let ((point (or point (point))))
     (save-excursion
       (funcall go-to-point)
-      (= position (point)))))
+      (= point (point)))))
 
 #+end_src
 
@@ -160,8 +160,8 @@
 
 #+begin_src emacs-lisp
 
-(defun custom/at-indent (&optional position)
-  (and (custom/relative-line-indented) (custom/at-point 'back-to-indentation position)))
+(defun custom/at-indent (&optional point)
+  (and (custom/relative-line-indented) (custom/at-point 'back-to-indentation point)))
 
 #+end_src
 

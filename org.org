@@ -38,30 +38,63 @@
 #+end_src
 
 **** at
-***** org-at-ellipsis-l
+***** at-ellipsis-l
+n_s rc emacs-lisp
+ cu stom/org-at-ellipsis-l (&optional position) (custom/org-relative-line-list-folded) (custom/at-point 'end-of-visual-line)))
+src 
+
+***** at-ellipsis-h
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-ellipsis-l (&optional position)
-  (and (custom/org-relative-line-list-folded) (custom/at-point 'end-of-visual-line)))
-
-#+end_src
-
-***** org-at-ellipsis-h
-
-#+begin_src emacs-lisp
-
-(defun custom/org-at-ellipsis-h (&optional position)
+(defun custom/org-at-ellipsis-h (&optional position) 
   (and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)))
 
-#+end_src
+#+END_src 
 
-***** org-at-keyword
+***** at-keyword
 
 #+begin_src emacs-lisp
 
 (defun custom/org-at-keyword (&optional number)
   (custom/relative-line-regex "^#+.*$" number))
+
+#+END_src 
+
+***** at-bol-list
+
+#+begin_src emacs-lisp
+
+(defun custom/org-at-bol-list () 
+  (and (custom/org-relative-line-list) (custom/at-point 'beginning-of-line-text)))
+
+#+END_src 
+
+***** at-bol-heading
+
+#+begin_src emacs-lisp
+
+(defun custom/org-at-bol-heading () 
+  (and (custom/org-relative-line-heading) (custom/at-point (lambda () (beginning-of-visual-line) (beginning-of-line-text)))))
+
+#+END_src 
+
+***** at-eol-heading
+
+#+begin_src emacs-lisp
+
+(defun custom/org-at-eol-heading ()
+  (and (custom/org-relative-line-heading) (eolp) (not (custom/org-at-ellipsis-h)) (not (custom/org-relative-line-heading-empty))))
+
+#+end_src
+
+**** after
+***** after-list-or-indent
+
+#+begin_src emacs-lisp
+
+(defun custom/org-after-list-or-indent ()
+  (or (custom/org-relative-line-list -1) (custom/relative-line-indented -1)))
 
 #+end_src
 
@@ -668,7 +701,7 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-*** TODO org-return
+*** org-return
 
 - reference
    - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
@@ -679,43 +712,12 @@ indented at the level of the previous list item, indent the paragraph."
 (defun custom/org-return ()
   "Conditional `org-return'."
   (interactive)
-  (cond ;; Empty list
-        ((custom/org-relative-line-list-empty)
-	        (progn (delete-region
-			(custom/get-point 'beginning-of-line)
-			(custom/get-point 'end-of-line))
-		       (org-return)))
-	      ;; Beginning of non-empty list
-	      ((and (custom/org-relative-line-list)
-		    (custom/at-point (lambda ()
-				       (beginning-of-visual-line)
-				       (beginning-of-line-text))))
-	       (progn (beginning-of-visual-line)
-		      (org-return)
-		      (beginning-of-line-text)))
-	      ;; At bol after list or indented text
-	      ((and (or (custom/org-relative-line-list -1)
-			(custom/relative-line-indented -1))
-		    (bolp))
-	       (org-return))
-	      ;; Beginning of heading
-	      ((and (custom/org-relative-line-heading)
-		    (custom/at-point (lambda ()
-				       (beginning-of-visual-line)
-				       (beginning-of-line-text))))
-	       (save-excursion (beginning-of-visual-line)
-			       (org-return t)))
-	      ;; At eol of non-empty heading
-	      ((and (custom/org-relative-line-heading)
-		    (not (custom/org-at-ellipsis-h))
-		    (not (custom/org-relative-line-heading-empty))
-		    (eolp))
-	       (progn (newline 2)
-		      (if (custom/org-subtree-blank)
-			  (progn (newline)
-				 (previous-line)))))
-	      (t
-	       (org-return t))))
+  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
+	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
+	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
+	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
+	    (t                                              (org-return t))))
 
 (define-key org-mode-map (kbd "<return>") 'custom/org-return)
 
