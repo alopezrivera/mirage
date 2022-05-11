@@ -578,6 +578,72 @@ one character."
 
 #+end_src
 
+*** Indent
+**** TODO indent-region
+
+- regions spanning headings
+   - nested headings
+      - indent of 1 for every heading from top level in region
+- inconsistent behavior
+   - mark at end- 
+
+#+begin_src emacs-lisp
+
+(defun custom/org-indent-region (command &rest args)
+  "Indent Org Mode region.
+
+If the region spans Org Mode headings or items:
+1. Extend region by pushing `region-beginning' to its
+`beginning-of-visual-line'
+2. Execute COMMAND
+3. Restore the region to its previous limits, shifting
+its limits to match shifts in the position of the
+text it spans, such as when indenting with `org-metaright'
+or outdenting with `org-metaleft'."
+  (if (or (custom/org-relative-line-heading) (custom/org-relative-line-list))
+      (let ((beg (region-beginning))
+	         (end (region-end))
+		 (pos (point)))
+	
+	        ;; Determine mark
+	        (setq mark (if (= pos beg) end beg))
+
+		;; Get initial cursor position wrt bol
+		(setq relative-pos-0 (- pos (custom/get-point 'beginning-of-line)))
+		;; Execute command
+		(save-excursion (goto-char beg)
+				(push-mark (custom/get-point 'beginning-of-line))
+		 		(goto-char end)
+				(end-of-visual-line)
+				(apply command args))
+		;; Get aftermath cursor position
+		(setq pos-1 (point))
+		;; Calculate cursor displacement
+		(setq disp (- pos-1 pos))
+		
+           ;; Get aftermath cursor position wrt bol
+		(setq relative-pos-1 (- pos-1 (custom/get-point 'beginning-of-line)))
+		;; Calculate cursor displacement wrt bol
+		(setq relative-disp (- relative-pos-1 relative-pos-0))
+
+		;; (print "========================")
+		;; (print relative-disp)
+		;; (print (* relative-disp (count-screen-lines (region-beginning) end)))
+		;; (print "========================")
+		
+		;; Calculate mark shift
+		(cond
+		 ((custom/org-at-heading beg)  (setq shift disp))
+		 ((= mark beg)                 (setq shift relative-disp))
+		 ((= mark end)                 (setq shift (* relative-disp (count-screen-lines (region-beginning) end)))))
+
+		;; Push mark
+		(push-mark (+ mark shift))
+		)
+    (apply command args)))
+
+#+end_src
+
 ** Code
 *** Smart comments
 
