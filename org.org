@@ -595,8 +595,6 @@ one character."
 - regions spanning headings
    - nested headings
       - indent of 1 for every heading from top level in region
-- inconsistent behavior
-   - mark at end- 
 
 #+begin_src emacs-lisp
 
@@ -618,6 +616,8 @@ or outdenting with `org-metaleft'."
 	
 	        ;; Determine mark
 	        (setq mark (if (= pos beg) end beg))
+		;; Count lines in region
+		(setq lines (count-screen-lines beg end))
 
 		;; Get initial cursor position wrt bol
 		(setq relative-pos-0 (- pos (custom/get-point 'beginning-of-line)))
@@ -637,20 +637,14 @@ or outdenting with `org-metaleft'."
 		;; Calculate cursor displacement wrt bol
 		(setq relative-disp (- relative-pos-1 relative-pos-0))
 
-		;; (print "========================")
-		;; (print relative-disp)
-		;; (print (* relative-disp (count-screen-lines (region-beginning) end)))
-		;; (print "========================")
-		
 		;; Calculate mark shift
 		(cond
 		 ((custom/org-at-heading beg)  (setq shift disp))
 		 ((= mark beg)                 (setq shift relative-disp))
-		 ((= mark end)                 (setq shift (* relative-disp (count-screen-lines (region-beginning) end)))))
+		 ((= mark end)                 (setq shift (* relative-disp lines))))
 
 		;; Push mark
-		(push-mark (+ mark shift))
-		)
+		(push-mark (+ mark shift)))
     (apply command args)))
 
 #+end_src
