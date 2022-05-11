@@ -27,7 +27,7 @@
 ** General purpose functions
 *** Queries
 **** in
-***** org-in-src-block-p
+***** in-src-block-p
 
 #+begin_src emacs-lisp
 
