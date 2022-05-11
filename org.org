@@ -108,6 +108,17 @@
 
 #+end_src
 
+***** TODO at-list-paragraph
+
+- &option point
+
+#+begin_src emacs-lisp
+
+(defun custom/org-at-list-paragraph ()
+  (and (not (custom/org-relative-line-heading)) (not (custom/org-relative-line-list)) (custom/relative-line-list -1)))
+
+#+end_src
+
 **** after
 ***** after-list-or-indent
 
