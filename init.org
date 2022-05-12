@@ -747,12 +747,6 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 
 (global-set-key (kbd "<up>") (lambda () (interactive) (custom/previous-line (derived-mode-p 'prog-mode))))
 
-#+end_src
-
-*** region-up-register
-
-#+begin_src emacs-lisp
-
 (defun custom/region-up-register ()
   "Move cursor to `region-up-register', defined in
 `custom/previous-line'."
@@ -861,53 +855,6 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
-*** Rectangular regions
-
-#+begin_src emacs-lisp
-
-;; Ensure rectangular-region-mode is loaded
-(require 'rectangular-region-mode)
-
-;; Save rectangle to kill ring
-(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'kill-ring-save)
-
-;; Yank rectangle
-(global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
-
-;; Enter multiple-cursors-mode
-(defun custom/rectangular-region-multiple-cursors ()
-  (interactive)
-  (rrm/switch-to-multiple-cursors)
-  (deactivate-mark))
-
-(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
-
-;; Exit rectangular-region-mode
-(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
-(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
-
-#+end_src
-*** Smart mouse rectangle
-
-#+begin_src emacs-lisp
-
-;; Multiple cursor rectangle definition mouse event
-(defun custom/smart-mouse-rectangle (start-event)
-  (interactive "e")
-  (deactivate-mark)
-  (mouse-set-point start-event)
-  (set-rectangular-region-anchor)
-  (rectangle-mark-mode +1)
-  (let ((drag-event))
-    (track-mouse
-      (while (progn
-               (setq drag-event (read-event))
-               (mouse-movement-p drag-event))
-        (mouse-set-point drag-event)))))
-
-(global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
-
-#+end_src
 ** Screen
 *** Buffer
 **** Switching
@@ -1058,9 +1005,20 @@ kill the current buffer and delete its window."
 #+end_src
 
 * Editing
+** TODO Undo
+
+- vundo
+- undo-fu
+- Back
+   - Record character number in current line relative to the end of the line
+   - If impossible to go to previous position, to recorded character number of previous line
+   - Org Mode
+      - restore visibility before undone command
+      - if previous command created heading
+         - undo heading creation and restore visibility
+
 ** Delete
-*** Region
-**** line
+*** Line
 
 #+begin_src emacs-lisp
 
@@ -1069,7 +1027,6 @@ kill the current buffer and delete its window."
 
 #+end_src
 
-**** point-to-bol
 *** Hungry
 
 #+begin_src emacs-lisp
@@ -1148,27 +1105,8 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 #+end_src
 
-** Selection
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-a") 'mark-whole-buffer)
-
-#+end_src
-
-** TODO Undo, Redo
-
-- vundo
-- undo-fu
-- Back
-   - Record character number in current line relative to the end of the line
-   - If impossible to go to previous position, to recorded character number of previous line
-   - Org Mode
-      - restore visibility before undone command
-      - if previous command created heading
-         - undo heading creation and restore visibility
-
-*** Kill ring
+** Kill ring
+*** Size
 
 #+begin_src emacs-lisp
 
@@ -1177,21 +1115,90 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 #+end_src
 
-** Kill, save, yank
+*** Mouse
 
 #+begin_src emacs-lisp
 
-;; Copy region with S-left click
-(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
-(global-set-key (kbd "S-<down-mouse-1>")  nil)
+(defun custom/kill-ring-mouse ()
+  "If a region is active, save the region to the
+kill ring. Otherwise, yank the last entry in the
+kill ring."
+  (interactive)
+  (if (region-active-p)
+      (kill-ring-save (region-beginning) (region-end))
+    (yank)))
 
-;; Paste with mouse right click
-(global-set-key (kbd "<mouse-3>")        'yank)
+(global-set-key (kbd "<mouse-3>")        'custom/kill-ring-mouse)
 (global-set-key (kbd "<down-mouse-3>")    nil)
 
 #+end_src
 
-* Coding
+** Selection
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-a") 'mark-whole-buffer)
+
+#+end_src
+
+** Rectangular regions
+
+#+begin_src emacs-lisp
+
+;; Ensure rectangular-region-mode is loaded
+(require 'rectangular-region-mode)
+
+#+end_src
+
+*** TODO Mouse rectangle
+
+- if over folded Org Mode headings, do not create cursors in folded trees
+
+#+begin_src emacs-lisp
+
+;; Multiple cursor rectangle definition mouse event
+(defun custom/mouse-rectangle (start-event)
+  (interactive "e")
+  (deactivate-mark)
+  (mouse-set-point start-event)
+  (set-rectangular-region-anchor)
+  (rectangle-mark-mode +1)
+  (let ((drag-event))
+    (track-mouse
+      (while (progn
+               (setq drag-event (read-event))
+               (mouse-movement-p drag-event))
+        (mouse-set-point drag-event)))))
+
+(global-set-key (kbd "M-<down-mouse-1>") #'custom/mouse-rectangle)
+
+#+end_src
+
+*** Multiple cursors
+
+#+begin_src emacs-lisp
+
+;; Enter multiple-cursors-mode
+(defun custom/rectangular-region-multiple-cursors ()
+  (interactive)
+  (rrm/switch-to-multiple-cursors)
+  (deactivate-mark))
+
+(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
+
+#+end_src
+
+*** Quit
+
+#+begin_src emacs-lisp
+
+;; Exit rectangular-region-mode
+(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
+(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
+
+#+end_src
+
+* Code
 ** Execution
 *** Emacs Lisp
 **** IELM
