@@ -824,6 +824,8 @@ folded."
 
 (org-roam-db-autosync-mode)
 
+(add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
+
 ;; Org Roam UI
 (straight-use-package 'org-roam-ui)
 
