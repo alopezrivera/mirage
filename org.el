@@ -550,10 +550,15 @@ of org-tempo templates."
 (advice-add 'tempo-complete-tag :around #'custom/tempo-breathe)
 
 ;; LaTeX structure templates
-(tempo-define-template "latex"
-		             '("#+NAME: eq:1" p "\n\\begin{equation}\n\\end{equation}" >)
-			     "<eq"
-			     "LaTeX equation template")
+(tempo-define-template "latex-equation"
+		          '("#+NAME: eq:" n "\\begin{equation}" p "\\end{equation}" >)
+			  "<eq"
+			  "LaTeX equation template")
+
+(tempo-define-template "latex-derivation"
+		          '("#+NAME: eq:" n "\\begin{equation}" n "\\arraycolsep=3pt\\def\\arraystretch{2.25}" n "\\begin{array}{lll}" p "\\end{array}" n "\\end{equation}" >)
+			  "<de"
+			  "LaTeX derivation template")
 
 ;; Code block structure templates
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
@@ -641,7 +646,25 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 ;; Justify equation labels - [fleqn]
 ;; Preview page width      - 10.5cm
 (setq org-format-latex-header
-      "\\documentclass[fleqn]{article}\n\\usepackage[usenames]{color}\n[PACKAGES]\n[DEFAULT-PACKAGES]\n\\pagestyle{empty}             % do not remove\n% The settings below are copied from fullpage.sty\n\\setlength{\\textwidth}{10.5cm}\n\\addtolength{\\textwidth}{-3cm}\n\\setlength{\\oddsidemargin}{1.5cm}\n\\addtolength{\\oddsidemargin}{-2.54cm}\n\\setlength{\\evensidemargin}{\\oddsidemargin}\n\\setlength{\\textheight}{\\paperheight}\n\\addtolength{\\textheight}{-\\headheight}\n\\addtolength{\\textheight}{-\\headsep}\n\\addtolength{\\textheight}{-\\footskip}\n\\addtolength{\\textheight}{-3cm}\n\\setlength{\\topmargin}{1.5cm}\n\\addtolength{\\topmargin}{-2.54cm}")
+      (string-join '("\\documentclass[fleqn]{article}"
+		        "\\usepackage[usenames]{color}"
+			
+			"\\usepackage{bm}"
+			
+			"\\pagestyle{empty}"
+			"\\setlength{\\textwidth}{10.5cm}"
+			"\\addtolength{\\textwidth}{-3cm}"
+			"\\setlength{\\oddsidemargin}{1.5cm}"
+			"\\addtolength{\\oddsidemargin}{-2.54cm}"
+			"\\setlength{\\evensidemargin}{\\oddsidemargin}"
+			"\\setlength{\\textheight}{\\paperheight}"
+			"\\addtolength{\\textheight}{-\\headheight}"
+			"\\addtolength{\\textheight}{-\\headsep}"
+			"\\addtolength{\\textheight}{-\\footskip}"
+			"\\addtolength{\\textheight}{-3cm}"
+			"\\setlength{\\topmargin}{1.5cm}"
+			"\\addtolength{\\topmargin}{-2.54cm}")
+		   "\n"))
 
 ;; SVG LaTeX equation preview
 (setq org-latex-create-formula-image-program 'dvisvgm)
@@ -792,6 +815,12 @@ folded."
 
 ;; Directory
 (setq org-roam-directory "/home/roam")
+
+;; Find node
+(global-set-key (kbd "C-c n") 'org-roam-node-find)
+
+;; Insert reference
+(global-set-key (kbd "C-c i") 'org-roam-node-insert)
 
 (org-roam-db-autosync-mode)
 
