@@ -794,16 +794,17 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 
 #+end_src
 
-*** Multiple cursors
+*** TODO Multiple cursors
+
+- refactor config
 
 #+begin_src emacs-lisp
 
 ;; Multiple cursors
 (use-package multiple-cursors
   :bind (("C-."         . mc/mark-next-like-this)
-	       ("C-;"         . mc/mark-previous-like-this)
-	       ("C-<mouse-1>" . mc/add-cursor-on-click))
-  )
+	     ("C-;"         . mc/mark-previous-like-this)
+	     ("C-<mouse-1>" . mc/add-cursor-on-click)))
 (require 'multiple-cursors)
 
 ;; Unknown commands file
