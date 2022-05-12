@@ -6,11 +6,6 @@
 #+latex_class_options: [twocolumn]
 -----
 
-- bugs
-   - org-agenda
-   - multiple-cursor-rectangle
-      - if over folded Org Mode headings, do not create cursors in folded trees
-
 - org-meta-return
    - top level at bottom of doc
       - (org-current-level) check insufficient
@@ -196,17 +191,27 @@ CLOSED: [2022-05-06 Fri 17:11]
 - if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
   
-* Modes
-** minor modes
+* Packages
 
-- Aracne minor mode
+- general purpose functions
+   - general.org
+      - general
+      - org mode
+
+- region
+   - transient-mark-mode active -> mouse-3 = kill-ring-save
+   - smart-comment-region
+   - org-indent-region
+
+
+* Modes
+** bindings
+
    - All key bindings
       - Org Mode
    - https://github.com/noctuid/general.el
 
-** major modes
-
-- map mode
+** compass
    - screens
       - key bindings
          - commands
@@ -373,6 +378,19 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 - interaction
    - https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html
 	
+* TODO org-calendar
+
+- C-c more than once -> agenda files lost
+
+- Google Calendar sync
+   - https://github.com/myuhe/org-gcal.el
+   - https://github.com/kiwanami/emacs-calfw#for-ical-google-calendar-users
+
+- sync
+   - https://www.youtube.com/watch?v=vO_RF2dK7M0
+- hyperscheduler
+   - https://github.com/dmitrym0/org-hyperscheduler/
+
 * TODO org-backlog
 
 - minor mode
@@ -419,17 +437,6 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 - UI
    - deactivate when reloading org mode
      
-* TODO org-calendar
-
-- Google Calendar sync
-   - https://github.com/myuhe/org-gcal.el
-   - https://github.com/kiwanami/emacs-calfw#for-ical-google-calendar-users
-
-- sync
-   - https://www.youtube.com/watch?v=vO_RF2dK7M0
-- hyperscheduler
-   - https://github.com/dmitrym0/org-hyperscheduler/
-
 * mode line
 
 - trouble switching on and off across modes
