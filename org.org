@@ -992,9 +992,14 @@ of org-tempo templates."
 
 ;; LaTeX structure templates
 (tempo-define-template "latex"
-		             '("#+NAME: eq:\n\\begin{equation}" p "\\end{equation}" >)
-			     "<eq"
-			     "LaTeX equation template")
+		          '("#+NAME: eq:" n "\\begin{equation}" p "\\end{equation}" >)
+			  "<eq"
+			  "LaTeX equation template")
+
+(tempo-define-template "latex"
+		          '("#+NAME: eq:" n "\\begin{equation}" n "\\arraycolsep=3pt\\def\\arraystretch{2.25}" n "\\begin{array}{lll}" p "\\end{array}" n "\\end{equation}" >)
+			  "<de"
+			  "LaTeX derivation template")
 
 #+end_src
 
