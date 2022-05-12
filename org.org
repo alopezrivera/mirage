@@ -992,7 +992,7 @@ of org-tempo templates."
 
 ;; LaTeX structure templates
 (tempo-define-template "latex"
-		             '("#+NAME: eq:1" p "\n\\begin{equation}\n\\end{equation}" >)
+		             '("#+NAME: eq:\n\\begin{equation}" p "\\end{equation}" >)
 			     "<eq"
 			     "LaTeX equation template")
 
