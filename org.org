@@ -1378,10 +1378,19 @@ folded."
 #+end_src
 
 ** Startup
+*** db-autosync-mode
 
 #+begin_src emacs-lisp
 
 (org-roam-db-autosync-mode)
+
+#+end_src
+
+*** variable-pitch-mode
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
 
 #+end_src
 
