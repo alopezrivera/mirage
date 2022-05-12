@@ -164,112 +164,6 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
     (custom/org-set-outline-overlay-data custom/org-outline-state)
     (setq custom/org-outline-state nil)))
 
-(defface custom/variable-pitch-marker
-  '((nil :inherit 'fixed-pitch))
-  "List marker typeface.")
-
-(defface custom/variable-pitch-indent
-  '((nil :inherit 'fixed-pitch :invisible t))
-  "Indent typeface.")
-
-(defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
-					    ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
-					    ("^[[:blank:]]+"                                      0 'custom/variable-pitch-indent))
-  "Variable pitch font-lock keywords.")
-
-(font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
-
-(defun custom/org-indent--compute-prefixes ()
-  "Recompute line prefixes for regular text to
-match the indentation of the parent heading."
-  (dotimes (n org-indent--deepest-level)
-      (let ((indentation (if (= n 0) 0 1)))
-        (aset org-indent--text-line-prefixes
-	        n
-	        (org-add-props
-	           (concat (make-string (+ n indentation) ?\s))
-		    nil 'face 'org-indent)))))
-
-(advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
-
-(defun custom/org-end ()
-  "Conditional end in Org Mode.
-
-Default: `custom/end'
-
-If `org-at-table-p', go to `org-table-end-of-field'."
-  (cond ((org-at-table-p) (org-table-end-of-field 1))
-	    (t                (end-of-visual-line))))
-
-(defvar custom/org-double-end-timeout 0.4)
-
-(defun custom/org-double-end ()
-  "Dynamic homing command with a timeout of `custom/org-double-end-timeout' seconds.
-- Single press: `custom/org-home' 
-- Double press: `beginning-of-visual-line'"
-  (interactive)
-  (let ((last-called (get this-command 'custom/last-call-time)))
-    (if (and (eq last-command this-command)	     
-             (<= (time-to-seconds (time-since last-called)) custom/org-double-end-timeout)
-	         (not (org-at-table-p)))
-        (progn (beginning-of-visual-line) (end-of-line))
-      (custom/org-end)))
-  (put this-command 'custom/last-call-time (current-time)))
-
-(define-key org-mode-map (kbd "<end>") 'custom/org-double-end)
-
-(defun custom/org-home ()
-     "Conditional homing in Org Mode.
-
-Default: `custom/home'
-
-If a multi-visual-line region is active and the cursor lies on a heading or
-list item, home to `beginning-of-visual-line'.
-
-If a region is active the cursor lies `custom/org-at-ellipsis-h', home to
-`beginning-of-visual-line'.
-
-If the cursor lies `custom/org-at-ellipsis-h' (no active region), home to
-the `beginning-of-line-text' of the heading's visual line.
-
-If the cursor lies on at heading or list, home to `beginning-of-line-text'.
-
-If the cursor lies in a source code block, and the current line is a wrapped
-visual line, home to `beginning-of-visual-line'.
-
-If the cursor lies in a source code block, home `back-to-indentation'.
-
-If `org-at-table-p', home to `org-table-beginning-of-field'."
-   (interactive)
-   (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
-         ((and (region-active-p) (custom/org-at-ellipsis-h))                                 (beginning-of-visual-line))
-         ((custom/org-at-ellipsis-h)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
-	    ((custom/org-at-ellipsis-l)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
-	    ((custom/relative-line-wrapped)                                                     (beginning-of-visual-line))
-         ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
-         ((org-in-src-block-p)                                                               (back-to-indentation))
-	    ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
-         (t                                                                                  (custom/home))))
-
-(defvar custom/org-double-home-timeout 0.4)
-
-(defun custom/org-double-home ()
-  "Dynamic homing command with a timeout of `custom/org-double-home-timeout' seconds.
-- Single press: `custom/org-home' 
-- Double press: `beginning-of-visual-line'"
-  (interactive)
-  (let ((last-called (get this-command 'custom/last-call-time)))
-    (if (and (eq last-command this-command)	     
-             (<= (time-to-seconds (time-since last-called)) custom/org-double-home-timeout)
-	         (not (org-at-table-p)))
-	    (beginning-of-line)
-      (custom/org-home)))
-  (put this-command 'custom/last-call-time (current-time)))
-
-(define-key org-mode-map (kbd "<home>") 'custom/org-double-home)
-
-(define-key org-mode-map (kbd "<up>") (lambda () (interactive) (custom/previous-line (org-in-src-block-p))))
-
 (defun custom/org-undo ()
   (interactive)
   (if (org-babel-where-is-src-block-head)
@@ -613,6 +507,34 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
 
+(defface custom/variable-pitch-marker
+  '((nil :inherit 'fixed-pitch))
+  "List marker typeface.")
+
+(defface custom/variable-pitch-indent
+  '((nil :inherit 'fixed-pitch :invisible t))
+  "Indent typeface.")
+
+(defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
+					    ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
+					    ("^[[:blank:]]+"                                      0 'custom/variable-pitch-indent))
+  "Variable pitch font-lock keywords.")
+
+(font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
+
+(defun custom/org-indent--compute-prefixes ()
+  "Recompute line prefixes for regular text to
+match the indentation of the parent heading."
+  (dotimes (n org-indent--deepest-level)
+      (let ((indentation (if (= n 0) 0 1)))
+        (aset org-indent--text-line-prefixes
+	        n
+	        (org-add-props
+	           (concat (make-string (+ n indentation) ?\s))
+		    nil 'face 'org-indent)))))
+
+(advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
+
 ;; Required as of Org 9.2
 (require 'org-tempo)
 
@@ -637,6 +559,84 @@ of org-tempo templates."
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
+
+(defun custom/org-end ()
+  "Conditional end in Org Mode.
+
+Default: `custom/end'
+
+If `org-at-table-p', go to `org-table-end-of-field'."
+  (cond ((org-at-table-p) (org-table-end-of-field 1))
+	    (t                (end-of-visual-line))))
+
+(defvar custom/org-double-end-timeout 0.4)
+
+(defun custom/org-double-end ()
+  "Dynamic homing command with a timeout of `custom/org-double-end-timeout' seconds.
+- Single press: `custom/org-home' 
+- Double press: `beginning-of-visual-line'"
+  (interactive)
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (and (eq last-command this-command)	     
+             (<= (time-to-seconds (time-since last-called)) custom/org-double-end-timeout)
+	         (not (org-at-table-p)))
+        (progn (beginning-of-visual-line) (end-of-line))
+      (custom/org-end)))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(define-key org-mode-map (kbd "<end>") 'custom/org-double-end)
+
+(defun custom/org-home ()
+     "Conditional homing in Org Mode.
+
+Default: `custom/home'
+
+If a multi-visual-line region is active and the cursor lies on a heading or
+list item, home to `beginning-of-visual-line'.
+
+If a region is active the cursor lies `custom/org-at-ellipsis-h', home to
+`beginning-of-visual-line'.
+
+If the cursor lies `custom/org-at-ellipsis-h' (no active region), home to
+the `beginning-of-line-text' of the heading's visual line.
+
+If the cursor lies on at heading or list, home to `beginning-of-line-text'.
+
+If the cursor lies in a source code block, and the current line is a wrapped
+visual line, home to `beginning-of-visual-line'.
+
+If the cursor lies in a source code block, home `back-to-indentation'.
+
+If `org-at-table-p', home to `org-table-beginning-of-field'."
+   (interactive)
+   (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
+         ((and (region-active-p) (custom/org-at-ellipsis-h))                                 (beginning-of-visual-line))
+         ((custom/org-at-ellipsis-h)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+	    ((custom/org-at-ellipsis-l)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
+	    ((custom/relative-line-wrapped)                                                     (beginning-of-visual-line))
+         ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
+         ((org-in-src-block-p)                                                               (back-to-indentation))
+	    ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
+         (t                                                                                  (custom/home))))
+
+(defvar custom/org-double-home-timeout 0.4)
+
+(defun custom/org-double-home ()
+  "Dynamic homing command with a timeout of `custom/org-double-home-timeout' seconds.
+- Single press: `custom/org-home' 
+- Double press: `beginning-of-visual-line'"
+  (interactive)
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (and (eq last-command this-command)	     
+             (<= (time-to-seconds (time-since last-called)) custom/org-double-home-timeout)
+	         (not (org-at-table-p)))
+	    (beginning-of-line)
+      (custom/org-home)))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(define-key org-mode-map (kbd "<home>") 'custom/org-double-home)
+
+(define-key org-mode-map (kbd "<up>") (lambda () (interactive) (custom/previous-line (org-in-src-block-p))))
 
 ;; Justify equation labels - [fleqn]
 ;; Preview page width      - 10.5cm

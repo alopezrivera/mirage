@@ -52,7 +52,15 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
+;; Buffer evaluation
+(global-set-key (kbd "C-x e") 'eval-buffer)
+
 (setq debug-on-error t)
+
+;; Enable rainbow delimiters on all programming modes
+(use-package rainbow-delimiters)
+
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (defun custom/window-resize-fraction (fr)
   "Resize window to a fraction of the frame width."
@@ -163,11 +171,116 @@ to the query at execution."
 (defun <> (a b c)
   (and (> b a) (> c b)))
 
-;; Transform all files in directory from DOS to Unix line breaks
-(defun custom/dos2unix (&optional dir)
-  (let ((dir (or dir (file-name-directory buffer-file-name)))
-	      (default-directory dir))
-    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
+(defun custom/delete-line ()
+  (delete-region (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line)))
+
+(defun custom/@delete-hungry (query)
+  "Conditional region deletion.
+
+Default: `delete-region'
+
+If region starts at the beginning of an
+indented line, delete region and indent.
+
+If `query', delete the region and its indent 
+plus one character."
+  (setq beg (region-beginning) end (region-end))
+  (if (custom/at-indent beg)
+	    (save-excursion (beginning-of-visual-line)
+                      (if (and query (not (bobp)) (not (custom/relative-line-empty -1)))
+                          (left-char))
+                      (delete-region (point) end))
+    (delete-region beg end)))
+
+(defun custom/delete-hungry ()
+  "If the region starts at the beginning of an 
+indented line and the current mode is derived from 
+`prog-mode',  delete the region and its indent plus 
+one character."
+  (interactive)
+  (custom/@delete-hungry (derived-mode-p 'prog-mode)))
+
+(defun custom/nimble-delete-forward ()
+  "Conditional forward deletion.
+
+Default: `delete-forward-char' 1
+
+If next line is empty, forward delete indent of 
+next line plus one character."
+  (interactive)
+  (cond ((and (eolp) (custom/relative-line-indented 1)) (progn (setq beg (point)) (next-line) (back-to-indentation) (delete-region beg (point))))
+	      ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
+	      (t                                              (delete-forward-char 1))))
+
+(global-set-key (kbd "<deletechar>") 'custom/nimble-delete-forward)
+
+(defun custom/nimble-delete-backward ()
+  "Conditional forward deletion.
+
+Default: `delete-backward-char' 1
+
+If `multiple-cursors-mode' is active, `delete-backward-char' 1.
+
+If region is active, delete region.
+
+If cursor lies either `custom/at-indent' or is preceded only by
+whitespace, delete region from `point' to `beginning-of-visual-line'."
+  (interactive)
+  (if (not (bound-and-true-p multiple-cursors-mode))
+      (cond ((and (region-active-p) (not (custom/region-empty))) (custom/delete-hungry))
+	          ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+		  (t                                                   (delete-backward-char 1)))
+    (delete-backward-char 1)))
+
+(global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
+
+;; Increase kill ring size
+(setq kill-ring-max 200)
+
+(defun custom/kill-ring-mouse ()
+  "If a region is active, save the region to the
+kill ring. Otherwise, yank the last entry in the
+kill ring."
+  (interactive)
+  (if (region-active-p)
+      (kill-ring-save (region-beginning) (region-end))
+    (yank)))
+
+(global-set-key (kbd "<mouse-3>")        'custom/kill-ring-mouse)
+(global-set-key (kbd "<down-mouse-3>")    nil)
+
+(global-set-key (kbd "C-a") 'mark-whole-buffer)
+
+;; Ensure rectangular-region-mode is loaded
+(require 'rectangular-region-mode)
+
+;; Multiple cursor rectangle definition mouse event
+(defun custom/mouse-rectangle (start-event)
+  (interactive "e")
+  (deactivate-mark)
+  (mouse-set-point start-event)
+  (set-rectangular-region-anchor)
+  (rectangle-mark-mode +1)
+  (let ((drag-event))
+    (track-mouse
+      (while (progn
+               (setq drag-event (read-event))
+               (mouse-movement-p drag-event))
+        (mouse-set-point drag-event)))))
+
+(global-set-key (kbd "M-<down-mouse-1>") #'custom/mouse-rectangle)
+
+;; Enter multiple-cursors-mode
+(defun custom/rectangular-region-multiple-cursors ()
+  (interactive)
+  (rrm/switch-to-multiple-cursors)
+  (deactivate-mark))
+
+(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
+
+;; Exit rectangular-region-mode
+(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
+(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
 
 ;; Frame name
 (setq-default frame-title-format '("Emacs [%m] %b"))
@@ -336,6 +449,27 @@ buffer is already narrowed, widen buffer."
   :delight command-log-mode)
 (global-command-log-mode)
 
+;; yasnippet
+(use-package yasnippet)
+
+(yas-global-mode 1)
+
+(defun custom/<-snippet (orig-fun &rest args)
+  "Require < before snippets."
+  (interactive)
+  (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+	(if (not (string-equal line ""))
+	    (if (string-equal (substring line 0 1) "<")
+		(progn (save-excursion (move-beginning-of-line nil)
+				       (right-char 1)
+				       (delete-region (line-beginning-position) (point)))
+		       (apply orig-fun args)))))
+
+(advice-add 'yas-expand :around #'custom/<-snippet)
+
+;; yasnippet-snippets
+(use-package yasnippet-snippets)
+
 ;; Double end to go to the beginning of line
 (defvar custom/double-end-timeout 0.4)
 
@@ -440,9 +574,8 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 ;; Multiple cursors
 (use-package multiple-cursors
   :bind (("C-."         . mc/mark-next-like-this)
-	       ("C-;"         . mc/mark-previous-like-this)
-	       ("C-<mouse-1>" . mc/add-cursor-on-click))
-  )
+	     ("C-;"         . mc/mark-previous-like-this)
+	     ("C-<mouse-1>" . mc/add-cursor-on-click)))
 (require 'multiple-cursors)
 
 ;; Unknown commands file
@@ -483,43 +616,6 @@ not empty. In any case, advance to next line."
     (beginning-of-line-text 2)))
 
 (global-set-key (kbd "M-;") #'custom/smart-comment)
-
-;; Ensure rectangular-region-mode is loaded
-(require 'rectangular-region-mode)
-
-;; Save rectangle to kill ring
-(define-key rectangular-region-mode-map (kbd "<mouse-3>") 'kill-ring-save)
-
-;; Yank rectangle
-(global-set-key (kbd "S-<mouse-3>") 'yank-rectangle)
-
-;; Enter multiple-cursors-mode
-(defun custom/rectangular-region-multiple-cursors ()
-  (interactive)
-  (rrm/switch-to-multiple-cursors)
-  (deactivate-mark))
-
-(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
-
-;; Exit rectangular-region-mode
-(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
-(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
-
-;; Multiple cursor rectangle definition mouse event
-(defun custom/smart-mouse-rectangle (start-event)
-  (interactive "e")
-  (deactivate-mark)
-  (mouse-set-point start-event)
-  (set-rectangular-region-anchor)
-  (rectangle-mark-mode +1)
-  (let ((drag-event))
-    (track-mouse
-      (while (progn
-               (setq drag-event (read-event))
-               (mouse-movement-p drag-event))
-        (mouse-set-point drag-event)))))
-
-(global-set-key (kbd "M-<down-mouse-1>") #'custom/smart-mouse-rectangle)
 
 ;; Counsel buffer switching
 (global-set-key (kbd "C-x b") 'counsel-switch-buffer)
@@ -609,121 +705,15 @@ kill the current buffer and delete its window."
 
 (global-set-key (kbd "<escape>") 'custom/double-escape)
 
-(defun custom/delete-line ()
-  (delete-region (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line)))
-
-(defun custom/@delete-hungry (query)
-  "Conditional region deletion.
-
-Default: `delete-region'
-
-If region starts at the beginning of an
-indented line, delete region and indent.
-
-If `query', delete the region and its indent 
-plus one character."
-  (setq beg (region-beginning) end (region-end))
-  (if (custom/at-indent beg)
-	    (save-excursion (beginning-of-visual-line)
-                      (if (and query (not (bobp)) (not (custom/relative-line-empty -1)))
-                          (left-char))
-                      (delete-region (point) end))
-    (delete-region beg end)))
-
-(defun custom/delete-hungry ()
-  "If the region starts at the beginning of an 
-indented line and the current mode is derived from 
-`prog-mode',  delete the region and its indent plus 
-one character."
-  (interactive)
-  (custom/@delete-hungry (derived-mode-p 'prog-mode)))
-
-(defun custom/nimble-delete-forward ()
-  "Conditional forward deletion.
-
-Default: `delete-forward-char' 1
-
-If next line is empty, forward delete indent of 
-next line plus one character."
-  (interactive)
-  (cond ((and (eolp) (custom/relative-line-indented 1)) (progn (setq beg (point)) (next-line) (back-to-indentation) (delete-region beg (point))))
-	      ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
-	      (t                                              (delete-forward-char 1))))
-
-(global-set-key (kbd "<deletechar>") 'custom/nimble-delete-forward)
-
-(defun custom/nimble-delete-backward ()
-  "Conditional forward deletion.
-
-Default: `delete-backward-char' 1
-
-If `multiple-cursors-mode' is active, `delete-backward-char' 1.
-
-If region is active, delete region.
-
-If cursor lies either `custom/at-indent' or is preceded only by
-whitespace, delete region from `point' to `beginning-of-visual-line'."
-  (interactive)
-  (if (not (bound-and-true-p multiple-cursors-mode))
-      (cond ((and (region-active-p) (not (custom/region-empty))) (custom/delete-hungry))
-	          ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-		  (t                                                   (delete-backward-char 1)))
-    (delete-backward-char 1)))
-
-(global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
-
-(global-set-key (kbd "C-a") 'mark-whole-buffer)
-
-;; Increase kill ring size
-(setq kill-ring-max 200)
-
-;; Copy region with S-left click
-(global-set-key (kbd "S-<mouse-1>")      'mouse-save-then-kill)
-(global-set-key (kbd "S-<down-mouse-1>")  nil)
-
-;; Paste with mouse right click
-(global-set-key (kbd "<mouse-3>")        'yank)
-(global-set-key (kbd "<down-mouse-3>")    nil)
-
-;; IELM
-(global-set-key (kbd "C-l") 'ielm)
-
-;; Exit IELM
-(with-eval-after-load 'ielm
-  (define-key ielm-map (kbd "C-l") 'kill-this-buffer))
-
-;; Buffer evaluation
-(global-set-key (kbd "C-x e") 'eval-buffer)
-
-;; Enable rainbow delimiters on all programming modes
-(use-package rainbow-delimiters)
-
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-
-;; yasnippet
-(use-package yasnippet)
-
-(yas-global-mode 1)
-
-(defun custom/<-snippet (orig-fun &rest args)
-  "Require < before snippets."
-  (interactive)
-  (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-	(if (not (string-equal line ""))
-	    (if (string-equal (substring line 0 1) "<")
-		(progn (save-excursion (move-beginning-of-line nil)
-				       (right-char 1)
-				       (delete-region (line-beginning-position) (point)))
-		       (apply orig-fun args)))))
-
-(advice-add 'yas-expand :around #'custom/<-snippet)
-
-;; yasnippet-snippets
-(use-package yasnippet-snippets)
-
 (use-package magit)
 
 (require 'org (concat config-directory "org.el"))
+
+;; Transform all files in directory from DOS to Unix line breaks
+(defun custom/dos2unix (&optional dir)
+  (let ((dir (or dir (file-name-directory buffer-file-name)))
+	      (default-directory dir))
+    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
 (require 'theme (concat config-directory "theme.el"))
 
