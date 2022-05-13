@@ -6,9 +6,24 @@
 #+latex_class_options: [twocolumn]
 -----
 
-- org-meta-return
-   - top level at bottom of doc
-      - (org-current-level) check insufficient
+- scroll simultaneously in two different files
+- diff between two different files
+
+- org-roam
+   - capture template
+      - extra space in title
+      - add newline between title and content
+      - #+STARTUP: overview
+   - increase horizontal split threshold for org-roam-node-visit
+- org LaTeX equations
+   - custom array envs
+      - cases
+         - \arraycolsep=1.4pt\def\arraystretch{1.5}
+      - derivations
+         - \arraycolsep=3pt\def\arraystretch{2.25}
+- remove double commands
+   - home
+      - if at bol-text -> bol-visual
 
 - latex
    - class, style file access
@@ -48,6 +63,7 @@
    - https://tony-zorman.com/posts/phd-workflow/2022-05-01-my-phd-workflow.html
    - https://castel.dev/post/research-workflow/
      
+
 ** Emacs Lisp
 
 - interactive
@@ -57,7 +73,11 @@
 - editing
    - https://github.com/bbatsov/crux
 
-     
+** Performance
+
+- WSL
+   - https://shelper.github.io/posts/setup-emacs-in-wsl2/
+
 
 * Utilities
 ** overlays
@@ -291,6 +311,7 @@ CLOSED: [2022-05-06 Fri 17:11]
       - https://github.com/coldnew/org-ioslide
 - Hugo
    - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
+   - https://www.youtube.com/watch?app=desktop&v=0g9BcZvQbXU
 
 * org-paragraph
 
@@ -453,6 +474,8 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 * display
 
+- golden ratio
+   - https://github.com/roman/golden-ratio.el
 - vertical padding
    - https://stackoverflow.com/questions/25040666/vertical-padding-or-margin-on-emacs-buffer
      
@@ -540,6 +563,8 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 * file management
 
+- dired
+   - file deletion confirmation -> enter/previous key again
 - Org refile
    - https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
@@ -554,7 +579,11 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 - mu4e
    - Nano
       - https://www.reddit.com/r/emacs/comments/mzgsm0/mu4e_look_and_feel/
-		
+
+* docker
+
+- https://github.com/Silex/docker.el
+
 
 * session
 
@@ -570,8 +599,6 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
    - https://github.com/Bad-ptr/persp-mode.el
    - burly
       - https://github.com/alphapapa/burly.el
-   - golden ratio
-      - https://github.com/roman/golden-ratio.el
 
 
 - Window manager
@@ -674,6 +701,9 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 * performance
 
 - defer load time
+- profiler
+   - M-x profiler-start RET
+   - M-x profiler-report RET
 - esup
    - bug
       - https://github.com/jschaf/esup
