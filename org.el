@@ -36,7 +36,10 @@
   (and (custom/org-relative-line-heading) (eolp) (not (custom/org-at-ellipsis-h)) (not (custom/org-relative-line-heading-empty))))
 
 (defun custom/org-at-list-paragraph ()
-  (and (not (custom/org-relative-line-heading)) (not (custom/org-relative-line-list)) (custom/relative-line-list -1)))
+  (and (not (custom/org-relative-line-heading))
+       (not (custom/org-relative-line-list))
+       (not (org-in-src-block-p))
+       (custom/relative-line-list -1)))
 
 (defun custom/org-after-list-or-indent ()
   (or (custom/org-relative-line-list -1) (custom/relative-line-indented -1)))
@@ -113,6 +116,25 @@ a `custom/region-empty'."
           '(keyword)
         #'custom/get-keyword-key-value))))
 
+(defun custom/org-set-outline-overlay-data (data)
+  "Create visibility overlays for all positions in DATA.
+DATA should have been made by `org-outline-overlay-data'."
+  (org-with-wide-buffer
+   (org-show-all)
+   (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
+
+(defvar-local custom/org-outline-state nil
+  "Place for saving org outline state before reverting the buffer.")
+
+(put 'custom/org-outline-state 'permanent-local t)
+
+(defun custom/org-restore-outline-state ()
+  "Save org outline state in `custom/org-outline-state'.
+It can be recovered afterwards with `custom/org-recover-outline-state'."
+  (when custom/org-outline-state
+    (custom/org-set-outline-overlay-data custom/org-outline-state)
+    (setq custom/org-outline-state nil)))
+
 (defun custom/org-outline-overlay-data (&optional use-markers)
   "Return a list of the locations of all outline overlays.
 These are overlays with the `invisible' property value `outline'.
@@ -145,24 +167,18 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (add-hook 'org-mode-hook #'custom/org-install-save-outline-state)
 
-(defun custom/org-set-outline-overlay-data (data)
-  "Create visibility overlays for all positions in DATA.
-DATA should have been made by `org-outline-overlay-data'."
-  (org-with-wide-buffer
-   (org-show-all)
-   (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
+(defun custom/org-hide-previous-subtree ()
+  "Cycle previous same-level Org Mode heading."
+  (save-excursion (custom/org-previous-heading)
+		        (if (custom/org-relative-line-heading-folded)
+			    (outline-hide-subtree))))
 
-(defvar-local custom/org-outline-state nil
-  "Place for saving org outline state before reverting the buffer.")
-
-(put 'custom/org-outline-state 'permanent-local t)
-
-(defun custom/org-restore-outline-state ()
-  "Save org outline state in `custom/org-outline-state'.
-It can be recovered afterwards with `custom/org-recover-outline-state'."
-  (when custom/org-outline-state
-    (custom/org-set-outline-overlay-data custom/org-outline-state)
-    (setq custom/org-outline-state nil)))
+(defun custom/org-show-children ()
+  (if (or (custom/org-relative-line-list-folded)
+	        (custom/org-relative-line-heading-folded))
+      (progn (beginning-of-visual-line)
+	           (org-show-children)
+		   (end-of-line))))
 
 (defun custom/org-undo ()
   (interactive)
@@ -180,6 +196,147 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
     (undo 1)))
 
 (define-key org-mode-map (kbd "C-/") 'custom/org-undo)
+
+;; org-return
+(defun custom/org-return ()
+  "Conditional `org-return'."
+  (interactive)
+  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
+	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
+	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
+	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
+	    (t                                              (org-return t))))
+
+(define-key org-mode-map (kbd "<return>") 'custom/org-return)
+
+;; org-meta-return
+(defun custom/org-control-return ()
+  (interactive)
+  (cond ((custom/org-relative-line-list-empty)       (progn (org-meta-return) (next-line) (end-of-line)))
+	      ((custom/org-relative-line-heading)          (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
+	      ((custom/org-relative-line-list)             (progn (end-of-line) (org-meta-return)))
+	      ((custom/org-at-list-paragraph)              (custom/org-paragraph-toggle))
+	      (t                                           (org-insert-heading-respect-content))))
+
+(define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
+
+(defun custom/org-meta-return ()
+  (interactive)
+  (custom/org-insert-subheading-respect-content))
+
+(define-key org-mode-map (kbd "M-<return>") 'custom/org-insert-subheading-respect-content)
+
+(defun custom/org-super-return ()
+  (interactive)
+  (custom/org-insert-subheading-at-point))
+
+(define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
+
+(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
+
+(defun custom/org-previous-heading-insert-margin ()
+  "If the previous subtree is not empty,
+insert a margin of 1 empty line."
+  (let ((insert-margin
+	 (save-excursion (custom/org-previous-heading)
+			 (not (custom/org-subtree-blank)))))
+    (print insert-margin)
+    (if insert-margin
+      (progn (beginning-of-visual-line)
+	           (org-return)
+		   (beginning-of-line-text)))))
+
+(defun custom/org-insert-heading (command &optional root margin)
+  "Primitive for custom heading functions.
+
+If cursor is outside top level heading,
+insert heading at point, without removing
+any of the previous space.
+
+Org Mode heading insertion commandes will
+automatically remove all [[:space:]] until
+the first preceding non-empty line.
+If the previous subtree is not empty,
+insert a margin of 1 empty line.
+
+If ROOT is t:
+- insert heading at root of current subtree
+If MARGIN is t:
+- insert margin between content under parent heading and new one"
+  (interactive)
+  (custom/org-show-children)
+  (cond ((not (org-current-level)) (insert "* "))
+	      (t                         (funcall command)))
+  (if margin (custom/org-previous-heading-insert-margin))
+  (custom/org-hide-previous-subtree))
+
+(defun custom/org-insert-subheading (orig-fun &optional arg)
+  "Make `org-insert-subheading' ARG optional."
+  (interactive)
+  (let ((arg (or arg 0)))
+    (funcall orig-fun arg)))
+
+(advice-add 'org-insert-subheading :around #'custom/org-insert-subheading)
+
+(defun custom/org-insert-subheading-at-point ()
+  (interactive)
+  (let ((root    nil)
+	      (margin (not (custom/org-relative-line-heading -1))))
+    (custom/org-insert-heading 'org-insert-subheading root margin)))
+
+(defun custom/org-insert-heading-respect-content (orig-fun &rest args)
+  "Support `org-insert-heading-respect-content' from any point in tree.
+
+Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
+  (setq insert-margin (and (org-current-level) (not (custom/org-subtree-blank))))
+  (custom/org-maybe-insert-top-level-heading)
+  (if insert-margin
+      (progn (beginning-of-visual-line)
+	           (org-return)
+		   (beginning-of-line-text)))
+  (save-excursion (org-backward-heading-same-level 1)
+		        (if (and (custom/org-relative-line-heading-folded) (custom/org-relative-line-heading))
+			    (outline-hide-subtree)))
+  (undo-boundary)
+  (if (and (not (custom/org-subtree-empty)) (string-equal "\n" (custom/last-change)))
+      (let (buffer-undo-list)
+	         (save-excursion (next-line)
+				 (delete-backward-char 1)))))
+
+(advice-add 'org-insert-heading-respect-content :around #'custom/org-insert-heading-respect-content)
+
+(defun custom/org-insert-subheading-respect-content ()
+  "`org-insert-subheading' respecting content."
+  (interactive)
+  (if (custom/org-relative-line-heading)
+      (progn (beginning-of-visual-line)
+	           (org-show-children)))
+  (setq insert-margin (not (custom/org-subtree-blank)))
+  (if (not (= 1 (org-current-level)))
+      (outline-up-heading 0))
+  (org-insert-subheading '(4))
+  (delete-forward-char 1)
+  (if insert-margin
+      (progn (beginning-of-visual-line)
+	           (org-return)
+		   (beginning-of-line-text))))
+
+(defun custom/org-edit-at-ellipsis (orig-fun &rest args)
+  "Execute commands invoked at an Org Mode heading's
+ellipsis in the first line under the heading."
+  (if (custom/org-at-ellipsis-h)
+      (progn (beginning-of-visual-line)
+	           (org-show-children)
+		   (end-of-line)
+		   (org-return)
+		   (apply orig-fun args))
+    (apply orig-fun args)))
+
+(dolist (fn '(org-yank
+	           org-self-insert-command
+		   custom/org-insert-subheading))
+  (advice-add fn :around #'custom/org-edit-at-ellipsis))
 
 (defun custom/org-delete-hungry ()
   "If the region starts at the beginning of an 
@@ -256,115 +413,7 @@ or outdenting with `org-metaleft'."
 		(push-mark (+ mark shift)))
     (apply command args)))
 
-(defun custom/org-paragraph-toggle ()
-  (interactive)
-  (if (not (custom/org-relative-line-list))
-      (progn ;; If the paragraph is indented,
-	           ;; assume it will have a visual
-	           ;; indent as the one created by this
-             ;; function, and revert it before
-             ;; turning paragraph into item.
-	           (if (custom/relative-line-indented)
-	               (progn (setq back (+ (point) 1))
-		              (beginning-of-line-text)
-			      (insert " ")
-			      (goto-char back)))
-		   ;; Record whether cursor is at `bolp'
-		   ;; or `custom/at-indent'
-		   (setq bol (or (bolp) (custom/at-indent)))
-             ;; Turn into item
-	           (org-toggle-item (point))
-		   ;; If cursor was at either `bolp'
-		   ;; or `custom/at-indent', move to
-		   ;; `beginning-of-line-text'
-		   (if bol (beginning-of-line-text)))
-    (progn ;; Drop off
-           (org-toggle-item (point))
-	         ;; Ensure cursor remains at
-		 ;; `beginning-of-line-text'
-		 (if (bolp) (beginning-of-line-text))
-		 (if (custom/relative-line-indented)
-		     (progn (setq back (- (point) 1))
-			    (beginning-of-line-text)
-			    (delete-backward-char 1)
-			    (goto-char back)
-			    )))))
-
-(defvar custom/org-paragraph-ignore-errors t
-  "Ignore errors in `org-paragraph' calls.")
-
-(defun custom/org-paragraph (command &rest args)
-  "Org Mode hitch-hiking paragraphs."
-  (if (and (not (custom/org-relative-line-heading))
-           (not (custom/org-relative-line-list))
-           (custom/relative-line-list -1))
-      (progn
-        ;; Hitch ride
-	      (custom/org-paragraph-toggle)
-	      ;; Execute command
-	      (if custom/org-paragraph-ignore-errors
-		  (ignore-errors (apply command args))
-		(apply command args))
-	      ;; Drop off
-	      (custom/org-paragraph-toggle))))
-
-(defun custom/org-paragraph-indent ()
-  (interactive)
-  (custom/org-paragraph 'org-indent-item))
-
-(defun custom/org-paragraph-outdent ()
-  (interactive)
-  (custom/org-paragraph 'org-outdent-item))
-
-(defun custom/org-cycle (orig-fun &rest args)
-  "Conditional `org-cycle'.
-
-Default: `org-cycle'
-
-If cursor lies at `end-of-visual-line' of folded heading or list,
-move cursor to `end-of-line' of the current visual line and then
-call `org-cycle'.
-
-If cursor lies at a paragraph directly under a list item and not
-indented at the level of the previous list item, indent the paragraph."
-  (interactive)
-  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
-      (if (= (point) (custom/get-point 'end-of-visual-line))
-	  (progn (beginning-of-visual-line)
-		 (end-of-line)
-		 (apply orig-fun args))
-	(apply orig-fun args))
-    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
-	      (org-indent-line)
-      (apply orig-fun args))))
-
-(advice-add 'org-cycle :around #'custom/org-cycle)
-
-;; org-return
-(defun custom/org-return ()
-  "Conditional `org-return'."
-  (interactive)
-  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
-	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
-	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
-	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
-	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
-	    (t                                              (org-return t))))
-
-(define-key org-mode-map (kbd "<return>") 'custom/org-return)
-
-;; org-meta-return
-(defun custom/org-meta-return ()
-  "Conditional `org-meta-return'."
-  (interactive)
-  (cond ((custom/org-relative-line-list-empty)          (progn (org-meta-return) (next-line) (end-of-line)))
-	   ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
-	   ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
-	   ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
-	   ((custom/relative-line-indented)                (custom/org-paragraph-toggle))
-	   (t                                              (org-insert-heading-respect-content))))
-
-(define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
+(require 'org-paragraph (concat config-directory "org-paragraph.el"))
 
 (defun custom/org-meta-arrows-h (orig-fun &rest args)
   "Paragraph indentation with `org-meta<arrows>'.
@@ -390,108 +439,6 @@ beginning lies on an Org Mode heading,
 (advice-add 'org-metaup   :around #'custom/org-meta-arrows-v)
 (advice-add 'org-metadown :around #'custom/org-meta-arrows-v)
 
-(defun custom/org-edit-at-ellipsis (orig-fun &rest args)
-  "Execute commands invoked at an Org Mode heading's
-ellipsis in the first line under the heading."
-  (if (custom/org-at-ellipsis-h)
-      (progn (beginning-of-visual-line)
-	           (org-show-children)
-		   (end-of-line)
-		   (org-return)
-		   (apply orig-fun args))
-    (apply orig-fun args)))
-
-(dolist (fn '(org-yank
-	            org-self-insert-command))
-  (advice-add fn :around #'custom/org-edit-at-ellipsis))
-
-;; Do not insert newline before Org Mode headings
-(setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
-
-(defun custom/org-insert-heading ()
-  "Conditional `org-insert-heading'.
-
-If cursor is outside top level heading,
-insert heading at point, without removing
-any of the previous space.
-
-`org-insert-heading' will automatically
-remove all [[:space:]] until the first
-preceding non-empty line.
-If the previous subtree is not empty,
-insert a margin of 1 empty line."
-  (interactive)
-  (if (not (org-current-level))
-      (insert "* ")
-    (org-insert-heading))
-  (save-excursion (org-backward-heading-same-level 1)
-		        (setq insert-margin (not (custom/org-subtree-blank))))
-  (if insert-margin
-      (progn (beginning-of-visual-line)
-	           (org-return)
-		   (beginning-of-line-text)))
-  (save-excursion (org-backward-heading-same-level 1)
-		        (if (and (custom/org-relative-line-heading-folded) (custom/org-relative-line-heading))
-			    (outline-hide-subtree))))
-
-(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading)
-
-(defun custom/org-insert-subheading ()
-  "Support `org-insert-subheading' from any point in tree."
-  (interactive)
-  (if (org-current-level)
-      (progn (if (not (= 1 (org-current-level)))
-                 (progn (outline-up-heading 0)
-                        (end-of-line)
-                        (org-show-children)))
-             (org-insert-subheading 0))
-    (org-insert-subheading 0)))
-
-(define-key org-mode-map (kbd "S-<return>") 'custom/org-insert-subheading)
-
-(defun custom/org-insert-heading-respect-content (orig-fun &rest args)
-  "Support `org-insert-heading-respect-content' from any point in tree.
-
-Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
-  (setq insert-margin (and (org-current-level) (not (custom/org-subtree-blank))))
-  (if (org-current-level)
-      (progn (if (not (= 1 (org-current-level)))
-	               (outline-up-heading 0))
-             (apply orig-fun args))
-    (insert "* "))
-  (if insert-margin
-      (progn (beginning-of-visual-line)
-	           (org-return)
-		   (beginning-of-line-text)))
-  (save-excursion (org-backward-heading-same-level 1)
-		        (if (and (custom/org-relative-line-heading-folded) (custom/org-relative-line-heading))
-			    (outline-hide-subtree)))
-  (undo-boundary)
-  (if (and (not (custom/org-subtree-empty)) (string-equal "\n" (custom/last-change)))
-      (let (buffer-undo-list)
-	         (save-excursion (next-line)
-				 (delete-backward-char 1)))))
-
-(advice-add 'org-insert-heading-respect-content :around #'custom/org-insert-heading-respect-content)
-
-(defun custom/org-insert-subheading-respect-content ()
-  "`org-insert-subheading' respecting content."
-  (interactive)
-  (if (custom/org-relative-line-heading)
-      (progn (beginning-of-visual-line)
-	           (org-show-children)))
-  (setq insert-margin (not (custom/org-subtree-blank)))
-  (if (not (= 1 (org-current-level)))
-      (outline-up-heading 0))
-  (org-insert-subheading '(4))
-  (delete-forward-char 1)
-  (if insert-margin
-      (progn (beginning-of-visual-line)
-	           (org-return)
-		   (beginning-of-line-text))))
-
-(define-key org-mode-map (kbd "M-<return>") 'custom/org-insert-subheading-respect-content)
-
 (defun custom/with-mark-active (&rest args)
   "Keep mark active after command. To be used as advice AFTER any
 function that sets `deactivate-mark' to t."
@@ -506,6 +453,9 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaleft  :after #'custom/with-mark-active)
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
+
+;; Do not insert newline before Org Mode headings
+(setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
 (defface custom/variable-pitch-marker
   '((nil :inherit 'fixed-pitch))
@@ -571,8 +521,9 @@ of org-tempo templates."
 Default: `custom/end'
 
 If `org-at-table-p', go to `org-table-end-of-field'."
-  (cond ((org-at-table-p) (org-table-end-of-field 1))
-	    (t                (end-of-visual-line))))
+  (cond ((and (region-active-p) (custom/org-relative-line-heading-folded)) (end-of-line))
+        ((org-at-table-p)                                                  (org-table-end-of-field 1))
+	   (t                                                                 (end-of-visual-line))))
 
 (defvar custom/org-double-end-timeout 0.4)
 
@@ -641,7 +592,44 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 (define-key org-mode-map (kbd "<home>") 'custom/org-double-home)
 
+(defun custom/org-cycle (orig-fun &rest args)
+  "Conditional `org-cycle'.
+
+Default: `org-cycle'
+
+If cursor lies at `end-of-visual-line' of folded heading or list,
+move cursor to `end-of-line' of the current visual line and then
+call `org-cycle'.
+
+If cursor lies at a paragraph directly under a list item and not
+indented at the level of the previous list item, indent the paragraph."
+  (interactive)
+  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
+      (if (= (point) (custom/get-point 'end-of-visual-line))
+	  (progn (beginning-of-visual-line)
+		 (end-of-line)
+		 (apply orig-fun args))
+	(apply orig-fun args))
+    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
+	      (org-indent-line)
+      (apply orig-fun args))))
+
+(advice-add 'org-cycle :around #'custom/org-cycle)
+
 (define-key org-mode-map (kbd "<up>") (lambda () (interactive) (custom/previous-line (org-in-src-block-p))))
+
+(defun custom/org-previous-heading ()
+  (outline-back-to-heading)
+  (let ((current (custom/get-point 'beginning-of-visual-line)))
+    ;; go to previous same-level heading
+    (org-backward-heading-same-level 1)
+    ;; attempt going to last subheading of previous same-level heading
+    (org-end-of-subtree)
+    (outline-back-to-heading)
+    ;; if there was no previous same-level heading, go to parent if not at top
+    (if (and (= current (custom/get-point 'beginning-of-visual-line))
+	        (not (= 1 (org-current-level))))
+	      (outline-up-heading 1))))
 
 ;; Justify equation labels - [fleqn]
 ;; Preview page width      - 10.5cm
@@ -860,60 +848,57 @@ folded."
 
 (custom/org-agenda-bind "d" 'custom/org-agenda-todo-done)
 
+;; Configure custom agenda views
+(setq org-agenda-custom-commands
+      '(("d" "Dashboard"
+	      ((agenda "" ((org-deadline-warning-days 7)))
+	       (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
+	       (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+
+	     ("n" "Next Tasks"
+	      ((todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))))
+
+	     ("w" "Work Tasks" tags-todo "work")
+
+	     ("e" "Emacs Tasks" tags-todo "emacs")
+
+	     ("z" "Low Effort" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+	      ((org-agenda-overriding-header "Low Effort Tasks")
+	       (org-agenda-max-todos 20)
+	       (org-agenda-files org-agenda-files)))
+
+	     ("s" "Workflow Status"
+	      ((todo "WAIT"
+		     ((org-agenda-overriding-header "Waiting on External")
+		      (org-agenda-files org-agenda-files)))
+	       (todo "REVIEW"
+		     ((org-agenda-overriding-header "In Review")
+		      (org-agenda-files org-agenda-files)))
+	       (todo "PLAN"
+		     ((org-agenda-overriding-header "In Planning")
+		      (org-agenda-todo-list-sublevels nil)
+		      (org-agenda-files org-agenda-files)))
+	       (todo "BACKLOG"
+		     ((org-agenda-overriding-header "Project Backlog")
+		      (org-agenda-todo-list-sublevels nil)
+		      (org-agenda-files org-agenda-files)))
+	       (todo "READY"
+		     ((org-agenda-overriding-header "Ready for Work")
+		      (org-agenda-files org-agenda-files)))
+	       (todo "ACTIVE"
+		     ((org-agenda-overriding-header "Active Projects")
+		      (org-agenda-files org-agenda-files)))
+	       (todo "COMPLETED"
+		     ((org-agenda-overriding-header "Completed Projects")
+		      (org-agenda-files org-agenda-files)))
+	       (todo "CANC"
+		     ((org-agenda-overriding-header "Cancelled Projects")
+		      (org-agenda-files org-agenda-files)))))))
+
 ;; Org Agenda log mode
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
 (setq org-log-into-drawer t)
-
-;; Configure custom agenda views
-(setq org-agenda-custom-commands
-      
-      '(("d" "Dashboard"
-	 ((agenda "" ((org-deadline-warning-days 7)))
-	  (todo "NEXT"
-		((org-agenda-overriding-header "Next Tasks")))
-	  (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
-	
-	("n" "Next Tasks"
-	 ((todo "NEXT"
-		((org-agenda-overriding-header "Next Tasks")))))
-
- 	("w" "Work Tasks" tags-todo "work")
-
-	("e" "Emacs Tasks" tags-todo "emacs")
-
-	;; ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-	 ;; ((org-agenda-overriding-header "Low Effort Tasks")
-	  ;; (org-agenda-max-todos 20)
-	  ;; (org-agenda-files org-agenda-files)))
-
-	("s" "Workflow Status"
-	 ((todo "WAIT"
-		((org-agenda-overriding-header "Waiting on External")
-		 (org-agenda-files org-agenda-files)))
-	  (todo "REVIEW"
-		((org-agenda-overriding-header "In Review")
-		 (org-agenda-files org-agenda-files)))
-	  (todo "PLAN"
-		((org-agenda-overriding-header "In Planning")
-		 (org-agenda-todo-list-sublevels nil)
-		 (org-agenda-files org-agenda-files)))
-	  (todo "BACKLOG"
-		((org-agenda-overriding-header "Project Backlog")
-		 (org-agenda-todo-list-sublevels nil)
-		 (org-agenda-files org-agenda-files)))
-	  (todo "READY"
-		((org-agenda-overriding-header "Ready for Work")
-		 (org-agenda-files org-agenda-files)))
-	  (todo "ACTIVE"
-		((org-agenda-overriding-header "Active Projects")
-		 (org-agenda-files org-agenda-files)))
-	  (todo "COMPLETED"
-		((org-agenda-overriding-header "Completed Projects")
-		 (org-agenda-files org-agenda-files)))
-	  (todo "CANC"
-		((org-agenda-overriding-header "Cancelled Projects")
-		 (org-agenda-files org-agenda-files)))))))
 
 (custom/org-agenda-bind "<tab>" 'org-agenda-recenter)
 
@@ -933,8 +918,8 @@ folded."
 
 ;; Define TODO keyword sequences
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-	(sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+      '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)")
+	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
 (straight-use-package 'calfw)
 (straight-use-package 'calfw-org)

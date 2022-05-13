@@ -639,6 +639,8 @@ not empty. In any case, advance to next line."
 ;; winner mode
 (winner-mode)
 
+(global-set-key (kbd "C-x -") 'balance-windows)
+
 (setq split-width-threshold 70)
 
 ;; Create new frame
