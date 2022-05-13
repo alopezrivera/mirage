@@ -1596,7 +1596,7 @@ folded."
 #+end_src
 
 ** Classification
-*** Global tags
+*** Tags
 
 #+begin_src emacs-lisp
 
@@ -1616,14 +1616,14 @@ folded."
 
 #+end_src
 
-*** Keyword sequences
+*** Keywords
 
 #+begin_src emacs-lisp
 
 ;; Define TODO keyword sequences
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-	(sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+      '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)")
+	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
 #+end_src
 
