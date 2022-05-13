@@ -1151,6 +1151,14 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
+**** balance-windows
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-x -") 'balance-windows)
+
+#+end_src
+
 **** split-width-threshold
 
 #+begin_src emacs-lisp
