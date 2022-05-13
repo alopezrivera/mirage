@@ -115,7 +115,10 @@
 #+begin_src emacs-lisp
 
 (defun custom/org-at-list-paragraph ()
-  (and (not (custom/org-relative-line-heading)) (not (custom/org-relative-line-list)) (custom/relative-line-list -1)))
+  (and (not (custom/org-relative-line-heading))
+       (not (custom/org-relative-line-list))
+       (not (org-in-src-block-p))
+       (custom/relative-line-list -1)))
 
 #+end_src
 
@@ -286,6 +289,38 @@ a `custom/region-empty'."
 - deprecated cl warning
    - find dependency
 
+**** Set
+***** set-outline-overlay-data
+
+#+begin_src emacs-lisp
+
+(defun custom/org-set-outline-overlay-data (data)
+  "Create visibility overlays for all positions in DATA.
+DATA should have been made by `org-outline-overlay-data'."
+  (org-with-wide-buffer
+   (org-show-all)
+   (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
+
+(defvar-local custom/org-outline-state nil
+  "Place for saving org outline state before reverting the buffer.")
+
+(put 'custom/org-outline-state 'permanent-local t)
+
+#+end_src
+
+***** restore-outline-state
+
+#+begin_src emacs-lisp
+
+(defun custom/org-restore-outline-state ()
+  "Save org outline state in `custom/org-outline-state'.
+It can be recovered afterwards with `custom/org-recover-outline-state'."
+  (when custom/org-outline-state
+    (custom/org-set-outline-overlay-data custom/org-outline-state)
+    (setq custom/org-outline-state nil)))
+
+#+end_src
+
 **** Get
 ***** outline-overlay-data
 
@@ -331,35 +366,30 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-**** Set
-***** set-outline-overlay-data
+**** Hide
+***** org-hide-previous-subtree
 
 #+begin_src emacs-lisp
 
-(defun custom/org-set-outline-overlay-data (data)
-  "Create visibility overlays for all positions in DATA.
-DATA should have been made by `org-outline-overlay-data'."
-  (org-with-wide-buffer
-   (org-show-all)
-   (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
-
-(defvar-local custom/org-outline-state nil
-  "Place for saving org outline state before reverting the buffer.")
-
-(put 'custom/org-outline-state 'permanent-local t)
+(defun custom/org-hide-previous-subtree ()
+  "Cycle previous same-level Org Mode heading."
+  (save-excursion (custom/org-previous-heading)
+		        (if (custom/org-relative-line-heading-folded)
+			    (outline-hide-subtree))))
 
 #+end_src
 
-***** restore-outline-state
+**** Show
+***** org-heading-show-children
 
 #+begin_src emacs-lisp
 
-(defun custom/org-restore-outline-state ()
-  "Save org outline state in `custom/org-outline-state'.
-It can be recovered afterwards with `custom/org-recover-outline-state'."
-  (when custom/org-outline-state
-    (custom/org-set-outline-overlay-data custom/org-outline-state)
-    (setq custom/org-outline-state nil)))
+(defun custom/org-show-children ()
+  (if (or (custom/org-relative-line-list-folded)
+	        (custom/org-relative-line-heading-folded))
+      (progn (beginning-of-visual-line)
+	           (org-show-children)
+		   (end-of-line))))
 
 #+end_src
 
@@ -390,7 +420,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 *** Insert
 **** Return
-***** TODO [#A] org-return
+***** TODO [#A] return
 
 - list item -> new item starting at point
 
@@ -414,7 +444,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-***** TODO org-meta-return
+***** TODO C-return
 
 - on non-empty line
    - insert heading at line
@@ -444,77 +474,31 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 #+begin_src emacs-lisp
 
 ;; org-meta-return
-(defun custom/org-meta-return ()
-  "Conditional `org-meta-return'."
+(defun custom/org-control-return ()
   (interactive)
-  (cond ((custom/org-relative-line-list-empty)          (progn (org-meta-return) (next-line) (end-of-line)))
-	   ((custom/org-relative-line-heading)             (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
-	   ((custom/org-relative-line-list)                (progn (end-of-line) (org-meta-return)))
-	   ((custom/org-relative-line-list -1)             (custom/org-paragraph-toggle))
-	   ((custom/relative-line-indented)                (custom/org-paragraph-toggle))
-	   (t                                              (org-insert-heading-respect-content))))
+  (cond ((custom/org-relative-line-list-empty)       (progn (org-meta-return) (next-line) (end-of-line)))
+	      ((custom/org-relative-line-heading)          (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
+	      ((custom/org-relative-line-list)             (progn (end-of-line) (org-meta-return)))
+	      ((custom/org-at-list-paragraph)              (custom/org-paragraph-toggle))
+	      (t                                           (org-insert-heading-respect-content))))
 
-(define-key org-mode-map (kbd "C-<return>") #'custom/org-meta-return)
-
-#+end_src
-
-**** Headings
-***** TODO [#A] org-insert-heading
-
-- replace heading insertion margin addition with macro
-- find progn replacement
-
-#+begin_src emacs-lisp :tangle nil
-
-(defmacro custom/@org-insert-heading (command)
-  `(progn
-     (setq insert-margin (not (custom/org-subtree-blank)))
-     ,command
-     (if insert-margin
-	       (progn (beginning-of-visual-line)
-	              (org-return)
-		      (beginning-of-line-text)))))
-
-(custom/@org-insert-heading (org-insert-heading))
+(define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
 
 #+end_src
+
+***** TODO M-return
 
 #+begin_src emacs-lisp
 
-;; Do not insert newline before Org Mode headings
-(setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
-
-(defun custom/org-insert-heading ()
-  "Conditional `org-insert-heading'.
-
-If cursor is outside top level heading,
-insert heading at point, without removing
-any of the previous space.
-
-`org-insert-heading' will automatically
-remove all [[:space:]] until the first
-preceding non-empty line.
-If the previous subtree is not empty,
-insert a margin of 1 empty line."
+(defun custom/org-meta-return ()
   (interactive)
-  (if (not (org-current-level))
-      (insert "* ")
-    (org-insert-heading))
-  (save-excursion (org-backward-heading-same-level 1)
-		        (setq insert-margin (not (custom/org-subtree-blank))))
-  (if insert-margin
-      (progn (beginning-of-visual-line)
-	           (org-return)
-		   (beginning-of-line-text)))
-  (save-excursion (org-backward-heading-same-level 1)
-		        (if (and (custom/org-relative-line-heading-folded) (custom/org-relative-line-heading))
-			    (outline-hide-subtree))))
+  (custom/org-insert-subheading-respect-content))
 
-(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading)
+(define-key org-mode-map (kbd "M-<return>") 'custom/org-insert-subheading-respect-content)
 
 #+end_src
 
-***** TODO org-insert-subheading
+***** TODO S-return
 
 - list item -> paragraph starting at point
 - heading with keywords
@@ -522,22 +506,109 @@ insert a margin of 1 empty line."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-insert-subheading ()
-  "Support `org-insert-subheading' from any point in tree."
+(defun custom/org-super-return ()
   (interactive)
-  (if (org-current-level)
-      (progn (if (not (= 1 (org-current-level)))
-                 (progn (outline-up-heading 0)
-                        (end-of-line)
-                        (org-show-children)))
-             (org-insert-subheading 0))
-    (org-insert-subheading 0)))
+  (custom/org-insert-subheading-at-point))
 
-(define-key org-mode-map (kbd "S-<return>") 'custom/org-insert-subheading)
+(define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
 
 #+end_src
 
-***** TODO [#A] org-insert-heading-respecting-content
+***** MS-return
+
+#+begin_src emacs-lisp
+ 
+(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
+
+#+end_src
+
+**** Headings
+***** Margin
+
+#+begin_src emacs-lisp
+
+(defun custom/org-previous-heading-insert-margin ()
+  "If the previous subtree is not empty,
+insert a margin of 1 empty line."
+  (let ((insert-margin
+	 (save-excursion (custom/org-previous-heading)
+			 (not (custom/org-subtree-blank)))))
+    (print insert-margin)
+    (if insert-margin
+      (progn (beginning-of-visual-line)
+	           (org-return)
+		   (beginning-of-line-text)))))
+
+#+end_src
+
+***** org-insert-heading
+#+begin_src emacs-lisp
+
+(defun custom/org-insert-heading (command &optional root margin)
+  "Primitive for custom heading functions.
+
+If cursor is outside top level heading,
+insert heading at point, without removing
+any of the previous space.
+
+Org Mode heading insertion commandes will
+automatically remove all [[:space:]] until
+the first preceding non-empty line.
+If the previous subtree is not empty,
+insert a margin of 1 empty line.
+
+If ROOT is t:
+- insert heading at root of current subtree
+If MARGIN is t:
+- insert margin between content under parent heading and new one"
+  (interactive)
+  (custom/org-show-children)
+  (cond ((not (org-current-level)) (insert "* "))
+	      (t                         (funcall command)))
+  (if margin (custom/org-previous-heading-insert-margin))
+  (custom/org-hide-previous-subtree))
+
+#+end_src
+
+***** org-insert-subheading
+
+#+begin_src emacs-lisp
+
+(defun custom/org-insert-subheading (orig-fun &optional arg)
+  "Make `org-insert-subheading' ARG optional."
+  (interactive)
+  (let ((arg (or arg 0)))
+    (funcall orig-fun arg)))
+
+(advice-add 'org-insert-subheading :around #'custom/org-insert-subheading)
+
+#+end_src
+
+***** org-insert-heading-at-point
+
+#+begin_src emacs-lisp :tangle nil
+
+(defun custom/org-insert-heading-at-point ()
+  (interactive)
+  (custom/org-insert-heading 'org-insert-heading))
+
+#+end_src
+
+***** org-insert-subheading-at-point
+
+#+begin_src emacs-lisp
+
+(defun custom/org-insert-subheading-at-point ()
+  (interactive)
+  (let ((root    nil)
+	      (margin (not (custom/org-relative-line-heading -1))))
+    (custom/org-insert-heading 'org-insert-subheading root margin)))
+
+#+end_src
+
+***** TODO [#A] org-insert-heading-respect-content
+
+- hide subtree of custom/org-previous-heading
 
 Merge:
 - at top of empty doc
@@ -552,11 +623,7 @@ Merge:
 
 Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
   (setq insert-margin (and (org-current-level) (not (custom/org-subtree-blank))))
-  (if (org-current-level)
-      (progn (if (not (= 1 (org-current-level)))
-	               (outline-up-heading 0))
-             (apply orig-fun args))
-    (insert "* "))
+  (custom/org-maybe-insert-top-level-heading)
   (if insert-margin
       (progn (beginning-of-visual-line)
 	           (org-return)
@@ -574,7 +641,13 @@ Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
 
 #+end_src
 
-***** org-insert-subheading-respecting-content
+***** TODO [#A] org-insert-subheading-respect-content
+
+- heading with single populated line
+   - heading stars appended to next heading
+      - return must happen first
+- at ellipsis
+   - weird behavior
 
 #+begin_src emacs-lisp
 
@@ -594,8 +667,6 @@ Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
 	           (org-return)
 		   (beginning-of-line-text))))
 
-(define-key org-mode-map (kbd "M-<return>") 'custom/org-insert-subheading-respect-content)
-
 #+end_src
 
 **** Edition at ellipses
@@ -614,7 +685,8 @@ ellipsis in the first line under the heading."
     (apply orig-fun args)))
 
 (dolist (fn '(org-yank
-	           org-self-insert-command))
+	           org-self-insert-command
+		   custom/org-insert-subheading))
   (advice-add fn :around #'custom/org-edit-at-ellipsis))
 
 #+end_src
@@ -810,6 +882,14 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shiftmetaleft  :after #'custom/with-mark-active)
 (advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
+
+#+end_src
+*** Do not insert newline before Org Mode headings
+
+#+begin_src emacs-lisp
+
+;; Do not insert newline before Org Mode headings
+(setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
 #+end_src
 
@@ -1026,11 +1106,30 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-** previous-line
+** org-previous-line
 
 #+begin_src emacs-lisp
 
 (define-key org-mode-map (kbd "<up>") (lambda () (interactive) (custom/previous-line (org-in-src-block-p))))
+
+#+end_src
+
+** org-previous-heading
+
+#+begin_src emacs-lisp
+
+(defun custom/org-previous-heading ()
+  (outline-back-to-heading)
+  (let ((current (custom/get-point 'beginning-of-visual-line)))
+    ;; go to previous same-level heading
+    (org-backward-heading-same-level 1)
+    ;; attempt going to last subheading of previous same-level heading
+    (org-end-of-subtree)
+    (outline-back-to-heading)
+    ;; if there was no previous same-level heading, go to parent if not at top
+    (if (and (= current (custom/get-point 'beginning-of-visual-line))
+	        (not (= 1 (org-current-level))))
+	      (outline-up-heading 1))))
 
 #+end_src
 
