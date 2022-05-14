@@ -155,17 +155,17 @@
 #+end_src
 
 *** Queries
-**** match-regexs
+**** regex-match-patterns
 
 #+begin_src emacs-lisp
 
-(defun custom/match-regexs (string patterns)
+(defun custom/regex-match-patterns (string patterns)
   "Return t if all provided regex PATTERNS
 (provided as a list) match STRING."
   (cl-loop for pattern in patterns
-	   if (not (string-match pattern string))
-	      return nil
-	   finally return t))
+	        if (not (string-match pattern string))
+		   return nil
+		finally return t))
 
 #+end_src
 **** at
@@ -373,8 +373,8 @@ to the query at execution."
 (defun custom/last-change ()
   "Retrieve last change in current buffer."
   (setq last-change (nth 1 buffer-undo-list))
-  (let ((beg         (car last-change))
-        (end         (cdr last-change)))
+  (let ((beg (car last-change))
+        (end (cdr last-change)))
     (buffer-substring-no-properties beg end)))
 
 #+end_src
