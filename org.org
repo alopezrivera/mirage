@@ -977,7 +977,7 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-*** TOD O [#A] C-return
+*** TODO [#A] C-return
 
 - on non-empty line
    - insert heading at line
