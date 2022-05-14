@@ -1111,7 +1111,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 	     ((custom/relative-line-wrapped)                                                     (beginning-of-visual-line))
          ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
          ((org-in-src-block-p)                                                               (back-to-indentation))
-	    ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
+	     ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
          (t                                                                                  (custom/home))))
 
 (defvar custom/org-double-home-timeout 0.4)
