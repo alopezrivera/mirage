@@ -547,21 +547,30 @@ the previous heading is folded:
 1. Unfold the heading
 2. Create the new heading after its subtree
 3. Fold it back"
-  (let ((prev   (custom/get-point 'beginning-of-visual-line))
-	      (folded (custom/org-relative-line-heading-folded))
-	      (margin (custom/regex-match-count "\n" (custom/org-heading-margin))))
+  (let ((margin (custom/regex-match-count "\n" (custom/org-heading-margin)))
+	      (prev-same-level    (custom/get-point 'beginning-of-visual-line))
+	      (prev-lower-level   (custom/get-point 'custom/org-goto-child-last))
+	      (folded-same-level  (custom/org-relative-line-heading-folded))
+	      (folded-lower-level (save-excursion (custom/org-goto-child-last) (custom/org-relative-line-heading-folded))))
     ;; Unfold if necessary
-    (if folded (org-show-subtree))
+    (if folded-same-level  (org-show-subtree))
+    (if folded-lower-level (save-excursion (custom/org-goto-subtree-end) (org-show-subtree)))
+    
     ;; Insert heading
     (cond ((not (org-current-level)) (insert "* "))
 	        (t                         (progn (custom/org-goto-heading-current) (org-insert-heading-respect-content))))
     (custom/org-heading-margin-delete-post)
+    
     ;; Insert margin with previous heading
     (custom/org-heading-margin-insert-prior)
+    
     ;; Fold back if necessary
-    (if folded (save-excursion (goto-char prev) (outline-hide-subtree)))
+    (if folded-same-level  (save-excursion (goto-char prev-same-level)  (outline-hide-subtree)))
+    (if folded-lower-level (save-excursion (goto-char prev-lower-level) (outline-hide-subtree)))
+    
     ;; Recover margin with following heading
-    (if (> margin 0) (save-excursion (insert (make-string margin ?\n))))))
+    (if (> margin 1) (save-excursion (insert "\n")))
+    ))
   
 #+end_src
 
