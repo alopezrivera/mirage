@@ -390,6 +390,33 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 #+end_src
 
 **** Show
+***** org-show
+
+#+begin_src emacs-lisp
+
+(defun custom/org-show (orig-fun &rest args)
+  (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+      (progn (beginning-of-visual-line) (end-of-line) (apply orig-fun args))
+    (apply orig-fun args)))
+
+#+end_src
+
+***** org-show-subtree
+
+#+begin_src emacs-lisp
+
+(advice-add 'org-show-subtree :around #'custom/org-show)
+
+#+end_src
+
+***** org-show-children
+
+#+begin_src emacs-lisp
+
+(advice-add 'org-show-children :around #'custom/org-show)
+
+#+end_src
+
 ***** org-show-minimum
 
 #+begin_src emacs-lisp
