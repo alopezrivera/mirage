@@ -1143,6 +1143,8 @@ indented at the level of the previous list item, indent the paragraph."
   (org-end-of-subtree))
 
 #+end_src
+
+** Heading
 *** org-goto-heading-next
 
 #+begin_src emacs-lisp
