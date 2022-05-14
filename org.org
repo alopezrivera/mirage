@@ -1134,11 +1134,15 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-** org-previous-line
+*** org-goto-subtree-end
 
 #+begin_src emacs-lisp
 
-(define-key org-mode-map (kbd "<up>") (lambda () (interactive) (custom/previous-line (org-in-src-block-p))))
+(defun custom/org-goto-subtree-end ()
+  (custom/org-goto-heading-current)
+  (org-end-of-subtree))
+
+#+end_src
 *** org-goto-heading-next
 
 #+begin_src emacs-lisp
