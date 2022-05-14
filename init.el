@@ -67,13 +67,20 @@
   (interactive)
   (window-resize nil (- (truncate (* fr (frame-width))) (window-width)) t))
 
-(defun custom/match-regexs (string patterns)
+(defun custom/regex-match-patterns (string patterns)
   "Return t if all provided regex PATTERNS
 (provided as a list) match STRING."
   (cl-loop for pattern in patterns
-	   if (not (string-match pattern string))
-	      return nil
-	   finally return t))
+	        if (not (string-match pattern string))
+		   return nil
+		finally return t))
+
+(defun custom/regex-match-count (regexp str)
+  (loop with start = 0
+        for count from 0
+        while (string-match regexp str start)
+        do (setq start (match-end 0))
+        finally return count))
 
 (defun custom/eolp (orig-fun &rest args)
   (interactive)
@@ -162,8 +169,8 @@ to the query at execution."
 (defun custom/last-change ()
   "Retrieve last change in current buffer."
   (setq last-change (nth 1 buffer-undo-list))
-  (let ((beg         (car last-change))
-        (end         (cdr last-change)))
+  (let ((beg (car last-change))
+        (end (cdr last-change)))
     (buffer-substring-no-properties beg end)))
 
 (defun custom/visible-buffers ()

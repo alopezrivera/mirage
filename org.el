@@ -30,7 +30,7 @@
   (and (custom/org-relative-line-list) (custom/at-point 'beginning-of-line-text)))
 
 (defun custom/org-at-bol-heading () 
-  (and (custom/org-relative-line-heading) (custom/at-point (lambda () (beginning-of-visual-line) (beginning-of-line-text)))))
+  (and (custom/org-relative-line-heading) (custom/at-point 'custom/org-goto-heading-bol)))
 
 (defun custom/org-at-eol-heading ()
   (and (custom/org-relative-line-heading) (eolp) (not (custom/org-at-ellipsis-h)) (not (custom/org-relative-line-heading-empty))))
@@ -39,7 +39,7 @@
   (and (not (custom/org-relative-line-heading))
        (not (custom/org-relative-line-list))
        (not (org-in-src-block-p))
-       (custom/relative-line-list -1)))
+       (custom/org-relative-line-list -1)))
 
 (defun custom/org-after-list-or-indent ()
   (or (custom/org-relative-line-list -1) (custom/relative-line-indented -1)))
@@ -172,18 +172,27 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 (add-hook 'org-mode-hook #'custom/org-install-save-outline-state)
 
 (defun custom/org-hide-previous-subtree ()
-  "Cycle previous same-level Org Mode heading."
-  (save-excursion (custom/org-previous-heading)
-		        (if (custom/org-relative-line-heading-folded)
-			    (outline-hide-subtree))))
+  "Cycle previous Org Mode heading."
+  (save-excursion (custom/org-goto-heading-previous)
+		        (outline-hide-subtree)))
+
+(defun custom/org-show (orig-fun &rest args)
+  (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+      (progn (beginning-of-visual-line) (end-of-line) (apply orig-fun args))
+    (apply orig-fun args)))
+
+(advice-add 'org-show-subtree :around #'custom/org-show)
+
+(advice-add 'org-show-children :around #'custom/org-show)
 
 (defun custom/org-show-minimum ()
   (if (or (custom/org-relative-line-list-folded)
 	        (custom/org-relative-line-heading-folded))
-      (save-excursion (beginning-of-visual-line)
-		            (if (custom/org-heading-has-children)
-				(org-show-children)
-			      (org-show-subtree)))))
+      (progn (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+		       (progn (beginning-of-visual-line) (end-of-line)))
+	           (if (custom/org-heading-has-children)
+		       (org-show-children)
+		     (org-show-subtree)))))
 
 (defun custom/org-undo ()
   (interactive)
@@ -202,49 +211,24 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (define-key org-mode-map (kbd "C-/") 'custom/org-undo)
 
-;; org-return
-(defun custom/org-return ()
-  "Conditional `org-return'."
-  (interactive)
-  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
-	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
-	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
-	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
-	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
-	    (t                                              (org-return t))))
-
-(define-key org-mode-map (kbd "<return>") 'custom/org-return)
-
-;; org-meta-return
-(defun custom/org-control-return ()
-  (interactive)
-  (cond ((custom/org-relative-line-list-empty)       (progn (org-meta-return) (next-line) (end-of-line)))
-	      ((custom/org-relative-line-heading)          (progn (beginning-of-visual-line) (custom/org-insert-heading-after-subtree)))
-	      ((custom/org-relative-line-list)             (progn (end-of-line) (org-meta-return)))
-	      ((custom/org-at-list-paragraph)              (custom/org-paragraph-toggle))
-	      (t                                           (custom/org-insert-heading-after-subtree))))
-
-(define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
-
-(defun custom/org-meta-return ()
-  (interactive)
-  (custom/org-insert-subheading-after-subtree))
-
-(define-key org-mode-map (kbd "M-<return>") 'custom/org-meta-return)
-
-(defun custom/org-super-return ()
-  (interactive)
-  (custom/org-insert-subheading-at-point))
-
-(define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
-
-(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
+(defun custom/org-heading-margin ()
+  "Return margin between current heading and next."
+  (condition-case nil
+      (if (org-current-level)
+	         (let ((pos            (custom/get-point 'custom/org-goto-heading-bol))
+	               (end-of-subtree (custom/get-point 'custom/org-goto-subtree-end))
+		       (next-heading   (custom/get-point 'custom/org-goto-heading-next)))
+	              (if (not (= pos end-of-subtree))
+			  (buffer-substring-no-properties end-of-subtree next-heading)
+			""))
+	       "")
+    (error "")))
 
 (defun custom/org-heading-margin-insert-prior ()
   "If the previous subtree is not empty,
 insert a margin of 1 empty line."
   (let ((insert-margin
-	 (save-excursion (custom/org-previous-heading)
+	 (save-excursion (org-backward-heading-same-level 1)
 			 (not (custom/org-subtree-blank)))))
     (if insert-margin
       (progn (beginning-of-visual-line)
@@ -254,11 +238,7 @@ insert a margin of 1 empty line."
 (defun custom/org-heading-margin-delete-post ()
   "Delete newline after new headings created by
 `respect-content' heading commands."
-  (undo-boundary)
-  (if (and (not (custom/org-subtree-empty)) (string-equal "\n" (custom/last-change)))
-      (let (buffer-undo-list)
-	         (save-excursion (next-line)
-				 (delete-backward-char 1)))))
+  (apply 'delete-region (custom/org-subtree-region)))
 
 (defun custom/org-insert-heading (command &optional margin)
   "Primitive for custom heading functions.
@@ -288,7 +268,9 @@ If MARGIN is t:
   (cond ((not (org-current-level)) (insert "* "))
 	      (t                         (funcall command)))
   (if margin (custom/org-heading-margin-insert-prior))
-  (custom/org-hide-previous-subtree))
+  (if (save-excursion (custom/org-goto-heading-previous)
+		            (custom/org-relative-line-heading-folded))
+      (custom/org-hide-previous-subtree)))
 
 (defun custom/org-insert-subheading (orig-fun &optional arg)
   "Make `org-insert-subheading' ARG optional."
@@ -309,23 +291,47 @@ If MARGIN is t:
     (custom/org-insert-heading 'org-insert-subheading margin)))
 
 (defun custom/org-insert-heading-after-subtree ()
-  (custom/org-insert-heading-respect-content 'org-insert-heading-respect-content))
+  "Insert heading after current subtree. As
+`org-insert-heading-respect-content' does not
+behave well with folded Org Mode headings, if
+the previous heading is folded:
+1. Unfold the heading
+2. Create the new heading after its subtree
+3. Fold it back"
+  (let ((margin (custom/regex-match-count "\n" (custom/org-heading-margin)))
+	      (prev-same-level    (custom/get-point 'beginning-of-visual-line))
+	      (prev-lower-level   (custom/get-point 'custom/org-goto-child-last))
+	      (folded-same-level  (custom/org-relative-line-heading-folded))
+	      (folded-lower-level (save-excursion (custom/org-goto-child-last) (custom/org-relative-line-heading-folded))))
+    ;; Unfold if necessary
+    (if folded-same-level  (org-show-subtree))
+    (if folded-lower-level (save-excursion (custom/org-goto-subtree-end) (org-show-subtree)))
+    
+    ;; Insert heading
+    (cond ((not (org-current-level)) (insert "* "))
+	        (t                         (progn (custom/org-goto-heading-current) (org-insert-heading-respect-content))))
+    (custom/org-heading-margin-delete-post)
+    
+    ;; Insert margin with previous heading
+    (custom/org-heading-margin-insert-prior)
+    
+    ;; Fold back if necessary
+    (if folded-same-level  (save-excursion (goto-char prev-same-level)  (outline-hide-subtree)))
+    (if folded-lower-level (save-excursion (goto-char prev-lower-level) (outline-hide-subtree)))
+    
+    ;; Recover margin with following heading
+    (if (> margin 1) (save-excursion (insert "\n")))
+    ))
 
 (defun custom/org-insert-subheading-after-subtree ()
   "`org-insert-subheading' respecting content."
   (interactive)
   (custom/org-show-minimum)
-  (custom/org-insert-heading-respect-content 'org-insert-subheading '(4)))
-
-(defun custom/org-insert-heading-respect-content (orig-fun &rest args)
-  "Support `org-insert-heading-respect-content' from any point in tree.
-
-Furthermore, if the previous same-level heading is folded, `org-hide-subtree'."
-  (cond ((not (org-current-level)) (insert "* "))
-	      (t                         (progn (outline-back-to-heading) (apply orig-fun args))))
-  (custom/org-heading-margin-insert-prior)
-  (custom/org-hide-previous-subtree)
-  (custom/org-heading-margin-delete-post))
+  (if (custom/org-heading-has-children)
+      (progn (custom/org-goto-child-last)
+	           (custom/org-insert-heading-after-subtree))
+    (progn (custom/org-insert-heading-after-subtree)
+	         (org-do-demote))))
 
 (defvar custom/org-functions-at-ellipsis '(org-self-insert-command
 					        custom/kill-ring-mouse)
@@ -337,10 +343,10 @@ will be advised by `custom/org-edit-at-ellipsis'")
 ellipsis in the first line under the heading."
   (if (custom/org-at-ellipsis-h)
       (progn (beginning-of-visual-line)
-	           (custom/org-show-minimum)
-		   (end-of-line)
-		   (org-return)
-		   (apply orig-fun args))
+	          (custom/org-show-minimum)
+		  (end-of-line)
+		  (org-return)
+		  (apply orig-fun args))
     (apply orig-fun args)))
 
 (dolist (function custom/org-functions-at-ellipsis)
@@ -357,7 +363,10 @@ one character."
 (defun custom/org-nimble-delete-forward ()
   "Org Mode complement to `custom/nimble-delete-forward'."
   (interactive)
-  (cond ((and (custom/org-at-ellipsis-h) (custom/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2) (beginning-of-line-text) (delete-forward-char 1)))
+  (cond ((and (custom/org-at-ellipsis-h)
+	           (custom/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2)
+								 (beginning-of-line-text)
+								 (delete-forward-char 1)))
 	      (t (custom/nimble-delete-forward))))
 
 (define-key org-mode-map (kbd "<deletechar>") 'custom/org-nimble-delete-forward)
@@ -365,10 +374,18 @@ one character."
 (defun custom/org-nimble-delete-backward ()
   "Org Mode complement to `custom/nimble-delete-backward'."
   (interactive)
-  (cond ((and (region-active-p) (not (custom/region-empty)))                                   (custom/org-delete-hungry))
-	((and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)) (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
-	((or (custom/org-relative-line-heading-empty) (custom/org-relative-line-list-empty))   (delete-region (point) (custom/get-point 'end-of-line 0)))
-        (t                                                                                     (custom/nimble-delete-backward))))
+  (cond ((and (region-active-p)
+	           (not (custom/region-empty)))                 (custom/org-delete-hungry))
+	     ((or  (custom/org-at-ellipsis-h)
+		   (custom/org-at-ellipsis-l))                  (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
+	     ((and (or (custom/org-relative-line-heading-empty)
+		       (custom/org-relative-line-list-empty))
+		   (or (custom/relative-line-empty -1)
+		       (custom/org-relative-line-heading -1)
+		       (custom/org-relative-line-list -1)))     (delete-region (point) (custom/get-point 'end-of-line 0)))
+	     ((or  (custom/org-relative-line-heading-empty)
+		   (custom/org-relative-line-list-empty))       (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+        (t                                                 (custom/nimble-delete-backward))))
 
 (define-key org-mode-map (kbd "<backspace>") 'custom/org-nimble-delete-backward)
 
@@ -493,6 +510,68 @@ match the indentation of the parent heading."
 
 (advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
 
+(defun custom/org-cycle (orig-fun &rest args)
+  "Conditional `org-cycle'.
+
+Default: `org-cycle'
+
+If cursor lies at `end-of-visual-line' of folded heading or list,
+move cursor to `end-of-line' of the current visual line and then
+call `org-cycle'.
+
+If cursor lies at a paragraph directly under a list item and not
+indented at the level of the previous list item, indent the paragraph."
+  (interactive)
+  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
+      (if (= (point) (custom/get-point 'end-of-visual-line))
+	  (progn (beginning-of-visual-line)
+		 (end-of-line)
+		 (apply orig-fun args))
+	(apply orig-fun args))
+    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
+	      (org-indent-line)
+      (apply orig-fun args))))
+
+(advice-add 'org-cycle :around #'custom/org-cycle)
+
+;; org-return
+(defun custom/org-return ()
+  "Conditional `org-return'."
+  (interactive)
+  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
+	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
+	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
+	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
+	    (t                                              (org-return t))))
+
+(define-key org-mode-map (kbd "<return>") 'custom/org-return)
+
+;; org-meta-return
+(defun custom/org-control-return ()
+  (interactive)
+  (cond ((custom/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
+	    ((custom/org-relative-line-heading)    (custom/org-insert-heading-after-subtree))
+	    ((custom/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
+	    ((custom/org-at-list-paragraph)        (custom/org-paragraph-toggle))
+	    (t                                     (custom/org-insert-heading-after-subtree))))
+
+(define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
+
+(defun custom/org-meta-return ()
+  (interactive)
+  (custom/org-insert-subheading-after-subtree))
+
+(define-key org-mode-map (kbd "M-<return>") 'custom/org-meta-return)
+
+(defun custom/org-super-return ()
+  (interactive)
+  (custom/org-insert-subheading-at-point))
+
+(define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
+
+(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
+
 ;; Required as of Org 9.2
 (require 'org-tempo)
 
@@ -575,12 +654,12 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
    (interactive)
    (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
          ((and (region-active-p) (custom/org-at-ellipsis-h))                                 (beginning-of-visual-line))
-         ((custom/org-at-ellipsis-h)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
-	    ((custom/org-at-ellipsis-l)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
-	    ((custom/relative-line-wrapped)                                                     (beginning-of-visual-line))
+         ((custom/org-at-ellipsis-h)                                                         (custom/org-goto-heading-bol))
+	     ((custom/org-at-ellipsis-l)                                                         (custom/org-goto-heading-bol))
+	     ((custom/relative-line-wrapped)                                                     (beginning-of-visual-line))
          ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
          ((org-in-src-block-p)                                                               (back-to-indentation))
-	    ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
+	     ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
          (t                                                                                  (custom/home))))
 
 (defvar custom/org-double-home-timeout 0.4)
@@ -600,44 +679,49 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 (define-key org-mode-map (kbd "<home>") 'custom/org-double-home)
 
-(defun custom/org-cycle (orig-fun &rest args)
-  "Conditional `org-cycle'.
-
-Default: `org-cycle'
-
-If cursor lies at `end-of-visual-line' of folded heading or list,
-move cursor to `end-of-line' of the current visual line and then
-call `org-cycle'.
-
-If cursor lies at a paragraph directly under a list item and not
-indented at the level of the previous list item, indent the paragraph."
-  (interactive)
-  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
-      (if (= (point) (custom/get-point 'end-of-visual-line))
-	  (progn (beginning-of-visual-line)
-		 (end-of-line)
-		 (apply orig-fun args))
-	(apply orig-fun args))
-    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
-	      (org-indent-line)
-      (apply orig-fun args))))
-
-(advice-add 'org-cycle :around #'custom/org-cycle)
-
 (define-key org-mode-map (kbd "<up>") (lambda () (interactive) (custom/previous-line (org-in-src-block-p))))
 
-(defun custom/org-previous-heading ()
-  (outline-back-to-heading)
+(defun custom/org-goto-child-last ()
+  (if (org-current-level)
+      (progn (custom/org-goto-subtree-end)
+	         (custom/org-goto-heading-current))))
+
+(defun custom/org-goto-subtree-end ()
+  (custom/org-goto-heading-current)
+  (org-end-of-subtree)
+  (if (custom/org-relative-line-heading-folded) (end-of-visual-line)))
+
+(defun custom/org-goto-heading-bol ()
+  (beginning-of-visual-line)
+  (beginning-of-line-text))
+
+(defun custom/org-goto-heading-next ()
+  (custom/org-goto-heading-current)
+  (let ((pos (custom/get-point 'beginning-of-visual-line)))
+    (org-forward-heading-same-level 1)
+    (if (= pos (point))
+	   (progn (custom/org-goto-heading-parent)
+		  (org-forward-heading-same-level 1)))))
+
+(defun custom/org-goto-heading-parent ()
+  (let ((current (custom/get-point 'beginning-of-visual-line)))
+    (if (and (org-current-level)
+	        (not (= 1 (org-current-level)))
+		(= current (custom/get-point 'beginning-of-visual-line)))
+	   (outline-up-heading 1))))
+
+(defun custom/org-goto-heading-current ()
+  (if (org-current-level) (outline-back-to-heading)))
+
+(defun custom/org-goto-heading-previous ()
+  (custom/org-goto-heading-current)
   (let ((current (custom/get-point 'beginning-of-visual-line)))
     ;; go to previous same-level heading
     (org-backward-heading-same-level 1)
     ;; attempt going to last subheading of previous same-level heading
-    (org-end-of-subtree)
-    (outline-back-to-heading)
+    (custom/org-goto-child-last)
     ;; if there was no previous same-level heading, go to parent if not at top
-    (if (and (= current (custom/get-point 'beginning-of-visual-line))
-	        (not (= 1 (org-current-level))))
-	      (outline-up-heading 1))))
+    (if (= (point) current) (custom/org-goto-heading-parent))))
 
 ;; Justify equation labels - [fleqn]
 ;; Preview page width      - 10.5cm
@@ -743,7 +827,7 @@ matches the current theme."
 
 (defun custom/org-babel-tangle-config()
   "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
-     (if (custom/match-regexs (expand-file-name buffer-file-name) source-regex)
+     (if (custom/regex-match-patterns (expand-file-name buffer-file-name) source-regex)
      ;; Tangle ommitting confirmation
      (let ((org-confirm-babel-evaluate nil)) (org-babel-tangle)))
 )
