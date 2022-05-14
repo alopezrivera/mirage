@@ -643,9 +643,15 @@ If MARGIN is t:
 ***** org-insert-heading-after-subtree
 
 #+begin_src emacs-lisp
-
+(setq m (point-marker))
 (defun custom/org-insert-heading-after-subtree ()
-  (custom/org-insert-heading-respect-content 'org-insert-heading-respect-content))
+  (let ((prev              (point-marker))
+	      (on-folded-heading (custom/org-relative-line-heading-folded)))
+    (if on-folded-heading
+	      (custom/org-show-minimum))
+    (custom/org-insert-heading-respect-content 'org-insert-heading-respect-content)
+    (if on-folded-heading
+	      (save-excursion (goto-char prev) (custom/org-hide-previous-subtree)))))
 
 #+end_src
 
