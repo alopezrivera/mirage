@@ -655,13 +655,7 @@ If MARGIN is t:
 
 #+end_src
 
-***** TODO org-insert-subheading-after-subtree
-
-- heading with single populated line
-   - heading stars appended to next heading
-      - return must happen first
-- at ellipsis
-   - weird behavior
+***** org-insert-subheading-after-subtree
 
 #+begin_src emacs-lisp
 
@@ -669,24 +663,11 @@ If MARGIN is t:
   "`org-insert-subheading' respecting content."
   (interactive)
   (custom/org-show-minimum)
-  (custom/org-insert-heading-respect-content 'org-insert-subheading '(4)))
-
-#+end_src
-
-***** org-insert-heading-respect-content
-
-#+begin_src emacs-lisp
-
-(defun custom/org-insert-heading-respect-content (orig-fun &rest args)
-  "Support `org-insert-heading-respect-content' from any point in tree.
-
-Furthermore, if the previous same-level heading is folded, `org-hide-subtree'."
-  (cond ((not (org-current-level)) (insert "* "))
-	      (t                         (progn (outline-back-to-heading) (apply orig-fun args))))
-  (custom/org-heading-margin-insert-prior)
-  (if (custom/org-relative-line-heading-folded)
-      (custom/org-hide-previous-subtree))
-  (custom/org-heading-margin-delete-post))
+  (if (custom/org-heading-has-children)
+      (progn (custom/org-goto-child-last)
+	           (custom/org-insert-heading-after-subtree))
+    (progn (custom/org-insert-heading-after-subtree)
+	         (org-do-demote))))
 
 #+end_src
 
