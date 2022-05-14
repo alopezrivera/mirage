@@ -75,6 +75,12 @@
 	      return nil
 	   finally return t))
 
+(defun custom/eolp (orig-fun &rest args)
+  (interactive)
+  (or (apply orig-fun args) (looking-at-p "[[:blank:]]*$")))
+
+(advice-add 'eolp :around #'custom/eolp)
+
 (defun custom/at-point (go-to-point &optional point)
   (let ((point (or point (point))))
     (save-excursion
@@ -209,8 +215,8 @@ If next line is empty, forward delete indent of
 next line plus one character."
   (interactive)
   (cond ((and (eolp) (custom/relative-line-indented 1)) (progn (setq beg (point)) (next-line) (back-to-indentation) (delete-region beg (point))))
-	      ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
-	      (t                                              (delete-forward-char 1))))
+	    ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
+	    (t                                              (delete-forward-char 1))))
 
 (global-set-key (kbd "<deletechar>") 'custom/nimble-delete-forward)
 
@@ -273,8 +279,12 @@ kill ring."
 ;; Enter multiple-cursors-mode
 (defun custom/rectangular-region-multiple-cursors ()
   (interactive)
-  (rrm/switch-to-multiple-cursors)
-  (deactivate-mark))
+  (rectangular-region-mode 0)
+  (multiple-cursors-mode 1)
+  (deactivate-mark)
+  (mc/for-each-fake-cursor
+   (if (invisible-p (marker-position (overlay-get cursor 'point)))
+       (mc/remove-fake-cursor cursor))))
 
 (define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
 
@@ -303,7 +313,7 @@ kill ring."
 ;; Enable visual bell
 (setq visible-bell t)
 
-(advice-add 'yes-or-no-p :override 'y-or-n-p)
+(advice-add 'yes-or-no-p :override #'y-or-n-p)
 
 ;; Center text
 (use-package olivetti

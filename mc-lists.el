@@ -27,6 +27,7 @@
 	org-delete-char
 	org-end-of-line
 	org-forward-sentence
+	org-insert-heading-respect-content
 	org-meta-return
 	org-metaleft
 	org-metaright
@@ -43,6 +44,7 @@
       '(
 	clm/toggle-command-log-buffer
 	counsel-M-x
+	custom/double-escape
 	custom/nimble-delete-backward
 	custom/search-in-region
 	custom/smart-search

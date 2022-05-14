@@ -84,6 +84,10 @@ a `custom/region-empty'."
   (interactive)
   (string-equal "" (custom/org-subtree-content)))
 
+(defun custom/org-heading-has-children ()
+  (interactive)
+  (save-excursion (org-goto-first-child)))
+
 (defun custom/org-subtree-region (&optional element)
   "Retrieve the beginning and end of the current subtree."
   (if (org-element--cache-active-p)
@@ -173,12 +177,13 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 		        (if (custom/org-relative-line-heading-folded)
 			    (outline-hide-subtree))))
 
-(defun custom/org-show-children ()
+(defun custom/org-show-minimum ()
   (if (or (custom/org-relative-line-list-folded)
 	        (custom/org-relative-line-heading-folded))
-      (progn (beginning-of-visual-line)
-	           (org-show-children)
-		   (end-of-line))))
+      (save-excursion (beginning-of-visual-line)
+		            (if (custom/org-heading-has-children)
+				(org-show-children)
+			      (org-show-subtree)))))
 
 (defun custom/org-undo ()
   (interactive)
@@ -214,18 +219,18 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 (defun custom/org-control-return ()
   (interactive)
   (cond ((custom/org-relative-line-list-empty)       (progn (org-meta-return) (next-line) (end-of-line)))
-	      ((custom/org-relative-line-heading)          (progn (beginning-of-visual-line) (org-insert-heading-respect-content)))
+	      ((custom/org-relative-line-heading)          (progn (beginning-of-visual-line) (custom/org-insert-heading-after-subtree)))
 	      ((custom/org-relative-line-list)             (progn (end-of-line) (org-meta-return)))
 	      ((custom/org-at-list-paragraph)              (custom/org-paragraph-toggle))
-	      (t                                           (org-insert-heading-respect-content))))
+	      (t                                           (custom/org-insert-heading-after-subtree))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
 
 (defun custom/org-meta-return ()
   (interactive)
-  (custom/org-insert-subheading-respect-content))
+  (custom/org-insert-subheading-after-subtree))
 
-(define-key org-mode-map (kbd "M-<return>") 'custom/org-insert-subheading-respect-content)
+(define-key org-mode-map (kbd "M-<return>") 'custom/org-meta-return)
 
 (defun custom/org-super-return ()
   (interactive)
@@ -235,40 +240,54 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
 
-(defun custom/org-previous-heading-insert-margin ()
+(defun custom/org-heading-margin-insert-prior ()
   "If the previous subtree is not empty,
 insert a margin of 1 empty line."
   (let ((insert-margin
 	 (save-excursion (custom/org-previous-heading)
 			 (not (custom/org-subtree-blank)))))
-    (print insert-margin)
     (if insert-margin
       (progn (beginning-of-visual-line)
-	           (org-return)
-		   (beginning-of-line-text)))))
+	            (org-return)
+		    (beginning-of-line-text)))))
 
-(defun custom/org-insert-heading (command &optional root margin)
+(defun custom/org-heading-margin-delete-post ()
+  "Delete newline after new headings created by
+`respect-content' heading commands."
+  (undo-boundary)
+  (if (and (not (custom/org-subtree-empty)) (string-equal "\n" (custom/last-change)))
+      (let (buffer-undo-list)
+	         (save-excursion (next-line)
+				 (delete-backward-char 1)))))
+
+(defun custom/org-insert-heading (command &optional margin)
   "Primitive for custom heading functions.
+
+If cursor if at an Org Mode heading's
+ellipsis, go to the `end-of-line' of the
+heading's visual line.
+
+If cursor lies on an Org Mode heading,
+`custom/org-show-minimum'.
 
 If cursor is outside top level heading,
 insert heading at point, without removing
 any of the previous space.
 
-Org Mode heading insertion commandes will
-automatically remove all [[:space:]] until
-the first preceding non-empty line.
 If the previous subtree is not empty,
 insert a margin of 1 empty line.
+This is because Org Mode heading insertion
+commands will automatically remove all [[:space:]]
+until first preceding non-empty line.
 
-If ROOT is t:
-- insert heading at root of current subtree
 If MARGIN is t:
 - insert margin between content under parent heading and new one"
   (interactive)
-  (custom/org-show-children)
+  (if (custom/org-at-ellipsis-h)         (progn (beginning-of-visual-line) (end-of-line)))
+  (if (custom/org-relative-line-heading) (custom/org-show-minimum))
   (cond ((not (org-current-level)) (insert "* "))
 	      (t                         (funcall command)))
-  (if margin (custom/org-previous-heading-insert-margin))
+  (if margin (custom/org-heading-margin-insert-prior))
   (custom/org-hide-previous-subtree))
 
 (defun custom/org-insert-subheading (orig-fun &optional arg)
@@ -279,64 +298,53 @@ If MARGIN is t:
 
 (advice-add 'org-insert-subheading :around #'custom/org-insert-subheading)
 
+(defun custom/org-insert-heading-at-point ()
+  (interactive)
+  (let ((margin (not (or (custom/org-relative-line-heading) (custom/org-relative-line-heading -1)))))
+    (custom/org-insert-heading 'org-insert-heading margin)))
+
 (defun custom/org-insert-subheading-at-point ()
   (interactive)
-  (let ((root    nil)
-	      (margin (not (custom/org-relative-line-heading -1))))
-    (custom/org-insert-heading 'org-insert-subheading root margin)))
+  (let ((margin (not (or (custom/org-relative-line-heading) (custom/org-relative-line-heading -1)))))
+    (custom/org-insert-heading 'org-insert-subheading margin)))
+
+(defun custom/org-insert-heading-after-subtree ()
+  (custom/org-insert-heading-respect-content 'org-insert-heading-respect-content))
+
+(defun custom/org-insert-subheading-after-subtree ()
+  "`org-insert-subheading' respecting content."
+  (interactive)
+  (custom/org-show-minimum)
+  (custom/org-insert-heading-respect-content 'org-insert-subheading '(4)))
 
 (defun custom/org-insert-heading-respect-content (orig-fun &rest args)
   "Support `org-insert-heading-respect-content' from any point in tree.
 
-Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
-  (setq insert-margin (and (org-current-level) (not (custom/org-subtree-blank))))
-  (custom/org-maybe-insert-top-level-heading)
-  (if insert-margin
-      (progn (beginning-of-visual-line)
-	           (org-return)
-		   (beginning-of-line-text)))
-  (save-excursion (org-backward-heading-same-level 1)
-		        (if (and (custom/org-relative-line-heading-folded) (custom/org-relative-line-heading))
-			    (outline-hide-subtree)))
-  (undo-boundary)
-  (if (and (not (custom/org-subtree-empty)) (string-equal "\n" (custom/last-change)))
-      (let (buffer-undo-list)
-	         (save-excursion (next-line)
-				 (delete-backward-char 1)))))
+Furthermore, if the previous same-level heading is folded, `org-hide-subtree'."
+  (cond ((not (org-current-level)) (insert "* "))
+	      (t                         (progn (outline-back-to-heading) (apply orig-fun args))))
+  (custom/org-heading-margin-insert-prior)
+  (custom/org-hide-previous-subtree)
+  (custom/org-heading-margin-delete-post))
 
-(advice-add 'org-insert-heading-respect-content :around #'custom/org-insert-heading-respect-content)
-
-(defun custom/org-insert-subheading-respect-content ()
-  "`org-insert-subheading' respecting content."
-  (interactive)
-  (if (custom/org-relative-line-heading)
-      (progn (beginning-of-visual-line)
-	           (org-show-children)))
-  (setq insert-margin (not (custom/org-subtree-blank)))
-  (if (not (= 1 (org-current-level)))
-      (outline-up-heading 0))
-  (org-insert-subheading '(4))
-  (delete-forward-char 1)
-  (if insert-margin
-      (progn (beginning-of-visual-line)
-	           (org-return)
-		   (beginning-of-line-text))))
+(defvar custom/org-functions-at-ellipsis '(org-self-insert-command
+					        custom/kill-ring-mouse)
+  "Functions whose behavior at Org Mode ellipses
+will be advised by `custom/org-edit-at-ellipsis'")
 
 (defun custom/org-edit-at-ellipsis (orig-fun &rest args)
   "Execute commands invoked at an Org Mode heading's
 ellipsis in the first line under the heading."
   (if (custom/org-at-ellipsis-h)
       (progn (beginning-of-visual-line)
-	           (org-show-children)
+	           (custom/org-show-minimum)
 		   (end-of-line)
 		   (org-return)
 		   (apply orig-fun args))
     (apply orig-fun args)))
 
-(dolist (fn '(org-yank
-	           org-self-insert-command
-		   custom/org-insert-subheading))
-  (advice-add fn :around #'custom/org-edit-at-ellipsis))
+(dolist (function custom/org-functions-at-ellipsis)
+  (advice-add function :around #'custom/org-edit-at-ellipsis))
 
 (defun custom/org-delete-hungry ()
   "If the region starts at the beginning of an 
