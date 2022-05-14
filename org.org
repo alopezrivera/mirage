@@ -118,7 +118,7 @@
   (and (not (custom/org-relative-line-heading))
        (not (custom/org-relative-line-list))
        (not (org-in-src-block-p))
-       (custom/relative-line-list -1)))
+       (custom/org-relative-line-list -1)))
 
 #+end_src
 
