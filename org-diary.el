@@ -194,18 +194,16 @@ Bindings:
   (interactive)
   (if (custom/org-diary-in-entry)
       (progn (custom/org-diary-mode 0)
-	       (if (not (ignore-errors (delete-window)))
-		   (bury-buffer)))
+	       (bury-buffer)
+	       (ignore-errors (delete-window)))
     (progn (custom/org-diary-today arg)
 	     (custom/org-diary-mode 1))))
-
-(add-hook 'after-init-hook (lambda () (custom/org-diary '(4))))
 
 (add-hook 'org-mode-hook (lambda () (if (custom/org-diary-in-entry) (custom/org-diary-mode))))
 
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
-(define-key org-mode-map (kbd "C-d")     'custom/org-diary-insert-time-hhmm)
+(define-key org-mode-map (kbd "C-d")       'custom/org-diary-insert-time-hhmm)
 (define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
 (define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 
