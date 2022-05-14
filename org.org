@@ -93,7 +93,7 @@
 #+begin_src emacs-lisp
 
 (defun custom/org-at-bol-heading () 
-  (and (custom/org-relative-line-heading) (custom/at-point (lambda () (beginning-of-visual-line) (beginning-of-line-text)))))
+  (and (custom/org-relative-line-heading) (custom/at-point 'custom/org-goto-heading-bol)))
 
 #+END_src 
 
@@ -1106,9 +1106,9 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
    (interactive)
    (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
          ((and (region-active-p) (custom/org-at-ellipsis-h))                                 (beginning-of-visual-line))
-         ((custom/org-at-ellipsis-h)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
-	    ((custom/org-at-ellipsis-l)                      (progn (beginning-of-visual-line)  (beginning-of-line-text)))
-	    ((custom/relative-line-wrapped)                                                     (beginning-of-visual-line))
+         ((custom/org-at-ellipsis-h)                                                         (custom/org-goto-heading-bol))
+	     ((custom/org-at-ellipsis-l)                                                         (custom/org-goto-heading-bol))
+	     ((custom/relative-line-wrapped)                                                     (beginning-of-visual-line))
          ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
          ((org-in-src-block-p)                                                               (back-to-indentation))
 	    ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
@@ -1163,6 +1163,16 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 #+end_src
 
 ** Heading
+*** org-goto-heading-bol
+
+#+begin_src emacs-lisp
+
+(defun custom/org-goto-heading-bol ()
+  (beginning-of-visual-line)
+  (beginning-of-line-text))
+
+#+end_src
+
 *** org-goto-heading-next
 
 #+begin_src emacs-lisp
