@@ -543,7 +543,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
   "If the previous subtree is not empty,
 insert a margin of 1 empty line."
   (let ((insert-margin
-	 (save-excursion (custom/org-previous-heading)
+	 (save-excursion (org-backward-heading-same-level 1)
 			 (not (custom/org-subtree-blank)))))
     (if insert-margin
       (progn (beginning-of-visual-line)
