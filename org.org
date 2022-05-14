@@ -643,16 +643,31 @@ If MARGIN is t:
 ***** org-insert-heading-after-subtree
 
 #+begin_src emacs-lisp
-(setq m (point-marker))
-(defun custom/org-insert-heading-after-subtree ()
-  (let ((prev              (point-marker))
-	      (on-folded-heading (custom/org-relative-line-heading-folded)))
-    (if on-folded-heading
-	      (custom/org-show-minimum))
-    (custom/org-insert-heading-respect-content 'org-insert-heading-respect-content)
-    (if on-folded-heading
-	      (save-excursion (goto-char prev) (custom/org-hide-previous-subtree)))))
 
+(defun custom/org-insert-heading-after-subtree ()
+  "Insert heading after current subtree. As
+`org-insert-heading-respect-content' does not
+behave well with folded Org Mode headings, if
+the previous heading is folded:
+1. Unfold the heading
+2. Create the new heading after its subtree
+3. Fold it back"
+  (let ((prev   (custom/get-point 'beginning-of-visual-line))
+	      (folded (custom/org-relative-line-heading-folded))
+	      (margin (custom/regex-match-count "\n" (custom/org-heading-margin))))
+    ;; Unfold if necessary
+    (if folded (org-show-subtree))
+    ;; Insert heading
+    (cond ((not (org-current-level)) (insert "* "))
+	        (t                         (progn (custom/org-goto-heading-current) (org-insert-heading-respect-content))))
+    (custom/org-heading-margin-delete-post)
+    ;; Insert margin with previous heading
+    (custom/org-heading-margin-insert-prior)
+    ;; Fold back if necessary
+    (if folded (save-excursion (goto-char prev) (outline-hide-subtree)))
+    ;; Recover margin with following heading
+    (if (> margin 0) (save-excursion (insert (make-string margin ?\n))))))
+  
 #+end_src
 
 ***** org-insert-subheading-after-subtree
