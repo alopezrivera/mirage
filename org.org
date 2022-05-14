@@ -1147,8 +1147,9 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 #+begin_src emacs-lisp
 
 (defun custom/org-goto-child-last ()
-  (custom/org-goto-subtree-end)
-  (custom/org-goto-heading-current))
+  (if (org-current-level)
+      (progn (custom/org-goto-subtree-end)
+	         (custom/org-goto-heading-current))))
 
 #+end_src
 
