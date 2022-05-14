@@ -391,16 +391,17 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 #+end_src
 
 **** Show
-***** org-heading-show-children
+***** org-show-minimum
 
 #+begin_src emacs-lisp
 
-(defun custom/org-show-children ()
+(defun custom/org-show-minimum ()
   (if (or (custom/org-relative-line-list-folded)
 	        (custom/org-relative-line-heading-folded))
-      (progn (beginning-of-visual-line)
-	           (org-show-children)
-		   (end-of-line))))
+      (save-excursion (beginning-of-visual-line)
+		            (if (custom/org-heading-has-children)
+				(org-show-children)
+			      (org-show-subtree)))))
 
 #+end_src
 
