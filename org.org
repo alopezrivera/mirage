@@ -383,10 +383,9 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 #+begin_src emacs-lisp
 
 (defun custom/org-hide-previous-subtree ()
-  "Cycle previous same-level Org Mode heading."
+  "Cycle previous Org Mode heading."
   (save-excursion (custom/org-previous-heading)
-		        (if (custom/org-relative-line-heading-folded)
-			    (outline-hide-subtree))))
+		        (outline-hide-subtree)))
 
 #+end_src
 
