@@ -1157,6 +1157,19 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
+*** org-goto-heading-parent
+
+#+begin_src emacs-lisp
+
+(defun custom/org-goto-heading-parent ()
+  (let ((current (custom/get-point 'beginning-of-visual-line)))
+    (if (and (org-current-level)
+	        (not (= 1 (org-current-level)))
+		(= current (custom/get-point 'beginning-of-visual-line)))
+	   (outline-up-heading 1))))
+
+#+end_src
+
 
 #+end_src
 
