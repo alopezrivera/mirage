@@ -457,11 +457,7 @@ insert a margin of 1 empty line."
 (defun custom/org-heading-margin-delete-post ()
   "Delete newline after new headings created by
 `respect-content' heading commands."
-  (undo-boundary)
-  (if (and (not (custom/org-subtree-empty)) (string-equal "\n" (custom/last-change)))
-      (let (buffer-undo-list)
-	         (save-excursion (next-line)
-				 (delete-backward-char 1)))))
+  (apply 'delete-region (custom/org-subtree-region)))
 
 #+end_src
 
