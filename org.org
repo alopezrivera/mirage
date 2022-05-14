@@ -397,10 +397,11 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 (defun custom/org-show-minimum ()
   (if (or (custom/org-relative-line-list-folded)
 	        (custom/org-relative-line-heading-folded))
-      (save-excursion (beginning-of-visual-line)
-		            (if (custom/org-heading-has-children)
-				(org-show-children)
-			      (org-show-subtree)))))
+      (progn (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+		       (progn (beginning-of-visual-line) (end-of-line)))
+	           (if (custom/org-heading-has-children)
+		       (org-show-children)
+		     (org-show-subtree)))))
 
 #+end_src
 
