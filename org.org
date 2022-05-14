@@ -456,7 +456,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-***** TODO C-return
+***** TODO [#A] C-return
 
 - on non-empty line
    - insert heading at line
@@ -761,6 +761,9 @@ one character."
 ** Structure
 *** TODO indent-region
 
+- use markers
+   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Overview-of-Markers.html
+  
 - regions spanning headings
    - nested headings
       - indent of 1 for every heading from top level in region
@@ -896,7 +899,8 @@ function that sets `deactivate-mark' to t."
 (advice-add 'org-shift-metadown :after #'custom/with-mark-active)
 
 #+end_src
-*** Do not insert newline before Org Mode headings
+
+*** Do not insert newline before Org Mode headigs
 
 #+begin_src emacs-lisp
 
