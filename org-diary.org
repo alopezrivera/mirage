@@ -433,8 +433,8 @@ Bindings:
   (interactive)
   (if (custom/org-diary-in-entry)
       (progn (custom/org-diary-mode 0)
-	       (if (not (ignore-errors (delete-window)))
-		   (bury-buffer)))
+	       (bury-buffer)
+	       (ignore-errors (delete-window)))
     (progn (custom/org-diary-today arg)
 	     (custom/org-diary-mode 1))))
 
