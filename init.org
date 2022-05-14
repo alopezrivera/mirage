@@ -465,8 +465,8 @@ If next line is empty, forward delete indent of
 next line plus one character."
   (interactive)
   (cond ((and (eolp) (custom/relative-line-indented 1)) (progn (setq beg (point)) (next-line) (back-to-indentation) (delete-region beg (point))))
-	      ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
-	      (t                                              (delete-forward-char 1))))
+	    ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
+	    (t                                              (delete-forward-char 1))))
 
 (global-set-key (kbd "<deletechar>") 'custom/nimble-delete-forward)
 
@@ -632,7 +632,7 @@ kill ring."
 
 #+begin_src emacs-lisp
 
-(advice-add 'yes-or-no-p :override 'y-or-n-p)
+(advice-add 'yes-or-no-p :override #'y-or-n-p)
 
 #+end_src
 
