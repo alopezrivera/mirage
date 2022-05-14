@@ -232,10 +232,9 @@ a `custom/region-empty'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-heading-has-child-p ()
+(defun custom/org-heading-has-children ()
   (interactive)
-  (save-excursion
-    (org-goto-first-child)))
+  (save-excursion (org-goto-first-child)))
 
 #+end_src
 
