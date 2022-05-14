@@ -1170,6 +1170,12 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
+*** org-goto-heading-current
+
+#+begin_src emacs-lisp
+
+(defun custom/org-goto-heading-current ()
+  (if (org-current-level) (outline-back-to-heading)))
 
 #+end_src
 
