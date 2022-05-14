@@ -632,7 +632,10 @@ one character."
 (defun custom/org-nimble-delete-forward ()
   "Org Mode complement to `custom/nimble-delete-forward'."
   (interactive)
-  (cond ((and (custom/org-at-ellipsis-h) (custom/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2) (beginning-of-line-text) (delete-forward-char 1)))
+  (cond ((and (custom/org-at-ellipsis-h)
+	           (custom/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2)
+								 (beginning-of-line-text)
+								 (delete-forward-char 1)))
 	      (t (custom/nimble-delete-forward))))
 
 (define-key org-mode-map (kbd "<deletechar>") 'custom/org-nimble-delete-forward)
