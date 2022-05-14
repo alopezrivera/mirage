@@ -227,8 +227,20 @@ a `custom/region-empty'."
 
 #+end_src
 
+**** heading
+***** org-heading-has-children
+
+#+begin_src emacs-lisp
+
+(defun custom/org-heading-has-child-p ()
+  (interactive)
+  (save-excursion
+    (org-goto-first-child)))
+
+#+end_src
+
 *** Retrieval
-**** subtree-region
+**** org-subtree-region
 
 #+begin_src emacs-lisp
 
