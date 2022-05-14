@@ -685,21 +685,24 @@ Furthermore, if the previous same-level heading is folded, `org-hide-subtree'"
 
 #+begin_src emacs-lisp
 
+(defvar custom/org-functions-at-ellipsis '(org-self-insert-command
+					        custom/kill-ring-mouse)
+  "Functions whose behavior at Org Mode ellipses
+will be advised by `custom/org-edit-at-ellipsis'")
+
 (defun custom/org-edit-at-ellipsis (orig-fun &rest args)
   "Execute commands invoked at an Org Mode heading's
 ellipsis in the first line under the heading."
   (if (custom/org-at-ellipsis-h)
       (progn (beginning-of-visual-line)
-	           (org-show-children)
+	           (custom/org-show-minimum)
 		   (end-of-line)
 		   (org-return)
 		   (apply orig-fun args))
     (apply orig-fun args)))
 
-(dolist (fn '(org-yank
-	           org-self-insert-command
-		   custom/org-insert-subheading))
-  (advice-add fn :around #'custom/org-edit-at-ellipsis))
+(dolist (function custom/org-functions-at-ellipsis)
+  (advice-add function :around #'custom/org-edit-at-ellipsis))
 
 #+end_src
 
