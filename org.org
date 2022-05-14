@@ -1104,18 +1104,14 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src 
 
-** org-cycle
+*** org-previous-line
 
 #+begin_src emacs-lisp
 
-(defun custom/org-cycle (orig-fun &rest args)
-  "Conditional `org-cycle'.
+(define-key org-mode-map (kbd "<up>") (lambda () (interactive) (custom/previous-line (org-in-src-block-p))))
 
-Default: `org-cycle'
+#+end_src
 
-If cursor lies at `end-of-visual-line' of folded heading or list,
-move cursor to `end-of-line' of the current visual line and then
-call `org-cycle'.
 ** Subtree
 *** org-goto-child-last
 
