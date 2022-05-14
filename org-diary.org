@@ -444,8 +444,6 @@ Bindings:
 
 #+begin_src emacs-lisp
 
-(add-hook 'after-init-hook (lambda () (custom/org-diary '(4))))
-
 (add-hook 'org-mode-hook (lambda () (if (custom/org-diary-in-entry) (custom/org-diary-mode))))
 
 #+end_src
