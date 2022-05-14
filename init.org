@@ -168,6 +168,20 @@
 		finally return t))
 
 #+end_src
+
+**** regex-match-count
+
+#+begin_src emacs-lisp
+
+(defun custom/regex-match-count (regexp str)
+  (loop with start = 0
+        for count from 0
+        while (string-match regexp str start)
+        do (setq start (match-end 0))
+        finally return count))
+
+#+end_src
+
 **** at
 ***** eolp
 
