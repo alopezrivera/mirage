@@ -543,9 +543,7 @@ kill ring."
 
 #+end_src
 
-*** TODO Mouse rectangle
-
-- if over folded Org Mode headings, do not create cursors in folded trees
+*** Mouse rectangle
 
 #+begin_src emacs-lisp
 
@@ -574,8 +572,12 @@ kill ring."
 ;; Enter multiple-cursors-mode
 (defun custom/rectangular-region-multiple-cursors ()
   (interactive)
-  (rrm/switch-to-multiple-cursors)
-  (deactivate-mark))
+  (rectangular-region-mode 0)
+  (multiple-cursors-mode 1)
+  (deactivate-mark)
+  (mc/for-each-fake-cursor
+   (if (invisible-p (marker-position (overlay-get cursor 'point)))
+       (mc/remove-fake-cursor cursor))))
 
 (define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
 
