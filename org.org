@@ -1139,6 +1139,20 @@ indented at the level of the previous list item, indent the paragraph."
 #+begin_src emacs-lisp
 
 (define-key org-mode-map (kbd "<up>") (lambda () (interactive) (custom/previous-line (org-in-src-block-p))))
+*** org-goto-heading-next
+
+#+begin_src emacs-lisp
+
+(defun custom/org-goto-heading-next ()
+  (custom/org-goto-heading-current)
+  (let ((pos (custom/get-point 'beginning-of-visual-line)))
+    (org-forward-heading-same-level 1)
+    (if (= pos (point))
+	   (progn (custom/org-goto-heading-parent)
+		  (org-forward-heading-same-level 1)))))
+
+#+end_src
+
 
 #+end_src
 
