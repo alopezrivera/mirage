@@ -384,7 +384,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (defun custom/org-hide-previous-subtree ()
   "Cycle previous Org Mode heading."
-  (save-excursion (custom/org-previous-heading)
+  (save-excursion (custom/org-goto-heading-previous)
 		        (outline-hide-subtree)))
 
 #+end_src
@@ -704,10 +704,10 @@ will be advised by `custom/org-edit-at-ellipsis'")
 ellipsis in the first line under the heading."
   (if (custom/org-at-ellipsis-h)
       (progn (beginning-of-visual-line)
-	           (custom/org-show-minimum)
-		   (end-of-line)
-		   (org-return)
-		   (apply orig-fun args))
+	          (custom/org-show-minimum)
+		  (end-of-line)
+		  (org-return)
+		  (apply orig-fun args))
     (apply orig-fun args)))
 
 (dolist (function custom/org-functions-at-ellipsis)
@@ -1013,7 +1013,8 @@ of org-tempo templates."
 #+end_src
 
 * Navigation
-** org-end
+** Line
+*** org-end
 
 #+begin_src emacs-lisp
 
@@ -1045,8 +1046,7 @@ If `org-at-table-p', go to `org-table-end-of-field'."
 (define-key org-mode-map (kbd "<end>") 'custom/org-double-end)
 
 #+end_src
-
-** TODO org-home
+*** TODO org-home
 
 - home in invisible tags -> to beginning of tag text
 
@@ -1320,7 +1320,7 @@ matches the current theme."
 
 (defun custom/org-babel-tangle-config()
   "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
-     (if (custom/match-regexs (expand-file-name buffer-file-name) source-regex)
+     (if (custom/regex-match-patterns (expand-file-name buffer-file-name) source-regex)
      ;; Tangle ommitting confirmation
      (let ((org-confirm-babel-evaluate nil)) (org-babel-tangle)))
 )
