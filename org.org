@@ -599,7 +599,8 @@ If MARGIN is t:
   (cond ((not (org-current-level)) (insert "* "))
 	      (t                         (funcall command)))
   (if margin (custom/org-heading-margin-insert-prior))
-  (custom/org-hide-previous-subtree))
+  (if (custom/org-relative-line-heading-folded)
+      (custom/org-hide-previous-subtree)))
 
 #+end_src
 
@@ -677,7 +678,8 @@ Furthermore, if the previous same-level heading is folded, `org-hide-subtree'."
   (cond ((not (org-current-level)) (insert "* "))
 	      (t                         (progn (outline-back-to-heading) (apply orig-fun args))))
   (custom/org-heading-margin-insert-prior)
-  (custom/org-hide-previous-subtree)
+  (if (custom/org-relative-line-heading-folded)
+      (custom/org-hide-previous-subtree))
   (custom/org-heading-margin-delete-post))
 
 #+end_src
