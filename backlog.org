@@ -6,9 +6,6 @@
 #+latex_class_options: [twocolumn]
 -----
 
-- scroll simultaneously in two different files
-- diff between two different files
-
 - org-roam
    - capture template
       - extra space in title
@@ -77,13 +74,6 @@
 
 - WSL
    - https://shelper.github.io/posts/setup-emacs-in-wsl2/
-
-
-* Utilities
-** overlays
-
-- ov
-   - https://github.com/emacsorphanage/ov
 
 
 * Improvements
@@ -243,6 +233,28 @@ CLOSED: [2022-05-06 Fri 17:11]
          - match bound command + docstrings
 
 
+* inspection
+
+- deft
+   - https://jblevins.org/projects/deft/
+- notdeft
+   - https://github.com/hasu/notdeft
+
+- scroll simultaneously in two different files
+- diff between two different files
+
+* text highlighting
+
+- highligher colors
+   - y
+   - b
+   - r
+
+- temporary
+   - overlays
+      - https://github.com/emacsorphanage/ov
+- permanent
+   - custom font-lock
 
 * latex
 
