@@ -1158,7 +1158,8 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 (defun custom/org-goto-subtree-end ()
   (custom/org-goto-heading-current)
-  (org-end-of-subtree))
+  (org-end-of-subtree)
+  (if (custom/org-relative-line-heading-folded) (end-of-visual-line)))
 
 #+end_src
 
