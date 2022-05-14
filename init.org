@@ -169,6 +169,18 @@
 
 #+end_src
 **** at
+***** eolp
+
+#+begin_src emacs-lisp
+
+(defun custom/eolp (orig-fun &rest args)
+  (interactive)
+  (or (apply orig-fun args) (looking-at-p "[[:blank:]]*$")))
+
+(advice-add 'eolp :around #'custom/eolp)
+
+#+end_src
+
 ***** at-point
 
 #+begin_src emacs-lisp
