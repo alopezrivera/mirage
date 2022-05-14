@@ -27,7 +27,7 @@
 ** General purpose functions
 *** Queries
 **** in
-***** in-src-block-p
+***** org-in-src-block-p
 
 #+begin_src emacs-lisp
 
@@ -39,7 +39,7 @@
 #+end_src
 
 **** at
-***** at-ellipsis-l
+***** org-at-ellipsis-l
 
 #+begin_src emacs-lisp
 
@@ -48,7 +48,7 @@
 
 #+end_src 
 
-***** at-ellipsis-h
+***** org-at-ellipsis-h
 
 #+begin_src emacs-lisp
 
@@ -57,7 +57,7 @@
 
 #+END_src 
 
-***** at-keyword
+***** org-at-keyword
 
 #+begin_src emacs-lisp
 
@@ -65,7 +65,7 @@
   (custom/relative-line-regex "^#+.*$" number))
 
 #+END_src 
-***** at-heading
+***** org-at-heading
 
 #+begin_src emacs-lisp
 
@@ -75,7 +75,7 @@
 
 #+end_src
 
-***** TODO at-bol-list
+***** TODO org-at-bol-list
 
 - &option point
 
@@ -86,7 +86,7 @@
 
 #+END_src 
 
-***** TODO at-bol-heading
+***** TODO org-at-bol-heading
 
 - &option point
 
@@ -97,7 +97,7 @@
 
 #+END_src 
 
-***** TODO at-eol-heading
+***** TODO org-at-eol-heading
 
 - &option point
 
@@ -108,7 +108,7 @@
 
 #+end_src
 
-***** TODO at-list-paragraph
+***** TODO org-at-list-paragraph
 
 - &option point
 
@@ -123,7 +123,7 @@
 #+end_src
 
 **** after
-***** after-list-or-indent
+***** org-after-list-or-indent
 
 #+begin_src emacs-lisp
 
@@ -133,7 +133,7 @@
 #+end_src
 
 **** line
-***** relative-line-list
+***** org-relative-line-list
 
 #+begin_src emacs-lisp
 
@@ -143,7 +143,7 @@
 
 #+end_src
 
-***** relative-line-list-empty
+***** org-relative-line-list-empty
 
 #+begin_src emacs-lisp
 
@@ -153,7 +153,7 @@
 
 #+end_src
 
-***** relative-line-list-folded
+***** org-relative-line-list-folded
 
 #+begin_src emacs-lisp
 
@@ -165,7 +165,7 @@ is on a folded list item."
 
 #+end_src
 
-***** relative-line-heading
+***** org-relative-line-heading
 
 #+begin_src emacs-lisp
 
@@ -175,7 +175,7 @@ is on a folded list item."
 
 #+end_src
 
-***** relative-line-heading-empty
+***** org-relative-line-heading-empty
 
 #+begin_src emacs-lisp
 
@@ -184,7 +184,7 @@ is on a folded list item."
 
 #+end_src
 
-***** relative-line-heading-folded
+***** org-relative-line-heading-folded
 
 #+begin_src emacs-lisp
 
@@ -196,7 +196,7 @@ is on a folded heading."
 
 #+end_src
 
-***** relative-line-heading-or-list
+***** org-relative-line-heading-or-list
 
 #+begin_src emacs-lisp
 
@@ -205,7 +205,7 @@ is on a folded heading."
 
 #+end_src
 **** subtree
-***** subtree-blank
+***** org-subtree-blank
 
 #+begin_src emacs-lisp
 
@@ -217,7 +217,7 @@ a `custom/region-empty'."
 
 #+end_src
 
-***** subtree-empty
+***** org-subtree-empty
 
 #+begin_src emacs-lisp
 
@@ -263,7 +263,7 @@ a `custom/region-empty'."
 
 #+end_src
 
-**** subtree-content
+**** org-subtree-content
 
 #+begin_src emacs-lisp
 
@@ -273,7 +273,7 @@ a `custom/region-empty'."
 
 #+end_src
 
-**** get-title-file
+**** org-get-title-file
 
 #+begin_src emacs-lisp
 
@@ -283,7 +283,7 @@ a `custom/region-empty'."
 
 #+end_src
 
-**** get-title-current-buffer
+**** org-get-title-current-buffer
 
 #+begin_src emacs-lisp
 
