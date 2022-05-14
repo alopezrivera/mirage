@@ -488,7 +488,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 (defun custom/org-control-return ()
   (interactive)
   (cond ((custom/org-relative-line-list-empty)       (progn (org-meta-return) (next-line) (end-of-line)))
-	      ((custom/org-relative-line-heading)          (progn (beginning-of-visual-line) (custom/org-insert-heading-after-subtree)))
+	      ((custom/org-relative-line-heading)          (custom/org-insert-heading-after-subtree))
 	      ((custom/org-relative-line-list)             (progn (end-of-line) (org-meta-return)))
 	      ((custom/org-at-list-paragraph)              (custom/org-paragraph-toggle))
 	      (t                                           (custom/org-insert-heading-after-subtree))))
