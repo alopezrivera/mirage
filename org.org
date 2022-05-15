@@ -587,7 +587,6 @@ If MARGIN is t:
   (cond ((not (org-current-level)) (insert "* "))
 	      (t                         (funcall command)))
   ;; Insert margin
-  (print margin)
   (if margin (custom/org-heading-margin-insert-previous))
   ;; Hide previous subtree
   (if (save-excursion (custom/org-goto-heading-previous)
