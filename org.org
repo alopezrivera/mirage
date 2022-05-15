@@ -625,7 +625,7 @@ If MARGIN is t:
 
 (defun custom/org-insert-subheading-at-point ()
   (interactive)
-  (custom/org-insert-heading 'org-insert-heading (not (custom/org-subtree-blank-up-to-point))))
+  (custom/org-insert-heading 'org-insert-subheading (not (custom/org-subtree-blank-up-to-point))))
 
 #+end_src
 
