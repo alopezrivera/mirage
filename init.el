@@ -664,8 +664,6 @@ not empty. In any case, advance to next line."
 ;; Create new frame
 (global-set-key (kbd "C-S-n") 'make-frame-command)
 
-(straight-use-package 'projectile)
-
 ;; Record last sent message
 (defvar last-message nil)
 (defadvice message (after my-message pre act) (setq last-message ad-return-value))
@@ -726,6 +724,8 @@ kill the current buffer and delete its window."
 (global-set-key (kbd "<escape>") 'custom/double-escape)
 
 (use-package magit)
+
+(require 'ide (concat config-directory "ide.el"))
 
 (require 'org (concat config-directory "org.el"))
 
