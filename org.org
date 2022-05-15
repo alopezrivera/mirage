@@ -1663,6 +1663,15 @@ folded."
 
 #+end_src
 
+** Templates
+
+#+begin_src emacs-lisp
+
+(setq org-roam-capture-templates
+      '(("d" "default" plain "%?"
+	    :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+			       "#+title:${title}\n#+STARTUP: overview\n\n")
+	    :unnarrowed t)))
 
 #+end_src
 
