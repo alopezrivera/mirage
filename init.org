@@ -41,12 +41,14 @@
 
 ;; Background buffers
 (defvar custom/background-buffers
-  '("~/.emacs.d/org.org"
+  '("~/.emacs.d/ui.org"
+    "~/.emacs.d/org.org"
     "~/.emacs.d/ide.org"
     "~/.emacs.d/init.org"
     "~/.emacs.d/theme.org"
     "~/.emacs.d/backlog.org"
-    "~/.emacs.d/org-diary.org"))
+    "~/.emacs.d/org-diary.org"
+    "~/.emacs.d/org-paragraph.org"))
 
 (defun custom/spawn-startup-buffers ()
   (cl-loop for buffer in (append custom/startup-buffers custom/background-buffers)
