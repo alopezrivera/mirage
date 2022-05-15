@@ -94,6 +94,13 @@ a `custom/region-empty'."
     (save-excursion (custom/org-goto-heading-previous)
 		          (and (not (= pos (point))) (custom/org-relative-line-heading)))))
 
+(defun custom/org-heading-first-child ()
+  (save-excursion
+    (custom/org-goto-heading-current)
+    (let ((pos (custom/get-point 'beginning-of-visual-line)))
+      (org-backward-heading-same-level 1)
+      (= pos (custom/get-point 'beginning-of-visual-line)))))
+
 (defun custom/org-heading-has-children ()
   (interactive)
   (save-excursion (org-goto-first-child)))
@@ -188,7 +195,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (defun custom/org-show (orig-fun &rest args)
   (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
-      (progn (beginning-of-visual-line) (end-of-line) (apply orig-fun args))
+      (progn (custom/org-goto-heading-bol) (apply orig-fun args))
     (apply orig-fun args)))
 
 (advice-add 'org-show-subtree :around #'custom/org-show)
@@ -234,23 +241,16 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 	       (buffer-substring-no-properties (point) (custom/get-point 'custom/org-goto-heading-next))
       "")))
 
-(defun custom/org-heading-margin-previous ()
-  "Return margin between current heading and next."
-  (if (org-current-level)
-      (let ((pos            (custom/get-point 'custom/org-goto-heading-bol)))
-	          (save-excursion  (custom/org-goto-heading-previous)
-				   (if (= pos (point))
-				       ""
-				     (custom/org-heading-margin-post))))
-    ("")))
-
 (defun custom/org-heading-margin-insert-previous ()
   "If the previous subtree is not empty,
 insert a margin of 1 empty line."
-  (let ((insert-margin (save-excursion (org-backward-heading-same-level 1) (not (custom/org-subtree-blank)))))
+  (let ((insert-margin (save-excursion (if (custom/org-heading-first-child)
+					          (custom/org-goto-heading-previous)
+					        (org-backward-heading-same-level 1))
+				              (not (custom/org-subtree-blank)))))
     (if insert-margin
       (progn (beginning-of-visual-line)
-	            (newline)
+	            (org-return)
 		    (beginning-of-line-text)))))
 
 (defun custom/org-heading-margin-delete-post ()
@@ -283,9 +283,13 @@ If MARGIN is t:
   (interactive)
   (if (custom/org-at-ellipsis-h)         (progn (beginning-of-visual-line) (end-of-line)))
   (if (custom/org-relative-line-heading) (custom/org-show-minimum))
+  ;; Insert heading
   (cond ((not (org-current-level)) (insert "* "))
 	      (t                         (funcall command)))
+  ;; Insert margin
+  (print margin)
   (if margin (custom/org-heading-margin-insert-previous))
+  ;; Hide previous subtree
   (if (save-excursion (custom/org-goto-heading-previous)
 		            (custom/org-relative-line-heading-folded))
       (custom/org-hide-previous-subtree)))
@@ -317,31 +321,32 @@ the previous heading is folded:
 2. Create the new heading after its subtree
 3. Fold it back"
   (let ((margin-post        (custom/regex-match-count "\n" (custom/org-heading-margin-post)))
-	      (margin-previous    (custom/regex-match-count "\n" (custom/org-heading-margin-previous)))
 	      (prev-same-level    (custom/get-point 'beginning-of-visual-line))
 	      (prev-lower-level   (custom/get-point 'custom/org-goto-child-last))
 	      (folded-same-level  (custom/org-relative-line-heading-folded))
 	      (folded-lower-level (save-excursion (custom/org-goto-child-last) (custom/org-relative-line-heading-folded))))
+
+    ;; Go to current heading
+    (custom/org-goto-heading-current)
+
     ;; Unfold if necessary
-    (if folded-same-level  (org-show-subtree))
+    (if folded-same-level  (save-excursion (org-show-subtree)))
     (if folded-lower-level (save-excursion (custom/org-goto-subtree-end) (org-show-subtree)))
     
     ;; Insert heading
     (cond ((not (org-current-level)) (insert "* "))
 	        (t                         (progn (custom/org-goto-heading-current) (org-insert-heading-respect-content))))
     (custom/org-heading-margin-delete-post)
+
+    ;; Insert margin with previous heading
+    (custom/org-heading-margin-insert-previous)
     
     ;; Fold back if necessary
     (if folded-same-level  (save-excursion (goto-char prev-same-level)  (outline-hide-subtree)))
     (if folded-lower-level (save-excursion (goto-char prev-lower-level) (outline-hide-subtree)))
 
-    ;; Insert margin with previous heading
-    (custom/org-heading-margin-insert-previous)
-    ;; (print margin-previous)
-    ;; (if (> margin-previous 0) (save-excursion (beginning-of-visual-line) (insert "\n")))
     ;; Recover margin with following heading
-    (if (> margin-post 1) (save-excursion (insert "\n")))
-    ))
+    (if (> margin-post 1) (save-excursion (insert "\n")))))
 
 (defun custom/org-insert-subheading-after-subtree ()
   "`org-insert-subheading' respecting content."
