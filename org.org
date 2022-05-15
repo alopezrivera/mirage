@@ -418,7 +418,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (defun custom/org-show (orig-fun &rest args)
   (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
-      (progn (beginning-of-visual-line) (end-of-line) (apply orig-fun args))
+      (progn (custom/org-goto-heading-bol) (apply orig-fun args))
     (apply orig-fun args)))
 
 #+end_src
