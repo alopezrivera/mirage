@@ -315,6 +315,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 * org
 
+- org-appear
+   - https://github.com/awth13/org-appear
+
 - Jump to heading with completion
    - https://github.com/abo-abo/worf
 
