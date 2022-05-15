@@ -85,9 +85,14 @@ a `custom/region-empty'."
   (string-equal "" (custom/org-subtree-content)))
 
 (defun custom/org-headings-follow ()
-  (let ((pos (point)))
+  (let ((pos (custom/get-point 'beginning-of-visual-line)))
     (save-excursion (custom/org-goto-heading-next)
 		           (and (not (= pos (point))) (custom/org-relative-line-heading)))))
+
+(defun custom/org-headings-precede ()
+  (let ((pos (custom/get-point 'beginning-of-visual-line)))
+    (save-excursion (custom/org-goto-heading-previous)
+		          (and (not (= pos (point))) (custom/org-relative-line-heading)))))
 
 (defun custom/org-heading-has-children ()
   (interactive)
@@ -216,28 +221,36 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (define-key org-mode-map (kbd "C-/") 'custom/org-undo)
 
-(defun custom/org-heading-margin ()
+(defun custom/org-heading-margin-post ()
   "Return margin between current heading and next."
   (if (org-current-level)
       (let ((pos            (custom/get-point 'custom/org-goto-heading-bol))
 	           (end-of-subtree (custom/get-point 'custom/org-goto-subtree-end))
 		   (next-heading   (custom/get-point 'custom/org-goto-heading-next)))
-	          (if (not (= pos end-of-subtree))
+	          (if (not (and (= pos end-of-subtree) (custom/org-relative-line-heading)))
 		      (buffer-substring-no-properties end-of-subtree next-heading)
 		    ""))
     (if (custom/org-headings-follow)
 	       (buffer-substring-no-properties (point) (custom/get-point 'custom/org-goto-heading-next))
       "")))
 
-(defun custom/org-heading-margin-insert-prior ()
+(defun custom/org-heading-margin-previous ()
+  "Return margin between current heading and next."
+  (if (org-current-level)
+      (let ((pos            (custom/get-point 'custom/org-goto-heading-bol)))
+	          (save-excursion  (custom/org-goto-heading-previous)
+				   (if (= pos (point))
+				       ""
+				     (custom/org-heading-margin-post))))
+    ("")))
+
+(defun custom/org-heading-margin-insert-previous ()
   "If the previous subtree is not empty,
 insert a margin of 1 empty line."
-  (let ((insert-margin
-	 (save-excursion (org-backward-heading-same-level 1)
-			 (not (custom/org-subtree-blank)))))
+  (let ((insert-margin (save-excursion (org-backward-heading-same-level 1) (not (custom/org-subtree-blank)))))
     (if insert-margin
       (progn (beginning-of-visual-line)
-	            (org-return)
+	            (newline)
 		    (beginning-of-line-text)))))
 
 (defun custom/org-heading-margin-delete-post ()
@@ -272,7 +285,7 @@ If MARGIN is t:
   (if (custom/org-relative-line-heading) (custom/org-show-minimum))
   (cond ((not (org-current-level)) (insert "* "))
 	      (t                         (funcall command)))
-  (if margin (custom/org-heading-margin-insert-prior))
+  (if margin (custom/org-heading-margin-insert-previous))
   (if (save-excursion (custom/org-goto-heading-previous)
 		            (custom/org-relative-line-heading-folded))
       (custom/org-hide-previous-subtree)))
@@ -303,7 +316,8 @@ the previous heading is folded:
 1. Unfold the heading
 2. Create the new heading after its subtree
 3. Fold it back"
-  (let ((margin (custom/regex-match-count "\n" (custom/org-heading-margin)))
+  (let ((margin-post        (custom/regex-match-count "\n" (custom/org-heading-margin-post)))
+	      (margin-previous    (custom/regex-match-count "\n" (custom/org-heading-margin-previous)))
 	      (prev-same-level    (custom/get-point 'beginning-of-visual-line))
 	      (prev-lower-level   (custom/get-point 'custom/org-goto-child-last))
 	      (folded-same-level  (custom/org-relative-line-heading-folded))
@@ -317,15 +331,17 @@ the previous heading is folded:
 	        (t                         (progn (custom/org-goto-heading-current) (org-insert-heading-respect-content))))
     (custom/org-heading-margin-delete-post)
     
-    ;; Insert margin with previous heading
-    (custom/org-heading-margin-insert-prior)
-    
     ;; Fold back if necessary
     (if folded-same-level  (save-excursion (goto-char prev-same-level)  (outline-hide-subtree)))
     (if folded-lower-level (save-excursion (goto-char prev-lower-level) (outline-hide-subtree)))
-    
+
+    ;; Insert margin with previous heading
+    (custom/org-heading-margin-insert-previous)
+    ;; (print margin-previous)
+    ;; (if (> margin-previous 0) (save-excursion (beginning-of-visual-line) (insert "\n")))
     ;; Recover margin with following heading
-    (if (> margin 1) (save-excursion (insert "\n")))))
+    (if (> margin-post 1) (save-excursion (insert "\n")))
+    ))
 
 (defun custom/org-insert-subheading-after-subtree ()
   "`org-insert-subheading' respecting content."
@@ -384,9 +400,7 @@ one character."
 		   (custom/org-at-ellipsis-l))                  (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
 	     ((and (or (custom/org-relative-line-heading-empty)
 		       (custom/org-relative-line-list-empty))
-		   (or (custom/relative-line-empty -1)
-		       (custom/org-relative-line-heading -1)
-		       (custom/org-relative-line-list -1)))     (delete-region (point) (custom/get-point 'end-of-line 0)))
+		   (org-current-level))                         (delete-region (point) (custom/get-point 'end-of-line 0)))
 	     ((or  (custom/org-relative-line-heading-empty)
 		   (custom/org-relative-line-list-empty))       (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
         (t                                                 (custom/nimble-delete-backward))))
@@ -722,10 +736,11 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
   (let ((current (custom/get-point 'beginning-of-visual-line)))
     ;; go to previous same-level heading
     (org-backward-heading-same-level 1)
-    ;; attempt going to last subheading of previous same-level heading
-    (custom/org-goto-child-last)
     ;; if there was no previous same-level heading, go to parent if not at top
-    (if (= (point) current) (custom/org-goto-heading-parent))))
+    (if (= (point) current)
+	    (custom/org-goto-heading-parent)
+      ;; else, attempt going to last subheading of previous same-level heading
+      (custom/org-goto-child-last))))
 
 ;; Justify equation labels - [fleqn]
 ;; Preview page width      - 10.5cm
