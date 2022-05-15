@@ -501,11 +501,22 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-****** org-heading-margin-insert-prior
+****** org-heading-margin-previous
 
 #+begin_src emacs-lisp
 
-(defun custom/org-heading-margin-insert-prior ()
+(defun custom/org-heading-margin-previous ()
+  "Return margin between current heading and next."
+  (if (org-current-level)
+      (let ((pos            (custom/get-point 'custom/org-goto-heading-bol)))
+	          (save-excursion  (custom/org-goto-heading-previous)
+				   (if (= pos (point))
+				       ""
+				     (custom/org-heading-margin-post))))
+    ("")))
+
+#+end_src
+
   "If the previous subtree is not empty,
 insert a margin of 1 empty line."
   (let ((insert-margin
