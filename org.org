@@ -211,9 +211,9 @@ is on a folded heading."
 
 (defun custom/org-subtree-blank ()
   "Return t if the current subtree consists of
-a `custom/region-empty'."
+a `custom/region-blank'."
   (interactive)
-  (apply #'custom/region-empty (custom/org-subtree-region)))
+  (apply #'custom/region-blank (custom/org-subtree-region)))
 
 #+end_src
 
@@ -514,6 +514,17 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
+****** org-heading-margin-delete-post
+
+#+begin_src emacs-lisp
+
+(defun custom/org-heading-margin-delete-post ()
+  "Delete newline after new headings created by
+`respect-content' heading commands."
+  (apply 'delete-region (custom/org-subtree-region)))
+
+#+end_src
+
 ****** org-heading-margin-insert-previous
 
 #+begin_src emacs-lisp
@@ -529,17 +540,6 @@ insert a margin of 1 empty line."
       (progn (beginning-of-visual-line)
 	            (org-return)
 		    (beginning-of-line-text)))))
-
-#+end_src
-
-****** org-heading-margin-delete-post
-
-#+begin_src emacs-lisp
-
-(defun custom/org-heading-margin-delete-post ()
-  "Delete newline after new headings created by
-`respect-content' heading commands."
-  (apply 'delete-region (custom/org-subtree-region)))
 
 #+end_src
 
@@ -755,7 +755,7 @@ one character."
   "Org Mode complement to `custom/nimble-delete-backward'."
   (interactive)
   (cond ((and (region-active-p)
-	           (not (custom/region-empty)))                 (custom/org-delete-hungry))
+	           (not (custom/region-blank)))                 (custom/org-delete-hungry))
 	     ((or  (custom/org-at-ellipsis-h)
 		   (custom/org-at-ellipsis-l))                  (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
 	     ((and (or (custom/org-relative-line-heading-empty)
