@@ -574,7 +574,7 @@ If MARGIN is t:
   (if (custom/org-relative-line-heading) (custom/org-show-minimum))
   (cond ((not (org-current-level)) (insert "* "))
 	      (t                         (funcall command)))
-  (if margin (custom/org-heading-margin-insert-prior))
+  (if margin (custom/org-heading-margin-insert-previous))
   (if (save-excursion (custom/org-goto-heading-previous)
 		            (custom/org-relative-line-heading-folded))
       (custom/org-hide-previous-subtree)))
