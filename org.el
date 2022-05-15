@@ -76,9 +76,9 @@ is on a folded heading."
 
 (defun custom/org-subtree-blank ()
   "Return t if the current subtree consists of
-a `custom/region-empty'."
+a `custom/region-blank'."
   (interactive)
-  (apply #'custom/region-empty (custom/org-subtree-region)))
+  (apply #'custom/region-blank (custom/org-subtree-region)))
 
 (defun custom/org-subtree-empty ()
   (interactive)
@@ -93,6 +93,11 @@ a `custom/region-empty'."
   (let ((pos (custom/get-point 'beginning-of-visual-line)))
     (save-excursion (custom/org-goto-heading-previous)
 		          (and (not (= pos (point))) (custom/org-relative-line-heading)))))
+
+(defun custom/org-subtree-blank-up-to-point ()
+  (interactive)
+  (let ((heading-eol (save-excursion (custom/org-goto-heading-current) (end-of-line) (point))))
+    (custom/region-blank heading-eol (point))))
 
 (defun custom/org-heading-first-child ()
   (save-excursion
@@ -241,6 +246,11 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 	       (buffer-substring-no-properties (point) (custom/get-point 'custom/org-goto-heading-next))
       "")))
 
+(defun custom/org-heading-margin-delete-post ()
+  "Delete newline after new headings created by
+`respect-content' heading commands."
+  (apply 'delete-region (custom/org-subtree-region)))
+
 (defun custom/org-heading-margin-insert-previous ()
   "If the previous subtree is not empty,
 insert a margin of 1 empty line."
@@ -252,11 +262,6 @@ insert a margin of 1 empty line."
       (progn (beginning-of-visual-line)
 	            (org-return)
 		    (beginning-of-line-text)))))
-
-(defun custom/org-heading-margin-delete-post ()
-  "Delete newline after new headings created by
-`respect-content' heading commands."
-  (apply 'delete-region (custom/org-subtree-region)))
 
 (defun custom/org-insert-heading (command &optional margin)
   "Primitive for custom heading functions.
@@ -287,7 +292,6 @@ If MARGIN is t:
   (cond ((not (org-current-level)) (insert "* "))
 	      (t                         (funcall command)))
   ;; Insert margin
-  (print margin)
   (if margin (custom/org-heading-margin-insert-previous))
   ;; Hide previous subtree
   (if (save-excursion (custom/org-goto-heading-previous)
@@ -304,13 +308,11 @@ If MARGIN is t:
 
 (defun custom/org-insert-heading-at-point ()
   (interactive)
-  (let ((margin (not (or (custom/org-relative-line-heading) (custom/org-relative-line-heading -1)))))
-    (custom/org-insert-heading 'org-insert-heading margin)))
+  (custom/org-insert-heading 'org-insert-heading (not (custom/org-subtree-blank-up-to-point))))
 
 (defun custom/org-insert-subheading-at-point ()
   (interactive)
-  (let ((margin (not (or (custom/org-relative-line-heading) (custom/org-relative-line-heading -1)))))
-    (custom/org-insert-heading 'org-insert-subheading margin)))
+  (custom/org-insert-heading 'org-insert-heading (not (custom/org-subtree-blank-up-to-point))))
 
 (defun custom/org-insert-heading-after-subtree ()
   "Insert heading after current subtree. As
@@ -400,7 +402,7 @@ one character."
   "Org Mode complement to `custom/nimble-delete-backward'."
   (interactive)
   (cond ((and (region-active-p)
-	           (not (custom/region-empty)))                 (custom/org-delete-hungry))
+	           (not (custom/region-blank)))                 (custom/org-delete-hungry))
 	     ((or  (custom/org-at-ellipsis-h)
 		   (custom/org-at-ellipsis-l))                  (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
 	     ((and (or (custom/org-relative-line-heading-empty)

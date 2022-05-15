@@ -129,7 +129,7 @@ to the query at execution."
 (defun custom/relative-line-list-unordered (&optional number)
   (custom/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+.*$" number))
 
-(defun custom/region-empty (&optional beg end)
+(defun custom/region-blank (&optional beg end)
   (let ((beg (or beg (region-beginning)))
 	  (end (or end (region-end))))
     (setq region (buffer-substring-no-properties beg end))
@@ -240,7 +240,7 @@ If cursor lies either `custom/at-indent' or is preceded only by
 whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
-      (cond ((and (region-active-p) (not (custom/region-empty))) (custom/delete-hungry))
+      (cond ((and (region-active-p) (not (custom/region-blank))) (custom/delete-hungry))
 	          ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
 		  (t                                                   (delete-backward-char 1)))
     (delete-backward-char 1)))
