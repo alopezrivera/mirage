@@ -1,3 +1,37 @@
+;;; org-paragraph.el --- Paragraphs passing as items -*- lexical-binding: t -*-
+
+;; Copyright (C) Antonio López Rivera
+
+;; Author: Antonio Lópezr Rivera <antonlopezr99@gmail.com>
+;; Maintainer: Antonio Lópezr Rivera <antonlopezr99@gmail.com>
+;; Created: 2022
+;; Version: 0.1
+;; Package-Requires: ((emacs "27.1"))
+;; Homepage: https://github.com/alopezrivera/org-paragraph
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; Org Mode parargaphs hitch-hiking their way to first class
+;; structural editing citizenship.
+;; org-paragraph works behind the scenes to make `org-metaright',
+;; `org-metaleft', `org-metaup' and `org-metadown' work for
+;; paragraphs.
+
+;;; Code:
+
 (defgroup custom/org-diary-mode-group nil
   "Group for customization"
   :prefix "custom/org-diary-")
@@ -208,3 +242,4 @@ Bindings:
 (define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 
 (provide 'org-diary)
+;;; org-modern.el ends here
