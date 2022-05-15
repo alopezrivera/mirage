@@ -250,6 +250,19 @@ a `custom/region-empty'."
 #+end_src
 
 **** heading
+***** org-heading-first-child
+
+#+begin_src emacs-lisp
+
+(defun custom/org-heading-first-child ()
+  (save-excursion
+    (custom/org-goto-heading-current)
+    (let ((pos (custom/get-point 'beginning-of-visual-line)))
+      (org-backward-heading-same-level 1)
+      (= pos (custom/get-point 'beginning-of-visual-line)))))
+
+#+end_src
+
 ***** org-heading-has-children
 
 #+begin_src emacs-lisp
@@ -601,20 +614,7 @@ If MARGIN is t:
 
 #+end_src
 
-***** TODO org-insert-heading-after-subtree
-
-- possibly do away with org-insert-heading-respect-content
-   - record parent heading level
-   - end of subtree
-   - insert heading
-
-- custom/org-goto-subtree-end -> 1 blank line before next heading
-   - should be last non-blank line of subtree
-- margin calculations
-   - post
-      - point to next heading
-   - prior
-      - point to last non-blank line
+***** org-insert-heading-after-subtree
 
 #+begin_src emacs-lisp
 
