@@ -8,6 +8,8 @@
 
 #+begin_src emacs-lisp
 
+(require 'hideshow)
+
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 
 #+end_src
