@@ -626,8 +626,7 @@ the previous heading is folded:
     (if folded-lower-level (save-excursion (goto-char prev-lower-level) (outline-hide-subtree)))
     
     ;; Recover margin with following heading
-    (if (> margin 1) (save-excursion (insert "\n")))
-    ))
+    (if (> margin 1) (save-excursion (insert "\n")))))
   
 #+end_src
 
@@ -1255,8 +1254,8 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 (defun custom/org-goto-heading-next ()
   (custom/org-goto-heading-current)
   (let ((pos (custom/get-point 'beginning-of-visual-line)))
-    (org-forward-heading-same-level 1)
-    (if (= pos (point))
+       (org-forward-heading-same-level 1)
+       (if (= pos (point))
 	   (progn (custom/org-goto-heading-parent)
 		  (org-forward-heading-same-level 1)))))
 
