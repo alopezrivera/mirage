@@ -926,10 +926,6 @@ folded."
 ;; Insert reference
 (global-set-key (kbd "C-c i") 'org-roam-node-insert)
 
-(org-roam-db-autosync-mode)
-
-(add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
-
 ;; Org Roam UI
 (straight-use-package 'org-roam-ui)
 
@@ -941,6 +937,16 @@ folded."
 (setq org-roam-ui-open-on-start nil)
 
 (setq org-roam-ui-update-on-save t)
+
+(org-roam-db-autosync-mode)
+
+(add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
+
+(setq org-roam-capture-templates
+      '(("d" "default" plain "%?"
+	    :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+			       "#+title:${title}\n#+STARTUP: overview\n\n")
+	    :unnarrowed t)))
 
 ;; Org Roam timestamps
 (straight-use-package 'org-roam-timestamps)
