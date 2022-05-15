@@ -1604,24 +1604,7 @@ folded."
 
 #+end_src
 
-** Startup
-*** db-autosync-mode
-
-#+begin_src emacs-lisp
-
-(org-roam-db-autosync-mode)
-
-#+end_src
-
-*** variable-pitch-mode
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
-
-#+end_src
-
-** org-roam-ui
+** UI
 
 #+begin_src emacs-lisp
 
@@ -1660,6 +1643,26 @@ folded."
 #+begin_src emacs-lisp
 
 (setq org-roam-ui-update-on-save t)
+
+#+end_src
+
+** Startup
+*** db-autosync-mode
+
+#+begin_src emacs-lisp
+
+(org-roam-db-autosync-mode)
+
+#+end_src
+
+*** variable-pitch-mode
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
+
+#+end_src
+
 
 #+end_src
 
