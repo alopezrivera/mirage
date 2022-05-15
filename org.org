@@ -634,31 +634,32 @@ the previous heading is folded:
 2. Create the new heading after its subtree
 3. Fold it back"
   (let ((margin-post        (custom/regex-match-count "\n" (custom/org-heading-margin-post)))
-	      (margin-previous    (custom/regex-match-count "\n" (custom/org-heading-margin-previous)))
 	      (prev-same-level    (custom/get-point 'beginning-of-visual-line))
 	      (prev-lower-level   (custom/get-point 'custom/org-goto-child-last))
 	      (folded-same-level  (custom/org-relative-line-heading-folded))
 	      (folded-lower-level (save-excursion (custom/org-goto-child-last) (custom/org-relative-line-heading-folded))))
+
+    ;; Go to current heading
+    (custom/org-goto-heading-current)
+
     ;; Unfold if necessary
-    (if folded-same-level  (org-show-subtree))
+    (if folded-same-level  (save-excursion (org-show-subtree)))
     (if folded-lower-level (save-excursion (custom/org-goto-subtree-end) (org-show-subtree)))
     
     ;; Insert heading
     (cond ((not (org-current-level)) (insert "* "))
 	        (t                         (progn (custom/org-goto-heading-current) (org-insert-heading-respect-content))))
     (custom/org-heading-margin-delete-post)
+
+    ;; Insert margin with previous heading
+    (custom/org-heading-margin-insert-previous)
     
     ;; Fold back if necessary
     (if folded-same-level  (save-excursion (goto-char prev-same-level)  (outline-hide-subtree)))
     (if folded-lower-level (save-excursion (goto-char prev-lower-level) (outline-hide-subtree)))
 
-    ;; Insert margin with previous heading
-    (custom/org-heading-margin-insert-previous)
-    ;; (print margin-previous)
-    ;; (if (> margin-previous 0) (save-excursion (beginning-of-visual-line) (insert "\n")))
     ;; Recover margin with following heading
-    (if (> margin-post 1) (save-excursion (insert "\n")))
-    ))
+    (if (> margin-post 1) (save-excursion (insert "\n")))))
   
 #+end_src
 
