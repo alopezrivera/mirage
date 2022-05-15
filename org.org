@@ -572,9 +572,13 @@ If MARGIN is t:
   (interactive)
   (if (custom/org-at-ellipsis-h)         (progn (beginning-of-visual-line) (end-of-line)))
   (if (custom/org-relative-line-heading) (custom/org-show-minimum))
+  ;; Insert heading
   (cond ((not (org-current-level)) (insert "* "))
 	      (t                         (funcall command)))
+  ;; Insert margin
+  (print margin)
   (if margin (custom/org-heading-margin-insert-previous))
+  ;; Hide previous subtree
   (if (save-excursion (custom/org-goto-heading-previous)
 		            (custom/org-relative-line-heading-folded))
       (custom/org-hide-previous-subtree)))
