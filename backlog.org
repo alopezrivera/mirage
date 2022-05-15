@@ -6,21 +6,16 @@
 #+latex_class_options: [twocolumn]
 -----
 
+- logseq
+   - 
 - org-roam
    - capture template
       - extra space in title
       - add newline between title and content
       - #+STARTUP: overview
    - increase horizontal split threshold for org-roam-node-visit
-- org LaTeX equations
-   - custom array envs
-      - cases
-         - \arraycolsep=1.4pt\def\arraystretch{1.5}
-      - derivations
-         - \arraycolsep=3pt\def\arraystretch{2.25}
-- remove double commands
-   - home
-      - if at bol-text -> bol-visual
+
+-----
 
 - latex
    - class, style file access
@@ -31,6 +26,14 @@
 - subrepo, multirepo
 - owo
 - org-paragraph
+
+-----
+
+* Sessions
+** TODO [#A] org-agenda
+** TODO [#A] org-roam
+
+
 
 * References
 ** Configs
@@ -50,6 +53,7 @@
 ** Org Mode
 
 - https://orgmode.org/worg/org-hacks.html
+- http://doc.norang.ca/org-mode.html
   
 ** Workflows
 
@@ -60,7 +64,6 @@
    - https://tony-zorman.com/posts/phd-workflow/2022-05-01-my-phd-workflow.html
    - https://castel.dev/post/research-workflow/
      
-
 ** Emacs Lisp
 
 - interactive
@@ -75,11 +78,14 @@
 - WSL
    - https://shelper.github.io/posts/setup-emacs-in-wsl2/
 
-
+     
 * Improvements
 ** code
 
 - relative-line -> line
+- remove double commands
+   - home
+      - if at bol-text -> bol-visual
 
 ** regions
 
@@ -200,7 +206,7 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 - if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
-  
+
 * Packages
 
 - general purpose functions
@@ -217,21 +223,27 @@ CLOSED: [2022-05-06 Fri 17:11]
 * Modes
 ** bindings
 
-   - All key bindings
-      - Org Mode
-   - https://github.com/noctuid/general.el
+- All key bindings
+   - Org Mode
+- https://github.com/noctuid/general.el
 
 ** compass
-   - screens
-      - key bindings
-         - commands
-         - packages
-            - redirect to list-packages
-   - key bindings
-      - rendered with svg-tag-mode
-         - search
-         - match bound command + docstrings
 
+- screens
+   - key bindings
+      - commands
+      - packages
+         - redirect to list-packages
+- key bindings
+   - rendered with svg-tag-mode
+      - search
+      - match bound command + docstrings
+
+
+* portability
+
+- logseq
+   - https://coredumped.dev/2021/05/26/taking-org-roam-everywhere-with-logseq/
 
 * inspection
 
@@ -256,6 +268,7 @@ CLOSED: [2022-05-06 Fri 17:11]
 - permanent
    - custom font-lock
 
+     
 * latex
 
 - https://www.emacswiki.org/emacs/AUCTeX
@@ -266,6 +279,8 @@ CLOSED: [2022-05-06 Fri 17:11]
         https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
 
 #+title:Org
+
+- https://www.reddit.com/r/emacs/comments/uomvik/org_mode_to_latex_using_a_cls_file/
 
 #+begin_src emacs-lisp
 
@@ -283,6 +298,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 - follow-mode
      
 * bibliography
+
+- references
+   - http://cachestocaches.com/2020/3/org-mode-annotated-bibliography/
 
 - org-ref
    - https://github.com/jkitchin/org-ref
@@ -322,6 +340,7 @@ CLOSED: [2022-05-06 Fri 17:11]
    - ioslide
       - https://github.com/coldnew/org-ioslide
 - Hugo
+   - https://ox-hugo.scripter.co/
    - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
    - https://www.youtube.com/watch?app=desktop&v=0g9BcZvQbXU
 
