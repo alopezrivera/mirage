@@ -6,13 +6,7 @@
 #+latex_class_options: [twocolumn]
 -----
 
-- logseq
-   - 
 - org-roam
-   - capture template
-      - extra space in title
-      - add newline between title and content
-      - #+STARTUP: overview
    - increase horizontal split threshold for org-roam-node-visit
 
 -----
