@@ -6,7 +6,7 @@
 Org Mode paragraphs hitch-hiking their way to first class structural
 editing citizenship.
 
-org-paragraph is a minor mode for Emacs Org Mode which adds primitives
+~org-paragraph~ is a minor mode for Emacs Org Mode which adds primitives
 to manipulate paragraphs using the Org Mode struct infrastructure.
 Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 ~org-metaleft~, ~org-metaup~ and ~org-metadown~.
