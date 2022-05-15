@@ -3,6 +3,15 @@
 #+FILETAGS: :emacs:
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./org-paragraph.el :mkdirp yes
 
+-----
+
+- a
+
+              <-- here
+    
+
+-----
+
 * TODO Backlog
 
 - if paragraphs not under list -> transpose
@@ -11,7 +20,9 @@
      
 
 * Internal
-** org-paragraph-toggle
+** TODO org-paragraph-toggle
+
+- indented line after blank line at top level
 
 #+begin_src emacs-lisp
 
