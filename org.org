@@ -238,6 +238,17 @@ a `custom/region-empty'."
 
 #+end_src
 
+***** org-headings-precede
+
+#+begin_src emacs-lisp
+
+(defun custom/org-headings-precede ()
+  (let ((pos (custom/get-point 'beginning-of-visual-line)))
+    (save-excursion (custom/org-goto-heading-previous)
+		          (and (not (= pos (point))) (custom/org-relative-line-heading)))))
+
+#+end_src
+
 **** heading
 ***** org-heading-has-children
 
