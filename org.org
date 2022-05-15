@@ -617,7 +617,20 @@ If MARGIN is t:
 
 #+end_src
 
-***** org-insert-heading-after-subtree
+***** TODO org-insert-heading-after-subtree
+
+- possibly do away with org-insert-heading-respect-content
+   - record parent heading level
+   - end of subtree
+   - insert heading
+
+- custom/org-goto-subtree-end -> 1 blank line before next heading
+   - should be last non-blank line of subtree
+- margin calculations
+   - post
+      - point to next heading
+   - prior
+      - point to last non-blank line
 
 #+begin_src emacs-lisp
 
