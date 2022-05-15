@@ -1204,13 +1204,6 @@ not empty. In any case, advance to next line."
 (global-set-key (kbd "C-S-n") 'make-frame-command)
 
 #+end_src
-** Project
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'projectile)
-
-#+end_src
 
 ** Escape
 *** Bindings
@@ -1302,6 +1295,14 @@ kill the current buffer and delete its window."
 #+begin_src emacs-lisp
 
 (use-package magit)
+
+#+end_src
+
+* IDE
+
+#+begin_src emacs-lisp
+
+(require 'ide (concat config-directory "ide.el"))
 
 #+end_src
 

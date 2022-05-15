@@ -1,8 +1,12 @@
 #+title:IDE
 #+STARTUP: content
-#+PROPERTY: header-args:emacs-lisp :results none :tangle nil :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ./ide.el :mkdirp yes
 
-* Language Server Protocol
+
+
+** Syntax highlighting
+* Guidance
+** Language Server Protocol
 
 #+begin_src emacs-lisp
 
@@ -15,16 +19,16 @@
 
 #+end_src
 
-** Python
+*** Python
 
 #+begin_src emacs-lisp
 
 ;; Hook
-((python-mode . lsp))
+(add-hook 'python-mode-hook #'lsp-mode)
 
 #+end_src
 
-*** pyls
+**** pyls
 
 #+begin_src emacs-lisp
 
@@ -36,7 +40,7 @@
 
 #+end_src
 
-*** venvs
+**** venvs
 
 #+begin_src emacs-lisp
 
@@ -50,8 +54,8 @@
 
 #+end_src
 
-* Syntax highlighting
-* Syntax checking
+* Assistance
+** Syntax checking
 
 #+begin_src emacs-lisp
 
@@ -59,7 +63,7 @@
 
 #+end_src
 
-* Autocompletion
+** Autocompletion
 
 #+begin_src emacs-lisp
 
@@ -73,7 +77,7 @@
 
 #+begin_src emacs-lisp
 
-;; projectile
+(straight-use-package 'projectile)
 
 #+end_src
 
@@ -84,4 +88,13 @@
 ;; helm projectile
 
 #+end_src
+
+* Declare
+
+#+begin_src emacs-lisp
+
+(provide 'ide)
+
+#+end_src
+
 
