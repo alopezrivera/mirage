@@ -1300,7 +1300,15 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 #+end_src
 
 
-* LaTeX
+* TODO LaTeX
+
+- org LaTeX equations
+   - custom array envs
+      - cases
+         - \arraycolsep=1.4pt\def\arraystretch{1.5}
+      - derivations
+         - \arraycolsep=3pt\def\arraystretch{2.25}
+
 ** Header
 
 #+begin_src emacs-lisp
