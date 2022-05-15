@@ -11,16 +11,6 @@ STARTUP: overview
 
 #+end_src
 
-** Display
-*** Tag indentation
-
-#+begin_src emacs-lisp
-
-;; Tag indentation
-(setq org-tags-column 70)
-
-#+end_src
-
 ** Typefaces
 *** Headings
 
