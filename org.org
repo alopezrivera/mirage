@@ -477,16 +477,16 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (defun custom/org-heading-margin ()
   "Return margin between current heading and next."
-  (condition-case nil
-      (if (org-current-level)
-	         (let ((pos            (custom/get-point 'custom/org-goto-heading-bol))
-	               (end-of-subtree (custom/get-point 'custom/org-goto-subtree-end))
-		       (next-heading   (custom/get-point 'custom/org-goto-heading-next)))
-	              (if (not (= pos end-of-subtree))
-			  (buffer-substring-no-properties end-of-subtree next-heading)
-			""))
-	       "")
-    (error "")))
+  (if (org-current-level)
+      (let ((pos            (custom/get-point 'custom/org-goto-heading-bol))
+	           (end-of-subtree (custom/get-point 'custom/org-goto-subtree-end))
+		   (next-heading   (custom/get-point 'custom/org-goto-heading-next)))
+	          (if (not (= pos end-of-subtree))
+		      (buffer-substring-no-properties end-of-subtree next-heading)
+		    ""))
+    (if (custom/org-headings-follow)
+	       (buffer-substring-no-properties (point) (custom/get-point 'custom/org-goto-heading-next))
+      "")))
 
 #+end_src
 
