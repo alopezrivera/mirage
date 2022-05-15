@@ -746,6 +746,7 @@ one character."
 
 **** TODO Backward
 
+- bol of list item -> paragraph
 - if at beginning of empty heading and a heading lies below
    - bring next heading to level of current one
       - delete newline + stars of the next heading
