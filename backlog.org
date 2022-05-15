@@ -6,9 +6,6 @@
 #+latex_class_options: [twocolumn]
 -----
 
-- org-roam
-   - increase horizontal split threshold for org-roam-node-visit
-
 -----
 
 - latex
@@ -19,7 +16,6 @@
    - org-latex-pdf-process -> latexmk
 - subrepo, multirepo
 - owo
-- org-paragraph
 
 -----
 
@@ -296,6 +292,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 - references
    - http://cachestocaches.com/2020/3/org-mode-annotated-bibliography/
 
+- org-roam-bibtex
+   - https://github.com/org-roam/org-roam-bibtex
+   - https://github.com/tmalsburg/helm-bibtex
 - org-ref
    - https://github.com/jkitchin/org-ref
 - create entry
@@ -476,10 +475,9 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 * TODO org-roam
 
+- increase horizontal split threshold for org-roam-node-visit
+
 - https://www.orgroam.com/manual.html#Introduction
-- bibtex
-   - https://github.com/org-roam/org-roam-bibtex
-   - https://github.com/tmalsburg/helm-bibtex
 - UI
    - deactivate when reloading org mode
      
