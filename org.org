@@ -482,17 +482,17 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 *** Insert
 **** Headings
 ***** Margins
-****** org-heading-margin
+****** org-heading-margin-post
 
 #+begin_src emacs-lisp
 
-(defun custom/org-heading-margin ()
+(defun custom/org-heading-margin-post ()
   "Return margin between current heading and next."
   (if (org-current-level)
       (let ((pos            (custom/get-point 'custom/org-goto-heading-bol))
 	           (end-of-subtree (custom/get-point 'custom/org-goto-subtree-end))
 		   (next-heading   (custom/get-point 'custom/org-goto-heading-next)))
-	          (if (not (= pos end-of-subtree))
+	          (if (not (and (= pos end-of-subtree) (custom/org-relative-line-heading)))
 		      (buffer-substring-no-properties end-of-subtree next-heading)
 		    ""))
     (if (custom/org-headings-follow)
