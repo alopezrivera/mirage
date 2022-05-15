@@ -232,7 +232,7 @@ a `custom/region-empty'."
 #+begin_src emacs-lisp
 
 (defun custom/org-headings-follow ()
-  (let ((pos (point)))
+  (let ((pos (custom/get-point 'beginning-of-visual-line)))
     (save-excursion (custom/org-goto-heading-next)
 		           (and (not (= pos (point))) (custom/org-relative-line-heading)))))
 
