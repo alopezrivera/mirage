@@ -84,6 +84,11 @@ a `custom/region-empty'."
   (interactive)
   (string-equal "" (custom/org-subtree-content)))
 
+(defun custom/org-headings-follow ()
+  (let ((pos (point)))
+    (save-excursion (custom/org-goto-heading-next)
+		           (and (not (= pos (point))) (custom/org-relative-line-heading)))))
+
 (defun custom/org-heading-has-children ()
   (interactive)
   (save-excursion (org-goto-first-child)))
@@ -213,16 +218,16 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (defun custom/org-heading-margin ()
   "Return margin between current heading and next."
-  (condition-case nil
-      (if (org-current-level)
-	         (let ((pos            (custom/get-point 'custom/org-goto-heading-bol))
-	               (end-of-subtree (custom/get-point 'custom/org-goto-subtree-end))
-		       (next-heading   (custom/get-point 'custom/org-goto-heading-next)))
-	              (if (not (= pos end-of-subtree))
-			  (buffer-substring-no-properties end-of-subtree next-heading)
-			""))
-	       "")
-    (error "")))
+  (if (org-current-level)
+      (let ((pos            (custom/get-point 'custom/org-goto-heading-bol))
+	           (end-of-subtree (custom/get-point 'custom/org-goto-subtree-end))
+		   (next-heading   (custom/get-point 'custom/org-goto-heading-next)))
+	          (if (not (= pos end-of-subtree))
+		      (buffer-substring-no-properties end-of-subtree next-heading)
+		    ""))
+    (if (custom/org-headings-follow)
+	       (buffer-substring-no-properties (point) (custom/get-point 'custom/org-goto-heading-next))
+      "")))
 
 (defun custom/org-heading-margin-insert-prior ()
   "If the previous subtree is not empty,
@@ -320,8 +325,7 @@ the previous heading is folded:
     (if folded-lower-level (save-excursion (goto-char prev-lower-level) (outline-hide-subtree)))
     
     ;; Recover margin with following heading
-    (if (> margin 1) (save-excursion (insert "\n")))
-    ))
+    (if (> margin 1) (save-excursion (insert "\n")))))
 
 (defun custom/org-insert-subheading-after-subtree ()
   "`org-insert-subheading' respecting content."
@@ -698,8 +702,8 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 (defun custom/org-goto-heading-next ()
   (custom/org-goto-heading-current)
   (let ((pos (custom/get-point 'beginning-of-visual-line)))
-    (org-forward-heading-same-level 1)
-    (if (= pos (point))
+       (org-forward-heading-same-level 1)
+       (if (= pos (point))
 	   (progn (custom/org-goto-heading-parent)
 		  (org-forward-heading-same-level 1)))))
 
