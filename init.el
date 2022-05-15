@@ -6,7 +6,8 @@
 ;; Startup buffers
 (defvar custom/startup-buffers
   '("/home/emacs/test.org"
-    "/home/dfki/backlog.org"))
+    "/home/dfki/backlog.org"
+    "/mnt/c/Users/xXY4n/Professional/_Employment/DFKI/Repos/hopping_leg/software/python/hopping_leg/motors/abstract_motor.py"))
 
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 50))
@@ -15,6 +16,7 @@
 ;; Background buffers
 (defvar custom/background-buffers
   '("~/.emacs.d/org.org"
+    "~/.emacs.d/ide.org"
     "~/.emacs.d/init.org"
     "~/.emacs.d/theme.org"
     "~/.emacs.d/backlog.org"
