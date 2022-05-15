@@ -7,9 +7,9 @@
              ;; function, and revert it before
              ;; turning paragraph into item.
 	           (if (custom/relative-line-indented)
-	               (progn (setq back (+ (point) 1))
+	               (progn (setq back (+ (point) org-list-indent-offset))
 		              (beginning-of-line-text)
-			      (insert " ")
+			      (insert (make-string org-list-indent-offset ?\s))
 			      (goto-char back)))
 		   ;; Record whether cursor is at `bolp'
 		   ;; or `custom/at-indent'
@@ -26,9 +26,9 @@
 		 ;; `beginning-of-line-text'
 		 (if (bolp) (beginning-of-line-text))
 		 (if (custom/relative-line-indented)
-		     (progn (setq back (- (point) 1))
+		     (progn (setq back (- (point) org-list-indent-offset))
 			    (beginning-of-line-text)
-			    (delete-backward-char 1)
+			    (delete-backward-char org-list-indent-offset)
 			    (goto-char back)
 			    )))))
 
