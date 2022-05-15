@@ -998,6 +998,7 @@ indented at the level of the previous list item, indent the paragraph."
 *** TODO [#A] return
 
 - list item -> new item starting at point
+- at ellipsis -> cycle
 
 - reference
    - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
