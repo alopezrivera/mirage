@@ -334,6 +334,7 @@ kill ring."
 ;; Normal modes
 (dolist (mode '(org-mode-hook
 		   magit-mode-hook
+		   shell-mode-hook
 		   markdown-mode-hook))
   (add-hook mode 'olivetti-mode))
 
