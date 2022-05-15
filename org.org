@@ -1728,6 +1728,16 @@ folded."
 
 #+end_src
 
+** Display
+*** Tag alignment
+
+#+begin_src emacs-lisp
+
+;; Tag indentation
+(setq org-tags-column 70)
+
+#+end_src
+
 ** Agenda
 *** Editing
 
