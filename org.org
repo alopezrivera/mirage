@@ -615,8 +615,7 @@ If MARGIN is t:
 
 (defun custom/org-insert-heading-at-point ()
   (interactive)
-  (let ((margin (not (or (custom/org-relative-line-heading) (custom/org-relative-line-heading -1)))))
-    (custom/org-insert-heading 'org-insert-heading margin)))
+  (custom/org-insert-heading 'org-insert-heading (not (custom/org-subtree-blank-up-to-point))))
 
 #+end_src
 
@@ -626,8 +625,7 @@ If MARGIN is t:
 
 (defun custom/org-insert-subheading-at-point ()
   (interactive)
-  (let ((margin (not (or (custom/org-relative-line-heading) (custom/org-relative-line-heading -1)))))
-    (custom/org-insert-heading 'org-insert-subheading margin)))
+  (custom/org-insert-heading 'org-insert-heading (not (custom/org-subtree-blank-up-to-point))))
 
 #+end_src
 
