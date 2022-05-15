@@ -331,7 +331,8 @@ kill ring."
 
 ;; Normal modes
 (dolist (mode '(org-mode-hook
-		    magit-mode-hook))
+		   magit-mode-hook
+		   markdown-mode-hook))
   (add-hook mode 'olivetti-mode))
 
 ;; Programming modes
@@ -730,8 +731,7 @@ kill the current buffer and delete its window."
 
 ;; Transform all files in directory from DOS to Unix line breaks
 (defun custom/dos2unix (&optional dir)
-  (let ((dir (or dir (file-name-directory buffer-file-name)))
-	      (default-directory dir))
+  (let ((default-directory (or dir (file-name-directory buffer-file-name))))
     (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
 (require 'theme (concat config-directory "theme.el"))

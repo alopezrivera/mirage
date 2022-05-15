@@ -39,6 +39,8 @@
 	rectangle-next-line
 	rectangle-previous-line
 	rectangle-right-char
+	custom/nimble-delete-backward
+	eval-last-sexp
 	))
 
 (setq mc/cmds-to-run-once
@@ -46,12 +48,10 @@
 	clm/toggle-command-log-buffer
 	counsel-M-x
 	custom/double-escape
-	custom/nimble-delete-backward
 	custom/search-in-region
 	custom/smart-search
 	custom/swiper-multiple-cursors
 	dabbrev-expand
-	eval-last-sexp
 	mouse-drag-mode-line
 	mouse-drag-vertical-line
 	mouse-save-then-kill
