@@ -26,6 +26,9 @@
 
 
 * References
+
+- https://karthinks.com/
+
 ** Configs
 
 - https://github.com/alhassy/emacs.d
