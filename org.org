@@ -517,14 +517,17 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
+****** org-heading-margin-insert-previous
+
+#+begin_src emacs-lisp
+
+(defun custom/org-heading-margin-insert-previous ()
   "If the previous subtree is not empty,
 insert a margin of 1 empty line."
-  (let ((insert-margin
-	 (save-excursion (org-backward-heading-same-level 1)
-			 (not (custom/org-subtree-blank)))))
+  (let ((insert-margin (save-excursion (org-backward-heading-same-level 1) (not (custom/org-subtree-blank)))))
     (if insert-margin
       (progn (beginning-of-visual-line)
-	            (org-return)
+	            (newline)
 		    (beginning-of-line-text)))))
 
 #+end_src
