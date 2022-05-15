@@ -249,6 +249,17 @@ a `custom/region-blank'."
 
 #+end_src
 
+***** org-subtree-blank-up-to-point
+
+#+begin_src emacs-lisp
+
+(defun custom/org-subtree-blank-up-to-point ()
+  (interactive)
+  (let ((heading-eol (save-excursion (custom/org-goto-heading-current) (end-of-line) (point))))
+    (custom/region-blank heading-eol (point))))
+
+#+end_src
+
 **** heading
 ***** org-heading-first-child
 
