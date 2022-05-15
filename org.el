@@ -312,7 +312,7 @@ If MARGIN is t:
 
 (defun custom/org-insert-subheading-at-point ()
   (interactive)
-  (custom/org-insert-heading 'org-insert-heading (not (custom/org-subtree-blank-up-to-point))))
+  (custom/org-insert-heading 'org-insert-subheading (not (custom/org-subtree-blank-up-to-point))))
 
 (defun custom/org-insert-heading-after-subtree ()
   "Insert heading after current subtree. As
@@ -964,6 +964,9 @@ folded."
 (defmacro custom/org-agenda-bind (key command)
   `(with-eval-after-load 'org-agenda
        (define-key org-agenda-mode-map (kbd ,key) ,command)))
+
+;; Tag indentation
+(setq org-tags-column 70)
 
 ;; Mark items as done
 (defun custom/org-agenda-todo-done ()
