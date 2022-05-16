@@ -1,4 +1,4 @@
-#+begin_src emacs-lisp :tangle nil
+#+begin_src emacs-lisp
 
 (global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
 "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")))
