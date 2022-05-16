@@ -1,5 +1,15 @@
 ;;; -*- lexical-binding: t; -*-
 
+(setq config-directory "~/.emacs.d/")
+
+;; display
+(setq-default frame-title-format '("Emacs [%m] %b"))
+(setq inhibit-startup-message t)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(menu-bar-mode -1)
+
 ;; straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -16,11 +26,15 @@
 
 ;; selectrum
 (straight-use-package 'selectrum)
+(selectrum-mode +1)
 
+;; magit
 (straight-use-package 'magit)
 
+;; modus
 (use-package modus-themes)
-
 (modus-themes-load-themes)
-
 (modus-themes-load-operandi)
+
+;; declare
+(provide 'wild)
