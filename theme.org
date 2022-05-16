@@ -35,6 +35,27 @@
 
 (defvar custom/theme-light 'modus-operandi)
 
+** Mode line
+
+#+begin_src emacs-lisp
+
+;; Bar
+(setq-default doom-modeline-bar-width 0.01)
+
+;; Color
+(defun custom/modeline-color (bg bg-in face face-in)
+  "Set the color of the mode line and blend the 
+`doom-modeline-bar' with the background."
+  (set-face-attribute 'mode-line          nil :foreground face    :background bg    :box nil)
+  (set-face-attribute 'mode-line-inactive nil :foreground face-in :background bg-in :box nil))
+
+(defun custom/dark-modeline ()
+  "Mode line for light themes."
+  (custom/modeline-color "#3d3d3d" "#000000" "#cfcfcf" "#cfcfcf"))
+
+(defun custom/light-modeline ()
+  "Mode line for dark themes."
+  (custom/modeline-color "#fff0ff" "#ededed" "#616161" "#878787"))
 
 #+end_src
 
