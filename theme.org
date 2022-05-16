@@ -33,15 +33,8 @@
 
 #+begin_src emacs-lisp
 
-(defun custom/theme-specific-advice (_orig-fun &rest args)
-  (setq modeline-status mode-line-format)
-  (apply _orig-fun args)
-  (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
-	      ((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
-  (setq mode-line-format modeline-status))
 (defvar custom/theme-light 'modus-operandi)
 
-(advice-add 'enable-theme :around #'custom/theme-specific-advice)
 
 #+end_src
 
@@ -82,6 +75,18 @@ manual."
     (_ (error "No Modus theme is loaded; evaluate `modus-themes-load-themes' first"))))
 
 (global-set-key (kbd "C-t") 'custom/modus-themes-toggle)
+** Advice
+
+#+begin_src emacs-lisp
+
+(defun custom/theme-specific-advice (_orig-fun &rest args)
+  (setq modeline-status mode-line-format)
+  (apply _orig-fun args)
+  (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
+	((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
+  (setq mode-line-format modeline-status))
+
+(advice-add 'enable-theme :around #'custom/theme-specific-advice)
 
 #+end_src
 
