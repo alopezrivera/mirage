@@ -2,7 +2,8 @@
 #+STARTUP: overview
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./theme.el :mkdirp yes
 
-* Modus
+* Load
+** Modus
 
 #+begin_src emacs-lisp
 
@@ -12,8 +13,7 @@
 
 #+end_src
 
-** Theme-specific enabling advice
-*** Operandi
+** Sweet
 
 #+begin_src emacs-lisp
 
@@ -23,7 +23,7 @@
 
 #+end_src
 
-*** Vivendi
+* Dark
 
 #+begin_src emacs-lisp
 
@@ -33,7 +33,7 @@
 
 #+end_src
 
-*** Advice
+* Light
 
 #+begin_src emacs-lisp
 
@@ -48,7 +48,8 @@
 
 #+end_src
 
-** Circadian
+** Line numbers
+
 
 #+begin_src emacs-lisp
 
