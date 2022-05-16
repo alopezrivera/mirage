@@ -25,9 +25,7 @@
 
 #+begin_src emacs-lisp
 
-(defun custom/vivendi-advice ()
-  (custom/dark-modeline)
-  (custom/dark-line-numbers))
+(defvar custom/theme-dark 'modus-vivendi)
 
 #+end_src
 
