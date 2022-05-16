@@ -91,6 +91,9 @@ using `enable-theme'"
 (global-set-key (kbd "C-t") 'custom/theme-toggle)
 
 #+end_src
+
+* Circadian
+
 #+begin_src emacs-lisp
 
 (setq calendar-latitude      52.00667)
@@ -101,8 +104,8 @@ using `enable-theme'"
 
 (use-package circadian
   :config
-  (setq circadian-themes '((:sunrise . modus-operandi)
-                           (:sunset  . modus-vivendi)))
+  (setq circadian-themes '((:sunrise . custom/theme-light)
+                           (:sunset  . custom/theme-dark)))
   (circadian-setup))
 
 #+end_src
