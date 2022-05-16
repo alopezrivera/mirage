@@ -1106,6 +1106,22 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
+*** CS-return
+
+#+begin_src emacs-lisp
+
+(define-key org-mode-map (kbd "C-S-<return>") 'org-insert-todo-heading)
+
+#+end_src
+
+*** CM-return
+
+#+begin_src emacs-lisp
+
+(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-subheading)
+
+#+end_src
+
 * Templates
 
 #+begin_src emacs-lisp
