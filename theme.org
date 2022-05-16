@@ -17,9 +17,7 @@
 
 #+begin_src emacs-lisp
 
-(defun custom/operandi-advice ()
-  (custom/light-modeline)
-  (custom/light-line-numbers))
+(straight-use-package 'sweet-theme)
 
 #+end_src
 
