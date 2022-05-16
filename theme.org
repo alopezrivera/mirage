@@ -110,24 +110,27 @@ using `enable-theme'"
 
 #+end_src
 
-** Toggle
+* Theme-specific enabling advice
+** Operandi
 
 #+begin_src emacs-lisp
 
-(defun custom/modus-themes-toggle ()
-  "Toggle between `modus-operandi' and `modus-vivendi' themes.
-This uses `enable-theme' instead of the standard method of
-`load-theme'.  The technicalities are covered in the Modus themes
-manual."
-  (interactive)
-  (pcase (modus-themes--current-theme)
-    ('modus-operandi (progn (enable-theme 'modus-vivendi)
-                            (disable-theme 'modus-operandi)))
-    ('modus-vivendi (progn (enable-theme 'modus-operandi)
-                            (disable-theme 'modus-vivendi)))
-    (_ (error "No Modus theme is loaded; evaluate `modus-themes-load-themes' first"))))
+(defun custom/operandi-advice ()
+  (custom/light-modeline)
+  (custom/light-line-numbers))
 
-(global-set-key (kbd "C-t") 'custom/modus-themes-toggle)
+#+end_src
+
+** Vivendi
+
+#+begin_src emacs-lisp
+
+(defun custom/vivendi-advice ()
+  (custom/dark-modeline)
+  (custom/dark-line-numbers))
+
+#+end_src
+
 ** Advice
 
 #+begin_src emacs-lisp
