@@ -41,6 +41,7 @@
 	rectangle-right-char
 	custom/nimble-delete-backward
 	eval-last-sexp
+	org-ctrl-c-ctrl-c
 	))
 
 (setq mc/cmds-to-run-once
@@ -58,7 +59,6 @@
 	mouse-set-region
 	mouse-start-rectangle
 	org-babel-tangle
-	org-ctrl-c-ctrl-c
 	org-metadown
 	swiper
 	swiper-mc

@@ -597,6 +597,10 @@ indented at the level of the previous list item, indent the paragraph."
 
 (define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
 
+(define-key org-mode-map (kbd "C-S-<return>") 'org-insert-todo-heading)
+
+(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-subheading)
+
 ;; Required as of Org 9.2
 (require 'org-tempo)
 
