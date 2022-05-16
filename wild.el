@@ -2,6 +2,9 @@
 
 (setq config-directory "~/.emacs.d/")
 
+(global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
+"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")))
+
 ;; display
 (setq-default frame-title-format '("Emacs [%m] %b"))
 (setq inhibit-startup-message t)
