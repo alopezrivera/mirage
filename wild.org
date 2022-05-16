@@ -1,0 +1,67 @@
+#+begin_src emacs-lisp :tangle nil
+
+(global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
+"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")))
+
+#+end_src
+#+title:Emacs - Wild
+#+STARTUP: overview
+#+FILETAGS: :emacs:
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ./wild.el :mkdirp yes
+
+#+begin_src emacs-lisp
+
+;;; -*- lexical-binding: t; -*-
+
+#+end_src
+
+* straight.el
+
+#+begin_src emacs-lisp
+
+;; straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+#+end_src
+
+* selectrum
+
+#+begin_src emacs-lisp
+
+;; selectrum
+(straight-use-package 'selectrum)
+
+#+end_src
+
+* magit
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'magit)
+
+#+end_src
+
+* modus
+
+#+begin_src emacs-lisp
+
+(use-package modus-themes)
+
+(modus-themes-load-themes)
+
+(modus-themes-load-operandi)
+
+#+end_src
+
+

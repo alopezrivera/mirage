@@ -1,3 +1,16 @@
+#+begin_src emacs-lisp :tangle nil
+
+(global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
+"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")))
+
+#+end_src
+#+title:Emacs - Home
+#+STARTUP: overview
+#+FILETAGS: :emacs:
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ./home.el :mkdirp yes
+
+#+begin_src emacs-lisp
+
 ;;; -*- lexical-binding: t; -*-
 
 ;; Initial buffer
@@ -9,9 +22,23 @@
     "/home/dfki/backlog.org"
     "/mnt/c/Users/xXY4n/Professional/_Employment/DFKI/Repos/hopping_leg/software/python/hopping_leg/motors/abstract_motor.py"))
 
+#+end_src
+
+* Setup
+** Startup
+*** Frame
+
+#+begin_src emacs-lisp
+
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 50))
 (add-to-list 'default-frame-alist '(width  . 60))
+
+#+end_src
+
+*** Buffers
+
+#+begin_src emacs-lisp
 
 ;; Background buffers
 (defvar custom/background-buffers
@@ -19,6 +46,8 @@
     "~/.emacs.d/org.org"
     "~/.emacs.d/ide.org"
     "~/.emacs.d/init.org"
+    "~/.emacs.d/home.org"
+    "~/.emacs.d/wild.org"
     "~/.emacs.d/theme.org"
     "~/.emacs.d/backlog.org"
     "~/.emacs.d/org-diary.org"
@@ -30,13 +59,33 @@
 
 (add-hook 'after-init-hook #'custom/spawn-startup-buffers)
 
+#+end_src
+
+*** Directory
+
+#+begin_src emacs-lisp
+
 ;; Default directory
 (setq default-directory "~/.emacs.d/")
+
+#+end_src
+
+** System information
+*** Config directory
+
+#+begin_src emacs-lisp
 
 ;; Config directory
 (setq config-directory "~/.emacs.d/")
 
-;; straight
+#+end_src
+
+** Package management
+*** straight.el
+
+#+begin_src emacs-lisp
+
+;; straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -50,26 +99,72 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+#+end_src
+
+*** use-package
+
+#+begin_src emacs-lisp
+
 (straight-use-package 'use-package)
+
+#+end_src
+
+*** Customize interface
+
+#+begin_src emacs-lisp
 
 ;; Customize interface code blocks
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
+#+end_src
+
+** Configuration management
+*** Execution
+
+#+begin_src emacs-lisp
+
 ;; Buffer evaluation
 (global-set-key (kbd "C-x e") 'eval-buffer)
 
+#+end_src
+
+*** Debugging
+
+#+begin_src emacs-lisp
+
 (setq debug-on-error t)
+
+#+end_src
+
+*** Syntax highlighting
+
+#+begin_src emacs-lisp
 
 ;; Enable rainbow delimiters on all programming modes
 (use-package rainbow-delimiters)
 
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
+#+end_src
+
+** General purpose functions
+*** Display
+**** window-resize-fraction
+
+#+begin_src emacs-lisp
+
 (defun custom/window-resize-fraction (fr)
   "Resize window to a fraction of the frame width."
   (interactive)
   (window-resize nil (- (truncate (* fr (frame-width))) (window-width)) t))
+
+#+end_src
+
+*** Queries
+**** regex-match-patterns
+
+#+begin_src emacs-lisp
 
 (defun custom/regex-match-patterns (string patterns)
   "Return t if all provided regex PATTERNS
@@ -79,6 +174,12 @@
 		   return nil
 		finally return t))
 
+#+end_src
+
+**** regex-match-count
+
+#+begin_src emacs-lisp
+
 (defun custom/regex-match-count (regexp str)
   (loop with start = 0
         for count from 0
@@ -86,11 +187,24 @@
         do (setq start (match-end 0))
         finally return count))
 
+#+end_src
+
+**** at
+***** eolp
+
+#+begin_src emacs-lisp
+
 (defun custom/eolp (orig-fun &rest args)
   (interactive)
   (or (apply orig-fun args) (looking-at-p "[[:blank:]]*$")))
 
 (advice-add 'eolp :around #'custom/eolp)
+
+#+end_src
+
+***** at-point
+
+#+begin_src emacs-lisp
 
 (defun custom/at-point (go-to-point &optional point)
   (let ((point (or point (point))))
@@ -98,8 +212,21 @@
       (funcall go-to-point)
       (= point (point)))))
 
+#+end_src
+
+***** at-indent
+
+#+begin_src emacs-lisp
+
 (defun custom/at-indent (&optional point)
   (and (custom/relative-line-indented) (custom/at-point 'back-to-indentation point)))
+
+#+end_src
+
+**** line
+***** relative-line
+
+#+begin_src emacs-lisp
 
 (defun custom/relative-line (query &optional number &rest args)
   "Return the result of a boolean query at the beginning
@@ -112,26 +239,77 @@ to the query at execution."
       (beginning-of-visual-line (+ number 1))
       (apply query args))))
 
+#+end_src
+
+***** relative-line-regex
+
+#+begin_src emacs-lisp
+
 (defun custom/relative-line-regex (pattern &optional number)
   (custom/relative-line 'looking-at-p number pattern))
+
+#+end_src
+
+***** relative-line-list
+
+#+begin_src emacs-lisp
 
 (defun custom/relative-line-list (&optional number)
   (custom/relative-line-regex "^[[:blank:]]*\\([0-9]+[.\\)]\\{1\\}\\|[-+*]\\{1\\}\\)[[:blank:]]+.*$" number))
 
+#+end_src
+
+***** relative-line-empty
+
+#+begin_src emacs-lisp
+
 (defun custom/relative-line-empty (&optional number)
   (custom/relative-line-regex "[[:space:]]+$" number))
+
+#+end_src
+
+***** TODO relative-line-wrapped
+
+- &optional number
+
+#+begin_src emacs-lisp
 
 (defun custom/relative-line-wrapped ()
   (> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)))
 
+#+end_src
+
+***** relative-line-indented
+
+#+begin_src emacs-lisp
+
 (defun custom/relative-line-indented (&optional number)
   (custom/relative-line-regex "[[:blank:]]+.*$" number))
+
+  #+end_src
+
+***** relative-line-list-ordered
+
+#+begin_src emacs-lisp
 
 (defun custom/relative-line-list-ordered (&optional number)
   (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+.*$" number))
 
+#+end_src
+
+***** relative-line-list-unordered
+
+#+begin_src emacs-lisp
+
 (defun custom/relative-line-list-unordered (&optional number)
   (custom/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+.*$" number))
+
+#+end_src
+
+**** region
+***** region-blank
+
+#+begin_src emacs-lisp
 
 (defun custom/region-blank (&optional beg end)
   (let ((beg (or beg (region-beginning)))
@@ -139,9 +317,21 @@ to the query at execution."
     (setq region (buffer-substring-no-properties beg end))
     (string-match "\\`[[:space:]]*\\'$" region)))
 
+#+end_src
+
+***** region-multiline-visual
+
+#+begin_src emacs-lisp
+
 (defun custom/region-multiline-visual ()
   "Return t if a region is active and spans more than one visual line."
   (and (region-active-p) (> (custom/region-count-visual-lines) 1)))
+
+#+end_src
+
+***** region-count-visual-lines
+
+#+begin_src emacs-lisp
 
 (defun custom/region-count-visual-lines ()
   "Count visual lines in an active region."
@@ -150,13 +340,31 @@ to the query at execution."
     (beginning-of-visual-line)
     (count-screen-lines (region-beginning) (region-end))))
 
+#+end_src
+
+**** in-mode
+
+#+begin_src emacs-lisp
+
 (defun custom/in-mode (mode)
   "Return t if mode is currently active."
   (string-equal major-mode mode))
 
+#+end_src
+
+**** current-theme
+
+#+begin_src emacs-lisp
+
 ;; Retrieve current theme
 (defun custom/current-theme ()
   (substring (format "%s" (nth 0 custom-enabled-themes))))
+
+#+end_src
+
+**** current-window-number
+
+#+begin_src emacs-lisp
 
 (defun custom/current-window-number ()
   "Retrieve the current window's number."
@@ -164,11 +372,24 @@ to the query at execution."
   (string-match "^[^0-9]*\\([0-9]+\\).*$" window)
   (match-string 1 window))
 
+#+end_src
+
+*** Retrieval
+**** get-point
+
+#+begin_src emacs-lisp
+
 (defun custom/get-point (command &rest args)
   (interactive)
   (save-excursion
     (apply command args)
     (point)))
+
+#+end_src
+
+**** last-change
+
+#+begin_src emacs-lisp
 
 (defun custom/last-change ()
   "Retrieve last change in current buffer."
@@ -177,19 +398,64 @@ to the query at execution."
         (end (cdr last-change)))
     (buffer-substring-no-properties beg end)))
 
+#+end_src
+
+**** visible-buffers
+
+#+begin_src emacs-lisp
+
 (defun custom/visible-buffers ()
   (cl-delete-duplicates (mapcar #'window-buffer (window-list))))
+
+#+end_src
+
+**** get-keyword-key-value
+
+#+begin_src emacs-lisp
 
 (defun custom/get-keyword-key-value (kwd)
    (let ((data (cadr kwd)))
      (list (plist-get data :key)
            (plist-get data :value))))
 
+#+end_src
+
+*** Operators
+**** <>
+
+#+begin_src emacs-lisp
+
 (defun <> (a b c)
   (and (> b a) (> c b)))
 
+#+end_src
+
+* Editing
+** TODO Undo
+
+- vundo
+- undo-fu
+- Back
+   - Record character number in current line relative to the end of the line
+   - If impossible to go to previous position, to recorded character number of previous line
+   - Org Mode
+      - restore visibility before undone command
+      - if previous command created heading
+         - undo heading creation and restore visibility
+
+** Delete
+*** Line
+
+#+begin_src emacs-lisp
+
 (defun custom/delete-line ()
   (delete-region (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line)))
+
+#+end_src
+
+*** Hungry
+
+#+begin_src emacs-lisp
 
 (defun custom/@delete-hungry (query)
   "Conditional region deletion.
@@ -217,6 +483,12 @@ one character."
   (interactive)
   (custom/@delete-hungry (derived-mode-p 'prog-mode)))
 
+#+end_src
+
+*** Forward
+
+#+begin_src emacs-lisp
+
 (defun custom/nimble-delete-forward ()
   "Conditional forward deletion.
 
@@ -230,6 +502,12 @@ next line plus one character."
 	    (t                                              (delete-forward-char 1))))
 
 (global-set-key (kbd "<deletechar>") 'custom/nimble-delete-forward)
+
+#+end_src
+
+*** Backward
+
+#+begin_src emacs-lisp
 
 (defun custom/nimble-delete-backward ()
   "Conditional forward deletion.
@@ -251,8 +529,21 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 (global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
 
+#+end_src
+
+** Kill ring
+*** Size
+
+#+begin_src emacs-lisp
+
 ;; Increase kill ring size
 (setq kill-ring-max 200)
+
+#+end_src
+
+*** Mouse
+
+#+begin_src emacs-lisp
 
 (defun custom/kill-ring-mouse ()
   "If a region is active, save the region to the
@@ -266,10 +557,28 @@ kill ring."
 (global-set-key (kbd "<mouse-3>")        'custom/kill-ring-mouse)
 (global-set-key (kbd "<down-mouse-3>")    nil)
 
+#+end_src
+
+** Selection
+
+#+begin_src emacs-lisp
+
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
+
+#+end_src
+
+** Rectangular regions
+
+#+begin_src emacs-lisp
 
 ;; Ensure rectangular-region-mode is loaded
 (require 'rectangular-region-mode)
+
+#+end_src
+
+*** Mouse rectangle
+
+#+begin_src emacs-lisp
 
 ;; Multiple cursor rectangle definition mouse event
 (defun custom/mouse-rectangle (start-event)
@@ -287,6 +596,12 @@ kill ring."
 
 (global-set-key (kbd "M-<down-mouse-1>") #'custom/mouse-rectangle)
 
+#+end_src
+
+*** Multiple cursors
+
+#+begin_src emacs-lisp
+
 ;; Enter multiple-cursors-mode
 (defun custom/rectangular-region-multiple-cursors ()
   (interactive)
@@ -299,9 +614,22 @@ kill ring."
 
 (define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
 
+#+end_src
+
+*** Quit
+
+#+begin_src emacs-lisp
+
 ;; Exit rectangular-region-mode
 (define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
 (define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
+
+#+end_src
+
+* Display
+** Defaults
+
+#+begin_src emacs-lisp
 
 ;; Frame name
 (setq-default frame-title-format '("Emacs [%m] %b"))
@@ -321,10 +649,29 @@ kill ring."
 ;; Disable menu bar
 (menu-bar-mode -1)
 
+#+end_src
+
+** Warnings
+*** Visible bell
+
+#+begin_src emacs-lisp
+
 ;; Enable visual bell
 (setq visible-bell t)
 
+#+end_src
+
+*** Confirmations
+
+#+begin_src emacs-lisp
+
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
+
+#+end_src
+
+** Centering
+
+#+begin_src emacs-lisp
 
 ;; Center text
 (use-package olivetti
@@ -343,6 +690,12 @@ kill ring."
 ;; Programming modes
 (add-hook 'prog-mode-hook 'olivetti-mode)
 
+#+end_src
+
+** Mode line
+
+#+begin_src emacs-lisp
+
 (defun custom/hide-modeline ()
   (interactive)
   (if mode-line-format
@@ -351,18 +704,50 @@ kill ring."
 
 (global-set-key (kbd "M-m") #'custom/hide-modeline)
 
+#+end_src
+
+** Fringes
+
+#+begin_src emacs-lisp
+
 ;; Fringe mode
 (set-fringe-mode nil)
+
+#+end_src
+
+** Line numbers
+
+#+begin_src emacs-lisp
 
 ;; Display line numbers by side
 (global-set-key (kbd "C-c l") 'global-display-line-numbers-mode)
 
+#+end_src
+
+** Column numbers
+
+#+begin_src emacs-lisp
+
 ;; Display column number
 (column-number-mode)
+
+#+end_src
+
+* Guidance
+** Search
+*** Swiper
+
+#+begin_src emacs-lisp
 
 ;; Swiper
 (use-package swiper)
 (require 'swiper)
+
+#+end_src
+
+**** Smart search
+
+#+begin_src emacs-lisp
 
 ;; Smart search
 (defun custom/search-region (beg end)
@@ -380,6 +765,14 @@ kill ring."
     (swiper-isearch)))
 
 (define-key global-map (kbd "C-s") #'custom/smart-search)
+
+#+end_src
+
+**** TODO Narrow search
+
+- C-r in swiper -> quit, widen
+
+#+begin_src emacs-lisp
 
 (defun custom/narrow-and-search (beg end)
   "Narrow to region and trigger swiper search."
@@ -412,6 +805,12 @@ buffer is already narrowed, widen buffer."
 ;; Exit narrow search from swiper
 (define-key swiper-map (kbd "C-e") #'custom/swiper-exit-narrow-search)
 
+#+end_src
+
+**** Multiple cursors
+
+#+begin_src emacs-lisp
+
 (defun custom/swiper-multiple-cursors ()
   (interactive)
   (swiper-mc)
@@ -420,7 +819,20 @@ buffer is already narrowed, widen buffer."
 ;; M-RET: multiple-cursors-mode
 (define-key swiper-map (kbd "M-<return>") 'custom/swiper-multiple-cursors)
 
+#+end_src
+
+** Diagnosis
+
+#+begin_src emacs-lisp
+
 (global-set-key (kbd "C-c w") 'whitespace-mode)
+
+#+end_src
+
+** Completion
+*** Ivy
+
+#+begin_src emacs-lisp
 
 ;; Ivy completion framework
 (use-package counsel)
@@ -450,12 +862,23 @@ buffer is already narrowed, widen buffer."
 ;; Override `custom/nimble-delete-backward' in Ivy minibuffers
 (define-key ivy-minibuffer-map (kbd "<backspace>") 'ivy-backward-delete-char)
 
+#+end_src
+
+*** Command suggestions
+
+#+begin_src emacs-lisp
+
 ;; Command suggestions
 (use-package which-key
   :delight which-key-mode
   :config
   (which-key-mode)
   (setq which-key-idle-delay 1.0))
+
+#+end_src
+** Documentation
+
+#+begin_src emacs-lisp
 
 ;; Replace description key bindings by their helpful equivalents
 (use-package helpful
@@ -468,14 +891,33 @@ buffer is already narrowed, widen buffer."
   ([remap describe-variable] . helpful-variable)
   ([remap describe-key]      . helpful-key))
 
+#+end_src
+
+** Live command display
+
+#+begin_src emacs-lisp
+
 (use-package command-log-mode
   :delight command-log-mode)
 (global-command-log-mode)
+
+#+end_src
+
+* Templates
+** yasnippet
+
+#+begin_src emacs-lisp
 
 ;; yasnippet
 (use-package yasnippet)
 
 (yas-global-mode 1)
+
+#+end_src
+
+*** <
+
+#+begin_src emacs-lisp
 
 (defun custom/<-snippet (orig-fun &rest args)
   "Require < before snippets."
@@ -490,8 +932,22 @@ buffer is already narrowed, widen buffer."
 
 (advice-add 'yas-expand :around #'custom/<-snippet)
 
+#+end_src
+
+*** Snippets
+
+#+begin_src emacs-lisp
+
 ;; yasnippet-snippets
 (use-package yasnippet-snippets)
+
+#+end_src
+
+* Navigation
+** Text
+*** end
+
+#+begin_src emacs-lisp
 
 ;; Double end to go to the beginning of line
 (defvar custom/double-end-timeout 0.4)
@@ -509,6 +965,12 @@ of line."
   (put this-command 'custom/last-call-time (current-time)))
 
 (global-set-key (kbd "<end>") 'custom/double-end)
+
+#+end_src
+
+*** home
+
+#+begin_src emacs-lisp
 
 (defun custom/home ()
   "Conditional homing. 
@@ -551,6 +1013,12 @@ If the current line is a wrapped visual line, home to
 
 (global-set-key (kbd "<home>") 'custom/double-home)
 
+#+end_src
+
+*** previous-line
+
+#+begin_src emacs-lisp
+
 (defun custom/previous-line (cond)
   "If a region is active and the current mode is derived 
 from `prog-mode', arrow-up to `end-of-visual-line' of
@@ -575,6 +1043,12 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 
 (global-set-key (kbd "S-<home>") 'custom/region-up-register)
 
+#+end_src
+
+*** beginning-of-line-text
+
+#+begin_src emacs-lisp
+
 (defun custom/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
   (interactive)
@@ -584,6 +1058,13 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
     (apply orig-fun args)))
 
 (advice-add 'beginning-of-line-text :around #'custom/beginning-of-line-text)
+
+#+end_src
+
+** Code
+*** Defaults
+
+#+begin_src emacs-lisp
 
 ;; Unset secondary overlay key bindings
 (global-unset-key [M-mouse-1])
@@ -595,6 +1076,14 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 ;; Unset mouse bindings
 (global-unset-key [C-mouse-1])
 (global-unset-key [C-down-mouse-1])
+
+#+end_src
+
+*** TODO Multiple cursors
+
+- refactor config
+
+#+begin_src emacs-lisp
 
 ;; Multiple cursors
 (use-package multiple-cursors
@@ -613,6 +1102,14 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 (define-key mc/keymap (kbd "<escape>")       'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<down-mouse-1>")  nil)
+
+#+end_src
+*** TODO Smart comments
+
+- if region is active and cursor is in empty line, region is not commented
+- if last arrow command was up or left, move up, if last arrow command was right or down, move down
+
+#+begin_src emacs-lisp
 
 (defun custom/smart-comment ()
   "If a region is active, comment out all lines in the
@@ -642,8 +1139,22 @@ not empty. In any case, advance to next line."
 
 (global-set-key (kbd "M-;") #'custom/smart-comment)
 
+#+end_src
+
+** Screen
+*** Buffer
+**** Switching
+
+#+begin_src emacs-lisp
+
 ;; Counsel buffer switching
 (global-set-key (kbd "C-x b") 'counsel-switch-buffer)
+
+#+end_src
+
+**** Split and follow
+
+#+begin_src emacs-lisp
 
 ;; Split and follow
 (defun split-and-follow-horizontally ()
@@ -658,18 +1169,56 @@ not empty. In any case, advance to next line."
   (other-window 1))
 (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 
+#+end_src
+
+*** Window
+**** ace-window
+
+#+begin_src emacs-lisp
+
 ;; ace-window
 (global-set-key (kbd "C-x o") 'ace-window)
+
+#+end_src
+
+**** winner-mode
+
+#+begin_src emacs-lisp
 
 ;; winner mode
 (winner-mode)
 
+#+end_src
+
+**** balance-windows
+
+#+begin_src emacs-lisp
+
 (global-set-key (kbd "C-x -") 'balance-windows)
+
+#+end_src
+
+**** split-width-threshold
+
+#+begin_src emacs-lisp
 
 (setq split-width-threshold 70)
 
+#+end_src
+
+*** Frame
+
+#+begin_src emacs-lisp
+
 ;; Create new frame
 (global-set-key (kbd "C-S-n") 'make-frame-command)
+
+#+end_src
+
+** Escape
+*** Bindings
+
+#+begin_src emacs-lisp
 
 ;; Record last sent message
 (defvar last-message nil)
@@ -690,6 +1239,12 @@ key binding input with C-g."
 ;; Override the undefined key binding notice with a keyboard-quit
 (advice-add 'undefined :around #'custom/undefined-override)
 
+#+end_src
+
+*** Windows
+
+#+begin_src emacs-lisp
+
 (defun custom/escape-window-or-region ()
   "Set course of action based current window.
 
@@ -709,8 +1264,20 @@ mark if a region is active."
     (if (region-active-p)
 	      (deactivate-mark))))
 
+#+end_src
+
+*** Minibuffer
+
+#+begin_src emacs-lisp
+
 ;; Minibuffer escape
 (add-hook 'minibuffer-setup-hook (lambda () (local-set-key (kbd "<escape>") 'minibuffer-keyboard-quit)))
+
+#+end_src
+
+*** Double escape
+
+#+begin_src emacs-lisp
 
 ;; Global double escape
 (defvar custom/double-escape-timeout 1)
@@ -730,20 +1297,67 @@ kill the current buffer and delete its window."
 
 (global-set-key (kbd "<escape>") 'custom/double-escape)
 
+#+end_src
+
+
+* Git
+
+#+begin_src emacs-lisp
+
 (use-package magit)
+
+#+end_src
+
+* IDE
+
+#+begin_src emacs-lisp
 
 (require 'ide (concat config-directory "ide.el"))
 
+#+end_src
+
+* LaTeX
+* Org Mode
+
+#+begin_src emacs-lisp
+
 (require 'org (concat config-directory "org.el"))
+
+#+end_src
+
+* File management
+** dos2unix
+
+#+begin_src emacs-lisp
 
 ;; Transform all files in directory from DOS to Unix line breaks
 (defun custom/dos2unix (&optional dir)
   (let ((default-directory (or dir (file-name-directory buffer-file-name))))
     (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
+#+end_src
+
+
+* UI
+
+#+begin_src emacs-lisp
+
 ;; (require 'ui (concat config-directory "ui.el"))
 
+#+end_src
+
+* Theme
+
+#+begin_src emacs-lisp
+
 (require 'theme (concat config-directory "theme.el"))
+
+#+end_src
+
+** Theme-agnostic enabling hook
+
+
+#+begin_src emacs-lisp
 
 ;; Theme-agnostic enabling hook
 (defvar after-enable-theme-hook nil
@@ -755,6 +1369,12 @@ kill the current buffer and delete its window."
 
 ;; enable-theme
 (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
+
+#+end_src
+
+*** Org Mode
+
+#+begin_src emacs-lisp
 
 (defun custom/org-mode (orig-fun &rest args)
   (if (custom/in-mode "org-mode")
@@ -779,5 +1399,13 @@ kill the current buffer and delete its window."
 
 (add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
 
+#+end_src
+
+* Declare
+
+#+begin_src emacs-lisp
+
 ;; Conclude initialization file
 (provide 'home)
+
+#+end_src

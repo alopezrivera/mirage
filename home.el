@@ -19,6 +19,8 @@
     "~/.emacs.d/org.org"
     "~/.emacs.d/ide.org"
     "~/.emacs.d/init.org"
+    "~/.emacs.d/home.org"
+    "~/.emacs.d/wild.org"
     "~/.emacs.d/theme.org"
     "~/.emacs.d/backlog.org"
     "~/.emacs.d/org-diary.org"
@@ -36,7 +38,7 @@
 ;; Config directory
 (setq config-directory "~/.emacs.d/")
 
-;; straight
+;; straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
