@@ -16,14 +16,6 @@
 ;; Mode line
 (set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
 
-(defun custom/dark-line-numbers ()
-  "Line numbers for light themes."
-  (set-face-attribute 'line-number nil :foreground "#cfcfcf" :background "#262626"))
-
-(defun custom/light-line-numbers ()
-  "Line numbers for dark themes."
-  (set-face-attribute 'line-number nil :foreground "#878787" :background "#ededed"))
-
 ;; Symbol library
 (use-package all-the-icons
   :if (display-graphic-p))
@@ -177,24 +169,6 @@
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode))
 
-;; Bar
-(setq-default doom-modeline-bar-width 0.01)
-
-;; Color
-(defun custom/modeline-color (bg bg-in face face-in)
-  "Set the color of the mode line and blend the 
-`doom-modeline-bar' with the background."
-  (set-face-attribute 'mode-line          nil :foreground face    :background bg    :box nil)
-  (set-face-attribute 'mode-line-inactive nil :foreground face-in :background bg-in :box nil))
-
-(defun custom/dark-modeline ()
-  "Mode line for light themes."
-  (custom/modeline-color "#3d3d3d" "#000000" "#cfcfcf" "#cfcfcf"))
-
-(defun custom/light-modeline ()
-  "Mode line for dark themes."
-  (custom/modeline-color "#fff0ff" "#ededed" "#616161" "#878787"))
-
 (display-time-mode t)
 
 ;; Customize names displayed in mode line
@@ -230,8 +204,8 @@
 (setq org-modern-priority nil)
 
 (setq org-modern-list '((?+ . "-")
-			    (?- . "•")
-			    (?* . "▶")))
+			(?- . "•")
+			(?* . "▶")))
 
 ;; List indentation
 (setq-default org-list-indent-offset 1)
