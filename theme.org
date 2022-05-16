@@ -25,7 +25,7 @@
 
 #+begin_src emacs-lisp
 
-(defvar custom/theme-dark 'modus-vivendi)
+(setq custom/theme-dark 'modus-vivendi)
 
 #+end_src
 
@@ -33,7 +33,10 @@
 
 #+begin_src emacs-lisp
 
-(defvar custom/theme-light 'modus-operandi)
+(setq custom/theme-light 'modus-operandi)
+
+#+end_src
+
 
 ** Mode line
 
