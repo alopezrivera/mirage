@@ -8,16 +8,28 @@
 
 -----
 
+- org-modern
+   - unify
+
 - latex
    - class, style file access
       - https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te
    - latexmkrc -> load class from different directory
       - https://stackoverflow.com/a/64860253
    - org-latex-pdf-process -> latexmk
+   - beamer
+      - https://latex-beamer.com/tutorials/beamer-figure/
 - subrepo, multirepo
 - owo
 
 -----
+
+* org-capture
+
+- lecture
+  - specify directory
+  - template
+
 
 * Sessions
 ** TODO [#A] org-agenda
