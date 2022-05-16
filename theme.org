@@ -39,6 +39,7 @@
   (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
 	      ((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
   (setq mode-line-format modeline-status))
+(defvar custom/theme-light 'modus-operandi)
 
 (advice-add 'enable-theme :around #'custom/theme-specific-advice)
 
