@@ -532,7 +532,8 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 (defun custom/org-heading-margin-delete-post ()
   "Delete newline after new headings created by
 `respect-content' heading commands."
-  (apply 'delete-region (custom/org-subtree-region)))
+  (if (custom/org-subtree-blank)
+      (apply 'delete-region (custom/org-subtree-region))))
 
 #+end_src
 
