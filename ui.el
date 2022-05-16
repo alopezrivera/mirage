@@ -230,8 +230,8 @@
 (setq org-modern-priority nil)
 
 (setq org-modern-list '((?+ . "-")
-			      (?- . "•")
-			      (?* . "▶")))
+			    (?- . "•")
+			    (?* . "▶")))
 
 ;; List indentation
 (setq-default org-list-indent-offset 1)
