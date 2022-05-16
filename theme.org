@@ -73,6 +73,24 @@
 
 #+end_src
 
+
+* Toggle
+
+#+begin_src emacs-lisp
+
+(defun custom/theme-toggle ()
+  "Toggle between `custom/theme-dark' and `custom/theme-light' themes
+using `enable-theme'"
+  (interactive)
+  (let ((theme (nth 0 custom-enabled-themes)))
+    (cond ((string-equal theme custom/theme-light) (progn (disable-theme custom/theme-light)
+							  (enable-theme  custom/theme-dark)))
+	  (t                                       (progn (disable-theme custom/theme-dark)
+							  (enable-theme  custom/theme-light))))))
+
+(global-set-key (kbd "C-t") 'custom/theme-toggle)
+
+#+end_src
 #+begin_src emacs-lisp
 
 (setq calendar-latitude      52.00667)
