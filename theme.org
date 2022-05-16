@@ -61,6 +61,17 @@
 
 ** Line numbers
 
+#+begin_src emacs-lisp
+
+(defun custom/dark-line-numbers ()
+  "Line numbers for light themes."
+  (set-face-attribute 'line-number nil :foreground "#cfcfcf" :background "#262626"))
+
+(defun custom/light-line-numbers ()
+  "Line numbers for dark themes."
+  (set-face-attribute 'line-number nil :foreground "#878787" :background "#ededed"))
+
+#+end_src
 
 #+begin_src emacs-lisp
 
