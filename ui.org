@@ -369,8 +369,8 @@
 #+begin_src emacs-lisp
 
 (setq org-modern-list '((?+ . "-")
-			      (?- . "•")
-			      (?* . "▶")))
+			(?- . "•")
+			(?* . "▶")))
 
 #+end_src
 
