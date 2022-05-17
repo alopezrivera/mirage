@@ -43,11 +43,11 @@
 ;; Background buffers
 (defvar custom/background-buffers
   '("~/.emacs.d/ui.org"
+    "~/.emacs.d/wild.el"
     "~/.emacs.d/org.org"
     "~/.emacs.d/ide.org"
     "~/.emacs.d/init.org"
     "~/.emacs.d/home.org"
-    "~/.emacs.d/wild.org"
     "~/.emacs.d/theme.org"
     "~/.emacs.d/backlog.org"
     "~/.emacs.d/org-diary.org"
