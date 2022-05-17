@@ -741,7 +741,7 @@ kill the current buffer and delete its window."
   (let ((default-directory (or dir (file-name-directory buffer-file-name))))
     (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
-;; (require 'ui (concat config-directory "ui.el"))
+(require 'ui (concat config-directory "ui.el"))
 
 (require 'theme (concat config-directory "theme.el"))
 

@@ -1,6 +1,6 @@
 (setq light 'modus-operandi)
 
-(setq dark  'modus-vivendi)
+(setq dark  'sweet)
 
 (use-package modus-themes)
 (modus-themes-load-themes)
