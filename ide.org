@@ -2,8 +2,7 @@
 #+STARTUP: content
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./ide.el :mkdirp yes
 
-
-* Display
+* General
 ** Folding
 
 #+begin_src emacs-lisp
@@ -54,79 +53,52 @@
      (setq this-command 'hs-global-show))
     (_ (hs-hide-all))))
 
-(define-key hs-minor-mode-map (kbd "C-<return>") #'custom/hs-cycle)
+(define-key hs-minor-mode-map (kbd "C-\\") #'custom/hs-cycle)
 
 #+end_src
 
-** Syntax highlighting
-* Guidance
-** Language Server Protocol
+** Completion
 
 #+begin_src emacs-lisp
 
-;; lsp-mode
-(use-package lsp-mode)
-
-;; lsp-ui
-(use-package lsp-ui
-  :commands lsp-ui-mode)
+(straight-use-package 'company)
 
 #+end_src
 
-*** Python
-
-#+begin_src emacs-lisp
-
-;; Hook
-(add-hook 'python-mode-hook #'lsp-mode)
-
-#+end_src
-
-**** pyls
-
-#+begin_src emacs-lisp
-
-(lsp-register-custom-settings
- '(("pyls.plugins.pyls_mypy.enabled"   t t)
-   ("pyls.plugins.pyls_mypy.live_mode" nil t)
-   ("pyls.plugins.pyls_black.enabled"  t t)
-   ("pyls.plugins.pyls_isort.enabled"  t t)))
-
-#+end_src
-
-**** venvs
-
-#+begin_src emacs-lisp
-
-(use-package pyvenv)
-
-;; Default venv
-(setq pyvenv-workon "emacs")
-
-;; 
-(pyvenv-tracking-mode 1)
-
-#+end_src
-
-* Assistance
 ** Syntax checking
 
 #+begin_src emacs-lisp
 
-;; flycheck
+(straight-use-package 'flycheck)
+
+(add-hook 'prog-mode-hook #'flycheck-mode)
 
 #+end_src
 
-** Autocompletion
+
+* Specific
+** Python
+*** elpy
 
 #+begin_src emacs-lisp
 
-;; company-mode
+(straight-use-package 'elpy)
+
+(add-hook 'python-mode-hook #'elpy-enable)
 
 #+end_src
 
-* Project interaction
+*** pyenv
 
+#+begin_src emacs-lisp
+
+(straight-use-package 'pyenv)
+
+#+end_src
+
+
+
+* Project interaction
 ** projectile
 
 #+begin_src emacs-lisp
@@ -135,13 +107,6 @@
 
 #+end_src
 
-** helm-projectile
-
-#+begin_src emacs-lisp
-
-;; helm projectile
-
-#+end_src
 
 * Declare
 
