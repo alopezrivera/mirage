@@ -6,7 +6,7 @@
 
 (setq light 'modus-operandi)
 
-(setq dark  'modus-vivendi)
+(setq dark  'sweet)
 
 #+end_src
 
