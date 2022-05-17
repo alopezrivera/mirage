@@ -953,6 +953,15 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
+** List indentation
+
+#+begin_src emacs-lisp
+
+;; List indentation
+(setq-default org-list-indent-offset 1)
+
+#+end_src
+
 ** org-indent--compute-prefixes
 
 #+begin_src emacs-lisp
