@@ -167,6 +167,8 @@
 ;; (straight-use-package 'flycheck)
 
 ;; (add-hook 'prog-mode-hook #'flycheck-mode)
+;; Python 3
+(setq elpy-rpc-python-command "python3")
 
 #+end_src
 
