@@ -192,23 +192,21 @@
 
 (add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
 
+(plist-put org-format-latex-options :scale 1.5)
+
+;; Change ellipsis ("...") to remove clutter
+(setq org-ellipsis " ♢")
+
 (use-package org-modern)
 
 (add-hook 'org-mode-hook #'org-modern-mode)
 (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
 
-;; Tags
-(setq org-modern-tag nil)
-
-;; Priorities
-(setq org-modern-priority nil)
-
 (setq org-modern-list '((?+ . "-")
-			(?- . "•")
-			(?* . "▶")))
+ 		  	     (?- . "•")
+ 			     (?* . "▶")))
 
-;; List indentation
-(setq-default org-list-indent-offset 1)
+(setq org-modern-checkbox nil)
 
 ;; Vertical table line width
 (setq org-modern-table-vertical 1)
@@ -216,10 +214,11 @@
 ;; Horizontal table line width
 (setq org-modern-table-horizontal 1)
 
-;; Change ellipsis ("...") to remove clutter
-(setq org-ellipsis " ♢")
+;; Tags
+(setq org-modern-tag nil)
 
-(plist-put org-format-latex-options :scale 1.5)
+;; Priorities
+(setq org-modern-priority nil)
 
 ;; Provide theme
 (provide 'ui)

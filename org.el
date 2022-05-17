@@ -523,6 +523,9 @@ function that sets `deactivate-mark' to t."
 
 (font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
 
+;; List indentation
+(setq-default org-list-indent-offset 1)
+
 (defun custom/org-indent--compute-prefixes ()
   "Recompute line prefixes for regular text to
 match the indentation of the parent heading."
