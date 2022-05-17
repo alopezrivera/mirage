@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 
 (setq config-directory "~/.emacs.d/")
-(setq startup-buffers '("~/.emacs.d/wild.el"))
+(setq startup-buffers  '("~/.emacs.d/wild.el"))
 
 (global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
 "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")))
@@ -13,6 +13,9 @@
 (tool-bar-mode -1)
 (tooltip-mode -1)
 (menu-bar-mode -1)
+
+;; dialogues
+(advice-add 'yes-or-no-p :override #'y-or-n-p)
 
 ;; startup buffers
 (dolist (startup-b startup-buffers)
@@ -44,45 +47,8 @@
 ;; magit
 (straight-use-package 'magit)
 
-;; elpy
-(straight-use-package 'elpy)
-(add-hook 'python-mode-hook #'elpy-enable)
-
-;; flycheck
-(straight-use-package 'flycheck)
-(add-hook 'prog-mode-hook #'flycheck-mode)
-
-;; hideshow
-(require 'hideshow)
-(add-hook 'prog-mode-hook #'hs-minor-mode)
-
-(defun custom/hs-cycle (&optional level)
-  (interactive "p")
-  (save-excursion
-    (let (message-log-max (inhibit-message t))
-      (if (= level 1)
-          (pcase last-command
-            ('hs-cycle
-             (hs-hide-level 1)
-           (setq this-command 'hs-cycle-children))
-            ('hs-cycle-children
-             ;; TODO: Fix this case. `hs-show-block' needs to be
-             ;; called twice to open all folds of the parent
-             ;; block.
-             (save-excursion (hs-show-block))
-             (hs-show-block)
-             (setq this-command 'hs-cycle-subtree))
-            ('hs-cycle-subtree
-             (hs-hide-block))
-            (_
-             (if (not (hs-already-hidden-p))
-		 (hs-hide-block)
-               (hs-hide-level 1)
-               (setq this-command 'hs-cycle-children))))
-	(hs-hide-level level)
-	(setq this-command 'hs-hide-level)))))
-
-(define-key hs-minor-mode-map (kbd "C-\\") #'custom/hs-cycle)
+;; ide
+(require 'ide (concat config-directory "ide.el"))
 
 ;; declare
 (provide 'wild)

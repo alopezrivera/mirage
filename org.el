@@ -212,9 +212,8 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 	        (custom/org-relative-line-heading-folded))
       (progn (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
 		       (progn (beginning-of-visual-line) (end-of-line)))
-	           (if (custom/org-heading-has-children)
-		       (org-show-children)
-		     (org-show-subtree)))))
+	           (org-show-entry)
+	           (if (custom/org-heading-has-children) (org-show-children)))))
 
 (defun custom/org-undo ()
   (interactive)
