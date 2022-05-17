@@ -25,6 +25,7 @@
 #+begin_src emacs-lisp
 
 (straight-use-package 'sweet-theme)
+(require 'sweet-theme)
 
 #+end_src
 
