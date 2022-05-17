@@ -1022,7 +1022,12 @@ buffer is already narrowed, widen buffer."
 
 * Navigation
 ** Text
-*** end
+*** TODO end
+
+- in wrapped line
+   - end of visual line -> end of line
+- else
+   - end of line -> end of visual line
 
 #+begin_src emacs-lisp
 
