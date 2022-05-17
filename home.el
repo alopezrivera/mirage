@@ -16,11 +16,11 @@
 ;; Background buffers
 (defvar custom/background-buffers
   '("~/.emacs.d/ui.org"
+    "~/.emacs.d/wild.el"
     "~/.emacs.d/org.org"
     "~/.emacs.d/ide.org"
     "~/.emacs.d/init.org"
     "~/.emacs.d/home.org"
-    "~/.emacs.d/wild.org"
     "~/.emacs.d/theme.org"
     "~/.emacs.d/backlog.org"
     "~/.emacs.d/org-diary.org"
@@ -741,7 +741,7 @@ kill the current buffer and delete its window."
   (let ((default-directory (or dir (file-name-directory buffer-file-name))))
     (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
-(require 'ui (concat config-directory "ui.el"))
+;; (require 'ui (concat config-directory "ui.el"))
 
 (require 'theme (concat config-directory "theme.el"))
 

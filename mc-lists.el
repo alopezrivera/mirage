@@ -61,6 +61,7 @@
 	mouse-start-rectangle
 	org-babel-tangle
 	org-metadown
+	org-open-at-mouse
 	swiper
 	swiper-mc
 	widen
