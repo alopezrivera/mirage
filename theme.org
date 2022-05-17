@@ -150,6 +150,23 @@ using `enable-theme'"
 
 #+end_src
 
+** Circadian
+
+#+begin_src emacs-lisp
+
+(setq calendar-latitude      52.00667)
+(setq calendar-longitude     4.355561)
+(setq calendar-loadtion-name "Delft")
+(setq calendar-standard-time-zone-name "CEST")
+(setq calendar-daylight-time-zone-name "CET")
+
+(use-package circadian
+  :config
+  (setq circadian-themes `((:sunrise . ,light)  
+			   (:sunset  . ,dark)))
+  (circadian-setup))
+
+#+end_src
 
 * Declare
 
