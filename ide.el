@@ -36,38 +36,20 @@
      (setq this-command 'hs-global-show))
     (_ (hs-hide-all))))
 
-(define-key hs-minor-mode-map (kbd "C-<return>") #'custom/hs-cycle)
+(define-key hs-minor-mode-map (kbd "C-\\") #'custom/hs-cycle)
 
-;; lsp-mode
-(use-package lsp-mode)
+(straight-use-package 'company)
 
-;; lsp-ui
-(use-package lsp-ui
-  :commands lsp-ui-mode)
+(straight-use-package 'flycheck)
 
-;; Hook
-(add-hook 'python-mode-hook #'lsp-mode)
+(add-hook 'prog-mode-hook #'flycheck-mode)
 
-(lsp-register-custom-settings
- '(("pyls.plugins.pyls_mypy.enabled"   t t)
-   ("pyls.plugins.pyls_mypy.live_mode" nil t)
-   ("pyls.plugins.pyls_black.enabled"  t t)
-   ("pyls.plugins.pyls_isort.enabled"  t t)))
+(straight-use-package 'elpy)
 
-(use-package pyvenv)
+(add-hook 'python-mode-hook #'elpy-enable)
 
-;; Default venv
-(setq pyvenv-workon "emacs")
-
-;; 
-(pyvenv-tracking-mode 1)
-
-;; flycheck
-
-;; company-mode
+(straight-use-package 'pyenv)
 
 (straight-use-package 'projectile)
-
-;; helm projectile
 
 (provide 'ide)
