@@ -268,7 +268,62 @@ kill ring."
 (global-set-key (kbd "<mouse-3>")        'custom/kill-ring-mouse)
 (global-set-key (kbd "<down-mouse-3>")    nil)
 
+;; Unset secondary overlay key bindings
+(global-unset-key [M-mouse-1])
+(global-unset-key [M-drag-mouse-1])
+(global-unset-key [M-mouse-3])
+(global-unset-key [M-mouse-2])
+
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
+
+;; Multiple cursors
+(use-package multiple-cursors)
+(require 'multiple-cursors)
+
+;; mc-lists
+(setq mc/list-file "~/.emacs.d/mc-lists.el")
+
+;; Create cursors
+(global-set-key (kbd "C-.")         'mc/mark-next-like-this)
+(global-set-key (kbd "C-;")         'mc/mark-previous-like-this)
+(global-set-key (kbd "C-<mouse-1>") 'mc/add-cursor-on-click)
+(global-unset-key [C-down-mouse-1]) ; necessary
+
+;; Return as usual
+(define-key mc/keymap (kbd "<return>")       'electric-newline-and-maybe-indent)
+
+;; Exit multiple-cursors-mode
+(define-key mc/keymap (kbd "<escape>")       'multiple-cursors-mode)
+(define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
+(define-key mc/keymap (kbd "<down-mouse-1>")  nil) ; necessary
+
+(defun custom/smart-comment ()
+  "If a region is active, comment out all lines in the
+region. Otherwise, comment out current line if it is
+not empty. In any case, advance to next line."
+  (interactive)
+  (let (beg end)
+    ;; If a region is active
+    (if (region-active-p)
+	      ;; If the beginning and end of the region are in
+	      ;; the same line, select entire line
+	      (if (= (count-lines (region-beginning) (region-end)) 1)
+		  (setq beg (line-beginning-position) end (line-end-position))
+		;; Else, select region from the start of its first
+		;; line to the end of its last.
+		(setq beg (save-excursion (goto-char (region-beginning)) (line-beginning-position))
+		      end (save-excursion (goto-char (region-end)) (line-end-position))))
+      ;; Else, select line
+      (setq beg (line-beginning-position) end (line-end-position)))
+
+    ;; Comment or uncomment region
+    ;; If Org Mode is active
+    (if (not (custom/relative-line-empty))
+	      (comment-or-uncomment-region beg end))
+    ;; Move to the beginning of the next line
+    (beginning-of-line-text 2)))
+
+(global-set-key (kbd "M-;") #'custom/smart-comment)
 
 ;; Ensure rectangular-region-mode is loaded
 (require 'rectangular-region-mode)
@@ -586,63 +641,6 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
     (apply orig-fun args)))
 
 (advice-add 'beginning-of-line-text :around #'custom/beginning-of-line-text)
-
-;; Unset secondary overlay key bindings
-(global-unset-key [M-mouse-1])
-(global-unset-key [M-drag-mouse-1])
-(global-unset-key [M-down-mouse-1])
-(global-unset-key [M-mouse-3])
-(global-unset-key [M-mouse-2])
-
-;; Unset mouse bindings
-(global-unset-key [C-mouse-1])
-(global-unset-key [C-down-mouse-1])
-
-;; Multiple cursors
-(use-package multiple-cursors
-  :bind (("C-."         . mc/mark-next-like-this)
-	     ("C-;"         . mc/mark-previous-like-this)
-	     ("C-<mouse-1>" . mc/add-cursor-on-click)))
-(require 'multiple-cursors)
-
-;; Unknown commands file
-(setq mc/list-file "~/.emacs.d/mc-lists.el")
-
-;; Return as usual
-(define-key mc/keymap (kbd "<return>")       'electric-newline-and-maybe-indent)
-
-;; Exit multiple-cursors-mode
-(define-key mc/keymap (kbd "<escape>")       'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<down-mouse-1>")  nil)
-
-(defun custom/smart-comment ()
-  "If a region is active, comment out all lines in the
-region. Otherwise, comment out current line if it is
-not empty. In any case, advance to next line."
-  (interactive)
-  (let (beg end)
-    ;; If a region is active
-    (if (region-active-p)
-	      ;; If the beginning and end of the region are in
-	      ;; the same line, select entire line
-	      (if (= (count-lines (region-beginning) (region-end)) 1)
-		  (setq beg (line-beginning-position) end (line-end-position))
-		;; Else, select region from the start of its first
-		;; line to the end of its last.
-		(setq beg (save-excursion (goto-char (region-beginning)) (line-beginning-position))
-		      end (save-excursion (goto-char (region-end)) (line-end-position))))
-      ;; Else, select line
-      (setq beg (line-beginning-position) end (line-end-position)))
-
-    ;; Comment or uncomment region
-    ;; If Org Mode is active
-    (if (not (custom/relative-line-empty))
-	      (comment-or-uncomment-region beg end))
-    ;; Move to the beginning of the next line
-    (beginning-of-line-text 2)))
-
-(global-set-key (kbd "M-;") #'custom/smart-comment)
 
 ;; Counsel buffer switching
 (global-set-key (kbd "C-x b") 'counsel-switch-buffer)

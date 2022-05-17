@@ -7,6 +7,7 @@
 	custom/del-backward
 	custom/double-end
 	custom/double-home
+	custom/nimble-delete-backward
 	custom/nimble-delete-forward
 	custom/org-control-return
 	custom/org-double-end
@@ -19,11 +20,13 @@
 	custom/smart-mouse-rectangle
 	electric-newline-and-maybe-indent
 	end-of-visual-line
+	eval-last-sexp
 	keyboard-escape-quit
 	kill-rectangle
 	kill-region
 	org-babel-execute-src-block
 	org-backward-sentence
+	org-ctrl-c-ctrl-c
 	org-cycle
 	org-delete-char
 	org-end-of-line
@@ -39,9 +42,6 @@
 	rectangle-next-line
 	rectangle-previous-line
 	rectangle-right-char
-	custom/nimble-delete-backward
-	eval-last-sexp
-	org-ctrl-c-ctrl-c
 	))
 
 (setq mc/cmds-to-run-once
@@ -49,6 +49,7 @@
 	clm/toggle-command-log-buffer
 	counsel-M-x
 	custom/double-escape
+	custom/mouse-rectangle
 	custom/search-in-region
 	custom/smart-search
 	custom/swiper-multiple-cursors
