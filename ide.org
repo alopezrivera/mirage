@@ -2,22 +2,18 @@
 #+STARTUP: content
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./ide.el :mkdirp yes
 
-* General
-** Folding
-
 #+begin_src emacs-lisp
 
+;; company
+(straight-use-package 'company)
+
+;; flycheck
+(straight-use-package 'flycheck)
+(add-hook 'prog-mode-hook #'flycheck-mode)
+
+;; hideshow
 (require 'hideshow)
-
 (add-hook 'prog-mode-hook #'hs-minor-mode)
-
-#+end_src
-
-*** TODO Cycle
-
-- fold back in 1 when no children
-
-#+begin_src emacs-lisp
 
 (defun custom/hs-cycle (&optional level)
   (interactive "p")
@@ -45,33 +41,132 @@
 	(hs-hide-level level)
 	(setq this-command 'hs-hide-level)))))
 
-(defun custom/hs-global-cycle ()
-  (interactive)
-  (pcase last-command
-    ('hs-global-cycle
-     (save-excursion (hs-show-all))
-     (setq this-command 'hs-global-show))
-    (_ (hs-hide-all))))
-
 (define-key hs-minor-mode-map (kbd "C-\\") #'custom/hs-cycle)
 
-#+end_src
+;; elpy
+(straight-use-package 'elpy)
+(setq elpy-rpc-backend "jedi")
+(setq elpy-rpc-python-command "python3")
+(elpy-enable)
 
-** Completion
+#+end_src
 
 #+begin_src emacs-lisp
 
-(straight-use-package 'company)
+;; (straight-use-package 'flycheck)
+
+;; (use-package elpy
+;;     :straight t
+;;     :bind
+;;     (:map elpy-mode-map
+;;           ("C-M-n" . elpy-nav-forward-block)
+;;           ("C-M-p" . elpy-nav-backward-block))
+;;     :hook ((elpy-mode . flycheck-mode)
+;;            (elpy-mode . (lambda ()
+;;                           (set (make-local-variable 'company-backends)
+;;                                '((elpy-company-backend :with company-yasnippet))))))
+;;     :init
+;;     (elpy-enable)
+;;     :config
+;;     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+;;     (setq elpy-rpc-python-command "python3")
+;;     (setq elpy-rpc-backend "jedi")
+;;     (setq elpy-rpc-timeout 2))
 
 #+end_src
+
+** Company
+
+#+begin_src emacs-lisp
+
+;; (straight-use-package 'company)
+;; (straight-use-package 'company-jedi)
+
+;; (require 'company)
+
+;; (defun custom/company-backend ()
+  ;; (add-to-list 'company-backends 'company-jedi))
+
+;; (add-hook 'python-mode-hook #'custom/company-backend)
+
+#+end_src
+
+** Jedi
+
+#+begin_src emacs-lisp
+
+;; (straight-use-package 'jedi)
+
+;; (add-hook 'python-mode-hook 'jedi:setup)
+
+#+end_src
+
+
+* General
+** Folding
+
+#+begin_src emacs-lisp
+
+;; (require 'hideshow)
+
+;; (add-hook 'prog-mode-hook #'hs-minor-mode)
+
+#+end_src
+
+*** TODO Cycle
+
+- fold back in 1 when no children
+
+#+begin_src emacs-lisp
+
+  ;; (defun custom/hs-cycle (&optional level)
+    ;; (interactive "p")
+    ;; (save-excursion
+      ;; (let (message-log-max (inhibit-message t))
+	;; (if (= level 1)
+	    ;; (pcase last-command
+	      ;; ('hs-cycle
+	       ;; (hs-hide-level 1)
+	     ;; (setq this-command 'hs-cycle-children))
+	      ;; ('hs-cycle-children
+	       ;; TODO: Fix this case. `hs-show-block' needs to be
+	       ;; called twice to open all folds of the parent
+	       ;; block.
+	       ;; (save-excursion (hs-show-block))
+	       ;; (hs-show-block)
+	       ;; (setq this-command 'hs-cycle-subtree))
+	      ;; ('hs-cycle-subtree
+	       ;; (hs-hide-block))
+	      ;; (_
+	       ;; (if (not (hs-already-hidden-p))
+		   ;; (hs-hide-block)
+		 ;; (hs-hide-level 1)
+		 ;; (setq this-command 'hs-cycle-children))))
+	  ;; (hs-hide-level level)
+	  ;; (setq this-command 'hs-hide-level)))))
+
+  ;; (defun custom/hs-global-cycle ()
+    ;; (interactive)
+    ;; (pcase last-command
+      ;; ('hs-global-cycle
+       ;; (save-excursion (hs-show-all))
+       ;; (setq this-command 'hs-global-show))
+      ;; (_ (hs-hide-all))))
+
+  ;; (define-key hs-minor-mode-map (kbd "C-\\") #'custom/hs-cycle)
+
+#+end_src
+
+** Navigation
+
 
 ** Syntax checking
 
 #+begin_src emacs-lisp
 
-(straight-use-package 'flycheck)
+;; (straight-use-package 'flycheck)
 
-(add-hook 'prog-mode-hook #'flycheck-mode)
+;; (add-hook 'prog-mode-hook #'flycheck-mode)
 
 #+end_src
 
@@ -82,9 +177,9 @@
 
 #+begin_src emacs-lisp
 
-(straight-use-package 'elpy)
-
-(add-hook 'python-mode-hook #'elpy-enable)
+;; (straight-use-package 'elpy)
+;; (setq elpy-rpc-backend "jedi")
+;; (elpy-enable)
 
 #+end_src
 
