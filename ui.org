@@ -334,12 +334,11 @@
 
 #+end_src
 
-*** Indentation
+**** Checkboxes
 
 #+begin_src emacs-lisp
 
-;; List indentation
-(setq-default org-list-indent-offset 1)
+(setq org-modern-checkbox nil)
 
 #+end_src
 
