@@ -6,6 +6,7 @@
 (modus-themes-load-themes)
 
 (straight-use-package 'sweet-theme)
+(require 'sweet-theme)
 
 ;; Bar
 (setq-default doom-modeline-bar-width 0.01)
