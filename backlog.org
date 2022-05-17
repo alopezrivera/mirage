@@ -469,6 +469,22 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 * IDE
 
+- references
+   - https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a
+      - elpy
+      - company
+      - formatting
+      - pyenv
+   - https://www.youtube.com/watch?v=Yah69AfYP34(t)
+      - java
+      - projectile
+      - flycheck
+      - yasnippet
+      - dap-mode
+      - helm-lsp
+      - helm
+
+
 - lsp-mode
 - pipenv
    - https://github.com/pwalsh/pipenv.el
