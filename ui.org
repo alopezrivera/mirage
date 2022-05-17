@@ -300,61 +300,16 @@
 
 #+end_src
 
-*** org-modern
+** LaTeX
+*** Equation preview scale
 
 #+begin_src emacs-lisp
 
-(use-package org-modern)
-
-(add-hook 'org-mode-hook #'org-modern-mode)
-(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+(plist-put org-format-latex-options :scale 1.5)
 
 #+end_src
 
-**** Defaults
-
-#+begin_src emacs-lisp
-
-;; Tags
-(setq org-modern-tag nil)
-
-;; Priorities
-(setq org-modern-priority nil)
-
-#+end_src
-
-** Lists
-*** Markers
-
-#+begin_src emacs-lisp
-
-(setq org-modern-list '((?+ . "-")
-			(?- . "•")
-			(?* . "▶")))
-
-#+end_src
-
-**** Checkboxes
-
-#+begin_src emacs-lisp
-
-(setq org-modern-checkbox nil)
-
-#+end_src
-
-** Tables
-
-#+begin_src emacs-lisp
-
-;; Vertical table line width
-(setq org-modern-table-vertical 1)
-
-;; Horizontal table line width
-(setq org-modern-table-horizontal 1)
-
-#+end_src
-
-** Ellipsis
+** Ellipses
 
 Candidates:
 - triangles
@@ -378,12 +333,57 @@ Candidates:
 
 #+end_src
 
-** LaTeX
-*** Equation preview scale
+** org-modern
 
 #+begin_src emacs-lisp
 
-(plist-put org-format-latex-options :scale 1.5)
+(use-package org-modern)
+
+(add-hook 'org-mode-hook #'org-modern-mode)
+(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+
+#+end_src
+
+*** Lists
+**** Markers
+
+#+begin_src emacs-lisp
+
+(setq org-modern-list '((?+ . "-")
+ 		  	     (?- . "•")
+ 			     (?* . "▶")))
+
+#+end_src
+
+**** Checkboxes
+
+#+begin_src emacs-lisp
+
+(setq org-modern-checkbox nil)
+
+#+end_src
+
+*** Tables
+
+#+begin_src emacs-lisp
+
+;; Vertical table line width
+(setq org-modern-table-vertical 1)
+
+;; Horizontal table line width
+(setq org-modern-table-horizontal 1)
+
+#+end_src
+
+*** Highlights
+
+#+begin_src emacs-lisp
+
+;; Tags
+(setq org-modern-tag nil)
+
+;; Priorities
+(setq org-modern-priority nil)
 
 #+end_src
 
