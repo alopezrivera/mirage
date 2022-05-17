@@ -1,36 +1,11 @@
-(use-package modus-themes)
+(setq light 'modus-operandi)
 
+(setq dark  'modus-vivendi)
+
+(use-package modus-themes)
 (modus-themes-load-themes)
 
 (straight-use-package 'sweet-theme)
-
-(setq custom/theme-dark 'modus-vivendi)
-
-(setq custom/theme-light 'modus-operandi)
-
-(defun custom/theme-toggle ()
-  "Toggle between `custom/theme-dark' and `custom/theme-light' themes
-using `enable-theme'"
-  (interactive)
-  (let ((theme (nth 0 custom-enabled-themes)))
-    (cond ((string-equal theme custom/theme-light) (progn (disable-theme custom/theme-light)
-							  (enable-theme  custom/theme-dark)))
-	  (t                                       (progn (disable-theme custom/theme-dark)
-							  (enable-theme  custom/theme-light))))))
-
-(global-set-key (kbd "C-t") 'custom/theme-toggle)
-
-(setq calendar-latitude      52.00667)
-(setq calendar-longitude     4.355561)
-(setq calendar-loadtion-name "Delft")
-(setq calendar-standard-time-zone-name "CEST")
-(setq calendar-daylight-time-zone-name "CET")
-
-(use-package circadian
-  :config
-  (setq circadian-themes '((:sunrise . custom/theme-light)
-                           (:sunset  . custom/theme-dark)))
-  (circadian-setup))
 
 ;; Bar
 (setq-default doom-modeline-bar-width 0.01)
@@ -67,13 +42,42 @@ using `enable-theme'"
   (custom/dark-line-numbers))
 
 (defun custom/theme-specific-advice (_orig-fun &rest args)
+  "Apply theme-specific advice when enabling themes, and
+preserve modeline status through theme changes."
   (setq modeline-status mode-line-format)
   (apply _orig-fun args)
   (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
 	((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
   (setq mode-line-format modeline-status))
 
-(advice-add 'enable-theme :around #'custom/theme-specific-advice)
+;; enable-theme
+(dolist (load-fn '(enable-theme
+		   circadian-enable-theme))
+  (advice-add load-fn :around #'custom/theme-specific-advice))
+
+(defun custom/theme-toggle ()
+  "Toggle between `dark' and `light' themes
+using `enable-theme'"
+  (interactive)
+  (let ((theme (nth 0 custom-enabled-themes)))
+    (cond ((string-equal theme light) (progn (disable-theme light)
+							  (enable-theme  dark)))
+	  (t                                       (progn (disable-theme dark)
+							  (enable-theme  light))))))
+
+(global-set-key (kbd "C-t") 'custom/theme-toggle)
+
+(setq calendar-latitude      52.00667)
+(setq calendar-longitude     4.355561)
+(setq calendar-loadtion-name "Delft")
+(setq calendar-standard-time-zone-name "CEST")
+(setq calendar-daylight-time-zone-name "CET")
+
+(use-package circadian
+  :config
+  (setq circadian-themes `((:sunrise . ,light)  
+			   (:sunset  . ,dark)))
+  (circadian-setup))
 
 ;; Provide theme
 (provide 'theme)
