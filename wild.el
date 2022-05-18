@@ -1,11 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 
-(setq config-directory "~/.emacs.d/")
-(setq startup-buffers  '("~/.emacs.d/wild.el"))
-
-(global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
-"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")))
-
 ;; display
 (setq-default frame-title-format '("Emacs [%m] %b"))
 (setq inhibit-startup-message t)
@@ -17,9 +11,15 @@
 ;; dialogues
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 
-;; startup buffers
-(dolist (startup-b startup-buffers)
-  (find-file-noselect startup-b))
+;; background buffers
+(defvar custom/background-buffers
+  '("~/.emacs.d/wild.el"))
+
+(defun custom/spawn-startup-buffers ()
+  (cl-loop for buffer in (append custom/startup-buffers custom/background-buffers)
+	   collect (find-file-noselect buffer)))
+
+(add-hook 'after-init-hook #'custom/spawn-startup-buffers)
 
 ;; straight.el
 (defvar bootstrap-version)
@@ -46,6 +46,17 @@
 
 ;; magit
 (straight-use-package 'magit)
+
+;; winner
+(winner-mode)
+
+;; workgroups
+(straight-use-package 'workgroups)
+(require 'workgroups)
+
+(setq wg-prefix-key (kbd "C-c g"))
+
+(workgroups-mode 1)
 
 ;; ide
 (require 'ide (concat config-directory "ide.el"))
