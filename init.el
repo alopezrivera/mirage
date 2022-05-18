@@ -5,6 +5,12 @@
 
 (setq config-directory "~/.emacs.d/")
 
+(defvar custom/startup-buffers
+  '("/home/emacs/test.org"
+    "/home/dfki/backlog.org" "/mnt/c/Users/xXY4n/Professional/_Employment/DFKI/Repos/hopping_leg/software/python/hopping_leg/motors/abstract_motor.py"))
+
+(setq initial-buffer-choice "/home/dfki/backlog.org")
+
 (require 'home (concat config-directory "home.el"))
 
 ;; (require 'wild (concat config-directory "wild.el"))

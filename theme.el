@@ -1,12 +1,28 @@
-(setq light 'modus-operandi)
+(setq light    'nano-light)
 
-(setq dark  'sweet)
+(setq dark     'modus-vivendi)
+
+(setq modeline 'doom-modeline-mode)
+
+(straight-use-package 'nano-theme)
+(require 'nano-theme)
+
+(use-package doom-themes)
 
 (use-package modus-themes)
 (modus-themes-load-themes)
 
 (straight-use-package 'sweet-theme)
 (require 'sweet-theme)
+
+;; mode line
+(add-hook 'after-init-hook modeline)
+
+;; doom-modeline
+(straight-use-package 'doom-modeline)
+
+;; nano-modeline
+(straight-use-package 'nano-modeline)
 
 ;; Bar
 (setq-default doom-modeline-bar-width 0.01)
@@ -34,13 +50,13 @@
   "Line numbers for dark themes."
   (set-face-attribute 'line-number nil :foreground "#878787" :background "#ededed"))
 
-(defun custom/operandi-advice ()
-  (custom/light-modeline)
-  (custom/light-line-numbers))
-
 (defun custom/vivendi-advice ()
   (custom/dark-modeline)
   (custom/dark-line-numbers))
+
+(defun custom/operandi-advice ()
+  (custom/light-modeline)
+  (custom/light-line-numbers))
 
 (defun custom/theme-specific-advice (_orig-fun &rest args)
   "Apply theme-specific advice when enabling themes, and
@@ -48,12 +64,11 @@ preserve modeline status through theme changes."
   (setq modeline-status mode-line-format)
   (apply _orig-fun args)
   (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
-	((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
+ 	   ((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
   (setq mode-line-format modeline-status))
 
 ;; enable-theme
-(dolist (load-fn '(enable-theme
-		   circadian-enable-theme))
+(dolist (load-fn '(load-theme))
   (advice-add load-fn :around #'custom/theme-specific-advice))
 
 (defun custom/theme-toggle ()
@@ -62,9 +77,9 @@ using `enable-theme'"
   (interactive)
   (let ((theme (nth 0 custom-enabled-themes)))
     (cond ((string-equal theme light) (progn (disable-theme light)
-							  (enable-theme  dark)))
-	  (t                                       (progn (disable-theme dark)
-							  (enable-theme  light))))))
+					        (load-theme    dark)))
+	     (t                          (progn (disable-theme dark)
+						(load-theme    light))))))
 
 (global-set-key (kbd "C-t") 'custom/theme-toggle)
 
@@ -77,7 +92,7 @@ using `enable-theme'"
 (use-package circadian
   :config
   (setq circadian-themes `((:sunrise . ,light)  
-			   (:sunset  . ,dark)))
+			      (:sunset  . ,dark)))
   (circadian-setup))
 
 ;; Provide theme

@@ -165,10 +165,6 @@
 ;; Highlight HTML color strings in their own color
 (use-package rainbow-mode)
 
-;; Install doom-modeline
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode))
-
 (display-time-mode t)
 
 ;; Customize names displayed in mode line
