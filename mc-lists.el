@@ -18,6 +18,7 @@
 	custom/rectangular-region-multiple-cursors
 	custom/smart-comment
 	custom/smart-mouse-rectangle
+	dired-flag-file-deletion
 	electric-newline-and-maybe-indent
 	end-of-visual-line
 	eval-last-sexp
