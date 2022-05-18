@@ -4,13 +4,32 @@
 
 #+begin_src emacs-lisp
 
-(setq light 'modus-operandi)
+(setq light    'nano-light)
 
-(setq dark  'sweet)
+(setq dark     'modus-vivendi)
+
+(setq modeline 'doom-modeline-mode)
 
 #+end_src
 
-* Load
+* Themes
+** Nano
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'nano-theme)
+(require 'nano-theme)
+
+#+end_src
+
+** Doom
+
+#+begin_src emacs-lisp
+
+(use-package doom-themes)
+
+#+end_src
+
 ** Modus
 
 #+begin_src emacs-lisp
