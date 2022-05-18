@@ -550,6 +550,14 @@ kill ring."
 
 #+end_src
 
+** TODO Regions
+
+- insert-char in region
+   - delete, insert char
+- arrow exit
+   - <right> -> right of region
+   - <left>  -> left of region
+
 ** Selection
 *** Defaults
 
@@ -666,7 +674,13 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
-*** Multiple cursors
+*** TODO Multiple cursors
+
+- arrow exit
+   - <right>
+      - right
+   - <left>
+      - left
 
 #+begin_src emacs-lisp
 
