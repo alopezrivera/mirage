@@ -1,5 +1,10 @@
-#+title:Theme
 #+STARTUP: overview
+#+FILETAGS: :emacs:
+
+
+
+
+#+title:Theme
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./theme.el :mkdirp yes
 
 #+begin_src emacs-lisp

@@ -1,6 +1,10 @@
-#+title:Org Mode
 #+STARTUP: overview
 #+FILETAGS: :emacs:
+
+
+
+
+#+title:Org Mode
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./org.el :mkdirp yes
 
 #+begin_src emacs-lisp

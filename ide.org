@@ -1,5 +1,10 @@
+#+STARTUP: overview
+#+FILETAGS: :emacs:
+
+
+
+
 #+title:IDE
-#+STARTUP: content
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./ide.el :mkdirp yes
 
 * General

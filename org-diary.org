@@ -1,6 +1,10 @@
-#+title:Org Diary
 #+STARTUP: overview
 #+FILETAGS: :emacs:
+
+
+
+
+#+title:Org Diary
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./org-diary.el :mkdirp yes
 
 Org Mode paragraphs hitch-hiking their way to first class structural

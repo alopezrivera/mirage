@@ -1,12 +1,10 @@
-#+begin_src emacs-lisp :tangle nil
-
-(global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
-"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")))
-
-#+end_src
-#+title:Emacs - Home
 #+STARTUP: overview
 #+FILETAGS: :emacs:
+
+
+
+
+#+title:Emacs - Home
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./home.el :mkdirp yes
 
 #+begin_src emacs-lisp

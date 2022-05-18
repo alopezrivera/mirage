@@ -1,5 +1,10 @@
-#+title:UI
 #+STARTUP: overview
+#+FILETAGS: :emacs:
+
+
+
+
+#+title:UI
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./ui.el :mkdirp yes
 
 * Typefaces
