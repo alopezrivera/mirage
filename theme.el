@@ -1,4 +1,4 @@
-(setq light    'nano-light)
+(setq light    'doom-flatwhite)
 
 (setq dark     'modus-vivendi)
 
@@ -50,21 +50,23 @@
   "Line numbers for dark themes."
   (set-face-attribute 'line-number nil :foreground "#878787" :background "#ededed"))
 
-(defun custom/vivendi-advice ()
-  (custom/dark-modeline)
-  (custom/dark-line-numbers))
-
-(defun custom/operandi-advice ()
+(defun custom/light-advice ()
   (custom/light-modeline)
   (custom/light-line-numbers))
 
-(defun custom/theme-specific-advice (_orig-fun &rest args)
+(defun custom/dark-advice ()
+  (custom/dark-modeline)
+  (custom/dark-line-numbers))
+
+(defun custom/theme-specific-advice (orig-fun &rest args)
   "Apply theme-specific advice when enabling themes, and
 preserve modeline status through theme changes."
   (setq modeline-status mode-line-format)
-  (apply _orig-fun args)
-  (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
- 	   ((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
+  (apply orig-fun args)
+  (let ((theme (nth 0 args)))
+    (if (string-match-p "modus\\|nano" (symbol-name theme))
+	   (cond ((string-equal theme light) (custom/light-advice))
+ 		 ((string-equal theme dark)  (custom/dark-advice)))))
   (setq mode-line-format modeline-status))
 
 ;; enable-theme
@@ -78,7 +80,7 @@ using `enable-theme'"
   (let ((theme (nth 0 custom-enabled-themes)))
     (cond ((string-equal theme light) (progn (disable-theme light)
 					        (load-theme    dark)))
-	     (t                          (progn (disable-theme dark)
+	     (t                          (progn (disable-theme theme)
 						(load-theme    light))))))
 
 (global-set-key (kbd "C-t") 'custom/theme-toggle)
