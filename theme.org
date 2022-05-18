@@ -69,23 +69,24 @@
 #+end_src
 
 * Theme-specific advice
-** Operandi
-
-#+begin_src emacs-lisp
-
-(defun custom/operandi-advice ()
-  (custom/light-modeline)
-  (custom/light-line-numbers))
-
-#+end_src
-
-** Vivendi
+** Modus
+*** Vivendi
 
 #+begin_src emacs-lisp
 
 (defun custom/vivendi-advice ()
   (custom/dark-modeline)
   (custom/dark-line-numbers))
+
+#+end_src
+
+*** Operandi
+
+#+begin_src emacs-lisp
+
+(defun custom/operandi-advice ()
+  (custom/light-modeline)
+  (custom/light-line-numbers))
 
 #+end_src
 
@@ -99,7 +100,7 @@ preserve modeline status through theme changes."
   (setq modeline-status mode-line-format)
   (apply _orig-fun args)
   (cond ((string-equal (nth 0 args) "modus-operandi") (custom/operandi-advice))
-	((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
+ 	   ((string-equal (nth 0 args) "modus-vivendi")  (custom/vivendi-advice)))
   (setq mode-line-format modeline-status))
 
 ;; enable-theme
@@ -142,7 +143,7 @@ using `enable-theme'"
 (use-package circadian
   :config
   (setq circadian-themes `((:sunrise . ,light)  
-			   (:sunset  . ,dark)))
+			      (:sunset  . ,dark)))
   (circadian-setup))
 
 #+end_src
