@@ -104,8 +104,7 @@ preserve modeline status through theme changes."
   (setq mode-line-format modeline-status))
 
 ;; enable-theme
-(dolist (load-fn '(enable-theme
-		   circadian-enable-theme))
+(dolist (load-fn '(load-theme))
   (advice-add load-fn :around #'custom/theme-specific-advice))
 
 #+end_src
@@ -122,9 +121,9 @@ using `enable-theme'"
   (interactive)
   (let ((theme (nth 0 custom-enabled-themes)))
     (cond ((string-equal theme light) (progn (disable-theme light)
-							  (enable-theme  dark)))
-	  (t                                       (progn (disable-theme dark)
-							  (enable-theme  light))))))
+					        (load-theme    dark)))
+	     (t                          (progn (disable-theme dark)
+						(load-theme    light))))))
 
 (global-set-key (kbd "C-t") 'custom/theme-toggle)
 
