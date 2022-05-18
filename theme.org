@@ -49,6 +49,15 @@
 
 #+end_src
 
+*** Chocolate
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'chocolate-theme)
+
+#+end_src
+
+
 * Mode line
 
 #+begin_src emacs-lisp
