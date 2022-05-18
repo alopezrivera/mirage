@@ -242,7 +242,7 @@
 
 #+end_src
 
-*** Mode display
+** Mode display
 
 #+begin_src emacs-lisp
 
