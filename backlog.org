@@ -465,7 +465,7 @@ CLOSED: [2022-05-06 Fri 17:11]
    - https://github.com/roman/golden-ratio.el
 - vertical padding
    - https://stackoverflow.com/questions/25040666/vertical-padding-or-margin-on-emacs-buffer
-     
+
 
 * IDE
 
@@ -658,6 +658,7 @@ CLOSED: [2022-05-06 Fri 17:11]
 - Go back to recorded position
    - http://www.gnu.org/software/emacs/manual/html_node/emacs/Mark-Ring.html
 
+
 * theme
 
 - Highlight file windows
@@ -689,17 +690,19 @@ CLOSED: [2022-05-06 Fri 17:11]
 #+title:Special themes
 	
 - warm
-	- https://github.com/ThomasFKJorna/doom-emacs-config
+   - https://github.com/ThomasFKJorna/doom-emacs-config
 - warm pragmata
-	
-	- https://github.com/lumiknit/emacs-pragmatapro-ligatures
-	- https://fsd.it/shop/fonts/pragmatapro/
-	- https://github.com/lumiknit/emacs-parchment-theme
-	- custom svg tags
-	   - https://github.com/rougier/svg-lib
-	   - https://github.com/rougier/svg-tag-mode/tree/07640c97a1dcc305010a384fffdaa7788c342da7
-
+- custom svg tags
+   - https://github.com/rougier/svg-lib
+   - https://github.com/rougier/svg-tag-mode/tree/07640c97a1dcc305010a384fffdaa7788c342da7
              
+* mode line
+
+- bespoke
+   - https://github.com/mclear-tools/bespoke-modeline
+
+
+
 * package management
 
 - use-package + require
