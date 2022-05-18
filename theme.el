@@ -1,6 +1,6 @@
 (setq light    'doom-flatwhite)
 
-(setq dark     'modus-vivendi)
+(setq dark     'chocolate)
 
 (setq modeline 'doom-modeline-mode)
 
@@ -15,14 +15,16 @@
 (straight-use-package 'sweet-theme)
 (require 'sweet-theme)
 
+(straight-use-package 'chocolate-theme)
+
 ;; mode line
 (add-hook 'after-init-hook modeline)
 
-;; doom-modeline
-(straight-use-package 'doom-modeline)
-
 ;; nano-modeline
 (straight-use-package 'nano-modeline)
+
+;; doom-modeline
+(straight-use-package 'doom-modeline)
 
 ;; Bar
 (setq-default doom-modeline-bar-width 0.01)
