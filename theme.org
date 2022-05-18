@@ -6,7 +6,7 @@
 
 (setq light    'doom-flatwhite)
 
-(setq dark     'modus-vivendi)
+(setq dark     'chocolate)
 
 (setq modeline 'doom-modeline-mode)
 
@@ -67,15 +67,21 @@
 
 #+end_src
 
-** Load
+** Nano
+
+#+begin_src emacs-lisp
+
+;; nano-modeline
+(straight-use-package 'nano-modeline)
+
+#+end_src
+
+** Doom
 
 #+begin_src emacs-lisp
 
 ;; doom-modeline
 (straight-use-package 'doom-modeline)
-
-;; nano-modeline
-(straight-use-package 'nano-modeline)
 
 #+end_src
 
