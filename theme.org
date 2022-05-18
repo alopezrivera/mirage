@@ -29,6 +29,27 @@
 
 #+end_src
 
+* Mode line
+
+#+begin_src emacs-lisp
+
+;; mode line
+(add-hook 'after-init-hook modeline)
+
+#+end_src
+
+** Load
+
+#+begin_src emacs-lisp
+
+;; doom-modeline
+(straight-use-package 'doom-modeline)
+
+;; nano-modeline
+(straight-use-package 'nano-modeline)
+
+#+end_src
+
 * Customization
 ** Mode line
 

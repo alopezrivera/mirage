@@ -234,18 +234,7 @@
 #+end_src
 
 * Mode line
-** Doom
-
-#+begin_src emacs-lisp
-
-;; Install doom-modeline
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode))
-
-#+end_src
-
-** Content
-*** Time
+** Time
 
 #+begin_src emacs-lisp
 
