@@ -31,6 +31,9 @@
 
 #+begin_src emacs-lisp
 
+;; Inhibit startup message
+(setq inhibit-startup-message t)
+
 ;; Background buffers
 (defvar custom/background-buffers
   '("~/.emacs.d/ui.org"
@@ -709,15 +712,9 @@ not empty. In any case, advance to next line."
 #+end_src
 
 * Display
-** Defaults
+** Menus
 
 #+begin_src emacs-lisp
-
-;; Frame name
-(setq-default frame-title-format '("Emacs [%m] %b"))
-
-;; Inhibit startup message
-(setq inhibit-startup-message t)
 
 ;; Disable visible scroll bar
 (scroll-bar-mode -1)
@@ -730,6 +727,24 @@ not empty. In any case, advance to next line."
 
 ;; Disable menu bar
 (menu-bar-mode -1)
+
+#+end_src
+
+** Frame
+
+#+begin_src emacs-lisp
+
+;; Frame name
+(setq-default frame-title-format '("Emacs [%m] %b"))
+
+#+end_src
+
+** Fringes
+
+#+begin_src emacs-lisp
+
+;; Fringe mode
+(set-fringe-mode nil)
 
 #+end_src
 
@@ -785,15 +800,6 @@ not empty. In any case, advance to next line."
     (doom-modeline-mode)))
 
 (global-set-key (kbd "M-m") #'custom/hide-modeline)
-
-#+end_src
-
-** Fringes
-
-#+begin_src emacs-lisp
-
-;; Fringe mode
-(set-fringe-mode nil)
 
 #+end_src
 
