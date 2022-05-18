@@ -110,24 +110,23 @@
 #+end_src
 
 * Theme-specific advice
-** Modus
-*** Vivendi
+** Light
 
 #+begin_src emacs-lisp
 
-(defun custom/vivendi-advice ()
-  (custom/dark-modeline)
-  (custom/dark-line-numbers))
+(defun custom/light-advice ()
+  (custom/light-modeline)
+  (custom/light-line-numbers))
 
 #+end_src
 
-*** Operandi
+** Dark
 
 #+begin_src emacs-lisp
 
-(defun custom/operandi-advice ()
-  (custom/light-modeline)
-  (custom/light-line-numbers))
+(defun custom/dark-advice ()
+  (custom/dark-modeline)
+  (custom/dark-line-numbers))
 
 #+end_src
 
