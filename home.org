@@ -13,15 +13,6 @@
 
 ;;; -*- lexical-binding: t; -*-
 
-;; Initial buffer
-(setq initial-buffer-choice "/home/dfki/backlog.org")
-
-;; Startup buffers
-(defvar custom/startup-buffers
-  '("/home/emacs/test.org"
-    "/home/dfki/backlog.org"
-    "/mnt/c/Users/xXY4n/Professional/_Employment/DFKI/Repos/hopping_leg/software/python/hopping_leg/motors/abstract_motor.py"))
-
 #+end_src
 
 * Setup
