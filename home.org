@@ -819,6 +819,20 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
+* Session
+** workgroups
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'workgroups)
+(require 'workgroups)
+
+(setq wg-prefix-key (kbd "C-c w"))
+
+(workgroups-mode 1)
+
+#+end_src
+
 * Guidance
 ** Search
 *** Swiper
