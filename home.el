@@ -21,7 +21,7 @@
     "~/.emacs.d/org-paragraph.org"))
 
 (defun custom/spawn-startup-buffers ()
-  (cl-loop for buffer in (append custom/startup-buffers custom/background-buffers)
+  (cl-loop for buffer in (append startup-buffers custom/background-buffers)
 	   collect (find-file-noselect buffer)))
 
 (add-hook 'after-init-hook #'custom/spawn-startup-buffers)
