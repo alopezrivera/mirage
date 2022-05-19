@@ -55,6 +55,7 @@
 	custom/smart-search
 	custom/swiper-multiple-cursors
 	dabbrev-expand
+	dired-do-flagged-delete
 	mouse-drag-mode-line
 	mouse-drag-vertical-line
 	mouse-save-then-kill

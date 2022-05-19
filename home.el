@@ -4,6 +4,9 @@
 (add-to-list 'default-frame-alist '(height . 50))
 (add-to-list 'default-frame-alist '(width  . 60))
 
+;; Inhibit startup message
+(setq inhibit-startup-message t)
+
 ;; Background buffers
 (defvar custom/background-buffers
   '("~/.emacs.d/ui.org"
@@ -351,12 +354,6 @@ not empty. In any case, advance to next line."
 (define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
 (define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
 
-;; Frame name
-(setq-default frame-title-format '("Emacs [%m] %b"))
-
-;; Inhibit startup message
-(setq inhibit-startup-message t)
-
 ;; Disable visible scroll bar
 (scroll-bar-mode -1)
 
@@ -368,6 +365,12 @@ not empty. In any case, advance to next line."
 
 ;; Disable menu bar
 (menu-bar-mode -1)
+
+;; Frame name
+(setq-default frame-title-format '("Emacs [%m] %b"))
+
+;; Fringe mode
+(set-fringe-mode nil)
 
 ;; Enable visual bell
 (setq visible-bell t)
@@ -399,35 +402,35 @@ not empty. In any case, advance to next line."
 
 (global-set-key (kbd "M-m") #'custom/hide-modeline)
 
-;; Fringe mode
-(set-fringe-mode nil)
-
 ;; Display line numbers by side
 (global-set-key (kbd "C-c l") 'global-display-line-numbers-mode)
 
 ;; Display column number
 (column-number-mode)
 
+(straight-use-package 'workgroups)
+(require 'workgroups)
+
+(setq wg-prefix-key (kbd "C-c w"))
+
+(workgroups-mode 1)
+
 ;; Swiper
 (use-package swiper)
 (require 'swiper)
 
-;; Smart search
-(defun custom/search-region (beg end)
-  "Search selected region with swiper-isearch."
-  (swiper-isearch (buffer-substring-no-properties beg end)))
+(defun custom/swiper-isearch (orig-fun &rest args)
+  "`swiper-isearch' the selected region. If none are, `swiper-isearch'."
+  (if (region-active-p)
+      (let ((beg (region-beginning))
+	    (end (region-end)))
+	(deactivate-mark)
+	(apply orig-fun (buffer-substring-no-properties beg end)))
+    (apply orig-fun args)))
 
-(defun custom/smart-search (beg end)
-  "Search for selected regions. If none are, call swiper-isearch."
-  (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end))
-                 (list nil nil)))
-  (deactivate-mark)
-  (if (and beg end)
-      (custom/search-region beg end)
-    (swiper-isearch)))
+(advice-add 'swiper-isearch :around #'custom/swiper-isearch)
 
-(define-key global-map (kbd "C-s") #'custom/smart-search)
+(define-key global-map (kbd "C-s") #'swiper-isearch)
 
 (defun custom/narrow-and-search (beg end)
   "Narrow to region and trigger swiper search."
@@ -468,7 +471,7 @@ buffer is already narrowed, widen buffer."
 ;; M-RET: multiple-cursors-mode
 (define-key swiper-map (kbd "M-<return>") 'custom/swiper-multiple-cursors)
 
-(global-set-key (kbd "C-c w") 'whitespace-mode)
+(global-set-key (kbd "C-c <whitespace>") 'whitespace-mode)
 
 ;; Ivy completion framework
 (use-package counsel)
