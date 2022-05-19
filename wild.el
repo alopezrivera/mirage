@@ -125,6 +125,9 @@
 
 (workgroups-mode 1)
 
+;; desktop
+(desktop-save-mode 1)
+
 ;; ide
 (require 'ide (concat config-directory "ide.el"))
 
