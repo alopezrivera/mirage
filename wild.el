@@ -103,7 +103,7 @@
       (let ((beg (region-beginning))
 	    (end (region-end)))
 	(deactivate-mark)
-	(apply orig-fun (buffer-substring-no-properties beg end)))
+	(apply orig-fun (list (buffer-substring-no-properties beg end))))
     (apply orig-fun args)))
 (advice-add 'swiper-isearch :around #'custom/swiper-isearch)
 (define-key global-map (kbd "C-s") #'swiper-isearch)
