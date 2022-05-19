@@ -61,6 +61,38 @@
 (define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<down-mouse-1>")  nil) ; necessary
 
+;; ivy
+(straight-use-package 'ivy)
+(straight-use-package 'counsel)
+(straight-use-package 'ivy-rich)
+(require 'ivy)
+(require 'counsel)
+(require 'ivy-rich)
+
+(let ((map ivy-minibuffer-map))
+  (dolist (pair '(("<tab>" . ivy-alt-done)
+		  ("<up>"  . ivy-previous-line-or-history)
+		  ("C-l"   . ivy-alt-done)
+		  ("C-j"   . ivy-next-line)
+		  ("C-k"   . ivy-previous-line)))
+    (define-key map (kbd (car pair)) (cdr pair))))
+
+(let ((map ivy-switch-buffer-map))
+  (dolist (pair '(("C-k"   . ivy-previous-line)
+		  ("C-l"   . ivy-done)
+		  ("C-d"   . ivy-switch-buffer-kill)))
+    (define-key map (kbd (car pair)) (cdr pair))))
+
+(let ((map ivy-reverse-i-search-map))
+  (dolist (pair '(("C-k"   . ivy-previous-line)
+		  ("C-d"   . ivy-reverse-i-search-kill)))
+    (define-key map (kbd (car pair)) (cdr pair))))
+
+(global-set-key (kbd "<menu>") 'counsel-M-x)
+
+(ivy-mode 1)
+(ivy-rich-mode 1)
+
 ;; swiper
 (straight-use-package 'swiper)
 (require 'swiper)
