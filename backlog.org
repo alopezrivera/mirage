@@ -11,6 +11,9 @@
 - org-agenda
    - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
 
+- projectile
+   - new project -> .workspace file + load .workspace
+
 - latex
    - class, style file access
       - https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te
