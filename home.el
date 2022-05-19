@@ -473,30 +473,37 @@ buffer is already narrowed, widen buffer."
 
 (global-set-key (kbd "C-c <whitespace>") 'whitespace-mode)
 
-;; Ivy completion framework
-(use-package counsel)
-(use-package ivy
-  :delight ivy-mode
-  :bind (:map ivy-minibuffer-map
-	       ("TAB"  . ivy-alt-done)
-	       ("<up>" . ivy-previous-line-or-history)
-	       ("C-l"  . ivy-alt-done)
-	       ("C-j"  . ivy-next-line)
-	       ("C-k"  . ivy-previous-line)
-	       :map ivy-switch-buffer-map
-	       ("C-k"  . ivy-previous-line)
-	       ("C-l"  . ivy-done)
-	       ("C-d"  . ivy-switch-buffer-kill)
-	       :map ivy-reverse-i-search-map
-	       ("C-k"  . ivy-previous-line)
-	       ("C-d"  . ivy-reverse-i-search-kill))
-  :init (ivy-mode 1))
+;; ivy
+(straight-use-package 'ivy)
+(straight-use-package 'counsel)
+(straight-use-package 'ivy-rich)
+(require 'ivy)
+(require 'counsel)
+(require 'ivy-rich)
 
-;; Completion candidate descriptions
-(use-package ivy-rich
-  :bind
-  (("<menu>" . counsel-M-x))
-  :init (ivy-rich-mode 1))
+(let ((map ivy-minibuffer-map))
+  (dolist (pair '(("<tab>" . ivy-alt-done)
+		  ("<up>"  . ivy-previous-line-or-history)
+		  ("C-l"   . ivy-alt-done)
+		  ("C-j"   . ivy-next-line)
+		  ("C-k"   . ivy-previous-line)))
+    (define-key map (kbd (car pair)) (cdr pair))))
+
+(let ((map ivy-switch-buffer-map))
+  (dolist (pair '(("C-k"   . ivy-previous-line)
+		  ("C-l"   . ivy-done)
+		  ("C-d"   . ivy-switch-buffer-kill)))
+    (define-key map (kbd (car pair)) (cdr pair))))
+
+(let ((map ivy-reverse-i-search-map))
+  (dolist (pair '(("C-k"   . ivy-previous-line)
+		  ("C-d"   . ivy-reverse-i-search-kill)))
+    (define-key map (kbd (car pair)) (cdr pair))))
+
+(global-set-key (kbd "<menu>") 'counsel-M-x)
+
+(ivy-mode 1)
+(ivy-rich-mode 1)
 
 ;; Override `custom/nimble-delete-backward' in Ivy minibuffers
 (define-key ivy-minibuffer-map (kbd "<backspace>") 'ivy-backward-delete-char)
