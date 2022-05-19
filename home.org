@@ -921,7 +921,7 @@ buffer is already narrowed, widen buffer."
 
 #+begin_src emacs-lisp
 
-(global-set-key (kbd "C-c w") 'whitespace-mode)
+(global-set-key (kbd "C-c <whitespace>") 'whitespace-mode)
 
 #+end_src
 
