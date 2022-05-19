@@ -89,12 +89,11 @@
 (straight-use-package 'workgroups)
 (require 'workgroups)
 
-(setq wg-prefix-key (kbd "C-c g"))
+(setq wg-prefix-key (kbd "C-c w"))
 
 (workgroups-mode 1)
 
 ;; ide
 (require 'ide (concat config-directory "ide.el"))
 
-;; declare
 (provide 'wild)
