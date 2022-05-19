@@ -845,26 +845,22 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
-**** Smart search
+**** isearch
 
 #+begin_src emacs-lisp
 
-;; Smart search
-(defun custom/search-region (beg end)
-  "Search selected region with swiper-isearch."
-  (swiper-isearch (buffer-substring-no-properties beg end)))
+(defun custom/swiper-isearch (orig-fun &rest args)
+  "`swiper-isearch' the selected region. If none are, `swiper-isearch'."
+  (if (region-active-p)
+      (let ((beg (region-beginning))
+	    (end (region-end)))
+	(deactivate-mark)
+	(apply orig-fun (buffer-substring-no-properties beg end)))
+    (apply orig-fun args)))
 
-(defun custom/smart-search (beg end)
-  "Search for selected regions. If none are, call swiper-isearch."
-  (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end))
-                 (list nil nil)))
-  (deactivate-mark)
-  (if (and beg end)
-      (custom/search-region beg end)
-    (swiper-isearch)))
+(advice-add 'swiper-isearch :around #'custom/swiper-isearch)
 
-(define-key global-map (kbd "C-s") #'custom/smart-search)
+(define-key global-map (kbd "C-s") #'swiper-isearch)
 
 #+end_src
 
