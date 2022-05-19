@@ -8,18 +8,15 @@
 (tooltip-mode -1)
 (menu-bar-mode -1)
 
+;; typefaces
+(set-face-attribute 'default     nil :height 85)
+
 ;; dialogues
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 
-;; background buffers
-(defvar custom/background-buffers
-  '("~/.emacs.d/wild.el"))
-
-(defun custom/spawn-startup-buffers ()
-  (cl-loop for buffer in (append custom/startup-buffers custom/background-buffers)
-	   collect (find-file-noselect buffer)))
-
-(add-hook 'after-init-hook #'custom/spawn-startup-buffers)
+;; startup buffers
+(dolist (startup-b startup-buffers)
+  (find-file-noselect startup-b))
 
 ;; straight.el
 (defvar bootstrap-version)
