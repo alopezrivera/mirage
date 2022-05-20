@@ -27,9 +27,9 @@
 
 #+begin_src emacs-lisp
 
-  (require 'home (concat config-directory "home.el"))
+(require 'home (concat config-directory "home.el"))
 
-  ;; (require 'wild (concat config-directory "wild.el"))
+;; (require 'wild (concat config-directory "wild.el"))
 
 #+end_src
 
