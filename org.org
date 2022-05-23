@@ -507,6 +507,26 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 #+end_src
 
 *** Insert
+**** Items
+***** org-insert-item-respect-content
+
+#+begin_src emacs-lisp
+
+(defun custom/org-insert-item-respect-content ()
+  (interactive)
+  (let ((struct (org-list-struct))
+	    (unfold (if (custom/org-relative-line-list-folded) nil (point-marker))))
+    (org-list-set-item-visibility (point-at-bol) struct 'folded)
+    (save-excursion
+      (beginning-of-visual-line)
+      (kill-ring-save (point) (custom/get-point 'beginning-of-line-text)))
+    (end-of-visual-line)
+    (org-return)
+    (yank)
+    (if unfold (save-excursion (goto-char unfold) (org-list-set-item-visibility (point-at-bol) struct 'subtree)))))
+
+#+end_src
+
 **** Headings
 ***** Margins
 ****** org-heading-margin-post
