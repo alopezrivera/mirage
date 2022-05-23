@@ -933,9 +933,7 @@ function that sets `deactivate-mark' to t."
 #+end_src
 
 * Display
-** TODO Variable pitch
-
-- control over indentation of wrapped headings
+** Variable pitch
 
 #+begin_src emacs-lisp
 
