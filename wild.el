@@ -15,8 +15,15 @@
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 
 ;; startup buffers
-(dolist (startup-b startup-buffers)
-  (find-file-noselect startup-b))
+(defvar background-buffers
+  '("~/.emacs.d/init.el"
+    "~/.emacs.d/wild.el"))
+
+(defun custom/spawn-startup-buffers ()
+  (cl-loop for buffer in (append startup-buffers background-buffers)
+	   collect (find-file-noselect buffer)))
+
+(add-hook 'after-init-hook #'custom/spawn-startup-buffers)
 
 ;; straight.el
 (defvar bootstrap-version)
