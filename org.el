@@ -232,6 +232,19 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 (define-key org-mode-map (kbd "C-/") 'custom/org-undo)
 
+(defun custom/org-insert-item-respect-content ()
+  (interactive)
+  (let ((struct (org-list-struct))
+	    (unfold (if (custom/org-relative-line-list-folded) nil (point-marker))))
+    (org-list-set-item-visibility (point-at-bol) struct 'folded)
+    (save-excursion
+      (beginning-of-visual-line)
+      (kill-ring-save (point) (custom/get-point 'beginning-of-line-text)))
+    (end-of-visual-line)
+    (org-return)
+    (yank)
+    (if unfold (save-excursion (goto-char unfold) (org-list-set-item-visibility (point-at-bol) struct 'subtree)))))
+
 (defun custom/org-heading-margin-post ()
   "Return margin between current heading and next."
   (if (org-current-level)
@@ -568,9 +581,12 @@ indented at the level of the previous list item, indent the paragraph."
   (interactive)
   (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
 	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	    ((custom/org-at-ellipsis-l)                     (custom/org-insert-item-respect-content))
+	    ((custom/org-relative-line-list)                (org-meta-return))
 	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
 	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
 	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
+	    ((custom/org-at-ellipsis-h)                     (org-return))
 	    (t                                              (org-return t))))
 
 (define-key org-mode-map (kbd "<return>") 'custom/org-return)

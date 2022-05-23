@@ -1,6 +1,6 @@
-(setq light    'doom-flatwhite)
+(setq light    'modus-operandi)
 
-(setq dark     'chocolate)
+(setq dark     'modus-vivendi)
 
 (setq modeline 'doom-modeline-mode)
 
