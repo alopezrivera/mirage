@@ -1805,7 +1805,7 @@ When ENSURE-NEWLINE, always ensure there's a newline behind."
 (straight-use-package 'org-roam-timestamps)
 (require 'org-roam-timestamps)
 
-(add-hook 'org-roam-find-file-hook 'org-roam-timestamps-mode)
+(org-roam-timestamps-mode)
 
 ;; remember
 (setq org-roam-timestamps-remember-timestamps nil)
