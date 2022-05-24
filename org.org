@@ -1784,8 +1784,15 @@ When ENSURE-NEWLINE, always ensure there's a newline behind."
 
 #+begin_src emacs-lisp
 
-;; Org Roam timestamps
+;; org-roam-timestamps
 (straight-use-package 'org-roam-timestamps)
+(require 'org-roam-timestamps)
+
+(add-hook 'org-roam-find-file-hook 'org-roam-timestamps-mode)
+
+;; remember
+(setq org-roam-timestamps-remember-timestamps nil)
+(setq org-roam-timestamps-minimum-gap 3600)
 
 #+end_src
 
