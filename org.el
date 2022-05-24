@@ -967,14 +967,63 @@ folded."
 
 (add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
 
+;;;; Processing of the capture templates
+(defun org-roam-capture--fill-template (template &optional ensure-newline)
+  "Overriden to prevent newline deletion in templates.
+
+Expand TEMPLATE and return it.
+It expands ${var} occurrences in TEMPLATE, and then runs
+org-capture's template expansion.
+When ENSURE-NEWLINE, always ensure there's a newline behind."
+  (let* ((template (if (functionp template)
+                       (funcall template)
+                     template))
+         (template-whitespace-content (org-roam-whitespace-content template)))
+    (setq template
+          (org-roam-format-template
+           template
+           (lambda (key default-val)
+             (let ((fn (intern key))
+                   (node-fn (intern (concat "org-roam-node-" key)))
+                   (ksym (intern (concat ":" key))))
+               (cond
+                ((fboundp fn)
+                 (funcall fn org-roam-capture--node))
+                ((fboundp node-fn)
+                 (funcall node-fn org-roam-capture--node))
+                ((plist-get org-roam-capture--info ksym)
+                 (plist-get org-roam-capture--info ksym))
+                (t (let ((r (read-from-minibuffer (format "%s: " key) default-val)))
+                     (plist-put org-roam-capture--info ksym r)
+                     r)))))))
+    ;; WARNING:
+    ;; `org-capture-fill-template' fills the template, but post-processes whitespace such that the resultant
+    ;; template does not start with any whitespace, and only ends with a single newline
+    ;;
+    ;; Instead, we restore the whitespace in the original template.
+    (setq template (org-capture-fill-template template))
+    (setq template (replace-regexp-in-string "[\n]*\\'" "" (org-capture-fill-template template)))
+    (when (and ensure-newline
+               (string-equal template-whitespace-content ""))
+      (setq template-whitespace-content "\n"))
+    (setq template (concat template template-whitespace-content))
+    template))
+
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
 	    :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-			       "#+title:${title}\n#+STARTUP: overview\n\n")
+			       "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
 	    :unnarrowed t)))
 
-;; Org Roam timestamps
+;; org-roam-timestamps
 (straight-use-package 'org-roam-timestamps)
+(require 'org-roam-timestamps)
+
+(add-hook 'org-roam-find-file-hook 'org-roam-timestamps-mode)
+
+;; remember
+(setq org-roam-timestamps-remember-timestamps nil)
+(setq org-roam-timestamps-minimum-gap 3600)
 
 ;; Org Agenda
 (global-set-key (kbd "C-c a") 'org-agenda)
