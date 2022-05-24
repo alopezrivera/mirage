@@ -481,7 +481,8 @@ CLOSED: [2022-05-06 Fri 17:11]
 - treemacs
 
 - hideshow
-   - wrap commands in save-excursion to bol-text
+   - all wrap commands
+      - save-excursion to bol-text
 
 - references
    - https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a
