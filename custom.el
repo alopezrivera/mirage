@@ -46,7 +46,7 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#1c1f2b" "#676E95"))
  '(mini-modeline-face-attr '(:background unspecified))
  '(objed-cursor-color "#ff5370")
- '(org-agenda-files nil)
+ '(org-agenda-files '("/root/.emacs.d/home.org"))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
    '(org nano-faces nano-base-colors org-element org-indent yasnippet-snippets yasnippet pyvenv lsp-ui lsp-mode org-fragtog magit auctex org-download vundo quelpa-use-package quelpa rectangular-region-mode circadian solar svg-tag-mode org-modern treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs autothemer autotheme general helpful ivy-rich undo-tree rainbow-mode delight which-key whic-key rainbow-delimiters org-autolist org-autolist-mode org-superstar multiple-cursors adaptive-wrap visual-fill-column org-bullets doom-themes olivetti doom-modeline swipereval- counsel ivy command-log-mode use-package))

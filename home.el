@@ -671,6 +671,33 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 
 (setq split-width-threshold 70)
 
+(defvar custom/window-previous nil
+  "Selected window before the last window change.")
+
+(defvar custom/window-pre-command nil
+  "Auxiliary variable containing the `selected-window'
+before the execution of any command.")
+
+(defun custom/record-window-pre-command ()
+  (setq custom/window-pre-command (selected-window)))
+(add-hook 'pre-command-hook 'custom/record-window-pre-command)
+
+(defun custom/record-window-previous ()
+  (let ((window-post (selected-window)))
+    (if (not (eq window-post custom/window-pre-command))
+	      (setq custom/window-previous custom/window-pre-command))))
+(add-hook 'post-command-hook 'custom/record-window-previous)
+
+(defun custom/goto-window-previous ()
+  (interactive)
+  (let ((target  custom/window-previous)
+	      (current (selected-window)))
+    (if target
+	      (progn (select-window target)
+		     (setq custom/window-previous current)))))
+
+(global-set-key (kbd "C-c p") 'custom/goto-window-previous)
+
 ;; Create new frame
 (global-set-key (kbd "C-S-n") 'make-frame-command)
 
