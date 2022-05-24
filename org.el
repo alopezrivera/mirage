@@ -963,6 +963,17 @@ folded."
 
 (setq org-roam-ui-update-on-save t)
 
+;; Node visit hook
+(defvar custom/org-roam-node-visit-hook nil
+   "Hook ran after `org-roam-node-visit'.")
+
+(defun custom/run-org-roam-node-visit-hook (&rest _args)
+   "Run `after-enable-theme-hook'."
+   (run-hooks 'custom/org-roam-visit-hook))
+
+;; enable-theme
+(advice-add 'org-roam-node-visit :after #'custom/run-org-roam-node-visit-hook)
+
 (org-roam-db-autosync-mode)
 
 (add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
@@ -1019,7 +1030,7 @@ When ENSURE-NEWLINE, always ensure there's a newline behind."
 (straight-use-package 'org-roam-timestamps)
 (require 'org-roam-timestamps)
 
-(add-hook 'org-roam-find-file-hook 'org-roam-timestamps-mode)
+(org-roam-timestamps-mode)
 
 ;; remember
 (setq org-roam-timestamps-remember-timestamps nil)

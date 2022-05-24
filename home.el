@@ -680,13 +680,13 @@ before the execution of any command.")
 
 (defun custom/record-window-pre-command ()
   (setq custom/window-pre-command (selected-window)))
-(add-hook 'pre-command-hook 'custom/record-window-pre-command)
+(add-hook 'pre-command-hook #'custom/record-window-pre-command)
 
 (defun custom/record-window-previous ()
   (let ((window-post (selected-window)))
     (if (not (eq window-post custom/window-pre-command))
 	      (setq custom/window-previous custom/window-pre-command))))
-(add-hook 'post-command-hook 'custom/record-window-previous)
+(add-hook 'post-command-hook #'custom/record-window-previous)
 
 (defun custom/goto-window-previous ()
   (interactive)
@@ -776,15 +776,15 @@ kill the current buffer and delete its window."
 (require 'theme (concat config-directory "theme.el"))
 
 ;; Theme-agnostic enabling hook
-(defvar after-enable-theme-hook nil
+(defvar custom/after-enable-theme-hook nil
    "Normal hook run after enabling a theme.")
 
-(defun run-after-enable-theme-hook (&rest _args)
+(defun custom/run-after-enable-theme-hook (&rest _args)
    "Run `after-enable-theme-hook'."
    (run-hooks 'after-enable-theme-hook))
 
 ;; enable-theme
-(advice-add 'enable-theme :after #'run-after-enable-theme-hook)
+(advice-add 'enable-theme :after #'custom/run-after-enable-theme-hook)
 
 (defun custom/org-mode (orig-fun &rest args)
   (if (custom/in-mode "org-mode")
@@ -807,7 +807,7 @@ kill the current buffer and delete its window."
 		        return (org-mode))
       (select-window window))))
 
-(add-hook 'after-enable-theme-hook #'custom/org-theme-reload)
+(add-hook 'custom/after-enable-theme-hook #'custom/org-theme-reload)
 
 ;; Conclude initialization file
 (provide 'home)
