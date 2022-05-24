@@ -16,6 +16,9 @@
 - projectile
    - new project -> .workspace file + load .workspace
 
+- reading
+   - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
+
 - latex
    - class, style file access
       - https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te
