@@ -477,7 +477,9 @@ one character."
 
 #+end_src
 
-*** Forward
+*** TODO Forward
+
+- region deletion
 
 #+begin_src emacs-lisp
 
