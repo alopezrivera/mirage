@@ -1242,6 +1242,45 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 
 #+end_src
 
+**** goto-window-previous
+***** Record
+
+#+begin_src emacs-lisp
+
+(defvar custom/previous-window nil
+  "Previous window.")
+
+(defun custom/record-previous-window (orig-fun &rest args)
+  (setq custom/previous-window (get-buffer-window (current-buffer)))
+  (apply orig-fun args))
+
+#+end_src
+
+***** Commands
+
+#+begin_src emacs-lisp
+
+(defvar custom/window-commands '(ace-window
+				       next-window
+				       other-window
+				       mouse-set-point)
+  "Window switch commands.")
+
+(dolist (command custom/window-commands)
+  (advice-add command :around #'custom/record-previous-window))
+
+#+end_src
+
+***** Go to previous
+
+#+begin_src emacs-lisp
+
+(defun custom/goto-window-previous ()
+  (interactive)
+  (select-window custom/previous-window))
+
+#+end_src
+
 *** Frame
 
 #+begin_src emacs-lisp
