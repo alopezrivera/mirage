@@ -1249,37 +1249,38 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 
 #+begin_src emacs-lisp
 
-(defvar custom/previous-window nil
-  "Previous window.")
+(defvar custom/window-previous nil
+  "Selected window before the last window change.")
 
-(defun custom/record-previous-window (orig-fun &rest args)
-  (setq custom/previous-window (get-buffer-window (current-buffer)))
-  (apply orig-fun args))
+(defvar custom/window-pre-command nil
+  "Auxiliary variable containing the `selected-window'
+before the execution of any command.")
 
-#+end_src
+(defun custom/record-window-pre-command ()
+  (setq custom/window-pre-command (selected-window)))
+(add-hook 'pre-command-hook 'custom/record-window-pre-command)
 
-***** Commands
-
-#+begin_src emacs-lisp
-
-(defvar custom/window-commands '(ace-window
-				       next-window
-				       other-window
-				       mouse-set-point)
-  "Window switch commands.")
-
-(dolist (command custom/window-commands)
-  (advice-add command :around #'custom/record-previous-window))
+(defun custom/record-window-previous ()
+  (let ((window-post (selected-window)))
+    (if (not (eq window-post custom/window-pre-command))
+	      (setq custom/window-previous custom/window-pre-command))))
+(add-hook 'post-command-hook 'custom/record-window-previous)
 
 #+end_src
 
-***** Go to previous
+***** Command
 
 #+begin_src emacs-lisp
 
 (defun custom/goto-window-previous ()
   (interactive)
-  (select-window custom/previous-window))
+  (let ((target  custom/window-previous)
+	      (current (selected-window)))
+    (if target
+	      (progn (select-window target)
+		     (setq custom/window-previous current)))))
+
+(global-set-key (kbd "C-c p") 'custom/goto-window-previous)
 
 #+end_src
 
