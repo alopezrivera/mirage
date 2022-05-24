@@ -136,7 +136,7 @@
 ;; Enable rainbow delimiters on all programming modes
 (use-package rainbow-delimiters)
 
-(add-hook #'prog-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 #+end_src
 
@@ -782,10 +782,10 @@ not empty. In any case, advance to next line."
 		   magit-mode-hook
 		   shell-mode-hook
 		   markdown-mode-hook))
-  (add-hook mode #'olivetti-mode))
+  (add-hook mode 'olivetti-mode))
 
 ;; Programming modes
-(add-hook 'prog-mode-hook #'olivetti-mode)
+(add-hook 'prog-mode-hook 'olivetti-mode)
 
 #+end_src
 

@@ -1521,7 +1521,7 @@ matches the current theme."
 ;; org-fragtog
 (use-package org-fragtog)
 
-(add-hook 'org-mode-hook #'org-fragtog-mode)
+(add-hook 'org-mode-hook 'org-fragtog-mode)
 
 #+end_src
 
@@ -1732,7 +1732,7 @@ folded."
 
 #+begin_src emacs-lisp
 
-(add-hook 'org-roam-find-file-hook #'variable-pitch-mode)
+(add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
 
 #+end_src
 
