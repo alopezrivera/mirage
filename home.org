@@ -1434,7 +1434,6 @@ kill the current buffer and delete its window."
 
 ** Theme-agnostic enabling hook
 
-
 #+begin_src emacs-lisp
 
 ;; Theme-agnostic enabling hook
