@@ -1768,13 +1768,14 @@ When ENSURE-NEWLINE, always ensure there's a newline behind."
 
 #+end_src
 
+*** Default
 
 #+begin_src emacs-lisp
 
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
 	    :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-			       "#+title:${title}\n#+STARTUP: overview\n\n")
+			       "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
 	    :unnarrowed t)))
 
 #+end_src
