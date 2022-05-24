@@ -760,6 +760,9 @@ kill the current buffer and delete its window."
 
 (global-set-key (kbd "<escape>") 'custom/double-escape)
 
+;; projectile
+(straight-use-package 'projectile)
+
 (use-package magit)
 
 (require 'ide (concat config-directory "ide.el"))

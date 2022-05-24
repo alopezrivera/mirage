@@ -61,7 +61,4 @@
 ;; pyenv
 (straight-use-package 'pyenv)
 
-;; projectile
-(straight-use-package 'projectile)
-
 (provide 'ide)
