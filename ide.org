@@ -81,7 +81,6 @@
 
 #+end_src
 
-
 * Specific
 ** Python
 *** elpy
@@ -123,19 +122,6 @@
 (straight-use-package 'pyenv)
 
 #+end_src
-
-
-
-* Project interaction
-** projectile
-
-#+begin_src emacs-lisp
-
-;; projectile
-(straight-use-package 'projectile)
-
-#+end_src
-
 
 * Declare
 

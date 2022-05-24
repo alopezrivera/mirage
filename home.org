@@ -1377,6 +1377,16 @@ kill the current buffer and delete its window."
 
 #+end_src
 
+* Project interaction
+** projectile
+
+#+begin_src emacs-lisp
+
+;; projectile
+(straight-use-package 'projectile)
+
+#+end_src
+
 
 * Git
 
