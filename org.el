@@ -643,9 +643,10 @@ of org-tempo templates."
 			  "LaTeX derivation template")
 
 ;; Code block structure templates
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py" . "src python"))
+(add-to-list 'org-structure-template-alist '("sh"   . "src shell"))
+(add-to-list 'org-structure-template-alist '("el"   . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py"   . "src python"))
+(add-to-list 'org-structure-template-alist '("bash" . "src bash"))
 
 (defun custom/org-end ()
   "Conditional end in Org Mode.
@@ -869,6 +870,10 @@ matches the current theme."
    (python     . t)
    (shell      . t)))
 
+(defun org-babel-bash-initiate-session (&optional session _params)
+  "Initiate a bash/sh session named SESSION according to PARAMS."
+  (org-babel-sh-initiate-session session _params))
+
 ;; Trigger org-babel-tangle when saving any org files in the config directory
 (setq source-regex (list ".org" (replace-regexp-in-string "~" (getenv "HOME") config-directory)))
 
@@ -967,7 +972,7 @@ folded."
 
 (defun custom/run-org-roam-node-visit-hook (&rest _args)
    "Run `after-enable-theme-hook'."
-   (run-hooks 'custom/org-roam-visit-hook))
+   (run-hooks 'custom/org-roam-node-visit-hook))
 
 ;; enable-theme
 (advice-add 'org-roam-node-visit :after #'custom/run-org-roam-node-visit-hook)
@@ -976,48 +981,6 @@ folded."
     (org-roam-db-autosync-mode))
 
 (add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
-
-;;;; Processing of the capture templates
-(defun org-roam-capture--fill-template (template &optional ensure-newline)
-  "Overriden to prevent newline deletion in templates.
-
-Expand TEMPLATE and return it.
-It expands ${var} occurrences in TEMPLATE, and then runs
-org-capture's template expansion.
-When ENSURE-NEWLINE, always ensure there's a newline behind."
-  (let* ((template (if (functionp template)
-                       (funcall template)
-                     template))
-         (template-whitespace-content (org-roam-whitespace-content template)))
-    (setq template
-          (org-roam-format-template
-           template
-           (lambda (key default-val)
-             (let ((fn (intern key))
-                   (node-fn (intern (concat "org-roam-node-" key)))
-                   (ksym (intern (concat ":" key))))
-               (cond
-                ((fboundp fn)
-                 (funcall fn org-roam-capture--node))
-                ((fboundp node-fn)
-                 (funcall node-fn org-roam-capture--node))
-                ((plist-get org-roam-capture--info ksym)
-                 (plist-get org-roam-capture--info ksym))
-                (t (let ((r (read-from-minibuffer (format "%s: " key) default-val)))
-                     (plist-put org-roam-capture--info ksym r)
-                     r)))))))
-    ;; WARNING:
-    ;; `org-capture-fill-template' fills the template, but post-processes whitespace such that the resultant
-    ;; template does not start with any whitespace, and only ends with a single newline
-    ;;
-    ;; Instead, we restore the whitespace in the original template.
-    (setq template (org-capture-fill-template template))
-    (setq template (replace-regexp-in-string "[\n]*\\'" "" (org-capture-fill-template template)))
-    (when (and ensure-newline
-               (string-equal template-whitespace-content ""))
-      (setq template-whitespace-content "\n"))
-    (setq template (concat template template-whitespace-content))
-    template))
 
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
@@ -1029,11 +992,28 @@ When ENSURE-NEWLINE, always ensure there's a newline behind."
 (straight-use-package 'org-roam-timestamps)
 (require 'org-roam-timestamps)
 
-(org-roam-timestamps-mode)
-
 ;; remember
 (setq org-roam-timestamps-remember-timestamps nil)
 (setq org-roam-timestamps-minimum-gap 3600)
+
+;; visit hook
+(add-hook 'custom/org-roam-node-visit-hook 'org-roam-timestamps-mode)
+
+;; capture hook
+(defvar custom/org-roam-timestamps-mode-active-before-capture nil)
+
+(defun custom/org-roam-timestamps-mode-off ()
+  "Disable `org-roam-timestamps-mode' in Org Roam capture buffers."
+  (setq custom/org-roam-timestamps-mode-active-before-capture org-roam-timestamps-mode)
+  (org-roam-timestamps-mode -1))
+(add-hook 'org-roam-capture-new-node-hook 'custom/org-roam-timestamps-mode-off)
+
+(defun custom/org-roam-timestamps-mode-back ()
+  "Re-enable `org-roam-timestamps-mode' after finalizing capture,
+if it was previously enabled."
+  (if custom/org-roam-timestamps-mode-active-before-capture
+      (org-roam-timestamps-mode)))
+(add-hook 'org-capture-after-finalize-hook 'custom/org-roam-timestamps-mode-back)
 
 ;; Org Agenda
 (global-set-key (kbd "C-c a") 'org-agenda)
