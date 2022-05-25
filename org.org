@@ -1548,7 +1548,7 @@ matches the current theme."
 #+begin_src emacs-lisp
 
 ;; Trigger org-babel-tangle when saving any org files in the config directory
-(setq source-regex (list ".org" (replace-regexp-in-string "~" "/root" config-directory)))
+(setq source-regex (list ".org" (replace-regexp-in-string "~" (getenv "HOME") config-directory)))
 
 (defun custom/org-babel-tangle-config()
   "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
