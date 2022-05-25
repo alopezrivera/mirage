@@ -517,7 +517,7 @@ buffer is already narrowed, widen buffer."
 (which-key-mode)
 
 ;; Replace description key bindings by their helpful equivalents
-  (straight-use-package 'helpful)
+(straight-use-package 'helpful)
 
 (setq counsel-describe-function-function #'helpful-callable)
 (setq counsel-describe-variable-function #'helpful-variable)
