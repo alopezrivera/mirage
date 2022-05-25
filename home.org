@@ -134,7 +134,7 @@
 #+begin_src emacs-lisp
 
 ;; Enable rainbow delimiters on all programming modes
-(use-package rainbow-delimiters)
+(straight-use-package 'rainbow-delimiters)
 
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
@@ -587,7 +587,7 @@ kill ring."
 #+begin_src emacs-lisp
 
 ;; Multiple cursors
-(use-package multiple-cursors)
+(straight-use-package 'multiple-cursors)
 (require 'multiple-cursors)
 
 ;; mc-lists
@@ -771,9 +771,7 @@ not empty. In any case, advance to next line."
 #+begin_src emacs-lisp
 
 ;; Center text
-(use-package olivetti
-  :delight olivetti-mode
-  )
+(straight-use-package 'olivetti)
 
 (add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
 
@@ -850,7 +848,7 @@ not empty. In any case, advance to next line."
 #+begin_src emacs-lisp
 
 ;; Swiper
-(use-package swiper)
+(straight-use-package 'swiper)
 (require 'swiper)
 
 #+end_src
@@ -981,28 +979,29 @@ buffer is already narrowed, widen buffer."
 
 #+begin_src emacs-lisp
 
-;; Command suggestions
-(use-package which-key
-  :delight which-key-mode
-  :config
+  ;; Command suggestions
+  (straight-use-package 'which-key)
+  (require 'which-key)
+
+  (setq which-key-idle-delay 1.0)
+
   (which-key-mode)
-  (setq which-key-idle-delay 1.0))
 
 #+end_src
 ** Documentation
 
 #+begin_src emacs-lisp
 
-;; Replace description key bindings by their helpful equivalents
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . helpful-function)
-  ([remap describe-command]  . helpful-command)
-  ([remap describe-variable] . helpful-variable)
-  ([remap describe-key]      . helpful-key))
+    ;; Replace description key bindings by their helpful equivalents
+    (straight-use-package 'helpful)
+
+  (setq counsel-describe-function-function #'helpful-callable)
+  (setq counsel-describe-variable-function #'helpful-variable)
+
+  (global-set-key [remap describe-function] 'helpful-function)
+  (global-set-key [remap describe-command]  'helpful-command)
+  (global-set-key [remap describe-variable] 'helpful-variable)
+  (global-set-key [remap describe-key]      'helpful-key)
 
 #+end_src
 
@@ -1010,9 +1009,11 @@ buffer is already narrowed, widen buffer."
 
 #+begin_src emacs-lisp
 
-(use-package command-log-mode
-  :delight command-log-mode)
-(global-command-log-mode)
+  ;; command-log-mode
+  (straight-use-package 'command-log-mode)
+  (require 'command-log-mode)
+
+  (global-command-log-mode)
 
 #+end_src
 
@@ -1022,7 +1023,7 @@ buffer is already narrowed, widen buffer."
 #+begin_src emacs-lisp
 
 ;; yasnippet
-(use-package yasnippet)
+(straight-use-package 'yasnippet)
 
 (yas-global-mode 1)
 
@@ -1052,7 +1053,7 @@ buffer is already narrowed, widen buffer."
 #+begin_src emacs-lisp
 
 ;; yasnippet-snippets
-(use-package yasnippet-snippets)
+(straight-use-package 'yasnippet-snippets)
 
 #+end_src
 
@@ -1392,7 +1393,7 @@ kill the current buffer and delete its window."
 
 #+begin_src emacs-lisp
 
-(use-package magit)
+(straight-use-package 'magit)
 
 #+end_src
 

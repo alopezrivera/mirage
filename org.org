@@ -1519,7 +1519,7 @@ matches the current theme."
 #+begin_src emacs-lisp
 
 ;; org-fragtog
-(use-package org-fragtog)
+(straight-use-package 'org-fragtog)
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 

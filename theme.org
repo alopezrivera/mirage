@@ -31,7 +31,7 @@
 
 #+begin_src emacs-lisp
 
-(use-package doom-themes)
+(straight-use-package 'doom-themes)
 
 #+end_src
 
@@ -39,7 +39,7 @@
 
 #+begin_src emacs-lisp
 
-(use-package modus-themes)
+(straight-use-package 'modus-themes)
 (modus-themes-load-themes)
 
 #+end_src
@@ -201,11 +201,10 @@ using `enable-theme'"
 (setq calendar-standard-time-zone-name "CEST")
 (setq calendar-daylight-time-zone-name "CET")
 
-(use-package circadian
-  :config
-  (setq circadian-themes `((:sunrise . ,light)  
-			      (:sunset  . ,dark)))
-  (circadian-setup))
+(straight-use-package 'circadian)
+(setq circadian-themes `((:sunrise . ,light)  
+			    (:sunset  . ,dark)))
+(circadian-setup)
 
 #+end_src
 
