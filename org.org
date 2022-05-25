@@ -1545,6 +1545,16 @@ matches the current theme."
 
 #+end_src
 
+*** bash
+
+#+begin_src emacs-lisp
+
+(defun org-babel-bash-initiate-session (&optional session _params)
+  "Initiate a bash/sh session named SESSION according to PARAMS."
+  (org-babel-sh-initiate-session session _params))
+
+#+end_src
+
 ** Auto-tangle
 
 #+begin_src emacs-lisp
