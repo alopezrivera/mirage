@@ -143,6 +143,12 @@
 (setq org-src-preserve-indentation     nil)
 (setq org-edit-src-content-indentation 0)
 
+;; tempo
+(require 'org-tempo)
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+
 ;; ide
 (require 'ide (concat config-directory "ide.el"))
 
