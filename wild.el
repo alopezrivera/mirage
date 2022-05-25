@@ -143,6 +143,11 @@
 (setq org-src-preserve-indentation     nil)
 (setq org-edit-src-content-indentation 0)
 
+;; suppress babel block execution confirmation
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (member lang '("emacs-lisp" "python"))))
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
 ;; tempo
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
