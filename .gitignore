@@ -6,6 +6,5 @@ elpa/*
 auto-save-list/*
 url/cache/root/https/*
 
-# quelpa repositories
-quelpa/build/*
-quelpa/melpa/
+# Local files
+startup.el
