@@ -34,9 +34,9 @@
 	     (hs-hide-level 1)
 	   (setq this-command 'hs-cycle-children))
 	    ('hs-cycle-children
-	     TODO: Fix this case. `hs-show-block' needs to be
-	     called twice to open all folds of the parent
-	     block.
+	     ;; TODO: Fix this case. `hs-show-block' needs to be
+	     ;; called twice to open all folds of the parent
+	     ;; block.
 	     (save-excursion (hs-show-block))
 	     (hs-show-block)
 	     (setq this-command 'hs-cycle-subtree))
