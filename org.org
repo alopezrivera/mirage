@@ -1151,6 +1151,7 @@ indented at the level of the previous list item, indent the paragraph."
 #+end_src
 
 * Templates
+** tempo
 
 #+begin_src emacs-lisp
 
@@ -1192,9 +1193,10 @@ of org-tempo templates."
 #+begin_src emacs-lisp
 
 ;; Code block structure templates
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py" . "src python"))
+(add-to-list 'org-structure-template-alist '("sh"   . "src shell"))
+(add-to-list 'org-structure-template-alist '("el"   . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py"   . "src python"))
+(add-to-list 'org-structure-template-alist '("bash" . "src bash"))
 
 #+end_src
 
@@ -1539,7 +1541,18 @@ matches the current theme."
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
-   (python     . t)))
+   (python     . t)
+   (shell      . t)))
+
+#+end_src
+
+*** bash
+
+#+begin_src emacs-lisp
+
+(defun org-babel-bash-initiate-session (&optional session _params)
+  "Initiate a bash/sh session named SESSION according to PARAMS."
+  (org-babel-sh-initiate-session session _params))
 
 #+end_src
 

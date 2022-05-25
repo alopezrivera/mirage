@@ -866,7 +866,8 @@ matches the current theme."
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
-   (python     . t)))
+   (python     . t)
+   (shell      . t)))
 
 ;; Trigger org-babel-tangle when saving any org files in the config directory
 (setq source-regex (list ".org" (replace-regexp-in-string "~" (getenv "HOME") config-directory)))
