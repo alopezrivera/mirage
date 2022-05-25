@@ -979,29 +979,29 @@ buffer is already narrowed, widen buffer."
 
 #+begin_src emacs-lisp
 
-  ;; Command suggestions
-  (straight-use-package 'which-key)
-  (require 'which-key)
+;; Command suggestions
+(straight-use-package 'which-key)
+(require 'which-key)
 
-  (setq which-key-idle-delay 1.0)
+(setq which-key-idle-delay 1.0)
 
-  (which-key-mode)
+(which-key-mode)
 
 #+end_src
 ** Documentation
 
 #+begin_src emacs-lisp
 
-    ;; Replace description key bindings by their helpful equivalents
-    (straight-use-package 'helpful)
+;; Replace description key bindings by their helpful equivalents
+(straight-use-package 'helpful)
 
-  (setq counsel-describe-function-function #'helpful-callable)
-  (setq counsel-describe-variable-function #'helpful-variable)
+(setq counsel-describe-function-function #'helpful-callable)
+(setq counsel-describe-variable-function #'helpful-variable)
 
-  (global-set-key [remap describe-function] 'helpful-function)
-  (global-set-key [remap describe-command]  'helpful-command)
-  (global-set-key [remap describe-variable] 'helpful-variable)
-  (global-set-key [remap describe-key]      'helpful-key)
+(global-set-key [remap describe-function] 'helpful-function)
+(global-set-key [remap describe-command]  'helpful-command)
+(global-set-key [remap describe-variable] 'helpful-variable)
+(global-set-key [remap describe-key]      'helpful-key)
 
 #+end_src
 
@@ -1009,11 +1009,11 @@ buffer is already narrowed, widen buffer."
 
 #+begin_src emacs-lisp
 
-  ;; command-log-mode
-  (straight-use-package 'command-log-mode)
-  (require 'command-log-mode)
+;; command-log-mode
+(straight-use-package 'command-log-mode)
+(require 'command-log-mode)
 
-  (global-command-log-mode)
+(global-command-log-mode)
 
 #+end_src
 
