@@ -138,6 +138,11 @@
 ;; desktop
 (desktop-save-mode 1)
 
+;; org
+(setq org-src-tab-acts-natively        t)
+(setq org-src-preserve-indentation     nil)
+(setq org-edit-src-content-indentation 0)
+
 ;; ide
 (require 'ide (concat config-directory "ide.el"))
 
