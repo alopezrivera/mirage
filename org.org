@@ -13,9 +13,6 @@
 (straight-use-package 'org)
 (require 'org)
 
-;; Delight
-(delight 'org-indent-mode)
-
 #+end_src
 
 * Setup
