@@ -9,7 +9,7 @@
 (menu-bar-mode -1)
 
 ;; typefaces
-(set-face-attribute 'default     nil :height 80)
+(set-face-attribute 'default     nil :height 85)
 
 ;; dialogues
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
