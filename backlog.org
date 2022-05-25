@@ -11,26 +11,28 @@
 -----
 
 - org-agenda
-   - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
+  - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
 
 - programming
-   - smaller font
-      - dpi scaling
+  - smaller font
+    - dpi scaling
 
 - projectile
-   - new project -> .workspace file + load .workspace
+  - new project -> .workspace file + load .workspace
+- workgroups
+  - relative paths wrt project root (for files in same projectile project ?)
 
 - reading
-   - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
+  - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
 
 - latex
-   - class, style file access
-      - https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te
-   - latexmkrc -> load class from different directory
-      - https://stackoverflow.com/a/64860253
-   - org-latex-pdf-process -> latexmk
-   - beamer
-      - https://latex-beamer.com/tutorials/beamer-figure/
+  - class, style file access
+    - https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te
+  - latexmkrc -> load class from different directory
+    - https://stackoverflow.com/a/64860253
+  - org-latex-pdf-process -> latexmk
+  - beamer
+    - https://latex-beamer.com/tutorials/beamer-figure/
 - subrepo, multirepo
 - owo
 
@@ -42,7 +44,7 @@
   - specify directory
   - template
 
-
+    
 * Sessions
 ** TODO [#A] org-agenda
 ** TODO [#A] org-roam
