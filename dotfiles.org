@@ -1,0 +1,61 @@
+#+STARTUP: overview
+#+FILETAGS: :dotfiles:
+
+
+
+
+#+title:Dotfiles
+
+
+* xmodmap
+
+References:
+- https://unix.stackexchange.com/questions/65507/use-setxkbmap-to-swap-the-left-shift-and-left-control/65600#65600
+
+** ~xkb_keymap~
+
+Generate,
+
+#+begin_src shell
+
+setxkbmap -print > ~/.xkb/keymap/mykbd
+
+#+end_src
+
+and include call to customization script (~capsctrl~ in this case).
+
+#+begin_src :tangle ~/.xkb/keymap/mykbd
+
+xkb_keymap {
+	xkb_keycodes  { include "evdev+aliases(qwerty)"	};
+	xkb_types     { include "complete"	};
+	xkb_compat    { include "complete"	};
+	xkb_symbols   { include "pc+gb+inet(evdev)+custom(capsctrl)"	};
+	xkb_geometry  { include "pc(pc105)"	};
+};
+
+#+end_src
+
+** Script
+
+Importantly, all modifier keys must be listed as such.
+
+#+begin_src :tangle ~/.xkb/symbols/custom
+
+partial modifier_keys
+xkb_symbols "capsctrl" {
+    replace key <CAPS> { [ Control_L ] };
+    modifier_map Control { <CAPS>, <LCTL>, <RCTL> };
+};
+
+#+end_src
+
+** Load
+
+#+begin_src shell
+
+xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
+
+#+end_src
+
+
