@@ -1722,7 +1722,7 @@ folded."
 
 (defun custom/run-org-roam-node-visit-hook (&rest _args)
    "Run `after-enable-theme-hook'."
-   (run-hooks 'custom/org-roam-visit-hook))
+   (run-hooks 'custom/org-roam-node-visit-hook))
 
 ;; enable-theme
 (advice-add 'org-roam-node-visit :after #'custom/run-org-roam-node-visit-hook)
