@@ -13,6 +13,10 @@
 - org-agenda
    - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
 
+- programming
+   - smaller font
+      - dpi scaling
+
 - projectile
    - new project -> .workspace file + load .workspace
 
