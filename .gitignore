@@ -6,5 +6,5 @@ elpa/*
 auto-save-list/*
 url/cache/root/https/*
 
-# Local files
-startup.el
+# local config
+local.el
