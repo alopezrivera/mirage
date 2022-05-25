@@ -24,7 +24,7 @@ setxkbmap -print > ~/.xkb/keymap/mykbd
 
 and include call to customization script (~capsctrl~ in this case).
 
-#+begin_src shell :tangle ~/.xkb/keymap/mykbd
+#+begin_src shell :tangle ~/.xkb/keymap/mykbd :mkdirp yes
 
 xkb_keymap {
 	xkb_keycodes  { include "evdev+aliases(qwerty)"	};
@@ -40,7 +40,7 @@ xkb_keymap {
 
 Importantly, all modifier keys must be listed as such.
 
-#+begin_src shell :tangle ~/.xkb/symbols/custom
+#+begin_src shell :tangle ~/.xkb/symbols/custom :mkdirp yes
 
 partial modifier_keys
 xkb_symbols "capsctrl" {
