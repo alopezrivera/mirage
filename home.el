@@ -377,6 +377,9 @@ not empty. In any case, advance to next line."
 
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 
+(if (version< "29.0" emacs-version)
+    (pixel-scroll-precision-mode))
+
 ;; Center text
 (straight-use-package 'olivetti)
 

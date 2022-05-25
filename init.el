@@ -8,18 +8,18 @@
 
 ;;; -*- lexical-binding: t; -*-
 
-(defvar config-directory "~/.emacs.d/")
+(defvar config "home")
 
-(defvar startup-buffers '())
+(defvar config-directory "~/.emacs.d/")
 
 (defvar initial-buffer-choice "")
 
-(let ((startup (concat config-directory "startup.el")))
+(defvar startup-buffers '())
+
+(let ((startup (concat config-directory "local.el")))
   (if (file-exists-p startup)
       (load-file startup)))
 
-(require 'home (concat config-directory "home.el"))
-
-;; (require 'wild (concat config-directory "wild.el"))
+(require (intern config) (concat config-directory (concat config ".el")))
 
 (provide 'init)
