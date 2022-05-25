@@ -16,17 +16,25 @@
 
 #+begin_src emacs-lisp
 
-;;; -*- lexical-binding: t; -*-
+  ;;; -*- lexical-binding: t; -*-
 
-(defvar config-directory "~/.emacs.d/")
+  (defvar config "home")
 
-(defvar startup-buffers '())
+  (defvar config-directory "~/.emacs.d/")
 
-(defvar initial-buffer-choice "")
+  (defvar initial-buffer-choice "")
 
-(let ((startup (concat config-directory "startup.el")))
-  (if (file-exists-p startup)
-      (load-file startup)))
+  (defvar startup-buffers '())
+
+#+end_src
+
+* Local
+
+#+begin_src emacs-lisp
+
+  (let ((startup (concat config-directory "local.el")))
+    (if (file-exists-p startup)
+	(load-file startup)))
 
 #+end_src
 
@@ -34,9 +42,7 @@
 
 #+begin_src emacs-lisp
 
-(require 'home (concat config-directory "home.el"))
-
-;; (require 'wild (concat config-directory "wild.el"))
+(require (intern config) (concat config-directory (concat config ".el")))
 
 #+end_src
 
