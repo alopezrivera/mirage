@@ -1721,7 +1721,8 @@ folded."
 
 #+begin_src emacs-lisp
 
-(org-roam-db-autosync-mode)
+(if (file-directory-p org-roam-directory)
+    (org-roam-db-autosync-mode))
 
 #+end_src
 
