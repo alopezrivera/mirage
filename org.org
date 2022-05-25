@@ -1539,7 +1539,8 @@ matches the current theme."
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
-   (python     . t)))
+   (python     . t)
+   (shell      . t)))
 
 #+end_src
 
