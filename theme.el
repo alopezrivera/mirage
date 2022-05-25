@@ -7,9 +7,9 @@
 (straight-use-package 'nano-theme)
 (require 'nano-theme)
 
-(use-package doom-themes)
+(straight-use-package 'doom-themes)
 
-(use-package modus-themes)
+(straight-use-package 'modus-themes)
 (modus-themes-load-themes)
 
 (straight-use-package 'sweet-theme)
@@ -93,11 +93,10 @@ using `enable-theme'"
 (setq calendar-standard-time-zone-name "CEST")
 (setq calendar-daylight-time-zone-name "CET")
 
-(use-package circadian
-  :config
-  (setq circadian-themes `((:sunrise . ,light)  
-			      (:sunset  . ,dark)))
-  (circadian-setup))
+(straight-use-package 'circadian)
+(setq circadian-themes `((:sunrise . ,light)  
+			    (:sunset  . ,dark)))
+(circadian-setup)
 
 ;; Provide theme
 (provide 'theme)

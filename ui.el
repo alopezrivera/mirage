@@ -17,8 +17,7 @@
 (set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
 
 ;; Symbol library
-(use-package all-the-icons
-  :if (display-graphic-p))
+(straight-use-package 'all-the-icons)
 
 ;; Title face
 
@@ -83,7 +82,7 @@
 
 (add-hook 'org-mode-hook #'custom/org-header-setup)
 
-(use-package svg-tag-mode)
+(straight-use-package 'svg-tag-mode)
 
 (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
 (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
@@ -163,18 +162,22 @@
              (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))))
 
 ;; Highlight HTML color strings in their own color
-(use-package rainbow-mode)
+(straight-use-package 'rainbow-mode)
 
 (display-time-mode t)
 
 ;; Customize names displayed in mode line
-(use-package delight)
+(straight-use-package 'delight)
 (require 'delight)
 
 ;; Remove default modes from mode line
-(delight '((visual-line-mode nil "simple")
-	         (buffer-face-mode nil "simple")
-   	 (eldoc-mode       nil "eldoc")
+(delight '((global-command-log-mode nil "")
+	   (olivetti-mode           nil "")
+	   (which-key-mode          nil "")
+	   (visual-line-mode        nil "simple")
+	   (buffer-face-mode        nil "simple")
+	   (org-indent-mode         nil "org")
+	   (eldoc-mode              nil "eldoc")
 	   ;; Major modes
 	   (emacs-lisp-mode "EL" :major)))
 
@@ -193,7 +196,7 @@
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
 
-(use-package org-modern)
+(straight-use-package 'org-modern)
 
 (add-hook 'org-mode-hook #'org-modern-mode)
 (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)

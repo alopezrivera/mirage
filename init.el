@@ -1,15 +1,22 @@
-(global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
+;; github
+(global-set-key (kbd "C-M-g") (lambda () (interactive) (insert
 "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")))
+
+;; gitlab
+(global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
+"n~>}xr8AJ*?Y\"XG]")))
 
 ;;; -*- lexical-binding: t; -*-
 
-(setq config-directory "~/.emacs.d/")
+(defvar config-directory "~/.emacs.d/")
 
-(defvar startup-buffers
-  '("/home/emacs/test.org"
-    "/home/dfki/backlog.org" "/mnt/c/Users/xXY4n/Professional/_Employment/DFKI/Repos/hopping_leg/software/python/hopping_leg/motors/abstract_motor.py"))
+(defvar startup-buffers '())
 
-(setq initial-buffer-choice "/home/dfki/backlog.org")
+(defvar initial-buffer-choice "")
+
+(let ((startup (concat config-directory "startup.el")))
+  (if (file-exists-p startup)
+      (load-file startup)))
 
 (require 'home (concat config-directory "home.el"))
 

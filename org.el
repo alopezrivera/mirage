@@ -2,9 +2,6 @@
 (straight-use-package 'org)
 (require 'org)
 
-;; Delight
-(delight 'org-indent-mode)
-
 ;; Startup with inline images
 (setq org-startup-with-inline-images t)
 
@@ -859,7 +856,7 @@ matches the current theme."
 (advice-add 'org-create-formula-image :around #'org-renumber-environment)
 
 ;; org-fragtog
-(use-package org-fragtog)
+(straight-use-package 'org-fragtog)
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 
@@ -872,7 +869,7 @@ matches the current theme."
    (python     . t)))
 
 ;; Trigger org-babel-tangle when saving any org files in the config directory
-(setq source-regex (list ".org" (replace-regexp-in-string "~" "/root" config-directory)))
+(setq source-regex (list ".org" (replace-regexp-in-string "~" (getenv "HOME") config-directory)))
 
 (defun custom/org-babel-tangle-config()
   "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
@@ -943,7 +940,7 @@ folded."
 (straight-use-package 'org-roam)
 
 ;; Directory
-(setq org-roam-directory "/home/roam")
+(setq org-roam-directory "~/roam")
 
 ;; Find node
 (global-set-key (kbd "C-c n") 'org-roam-node-find)
@@ -974,7 +971,8 @@ folded."
 ;; enable-theme
 (advice-add 'org-roam-node-visit :after #'custom/run-org-roam-node-visit-hook)
 
-(org-roam-db-autosync-mode)
+(if (file-directory-p org-roam-directory)
+    (org-roam-db-autosync-mode))
 
 (add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
 

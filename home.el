@@ -58,7 +58,7 @@
 (setq debug-on-error t)
 
 ;; Enable rainbow delimiters on all programming modes
-(use-package rainbow-delimiters)
+(straight-use-package 'rainbow-delimiters)
 
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
@@ -271,7 +271,7 @@ kill ring."
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 
 ;; Multiple cursors
-(use-package multiple-cursors)
+(straight-use-package 'multiple-cursors)
 (require 'multiple-cursors)
 
 ;; mc-lists
@@ -378,9 +378,7 @@ not empty. In any case, advance to next line."
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 
 ;; Center text
-(use-package olivetti
-  :delight olivetti-mode
-  )
+(straight-use-package 'olivetti)
 
 (add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
 
@@ -418,7 +416,7 @@ not empty. In any case, advance to next line."
 (desktop-save-mode 1)
 
 ;; Swiper
-(use-package swiper)
+(straight-use-package 'swiper)
 (require 'swiper)
 
 (defun custom/swiper-isearch (orig-fun &rest args)
@@ -511,29 +509,32 @@ buffer is already narrowed, widen buffer."
 (define-key ivy-minibuffer-map (kbd "<backspace>") 'ivy-backward-delete-char)
 
 ;; Command suggestions
-(use-package which-key
-  :delight which-key-mode
-  :config
-  (which-key-mode)
-  (setq which-key-idle-delay 1.0))
+(straight-use-package 'which-key)
+(require 'which-key)
+
+(setq which-key-idle-delay 1.0)
+
+(which-key-mode)
 
 ;; Replace description key bindings by their helpful equivalents
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . helpful-function)
-  ([remap describe-command]  . helpful-command)
-  ([remap describe-variable] . helpful-variable)
-  ([remap describe-key]      . helpful-key))
+  (straight-use-package 'helpful)
 
-(use-package command-log-mode
-  :delight command-log-mode)
+(setq counsel-describe-function-function #'helpful-callable)
+(setq counsel-describe-variable-function #'helpful-variable)
+
+(global-set-key [remap describe-function] 'helpful-function)
+(global-set-key [remap describe-command]  'helpful-command)
+(global-set-key [remap describe-variable] 'helpful-variable)
+(global-set-key [remap describe-key]      'helpful-key)
+
+;; command-log-mode
+(straight-use-package 'command-log-mode)
+(require 'command-log-mode)
+
 (global-command-log-mode)
 
 ;; yasnippet
-(use-package yasnippet)
+(straight-use-package 'yasnippet)
 
 (yas-global-mode 1)
 
@@ -551,7 +552,7 @@ buffer is already narrowed, widen buffer."
 (advice-add 'yas-expand :around #'custom/<-snippet)
 
 ;; yasnippet-snippets
-(use-package yasnippet-snippets)
+(straight-use-package 'yasnippet-snippets)
 
 ;; Double end to go to the beginning of line
 (defvar custom/double-end-timeout 0.4)
@@ -763,7 +764,7 @@ kill the current buffer and delete its window."
 ;; projectile
 (straight-use-package 'projectile)
 
-(use-package magit)
+(straight-use-package 'magit)
 
 (require 'ide (concat config-directory "ide.el"))
 
