@@ -8,6 +8,9 @@
 (tooltip-mode -1)
 (menu-bar-mode -1)
 
+;; warnings
+(setq visible-bell t)
+
 ;; typefaces
 (set-face-attribute 'default     nil :height 85)
 
