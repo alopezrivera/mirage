@@ -16,15 +16,15 @@
 
 #+begin_src emacs-lisp
 
-  ;;; -*- lexical-binding: t; -*-
+;;; -*- lexical-binding: t; -*-
 
-  (defvar config "home")
+(defvar config "home")
 
-  (defvar config-directory "~/.emacs.d/")
+(defvar config-directory "~/.emacs.d/")
 
-  (defvar initial-buffer-choice "")
+(defvar initial-buffer-choice "")
 
-  (defvar startup-buffers '())
+(defvar startup-buffers '())
 
 #+end_src
 
