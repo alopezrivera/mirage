@@ -820,7 +820,10 @@ not empty. In any case, advance to next line."
 #+end_src
 
 * Session
-** workgroups
+** TODO workgroups
+
+- workgroups
+  - relative paths wrt project root (for files in same projectile project ?)
 
 #+begin_src emacs-lisp
 
