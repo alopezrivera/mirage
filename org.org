@@ -1427,6 +1427,18 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 #+end_src
 
 
+* Export
+** rst
+
+#+begin_src emacs-lisp
+
+;; ox-rst
+(straight-use-package 'ox-rst)
+(require 'ox-rst)
+
+#+end_src
+
+
 * TODO LaTeX
 
 - org LaTeX equations
