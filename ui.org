@@ -8,7 +8,10 @@
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./ui.el :mkdirp yes
 
 * Typefaces
-** Text
+** TODO Text
+
+- dpi font size scaling
+
 *** Body
 
 #+begin_src emacs-lisp
