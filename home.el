@@ -26,9 +26,6 @@
 
 (add-hook 'after-init-hook #'custom/spawn-startup-buffers)
 
-;; Default directory
-(setq default-directory "~/.emacs.d/")
-
 ;; Config directory
 (setq config-directory "~/.emacs.d/")
 

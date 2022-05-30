@@ -517,6 +517,8 @@ function that sets `deactivate-mark' to t."
 ;; Do not insert newline before Org Mode headings
 (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
+(setq org-image-actual-width nil)
+
 (defface custom/variable-pitch-marker
   '((nil :inherit 'fixed-pitch))
   "List marker typeface.")
@@ -631,16 +633,38 @@ of org-tempo templates."
 
 (advice-add 'tempo-complete-tag :around #'custom/tempo-breathe)
 
-;; LaTeX structure templates
+;; equations
 (tempo-define-template "latex-equation"
-		          '("#+NAME: eq:" n "\\begin{equation}" p "\\end{equation}" >)
+		          '("#+NAME: eq:"
+			    n
+			    "\\begin{equation}" p "\\end{equation}" >)
 			  "<eq"
 			  "LaTeX equation template")
 
 (tempo-define-template "latex-derivation"
-		          '("#+NAME: eq:" n "\\begin{equation}" n "\\arraycolsep=3pt\\def\\arraystretch{2.25}" n "\\begin{array}{lll}" p "\\end{array}" n "\\end{equation}" >)
+		          '("#+NAME: eq:"
+			    n
+			    "\\begin{equation}"
+			    n
+			    "\\arraycolsep=3pt\\def\\arraystretch{2.25}"
+			    n
+			    "\\begin{array}{lll}" p "\\end{array}"
+			    n
+			    "\\end{equation}" >)
 			  "<de"
 			  "LaTeX derivation template")
+
+;; figures
+(tempo-define-template "figure"
+		          '("#+NAME: fig:"
+			    n
+			    "#+CAPTION:"
+			    n
+			    "#+ATTR_ORG: :width 450"
+			    n
+			    "[[./"p"]]" >)
+			  "<f"
+			  "Org Mode figure template")
 
 ;; Code block structure templates
 (add-to-list 'org-structure-template-alist '("sh"   . "src shell"))
@@ -769,6 +793,10 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 	    (custom/org-goto-heading-parent)
       ;; else, attempt going to last subheading of previous same-level heading
       (custom/org-goto-child-last))))
+
+;; ox-rst
+(straight-use-package 'ox-rst)
+(require 'ox-rst)
 
 ;; Justify equation labels - [fleqn]
 ;; Preview page width      - 10.5cm
