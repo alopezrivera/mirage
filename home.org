@@ -1382,7 +1382,10 @@ kill the current buffer and delete its window."
 #+end_src
 
 * Project interaction
-** projectile
+** TODO projectile
+
+- projectile
+   - new project -> .workspace file + load .workspace
 
 #+begin_src emacs-lisp
 
