@@ -1158,7 +1158,11 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-* Templates
+* TODO Templates
+
+- research tempel
+   - https://github.com/minad/tempel/blob/main/README.org
+
 ** tempo
 
 #+begin_src emacs-lisp
