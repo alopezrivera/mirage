@@ -950,6 +950,14 @@ function that sets `deactivate-mark' to t."
 #+end_src
 
 * Display
+** Figures
+
+#+begin_src emacs-lisp
+
+(setq org-image-actual-width nil)
+
+#+end_src
+
 ** Variable pitch
 
 #+begin_src emacs-lisp
