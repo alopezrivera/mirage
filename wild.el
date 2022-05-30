@@ -148,6 +148,13 @@
   (not (member lang '("emacs-lisp" "python"))))
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
+;; babel languages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)
+   (shell      . t)))
+
 ;; tempo
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
