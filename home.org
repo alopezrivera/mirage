@@ -53,15 +53,6 @@
 
 #+end_src
 
-*** Directory
-
-#+begin_src emacs-lisp
-
-;; Default directory
-(setq default-directory "~/.emacs.d/")
-
-#+end_src
-
 ** System information
 *** Config directory
 
