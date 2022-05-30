@@ -10,40 +10,47 @@
 #+latex_class_options: [twocolumn]
 -----
 
+- tempo
+   - figure template
+
 - org-agenda
-  - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
-
-- programming
-  - smaller font
-    - dpi scaling
-
-- projectile
-  - new project -> .workspace file + load .workspace
-- workgroups
-  - relative paths wrt project root (for files in same projectile project ?)
+   - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
 
 - reading
-  - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
+   - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
 
 - latex
-  - class, style file access
-    - https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te
-  - latexmkrc -> load class from different directory
-    - https://stackoverflow.com/a/64860253
-  - org-latex-pdf-process -> latexmk
-  - beamer
-    - https://latex-beamer.com/tutorials/beamer-figure/
-- subrepo, multirepo
-- owo
+   - class, style file access
+      - https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te
+   - latexmkrc -> load class from different directory
+      - https://stackoverflow.com/a/64860253
+   - org-latex-pdf-process -> latexmk
+   - beamer
+      - https://latex-beamer.com/tutorials/beamer-figure/
+
+* TODO [#A] git
+
+- subrepo
+   - https://github.com/ingydotnet/git-subrepo#readme
+- multirepo
+   - dotfile managers
+      - vcsh
+         - https://github.com/RichiH/vcsh
+      - yadm
+         - https://github.com/TheLocehiliosan/yadm
+   - magit
+      - https://github.com/magit/magit/issues/460#issuecomment-36139308
+- subtrees
+   - remove subtree
+   - history, bugs
+      - https://gist.github.com/SKempin/b7857a6ff6bddb05717cc17a44091202
+      - https://gitlab.com/douglas.s.leonard/alltrees
+      - https://gitlab.com/douglas.s.leonard/alltrees/-/wikis/home
+
+
+* TODO [#A] owo
 
 -----
-
-* org-capture
-
-- lecture
-  - specify directory
-  - template
-
     
 * Sessions
 ** TODO [#A] org-agenda
@@ -261,6 +268,8 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 * portability
 
+- organice
+   - https://github.com/200ok-ch/organice
 - logseq
    - https://coredumped.dev/2021/05/26/taking-org-roam-everywhere-with-logseq/
 
@@ -341,8 +350,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 * org
 
-- org-appear
-   - https://github.com/awth13/org-appear
+- toggle emphasis markers
+   - org-appear
+      - https://github.com/awth13/org-appear
 
 - Jump to heading with completion
    - https://github.com/abo-abo/worf
@@ -369,6 +379,12 @@ CLOSED: [2022-05-06 Fri 17:11]
    - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
    - https://www.youtube.com/watch?app=desktop&v=0g9BcZvQbXU
 
+* org-capture
+
+- lecture
+   - specify directory
+   - template
+
 * org-paragraph
 
 - up, down
@@ -381,6 +397,9 @@ CLOSED: [2022-05-06 Fri 17:11]
       - Cached element is incorrect
       - LOOGBOOK :END: keeps ellipsis when unfolded
    - org-meta-return not working after time-logged headings
+
+- sync
+   - https://200ok.ch/posts/2022-02-13_integrating_org_mode_agenda_into_other_calendar_apps.html
 
 - org-agenda
    - low effort tasks
@@ -460,6 +479,9 @@ CLOSED: [2022-05-06 Fri 17:11]
    - deactivate when reloading org mode
      
 * mode line
+
+- awesome-tray
+   - https://github.com/manateelazycat/awesome-tray
 
 - trouble switching on and off across modes
 - no mode line minor mode
