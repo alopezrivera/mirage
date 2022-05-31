@@ -13,6 +13,9 @@
 - tempo
    - figure template
 
+- dotfiles
+   - https://evanhahn.com/a-decade-of-dotfiles/
+
 - org-agenda
    - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
 
@@ -47,11 +50,8 @@
       - https://gitlab.com/douglas.s.leonard/alltrees
       - https://gitlab.com/douglas.s.leonard/alltrees/-/wikis/home
 
-
 * TODO [#A] owo
 
------
-    
 * Sessions
 ** TODO [#A] org-agenda
 ** TODO [#A] org-roam
@@ -602,8 +602,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 * templating
 
-- yasnippet
-   - org-capture template
+- research tempel
+   - https://github.com/minad/tempel/blob/main/README.org
+- org-capture template
 - autotyping
    - https://www.gnu.org/software/emacs/manual/html_mono/autotype.html
    - https://sachachua.com/blog/2015/01/developing-emacs-micro-habits-text-automation/
