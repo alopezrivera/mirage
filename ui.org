@@ -278,15 +278,19 @@
 
 * Org Mode
 ** Setup
-*** Hidden
+*** Hide
+**** Markup
 
 #+begin_src emacs-lisp
 
 ;; Title keyword
 (setq org-hidden-keywords '(title))
 
-;; Markup
-(setq org-hide-emphasis-markers nil)
+**** Keywords
+
+#+begin_src emacs-lisp
+
+(setq org-hidden-keywords '(title))
 
 #+end_src
 
