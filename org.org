@@ -1205,17 +1205,20 @@ indented at the level of the previous list item, indent the paragraph."
 
 ;; figures
 (tempo-define-template "figure"
-		          '("#+NAME: fig:"
+		          '("#+NAME: fig:" p
 			    n
-			    "#+CAPTION:"
+			    "#+CAPTION:" p
 			    n
 			    "#+ATTR_ORG: :width 450"
 			    n
-			    "[[./"p"]]" >)
+			    "[[./"
+			    p
+			    "]]" >)
 			  "<f"
 			  "Org Mode figure template")
 
 #+end_src
+
 ** Code blocks
 
 #+begin_src emacs-lisp
