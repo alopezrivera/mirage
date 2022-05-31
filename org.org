@@ -1207,7 +1207,7 @@ indented at the level of the previous list item, indent the paragraph."
 (tempo-define-template "figure"
 		          '("#+NAME: fig:" p
 			    n
-			    "#+CAPTION:" p
+			    "#+CAPTION: " p
 			    n
 			    "#+ATTR_ORG: :width 450"
 			    n
