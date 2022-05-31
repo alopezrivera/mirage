@@ -1166,16 +1166,9 @@ indented at the level of the previous list item, indent the paragraph."
 ;; Required as of Org 9.2
 (require 'org-tempo)
 
-;; Spacing advice
-(defun custom/tempo-breathe (orig-fun &rest args)
-  "Add a margin of one newline above and below the content 
-of org-tempo templates."
-  (if (string-equal "marker" (type-of (apply orig-fun args)))
-      (progn (newline)
-	         (newline)
-		 (previous-line))))
-
-(advice-add 'tempo-complete-tag :around #'custom/tempo-breathe)
+;; Navigation
+(global-set-key (kbd "C-<tab>")         'tempo-forward-mark)
+(global-set-key (kbd "C-<iso-lefttab>") 'tempo-backward-mark)
 
 #+end_src
 
@@ -1227,11 +1220,21 @@ of org-tempo templates."
 
 #+begin_src emacs-lisp
 
-;; Code block structure templates
-(add-to-list 'org-structure-template-alist '("sh"   . "src shell"))
-(add-to-list 'org-structure-template-alist '("el"   . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py"   . "src python"))
-(add-to-list 'org-structure-template-alist '("bash" . "src bash"))
+(defun custom/tempo-code-block (key language)
+  (tempo-define-template language
+		         `("#+begin_src " ,language n
+			   n
+			   p n
+			   n
+			   "#+end_src" >)
+			 key
+			 language))
+
+(dolist (pair '(("<sh"   "shell")
+		   ("<el"   "emacs-lisp")
+		   ("<py"   "python")
+		   ("<bash" "bash")))
+  (apply 'custom/tempo-code-block pair))
 
 #+end_src
 
