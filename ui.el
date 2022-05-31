@@ -181,11 +181,15 @@
 	   ;; Major modes
 	   (emacs-lisp-mode "EL" :major)))
 
-;; Title keyword
-(setq org-hidden-keywords '(title))
+(setq org-hide-emphasis-markers t)
 
-;; Markup
-(setq org-hide-emphasis-markers nil)
+;; org-appear
+(straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+(setq org-appear-autolinks t)
+
+(setq org-hidden-keywords '(title))
 
 (add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
 
