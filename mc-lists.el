@@ -20,8 +20,11 @@
 	custom/smart-mouse-rectangle
 	dired-flag-file-deletion
 	electric-newline-and-maybe-indent
+	elpy-nav-backward-indent
+	elpy-nav-forward-indent
 	end-of-visual-line
 	eval-last-sexp
+	ignore
 	keyboard-escape-quit
 	kill-rectangle
 	kill-region
@@ -48,6 +51,7 @@
 (setq mc/cmds-to-run-once
       '(
 	clm/toggle-command-log-buffer
+	comint-interrupt-subjob
 	counsel-M-x
 	custom/double-escape
 	custom/mouse-rectangle
