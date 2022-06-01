@@ -5,7 +5,7 @@
 
 
 #+title:Dotfiles
-
+#+PROPERTY: header-args: :results none
 
 * .xkb
 
