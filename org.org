@@ -1178,21 +1178,20 @@ indented at the level of the previous list item, indent the paragraph."
 
 ;; equations
 (tempo-define-template "latex-equation"
-		          '("#+NAME: eq:"
-			    n
-			    "\\begin{equation}" p "\\end{equation}" >)
+		          '("#+NAME: eq:" p n
+			    "\\begin{equation}" n
+			    p n
+			    "\\end{equation}" >)
 			  "<eq"
 			  "LaTeX equation template")
 
 (tempo-define-template "latex-derivation"
-		          '("#+NAME: eq:"
-			    n
-			    "\\begin{equation}"
-			    n
-			    "\\arraycolsep=3pt\\def\\arraystretch{2.25}"
-			    n
-			    "\\begin{array}{lll}" p "\\end{array}"
-			    n
+		          '("#+NAME: eq:" p n
+			    "\\begin{equation}" n
+			    "\\arraycolsep=3pt\\def\\arraystretch{2.25}" n
+			    "\\begin{array}{lll}" n
+			    p n
+			    "\\end{array}" n
 			    "\\end{equation}" >)
 			  "<de"
 			  "LaTeX derivation template")
@@ -1205,15 +1204,10 @@ indented at the level of the previous list item, indent the paragraph."
 
 ;; figures
 (tempo-define-template "figure"
-		          '("#+NAME: fig:" p
-			    n
-			    "#+CAPTION: " p
-			    n
-			    "#+ATTR_ORG: :width 450"
-			    n
-			    "[[./"
-			    p
-			    "]]" >)
+		          '("#+NAME: fig:" p n
+			    "#+CAPTION: " p n
+			    "#+ATTR_ORG: :width 450" n
+			    "[[./" p "]]" >)
 			  "<f"
 			  "Org Mode figure template")
 
