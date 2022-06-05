@@ -1432,6 +1432,27 @@ kill the current buffer and delete its window."
 
 #+end_src
 
+** Reload from disk
+
+#+begin_src emacs-lisp
+
+(defun custom/reload-from-disk (&optional buffer)
+  "Revert BUFFER contents to the contents of its
+file saved on disk, ignoring the auto-save file.
+If the buffer has unsaved modifications, prompt
+the user for confirmation."
+  (interactive)
+  (let ((buffer (or buffer (current-buffer))))
+    (save-window-excursion
+      (switch-to-buffer buffer)
+      (if (not (buffer-modified-p))
+	     (revert-buffer t t)
+	   (revert-buffer t nil)))))
+
+(global-set-key (kbd "C-c r") 'custom/reload-from-disk)
+
+#+end_src
+
 
 * UI
 
