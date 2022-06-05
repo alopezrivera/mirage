@@ -57,7 +57,6 @@
 ** TODO [#A] org-roam
 
 
-
 * References
 
 - https://karthinks.com/
