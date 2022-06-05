@@ -145,7 +145,7 @@
 
 ;; suppress babel block execution confirmation
 (defun my-org-confirm-babel-evaluate (lang body)
-  (not (member lang '("emacs-lisp" "python"))))
+  (not (member lang '("emacs-lisp" "python" "shell"))))
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 ;; babel languages
