@@ -82,7 +82,15 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
   "Org Diary directory."
   :group 'custom/org-diary-mode-group)
 
-(defcustom custom/org-diary-time-format-file  "%d.%m.%Y"
+(defcustom custom/org-diary-navigate-in-current-dir t
+  "If the current buffer is an `org-diary' buffer, this variable
+determines whether `org-diary-prior' and `org-diary-next' will
+search (or create) the prior or next `org-diary' entry in the directory
+of the current buffer as opposed to in `org-diary-directory'.
+Setting this variable to t is useful to navigate directories with
+notes in `org-diary' format.")
+
+(defcustom custom/org-diary-time-format-file  "%d-%m-%Y"
   "Org Diary time format: file names."
   :group 'custom/org-diary-mode-group)
 
