@@ -210,7 +210,7 @@ notes in `org-diary' format.")
 
 * Internal
 ** Time
-*** TODO parse-time
+*** TODO org-diary-parse-time
 
 1. find separator indices in time string
     - <any code><separator>% -> regex match group
@@ -253,7 +253,7 @@ strings in the format `%d/%m/%Y'."
 
 #+end_src
 
-*** time-string-file
+*** org-diary-time-string-file
 
 #+begin_src emacs-lisp
 
@@ -262,7 +262,7 @@ strings in the format `%d/%m/%Y'."
 
 #+end_src
 
-*** time-string-title
+*** org-diary-time-string-title
 
 #+begin_src emacs-lisp
 
@@ -294,7 +294,7 @@ strings in the format `%d/%m/%Y'."
 
 #+end_src
 
-*** entry-time
+*** org-diary-entry-time
 
 #+begin_src emacs-lisp
 
@@ -304,7 +304,7 @@ strings in the format `%d/%m/%Y'."
 
 #+end_src
 
-*** entry-time
+*** org-diary-entry-time
 
 #+begin_src emacs-lisp
 
@@ -315,7 +315,7 @@ file in `custom/org-diary-time-format-file'."
 
 #+end_src
 
-*** entry-unsaved-buffer
+*** org-diary-entry-unsaved-buffer
 
 #+begin_src emacs-lisp
 
@@ -410,7 +410,7 @@ Options:
   "Open the Org Diary entry for today, creating it if
 it does not exist."
   (interactive)
-  (custom/org-diary-visit (current-time) arg))
+  (custom/org-diary-visit (current-time) arg custom/org-diary-directory))
 
 #+end_src
 
