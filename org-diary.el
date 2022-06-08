@@ -125,7 +125,6 @@ strings in the format `%d/%m/%Y'."
   (format-time-string custom/org-diary-time-format-title time))
 
 (defun custom/org-diary-buffer-entry (buffer)
-  (print (file-name-nondirectory buffer))
   (string-match-p "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org" (file-name-nondirectory buffer)))
 
 (defun custom/org-diary-in-entry ()
@@ -180,7 +179,9 @@ Options:
 	       (find-file-noselect entry)
 	     (if current-buffer
 		 (find-file entry)
-	       (progn (find-file-other-window entry)
+	       (progn (split-window-horizontally)
+		      (windmove-right)
+		      (find-file entry)
 	              (if (not (ignore-errors (custom/window-resize-fraction custom/org-diary-new-window-fraction)))
 			  (delete-other-windows)))))
        ;; Initialize
