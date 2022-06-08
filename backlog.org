@@ -10,8 +10,7 @@
 #+latex_class_options: [twocolumn]
 -----
 
-- tempo
-   - figure template
+- projectile
 
 - dotfiles
    - https://evanhahn.com/a-decade-of-dotfiles/
@@ -334,6 +333,7 @@ CLOSED: [2022-05-06 Fri 17:11]
    - https://github.com/tmalsburg/helm-bibtex
 - org-ref
    - https://github.com/jkitchin/org-ref
+
 - create entry
    - org-noter
       - headings from section titles
