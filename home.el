@@ -9,16 +9,17 @@
 
 ;; Background buffers
 (defvar background-buffers
-  '("~/.emacs.d/ui.org"
-    "~/.emacs.d/wild.el"
-    "~/.emacs.d/org.org"
-    "~/.emacs.d/ide.org"
-    "~/.emacs.d/init.org"
-    "~/.emacs.d/home.org"
-    "~/.emacs.d/theme.org"
-    "~/.emacs.d/backlog.org"
-    "~/.emacs.d/org-diary.org"
-    "~/.emacs.d/org-paragraph.org"))
+  (list (concat config-directory "local.el")
+        (concat config-directory "ui.org")
+        (concat config-directory "wild.el")
+        (concat config-directory "org.org")
+        (concat config-directory "ide.org")
+        (concat config-directory "init.org")
+        (concat config-directory "home.org")
+        (concat config-directory "theme.org")
+        (concat config-directory "backlog.org")
+        (concat config-directory "org-diary.org")
+        (concat config-directory "org-paragraph.org")))
 
 (defun custom/spawn-startup-buffers ()
   (cl-loop for buffer in (append startup-buffers background-buffers)
@@ -238,8 +239,8 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
       (cond ((and (region-active-p) (not (custom/region-blank))) (custom/delete-hungry))
-	          ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-		  (t                                                   (delete-backward-char 1)))
+	        ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+		(t                                                   (delete-backward-char 1)))
     (delete-backward-char 1)))
 
 (global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
@@ -481,32 +482,34 @@ buffer is already narrowed, widen buffer."
 (require 'counsel)
 (require 'ivy-rich)
 
-(let ((map ivy-minibuffer-map))
-  (dolist (pair '(("<tab>" . ivy-alt-done)
-		  ("<up>"  . ivy-previous-line-or-history)
-		  ("C-l"   . ivy-alt-done)
-		  ("C-j"   . ivy-next-line)
-		  ("C-k"   . ivy-previous-line)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-
-(let ((map ivy-switch-buffer-map))
-  (dolist (pair '(("C-k"   . ivy-previous-line)
-		  ("C-l"   . ivy-done)
-		  ("C-d"   . ivy-switch-buffer-kill)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-
-(let ((map ivy-reverse-i-search-map))
-  (dolist (pair '(("C-k"   . ivy-previous-line)
-		  ("C-d"   . ivy-reverse-i-search-kill)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-
-(global-set-key (kbd "<menu>") 'counsel-M-x)
-
 (ivy-mode 1)
 (ivy-rich-mode 1)
 
-;; Override `custom/nimble-delete-backward' in Ivy minibuffers
+(global-set-key (kbd "<menu>") 'counsel-M-x)
+
+;; minibuffer bindings
+(let ((map ivy-minibuffer-map))
+  (dolist (pair '(("<tab>" . ivy-alt-done)
+		      ("<up>"  . ivy-previous-line-or-history)
+		      ("C-l"   . ivy-alt-done)
+		      ("C-j"   . ivy-next-line)
+		      ("C-k"   . ivy-previous-line)))
+    (define-key map (kbd (car pair)) (cdr pair))))
+;; override `custom/nimble-delete-backward'
 (define-key ivy-minibuffer-map (kbd "<backspace>") 'ivy-backward-delete-char)
+
+;; switch-buffer bindings
+(let ((map ivy-switch-buffer-map))
+  (dolist (pair '(("C-k"   . ivy-previous-line)
+ 		      ("C-l"   . ivy-done)
+		      ("C-d"   . ivy-switch-buffer-kill)))
+    (define-key map (kbd (car pair)) (cdr pair))))
+
+;; reverse-i-search bindings
+(let ((map ivy-reverse-i-search-map))
+  (dolist (pair '(("C-k"   . ivy-previous-line)
+		      ("C-d"   . ivy-reverse-i-search-kill)))
+    (define-key map (kbd (car pair)) (cdr pair))))
 
 ;; Command suggestions
 (straight-use-package 'which-key)

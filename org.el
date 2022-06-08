@@ -890,6 +890,8 @@ matches the current theme."
 
 (require 'org-diary (concat config-directory "org-diary.el"))
 
+(setq custom/org-diary-directory "/mnt/c/Users/xXY4n/Desktop/studio/journal/diary/")
+
 ;; Language packages
 (org-babel-do-load-languages
  'org-babel-load-languages

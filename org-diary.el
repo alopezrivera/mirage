@@ -54,18 +54,20 @@
   "Org Diary directory."
   :group 'custom/org-diary-mode-group)
 
-(defcustom custom/org-diary-time-format-file  "%d.%m.%Y"
+(defcustom custom/org-diary-navigate-in-current-dir t
+  "If the current buffer is an `org-diary' buffer, this variable
+determines whether `org-diary-prior' and `org-diary-next' will
+search (or create) the prior or next `org-diary' entry in the directory
+of the current buffer as opposed to in `org-diary-directory'.
+Setting this variable to t is useful to navigate directories with
+notes in `org-diary' format.")
+
+(defcustom custom/org-diary-time-format-file  "%d-%m-%Y"
   "Org Diary time format: file names."
   :group 'custom/org-diary-mode-group)
 
 (defcustom custom/org-diary-time-format-title "%d/%m/%Y"
   "Org Diary time format: entry titles."
-  :group 'custom/org-diary-mode-group)
-
-(defcustom custom/org-diary-file-format (concat custom/org-diary-directory
-					  custom/org-diary-time-format-file
-					  ".org")
-  "Org Diary file name format."
   :group 'custom/org-diary-mode-group)
 
 (defcustom custom/org-diary-visit-in-new-window t
@@ -76,6 +78,15 @@
   "New Org Diary window width as a fraction of the frame width."
   :group 'custom/org-diary-mode-group)
 
+(defun custom/org-diary-file-format (&optional dir)
+  "Org Diary file name format."
+  (let ((dir  (or dir
+		     (if custom/org-diary-navigate-in-current-dir
+			 (file-name-directory buffer-file-name)
+		       custom/org-diary-directory)))
+	   (file custom/org-diary-time-format-file))
+  (concat dir file ".org")))
+
 (defun custom/org-diary-typeset ()
   (variable-pitch-mode)
   (custom/org-diary-font-lock-add))
@@ -85,7 +96,7 @@
   "Org Diary typeface for hh:mm time stamps."
   :group 'custom/org-diary-mode-group)
 
-(defcustom custom/org-diary-keyword-hhmm '("[0-9]\\{2\\}:[0-9]\\{2\\}.*$" . 'custom/org-diary-typeface-hhmm)
+(defcustom custom/org-diary-keyword-hhmm '("[0-9]\\{2\\}:[0-9]\\{2\\}$" . 'custom/org-diary-typeface-hhmm)
   "Org Diary hh:mm typeface keyword."
   :group 'custom/org-diary-mode-group)
 
@@ -107,14 +118,15 @@ strings in the format `%d/%m/%Y'."
 		            collect (string-to-number n))))
     (encode-time (list 0 0 0 (nth 0 dmy) (nth 1 dmy) (nth 2 dmy) nil nil nil))))
 
-(defun custom/org-diary-time-string-file (time)
-  (format-time-string custom/org-diary-file-format time))
+(defun custom/org-diary-time-string-file (time &optional dir)
+  (format-time-string (custom/org-diary-file-format dir) time))
 
 (defun custom/org-diary-time-string-title (time)
   (format-time-string custom/org-diary-time-format-title time))
 
 (defun custom/org-diary-buffer-entry (buffer)
-  (string-match-p "^[0-9]\\{2\\}\\.[0-9]\\{2\\}\\.[0-9]\\{4\\}\\.org" (file-name-nondirectory buffer)))
+  (print (file-name-nondirectory buffer))
+  (string-match-p "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org" (file-name-nondirectory buffer)))
 
 (defun custom/org-diary-in-entry ()
   "Return t if current buffer is an `custom/org-diary-buffer-entry'."
@@ -147,19 +159,20 @@ Options:
   - org-agenda -> save current window config, visibility"
   (interactive))
 
-(defun custom/org-diary-visit (time &optional arg)
+(defun custom/org-diary-visit (time &optional arg dir)
   "Open the Org Diary entry corresponding to the specified time.
 -             '(0):  noselect
 - C-u         '(4):  visit in current buffer
 - C-u C-u     '(16): save new entry after initialiation
 - C-u C-u C-u '(64): visit in current buffer and save new entry after initialization"
   (interactive)
-  (let ((entry          (custom/org-diary-time-string-file time))
+  (let ((entry          (custom/org-diary-time-string-file time dir))
 	   (save           (or (equal arg '(16)) (equal arg '(64))))
 	   (noselect       (equal arg '(1)))
 	   (current-buffer (if arg
 			       (or (equal arg '(4)) (equal arg '(64)))
-			     (not custom/org-diary-visit-in-new-window))))
+			     (or (not custom/org-diary-visit-in-new-window)
+				 (custom/org-diary-in-entry)))))
        ;; Whether to initialize the diary entry
        (setq init (not (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))))
        ;; Open entry
@@ -183,13 +196,13 @@ Options:
   "Open the Org Diary entry for today, creating it if
 it does not exist."
   (interactive)
-  (custom/org-diary-visit (current-time) arg))
+  (custom/org-diary-visit (current-time) arg custom/org-diary-directory))
 
 (defun custom/org-diary-jump (number)
   (interactive)
   (let ((custom/org-diary-visit-in-new-window (not (custom/org-diary-in-entry)))
-	  (time-jump (time-add (custom/org-diary-entry-time) (days-to-time number))))
-       (custom/org-diary-visit time-jump '(4))))
+	   (time-jump (time-add (custom/org-diary-entry-time) (days-to-time number))))
+    (custom/org-diary-visit time-jump '(4))))
 
 (defun custom/org-diary-prior ()
   (interactive)
@@ -238,6 +251,7 @@ Bindings:
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
 (define-key org-mode-map (kbd "C-d")       'custom/org-diary-insert-time-hhmm)
+(define-key org-mode-map (kbd "C-c t")     'custom/org-diary-today)
 (define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
 (define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 
