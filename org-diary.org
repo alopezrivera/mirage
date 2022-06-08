@@ -98,12 +98,6 @@ notes in `org-diary' format.")
   "Org Diary time format: entry titles."
   :group 'custom/org-diary-mode-group)
 
-(defcustom custom/org-diary-file-format (concat custom/org-diary-directory
-					  custom/org-diary-time-format-file
-					  ".org")
-  "Org Diary file name format."
-  :group 'custom/org-diary-mode-group)
-
 (defcustom custom/org-diary-visit-in-new-window t
   "Open diary entries in new window."
   :group 'custom/org-diary-mode-group)
@@ -111,6 +105,21 @@ notes in `org-diary' format.")
 (defcustom custom/org-diary-new-window-fraction 0.3
   "New Org Diary window width as a fraction of the frame width."
   :group 'custom/org-diary-mode-group)
+
+#+end_src
+
+** Functions
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-file-format (&optional dir)
+  "Org Diary file name format."
+  (let ((dir  (or dir
+		     (if custom/org-diary-navigate-in-current-dir
+			 (file-name-directory buffer-file-name)
+		       custom/org-diary-directory)))
+	   (file custom/org-diary-time-format-file))
+  (concat dir file ".org")))
 
 #+end_src
 
