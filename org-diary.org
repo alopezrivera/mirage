@@ -279,7 +279,6 @@ strings in the format `%d/%m/%Y'."
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-buffer-entry (buffer)
-  (print (file-name-nondirectory buffer))
   (string-match-p "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org" (file-name-nondirectory buffer)))
 
 #+end_src
@@ -364,7 +363,9 @@ Options:
       - org-capture selected thoughts
 
 * Navigation
-** org-diary-visit
+** TODO org-diary-visit
+
+- new window always on right of frame
 
 #+begin_src emacs-lisp
 
@@ -389,7 +390,9 @@ Options:
 	       (find-file-noselect entry)
 	     (if current-buffer
 		 (find-file entry)
-	       (progn (find-file-other-window entry)
+	       (progn (split-window-horizontally)
+		      (windmove-right)
+		      (find-file entry)
 	              (if (not (ignore-errors (custom/window-resize-fraction custom/org-diary-new-window-fraction)))
 			  (delete-other-windows)))))
        ;; Initialize
