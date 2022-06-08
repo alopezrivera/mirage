@@ -509,8 +509,8 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
       (cond ((and (region-active-p) (not (custom/region-blank))) (custom/delete-hungry))
-	          ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-		  (t                                                   (delete-backward-char 1)))
+	        ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+		(t                                                   (delete-backward-char 1)))
     (delete-backward-char 1)))
 
 (global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
