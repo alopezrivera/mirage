@@ -145,7 +145,7 @@ notes in `org-diary' format.")
   "Org Diary typeface for hh:mm time stamps."
   :group 'custom/org-diary-mode-group)
 
-(defcustom custom/org-diary-keyword-hhmm '("[0-9]\\{2\\}:[0-9]\\{2\\}.*$" . 'custom/org-diary-typeface-hhmm)
+(defcustom custom/org-diary-keyword-hhmm '("[0-9]\\{2\\}:[0-9]\\{2\\}$" . 'custom/org-diary-typeface-hhmm)
   "Org Diary hh:mm typeface keyword."
   :group 'custom/org-diary-mode-group)
 
@@ -272,18 +272,19 @@ strings in the format `%d/%m/%Y'."
 #+end_src
 
 ** Queries
-*** TODO buffer-entry
+*** TODO org-diary-buffer-entry
 
 - generalize for different file time string formats
 
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-buffer-entry (buffer)
-  (string-match-p "^[0-9]\\{2\\}\\.[0-9]\\{2\\}\\.[0-9]\\{4\\}\\.org" (file-name-nondirectory buffer)))
+  (print (file-name-nondirectory buffer))
+  (string-match-p "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org" (file-name-nondirectory buffer)))
 
 #+end_src
 
-*** in-entry
+*** org-diary-in-entry
 
 #+begin_src emacs-lisp
 
