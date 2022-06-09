@@ -975,7 +975,7 @@ folded."
 (straight-use-package 'org-roam)
 
 ;; Directory
-(setq org-roam-directory "~/roam")
+(setq org-roam-directory "/mnt/c/Users/xXY4n/Desktop/studio/roam")
 
 ;; Find node
 (global-set-key (kbd "C-c n") 'org-roam-node-find)
@@ -1049,7 +1049,7 @@ if it was previously enabled."
 
 ;; Set Org Agenda files
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-files '("~/.emacs.d/"
+  (setq org-agenda-files '(config-directory
 			       "/home/dfki/backlog.org")))
 
 (defmacro custom/org-agenda-bind (key command)

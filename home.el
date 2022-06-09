@@ -17,6 +17,8 @@
         (concat config-directory "init.org")
         (concat config-directory "home.org")
         (concat config-directory "theme.org")
+	    (concat config-directory "system.org")
+	    (concat config-directory "dotfiles.org")
         (concat config-directory "backlog.org")
         (concat config-directory "org-diary.org")
         (concat config-directory "org-paragraph.org")))
@@ -277,7 +279,7 @@ kill ring."
 (require 'multiple-cursors)
 
 ;; mc-lists
-(setq mc/list-file "~/.emacs.d/mc-lists.el")
+(setq mc/list-file (concat config-directory "mc-lists.el"))
 
 ;; Create cursors
 (global-set-key (kbd "C-.")         'mc/mark-next-like-this)
