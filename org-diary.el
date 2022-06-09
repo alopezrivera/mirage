@@ -94,6 +94,10 @@ notes in `org-diary' format."
 	   (file custom/org-diary-time-format-file))
   (concat dir file ".org")))
 
+(defun custom/org-diary-resize-window ()
+  (interactive)
+  (custom/window-resize-fraction custom/org-diary-new-window-fraction 60))
+
 (defun custom/org-diary-typeset ()
   (variable-pitch-mode)
   (custom/org-diary-font-lock-add))
@@ -190,7 +194,7 @@ Options:
 	       (progn (split-window-horizontally)
 		      (windmove-right)
 		      (find-file entry)
-	              (if (not (ignore-errors (custom/window-resize-fraction custom/org-diary-new-window-fraction 60)))
+	              (if (not (ignore-errors (custom/org-diary-resize-window)))
 			  (delete-other-windows)))))
        ;; Initialize
        (if init (custom/org-diary-init time))
@@ -260,6 +264,7 @@ Bindings:
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
 (define-key org-mode-map (kbd "C-d")       'custom/org-diary-insert-time-hhmm)
+(define-key org-mode-map (kbd "C-x w")     'custom/org-diary-resize-window)
 (define-key org-mode-map (kbd "C-c t")     'custom/org-diary-today)
 (define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
 (define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)

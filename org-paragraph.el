@@ -39,16 +39,16 @@
   "Org Mode hitch-hiking paragraphs."
   (if (and (not (custom/org-relative-line-heading))
            (not (custom/org-relative-line-list))
-           (custom/relative-line-list -1))
+           (custom/org-relative-line-list -1))
       (progn
         ;; Hitch ride
-	      (custom/org-paragraph-toggle)
-	      ;; Execute command
-	      (if custom/org-paragraph-ignore-errors
-		  (ignore-errors (apply command args))
-		(apply command args))
-	      ;; Drop off
-	      (custom/org-paragraph-toggle))))
+	  (custom/org-paragraph-toggle)
+	  ;; Execute command
+	  (if custom/org-paragraph-ignore-errors
+	      (ignore-errors (apply command args))
+	    (apply command args))
+	  ;; Drop off
+	  (custom/org-paragraph-toggle))))
 
 (defun custom/org-paragraph-indent ()
   (interactive)
