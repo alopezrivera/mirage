@@ -748,7 +748,9 @@ one character."
 
 #+end_src
 
-**** Forward
+**** TODO Forward
+
+- next line = empty list item -> delete next line
 
 #+begin_src emacs-lisp
 
