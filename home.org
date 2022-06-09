@@ -1291,7 +1291,9 @@ before the execution of any command.")
 
 #+end_src
 
-***** Command
+***** TODO Command
+
+- if single window, do nothing
 
 #+begin_src emacs-lisp
 
