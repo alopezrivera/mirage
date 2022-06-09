@@ -1,0 +1,31 @@
+#+STARTUP: overview
+#+FILETAGS: :dotfiles:
+
+
+
+#+title:System
+#+PROPERTY: header-args :results none
+
+* C compiler
+
+#+begin_src shell
+
+sudo apt install build-essential
+
+#+end_src
+
+* LaTeX
+** Debian
+
+#+begin_src emacs-lisp
+
+sudo apt install texlive
+sudo apt install texlive-xetex
+
+#+end_src
+
+** Vanilla
+
+- https://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
+
+
