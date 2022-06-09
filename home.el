@@ -60,10 +60,14 @@
 
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
-(defun custom/window-resize-fraction (fr)
+(defun custom/window-resize (width)
+  (window-resize nil (- width (window-width)) t))
+
+(defun custom/window-resize-fraction (fr &optional min)
   "Resize window to a fraction of the frame width."
   (interactive)
-  (window-resize nil (- (truncate (* fr (frame-width))) (window-width)) t))
+  (let ((width (max (if min min 0) (truncate (* fr (frame-width))))))
+    (window-resize nil (- width (window-width)) t)))
 
 (defun custom/regex-match-patterns (string patterns)
   "Return t if all provided regex PATTERNS

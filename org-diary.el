@@ -52,7 +52,8 @@
 
 (defcustom custom/org-diary-directory "/home/diary/"
   "Org Diary directory."
-  :group 'custom/org-diary-mode-group)
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
 
 (defcustom custom/org-diary-navigate-in-current-dir t
   "If the current buffer is an `org-diary' buffer, this variable
@@ -60,28 +61,34 @@ determines whether `org-diary-prior' and `org-diary-next' will
 search (or create) the prior or next `org-diary' entry in the directory
 of the current buffer as opposed to in `org-diary-directory'.
 Setting this variable to t is useful to navigate directories with
-notes in `org-diary' format.")
+notes in `org-diary' format."
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
 
 (defcustom custom/org-diary-time-format-file  "%d-%m-%Y"
   "Org Diary time format: file names."
-  :group 'custom/org-diary-mode-group)
+  :group 'custom/org-diary-mode-group
+  :type 'string)
 
 (defcustom custom/org-diary-time-format-title "%d/%m/%Y"
   "Org Diary time format: entry titles."
-  :group 'custom/org-diary-mode-group)
+  :group 'custom/org-diary-mode-group
+  :type 'string)
 
 (defcustom custom/org-diary-visit-in-new-window t
   "Open diary entries in new window."
-  :group 'custom/org-diary-mode-group)
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
 
-(defcustom custom/org-diary-new-window-fraction 0.3
+(defcustom custom/org-diary-new-window-fraction 0.25
   "New Org Diary window width as a fraction of the frame width."
-  :group 'custom/org-diary-mode-group)
+  :group 'custom/org-diary-mode-group
+  :type 'float)
 
 (defun custom/org-diary-file-format (&optional dir)
   "Org Diary file name format."
   (let ((dir  (or dir
-		     (if custom/org-diary-navigate-in-current-dir
+		     (if (and custom/org-diary-navigate-in-current-dir buffer-file-name)
 			 (file-name-directory buffer-file-name)
 		       custom/org-diary-directory)))
 	   (file custom/org-diary-time-format-file))
@@ -171,6 +178,7 @@ Options:
 	   (current-buffer (if arg
 			       (or (equal arg '(4)) (equal arg '(64)))
 			     (or (not custom/org-diary-visit-in-new-window)
+				 (< (window-width) 70)
 				 (custom/org-diary-in-entry)))))
        ;; Whether to initialize the diary entry
        (setq init (not (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))))
@@ -182,7 +190,7 @@ Options:
 	       (progn (split-window-horizontally)
 		      (windmove-right)
 		      (find-file entry)
-	              (if (not (ignore-errors (custom/window-resize-fraction custom/org-diary-new-window-fraction)))
+	              (if (not (ignore-errors (custom/window-resize-fraction custom/org-diary-new-window-fraction 40)))
 			  (delete-other-windows)))))
        ;; Initialize
        (if init (custom/org-diary-init time))
