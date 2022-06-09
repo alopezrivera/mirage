@@ -402,7 +402,7 @@ Options:
 	       (progn (split-window-horizontally)
 		      (windmove-right)
 		      (find-file entry)
-	              (if (not (ignore-errors (custom/window-resize-fraction custom/org-diary-new-window-fraction 40)))
+	              (if (not (ignore-errors (custom/window-resize-fraction custom/org-diary-new-window-fraction 60)))
 			  (delete-other-windows)))))
        ;; Initialize
        (if init (custom/org-diary-init time))
