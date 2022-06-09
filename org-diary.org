@@ -80,7 +80,8 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 (defcustom custom/org-diary-directory "/home/diary/"
   "Org Diary directory."
-  :group 'custom/org-diary-mode-group)
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
 
 (defcustom custom/org-diary-navigate-in-current-dir t
   "If the current buffer is an `org-diary' buffer, this variable
@@ -88,23 +89,29 @@ determines whether `org-diary-prior' and `org-diary-next' will
 search (or create) the prior or next `org-diary' entry in the directory
 of the current buffer as opposed to in `org-diary-directory'.
 Setting this variable to t is useful to navigate directories with
-notes in `org-diary' format.")
+notes in `org-diary' format."
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
 
 (defcustom custom/org-diary-time-format-file  "%d-%m-%Y"
   "Org Diary time format: file names."
-  :group 'custom/org-diary-mode-group)
+  :group 'custom/org-diary-mode-group
+  :type 'string)
 
 (defcustom custom/org-diary-time-format-title "%d/%m/%Y"
   "Org Diary time format: entry titles."
-  :group 'custom/org-diary-mode-group)
+  :group 'custom/org-diary-mode-group
+  :type 'string)
 
 (defcustom custom/org-diary-visit-in-new-window t
   "Open diary entries in new window."
-  :group 'custom/org-diary-mode-group)
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
 
-(defcustom custom/org-diary-new-window-fraction 0.3
+(defcustom custom/org-diary-new-window-fraction 0.25
   "New Org Diary window width as a fraction of the frame width."
-  :group 'custom/org-diary-mode-group)
+  :group 'custom/org-diary-mode-group
+  :type 'float)
 
 #+end_src
 
