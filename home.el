@@ -165,6 +165,12 @@ to the query at execution."
   (string-match "^[^0-9]*\\([0-9]+\\).*$" window)
   (match-string 1 window))
 
+(defun custom/find-buffer-by-file-name (file)
+  (cl-loop for buffer in (buffer-list)
+	   if (string-match (buffer-name buffer) file)
+	      return buffer
+      finally return nil))
+
 (defun custom/get-point (command &rest args)
   (interactive)
   (save-excursion

@@ -94,6 +94,12 @@ notes in `org-diary' format."
 	   (file custom/org-diary-time-format-file))
   (concat dir file ".org")))
 
+(defun custom/org-diary-new-window ()
+  (split-window-horizontally)
+  (windmove-right)
+  (if (not (ignore-errors (custom/org-diary-resize-window)))
+      (delete-other-windows)))
+
 (defun custom/org-diary-resize-window ()
   (interactive)
   (custom/window-resize-fraction custom/org-diary-new-window-fraction 60))
@@ -169,33 +175,41 @@ Options:
   - org-agenda -> save current window config, visibility"
   (interactive))
 
+(defun custom/org-diary-open (entry &optional noselect new-window)
+  "Open an Org Diary diary.
+
+If a buffer for the entry exists, and the buffer is being displayed in a window,
+switch to that window; otherwise, switch to that buffer.
+
+- NOSELECT:   open entry file without selecting it
+- NEW-WINDOW: open entry in new window"
+  (setq entry-buffer (custom/find-buffer-by-file-name entry))
+  (setq entry-window (get-buffer-window entry-buffer))
+  (cond (noselect                      (find-file-noselect entry))
+	   (entry-window                  (select-window entry-window))
+	   ((and entry-buffer new-window) (progn (custom/org-diary-new-window) (switch-to-buffer entry-buffer)))
+	   (new-window                    (progn (custom/org-diary-new-window) (find-file        entry)))
+	   (t                             (find-file entry))))
+
 (defun custom/org-diary-visit (time &optional arg dir)
-  "Open the Org Diary entry corresponding to the specified time.
+  "Open the Org Diary entry corresponding to the specified time, and initialize it if necessary.
 -             '(0):  noselect
 - C-u         '(4):  visit in current buffer
 - C-u C-u     '(16): save new entry after initialiation
 - C-u C-u C-u '(64): visit in current buffer and save new entry after initialization"
   (interactive)
-  (let ((entry          (custom/org-diary-time-string-file time dir))
-	   (save           (or (equal arg '(16)) (equal arg '(64))))
-	   (noselect       (equal arg '(1)))
-	   (current-buffer (if arg
-			       (or (equal arg '(4)) (equal arg '(64)))
-			     (or (not custom/org-diary-visit-in-new-window)
-				 (< (window-width) 70)
-				 (custom/org-diary-in-entry)))))
+  (let ((entry      (custom/org-diary-time-string-file time dir))
+	   (save       (or (equal arg '(16)) (equal arg '(64))))
+	   (noselect   (equal arg '(1)))
+	   (new-window (if arg
+			   (or (equal arg '(4)) (equal arg '(64)))
+			 (or custom/org-diary-visit-in-new-window
+			     (> (window-width) 70)
+			     (not (custom/org-diary-in-entry))))))
        ;; Whether to initialize the diary entry
        (setq init (not (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))))
        ;; Open entry
-       (if noselect
-	       (find-file-noselect entry)
-	     (if current-buffer
-		 (find-file entry)
-	       (progn (split-window-horizontally)
-		      (windmove-right)
-		      (find-file entry)
-	              (if (not (ignore-errors (custom/org-diary-resize-window)))
-			  (delete-other-windows)))))
+       (custom/org-diary-open entry noselect new-window)
        ;; Initialize
        (if init (custom/org-diary-init time))
        ;; Save buffer
