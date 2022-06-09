@@ -1,10 +1,20 @@
 
 *~
 *#*
+nil
 tmp/*
-elpa/*
+transient/*
 auto-save-list/*
 url/cache/root/https/*
 
 # local config
 local.el
+
+# repositories
+elpa/*
+straight/*
+
+# files
+.workspace
+bookmarks
+org-roam.db
