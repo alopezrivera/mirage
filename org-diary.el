@@ -46,12 +46,38 @@
     (custom/org-diary-typeset))
   (when (not (bound-and-true-p custom/org-diary-mode))
     (custom/org-diary-font-lock-remove)
-    (variable-pitch-mode 0)))
+    (if custom/org-diary-variable-pitch
+	   (variable-pitch-mode 0))))
 
 (define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
 
 (defcustom custom/org-diary-directory "/home/diary/"
-  "Org Diary directory."
+  "Org Diary directory"
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
+
+(defcustom custom/org-diary-time-format-file  "%d-%m-%Y"
+  "Org Diary time format: file names"
+  :group 'custom/org-diary-mode-group
+  :type 'string)
+
+(defcustom custom/org-diary-time-format-title "%d/%m/%Y"
+  "Org Diary time format: entry titles."
+  :group 'custom/org-diary-mode-group
+  :type 'string)
+
+(defcustom custom/org-diary-new-window-fraction 0.25
+  "New Org Diary window width as a fraction of the frame width"
+  :group 'custom/org-diary-mode-group
+  :type 'float)
+
+(defcustom custom/org-diary-visit-in-new-window t
+  "Whether to open diary entries in new window"
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
+
+(defcustom custom/org-diary-variable-pitch nil
+  "Whether to activate `variable-pitch-mode' in Org Diary entries"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
 
@@ -61,29 +87,9 @@ determines whether `org-diary-prior' and `org-diary-next' will
 search (or create) the prior or next `org-diary' entry in the directory
 of the current buffer as opposed to in `org-diary-directory'.
 Setting this variable to t is useful to navigate directories with
-notes in `org-diary' format."
+notes in `org-diary' format"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
-
-(defcustom custom/org-diary-time-format-file  "%d-%m-%Y"
-  "Org Diary time format: file names."
-  :group 'custom/org-diary-mode-group
-  :type 'string)
-
-(defcustom custom/org-diary-time-format-title "%d/%m/%Y"
-  "Org Diary time format: entry titles."
-  :group 'custom/org-diary-mode-group
-  :type 'string)
-
-(defcustom custom/org-diary-visit-in-new-window t
-  "Open diary entries in new window."
-  :group 'custom/org-diary-mode-group
-  :type 'boolean)
-
-(defcustom custom/org-diary-new-window-fraction 0.25
-  "New Org Diary window width as a fraction of the frame width."
-  :group 'custom/org-diary-mode-group
-  :type 'float)
 
 (defun custom/org-diary-file-format (&optional dir)
   "Org Diary file name format."
@@ -105,7 +111,8 @@ notes in `org-diary' format."
   (custom/window-resize-fraction custom/org-diary-new-window-fraction 60))
 
 (defun custom/org-diary-typeset ()
-  (variable-pitch-mode)
+  (if custom/org-diary-variable-pitch
+      (variable-pitch-mode))
   (custom/org-diary-font-lock-add))
 
 (defface custom/org-diary-typeface-hhmm
@@ -184,7 +191,9 @@ switch to that window; otherwise, switch to that buffer.
 - NOSELECT:   open entry file without selecting it
 - NEW-WINDOW: open entry in new window"
   (setq entry-buffer (custom/find-buffer-by-file-name entry))
-  (setq entry-window (get-buffer-window entry-buffer))
+  (setq entry-window (if entry-buffer
+			    (get-buffer-window entry-buffer)
+		          nil))
   (cond (noselect                      (find-file-noselect entry))
 	   (entry-window                  (select-window entry-window))
 	   ((and entry-buffer new-window) (progn (custom/org-diary-new-window) (switch-to-buffer entry-buffer)))
