@@ -35,6 +35,7 @@
 ;; Background buffers
 (defvar background-buffers
   (list (concat config-directory "local.el")
+	    (concat config-directory "demo.org")
         (concat config-directory "ui.org")
         (concat config-directory "wild.el")
         (concat config-directory "org.org")
