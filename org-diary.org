@@ -373,6 +373,7 @@ Options:
 ** TODO org-diary-visit
 
 - new window always on right of frame
+- if any org-diary window is open, visit in that window
 
 #+begin_src emacs-lisp
 
