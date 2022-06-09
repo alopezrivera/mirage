@@ -132,6 +132,21 @@ notes in `org-diary' format."
 
 * Display
 ** Window
+*** TODO org-diary-new-window
+
+- new window always on right of frame
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-new-window ()
+  (split-window-horizontally)
+  (windmove-right)
+  (if (not (ignore-errors (custom/org-diary-resize-window)))
+      (delete-other-windows)))
+
+#+end_src
+
+*** org-diary-resize-window
 
 #+begin_src emacs-lisp
 
