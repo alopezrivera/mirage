@@ -15,6 +15,7 @@ elpa/*
 straight/*
 
 # files
+elpy/*
 .workspace
 bookmarks
 org-roam.db
