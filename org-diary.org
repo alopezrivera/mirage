@@ -132,7 +132,7 @@ notes in `org-diary' format"
 			 (file-name-directory buffer-file-name)
 		       custom/org-diary-directory)))
 	   (file custom/org-diary-time-format-file))
-  (concat dir file ".org")))
+    (concat dir file ".org")))
 
 #+end_src
 
