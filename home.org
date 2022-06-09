@@ -1412,9 +1412,14 @@ kill the current buffer and delete its window."
 
 ;; projectile
 (straight-use-package 'projectile)
+(require 'projectile)
+
+(projectile-mode)
+
+;; command map prefix
+(define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
 
 #+end_src
-
 
 * Git
 
