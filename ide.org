@@ -85,6 +85,12 @@
 ** Python
 *** elpy
 
+#+begin_src bash :tangle nil
+
+sudo apt-get install python3-venv
+
+#+end_src
+
 #+begin_src emacs-lisp
 
 ;; elpy
