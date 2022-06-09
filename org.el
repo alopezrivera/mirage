@@ -890,8 +890,6 @@ matches the current theme."
 
 (require 'org-diary (concat config-directory "org-diary.el"))
 
-(setq custom/org-diary-directory "/mnt/c/Users/xXY4n/Desktop/studio/journal/diary/")
-
 ;; Language packages
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -973,9 +971,6 @@ folded."
 
 ;; Org Roam
 (straight-use-package 'org-roam)
-
-;; Directory
-(setq org-roam-directory "/mnt/c/Users/xXY4n/Desktop/studio/roam")
 
 ;; Find node
 (global-set-key (kbd "C-c n") 'org-roam-node-find)

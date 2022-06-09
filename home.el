@@ -10,6 +10,7 @@
 ;; Background buffers
 (defvar background-buffers
   (list (concat config-directory "local.el")
+	    (concat config-directory "demo.org")
         (concat config-directory "ui.org")
         (concat config-directory "wild.el")
         (concat config-directory "org.org")
@@ -775,6 +776,12 @@ kill the current buffer and delete its window."
 
 ;; projectile
 (straight-use-package 'projectile)
+(require 'projectile)
+
+(projectile-mode)
+
+;; command map prefix
+(define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
 
 (straight-use-package 'magit)
 
