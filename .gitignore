@@ -18,3 +18,4 @@ straight/*
 .workspace
 bookmarks
 org-roam.db
+projectile-bookmarks.eld
