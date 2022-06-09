@@ -169,9 +169,10 @@ file in `custom/org-diary-time-format-file'."
 in an unsaved buffer."
   (let ((file (custom/org-diary-time-string-file time)))
     (cl-loop for buffer in (buffer-list)
-	           if (and (buffer-file-name buffer)
-			   (string-equal file (buffer-file-name buffer))) return t
-		   finally return nil)))
+	         if (and (buffer-file-name buffer)
+			 (string-match (buffer-file-name buffer) file))
+		    return t
+             finally return nil)))
 
 (defun custom/org-diary-browse ()
   "Org Agenda-like list of diary entries.
@@ -216,13 +217,15 @@ switch to that window; otherwise, switch to that buffer.
 			      (or custom/org-diary-visit-in-new-window
 			          (> (window-width) 70))))))
        ;; Whether to initialize the diary entry
-       (setq init (not (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))))
+       (setq init
+	     (not (or (file-exists-p entry)
+		      (custom/org-diary-entry-unsaved-buffer time))))
        ;; Open entry
        (custom/org-diary-open entry noselect new-window)
        ;; Initialize
-       (if init (custom/org-diary-init time))
-       ;; Save buffer
-       (if (and init save) (save-buffer))
+       (if init
+	      (progn (custom/org-diary-init time)
+		     (if save (save-buffer))))
        ;; Enable `org-diary-mode'
        (custom/org-diary-mode)
        ;; Go to end of buffer
