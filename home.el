@@ -1,8 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 
 ;; Initial frame size
-(add-to-list 'default-frame-alist '(height . 50))
-(add-to-list 'default-frame-alist '(width  . 60))
+(add-to-list 'default-frame-alist '(height . 60))
+(add-to-list 'default-frame-alist '(width  . 80))
 
 ;; Inhibit startup message
 (setq inhibit-startup-message t)

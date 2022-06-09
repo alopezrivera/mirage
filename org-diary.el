@@ -211,10 +211,10 @@ switch to that window; otherwise, switch to that buffer.
 	   (save       (or (equal arg '(16)) (equal arg '(64))))
 	   (noselect   (equal arg '(1)))
 	   (new-window (if arg
-			   (or (equal arg '(4)) (equal arg '(64)))
-			 (or custom/org-diary-visit-in-new-window
-			     (> (window-width) 70)
-			     (not (custom/org-diary-in-entry))))))
+			   (not (or (equal arg '(4)) (equal arg '(64))))
+			 (and (not (custom/org-diary-in-entry))
+			      (or custom/org-diary-visit-in-new-window
+			          (> (window-width) 70))))))
        ;; Whether to initialize the diary entry
        (setq init (not (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))))
        ;; Open entry
