@@ -42,6 +42,8 @@
         (concat config-directory "init.org")
         (concat config-directory "home.org")
         (concat config-directory "theme.org")
+	    (concat config-directory "system.org")
+	    (concat config-directory "dotfiles.org")
         (concat config-directory "backlog.org")
         (concat config-directory "org-diary.org")
         (concat config-directory "org-paragraph.org")))
