@@ -68,7 +68,8 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
     (custom/org-diary-typeset))
   (when (not (bound-and-true-p custom/org-diary-mode))
     (custom/org-diary-font-lock-remove)
-    (variable-pitch-mode 0)))
+    (if custom/org-diary-variable-pitch
+	   (variable-pitch-mode 0))))
 
 (define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
 
@@ -108,10 +109,11 @@ notes in `org-diary' format."
   :group 'custom/org-diary-mode-group
   :type 'boolean)
 
-(defcustom custom/org-diary-new-window-fraction 0.25
-  "New Org Diary window width as a fraction of the frame width."
+(defcustom custom/org-diary-variable-pitch nil
+  "Whether to activate `variable-pitch-mode' in Org Diary entries"
   :group 'custom/org-diary-mode-group
-  :type 'float)
+  :type 'boolean)
+
 
 #+end_src
 
@@ -161,7 +163,8 @@ notes in `org-diary' format."
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-typeset ()
-  (variable-pitch-mode)
+  (if custom/org-diary-variable-pitch
+      (variable-pitch-mode))
   (custom/org-diary-font-lock-add))
 
 #+end_src
