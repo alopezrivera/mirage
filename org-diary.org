@@ -542,6 +542,7 @@ Bindings:
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
 (define-key org-mode-map (kbd "C-d")       'custom/org-diary-insert-time-hhmm)
+(define-key org-mode-map (kbd "C-x w")     'custom/org-diary-resize-window)
 (define-key org-mode-map (kbd "C-c t")     'custom/org-diary-today)
 (define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
 (define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
