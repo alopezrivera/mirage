@@ -131,6 +131,16 @@ notes in `org-diary' format."
 #+end_src
 
 * Display
+** Window
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-resize-window ()
+  (interactive)
+  (custom/window-resize-fraction custom/org-diary-new-window-fraction 60))
+
+#+end_src
+
 ** Typeset
 
 #+begin_src emacs-lisp
