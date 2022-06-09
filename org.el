@@ -420,6 +420,7 @@ one character."
 		   (org-current-level))                         (delete-region (point) (custom/get-point 'end-of-line 0)))
 	     ((or  (custom/org-relative-line-heading-empty)
 		   (custom/org-relative-line-list-empty))       (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+	     ((custom/org-at-bol-list)                          (progn (delete-backward-char 2) (insert "  ")))
         (t                                                 (custom/nimble-delete-backward))))
 
 (define-key org-mode-map (kbd "<backspace>") 'custom/org-nimble-delete-backward)
