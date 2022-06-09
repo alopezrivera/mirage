@@ -98,7 +98,7 @@ notes in `org-diary' format"
 			 (file-name-directory buffer-file-name)
 		       custom/org-diary-directory)))
 	   (file custom/org-diary-time-format-file))
-  (concat dir file ".org")))
+    (concat dir file ".org")))
 
 (defun custom/org-diary-new-window ()
   (split-window-horizontally)
@@ -167,10 +167,10 @@ file in `custom/org-diary-time-format-file'."
 (defun custom/org-diary-entry-unsaved-buffer (time)
   "Return t if the Org Diary entry for TIME exists
 in an unsaved buffer."
-  (let ((file (custom/org-diary-time-string-file time)))
+  (let ((entry (file-name-nondirectory (custom/org-diary-time-string-file time))))
     (cl-loop for buffer in (buffer-list)
-	         if (and (buffer-file-name buffer)
-			 (string-match (buffer-file-name buffer) file))
+	         if (and (buffer-name buffer)
+			 (string-match (buffer-name buffer) entry))
 		    return t
              finally return nil)))
 
@@ -220,6 +220,9 @@ switch to that window; otherwise, switch to that buffer.
        (setq init
 	     (not (or (file-exists-p entry)
 		      (custom/org-diary-entry-unsaved-buffer time))))
+       (print "==========")
+       (print (custom/org-diary-entry-unsaved-buffer time))
+       (print "==========")
        ;; Open entry
        (custom/org-diary-open entry noselect new-window)
        ;; Initialize
