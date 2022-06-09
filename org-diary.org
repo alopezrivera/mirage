@@ -395,10 +395,29 @@ Options:
       - org-capture selected thoughts
 
 * Navigation
-** TODO org-diary-visit
+** org-diary-open
 
-- new window always on right of frame
-- if any org-diary window is open, visit in that window
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-open (entry &optional noselect new-window)
+  "Open an Org Diary diary.
+
+If a buffer for the entry exists, and the buffer is being displayed in a window,
+switch to that window; otherwise, switch to that buffer.
+
+- NOSELECT:   open entry file without selecting it
+- NEW-WINDOW: open entry in new window"
+  (setq entry-buffer (custom/find-buffer-by-file-name entry))
+  (setq entry-window (get-buffer-window entry-buffer))
+  (cond (noselect                      (find-file-noselect entry))
+	   (entry-window                  (select-window entry-window))
+	   ((and entry-buffer new-window) (progn (custom/org-diary-new-window) (switch-to-buffer entry-buffer)))
+	   (new-window                    (progn (custom/org-diary-new-window) (find-file        entry)))
+	   (t                             (find-file entry))))
+
+#+end_src
+
+** org-diary-visit
 
 #+begin_src emacs-lisp
 
