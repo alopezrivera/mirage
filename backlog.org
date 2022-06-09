@@ -68,6 +68,7 @@
 - https://github.com/ThomasFKJorna/doom-emacs-config
 - https://github.com/rougier/dotemacs
 - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
+-  https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
 
 ** Features
 
@@ -373,6 +374,11 @@ CLOSED: [2022-05-06 Fri 17:11]
          - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
    - ioslide
       - https://github.com/coldnew/org-ioslide
+
+* org to web
+
+- org -> HTML
+   - https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
 - Hugo
    - https://ox-hugo.scripter.co/
    - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
