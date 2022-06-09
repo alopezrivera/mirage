@@ -7,10 +7,50 @@
 #+PROPERTY: header-args :results none
 
 * C compiler
+** gcc
 
 #+begin_src shell
 
 sudo apt install build-essential
+gcc --version
+
+#+end_src
+
+* Emacs
+** Install
+*** Latest
+
+#+begin_src shell
+
+sudo add-apt-repository ppa:ubuntu-elisp/ppa
+sudo apt-get update
+sudo apt install emacs-snapshot
+
+#+end_src
+
+*** Specific version
+
+#+begin_src shell
+
+sudo add-apt-repository ppa:kelleyk/emacs
+sudo apt-get update
+sudo apt install emacs<version>
+
+#+end_src
+
+** Uninstall
+
+#+begin_src shell
+
+sudo apt-get remove emacs<version>
+
+#+end_src
+
+** Default command
+
+#+begin_src shell
+
+sudo update-alternatives --config emacs
 
 #+end_src
 
