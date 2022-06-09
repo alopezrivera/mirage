@@ -371,6 +371,18 @@ to the query at execution."
 
 #+end_src
 
+**** find-buffer-by-file-name
+
+#+begin_src emacs-lisp
+
+(defun custom/find-buffer-by-file-name (file)
+  (cl-loop for buffer in (buffer-list)
+	   if (string-match (buffer-name buffer) file)
+	      return buffer
+      finally return nil))
+
+#+end_src
+
 *** Retrieval
 **** get-point
 
