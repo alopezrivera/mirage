@@ -1709,7 +1709,7 @@ folded."
 (straight-use-package 'org-roam)
 
 ;; Directory
-(setq org-roam-directory "~/roam")
+(setq org-roam-directory "/mnt/c/Users/xXY4n/Desktop/studio/roam")
 
 ;; Find node
 (global-set-key (kbd "C-c n") 'org-roam-node-find)
