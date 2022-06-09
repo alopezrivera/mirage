@@ -360,10 +360,10 @@ file in `custom/org-diary-time-format-file'."
 (defun custom/org-diary-entry-unsaved-buffer (time)
   "Return t if the Org Diary entry for TIME exists
 in an unsaved buffer."
-  (let ((file (custom/org-diary-time-string-file time)))
+  (let ((entry (file-name-nondirectory (custom/org-diary-time-string-file time))))
     (cl-loop for buffer in (buffer-list)
-	         if (and (buffer-file-name buffer)
-			 (string-match (buffer-file-name buffer) file))
+	         if (and (buffer-name buffer)
+			 (string-match (buffer-name buffer) entry))
 		    return t
              finally return nil)))
 
