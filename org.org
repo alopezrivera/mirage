@@ -1862,7 +1862,7 @@ if it was previously enabled."
 
 ;; Set Org Agenda files
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-files '("~/.emacs.d/"
+  (setq org-agenda-files '(config-directory
 			       "/home/dfki/backlog.org")))
 
 #+end_src
