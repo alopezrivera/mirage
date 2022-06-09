@@ -1122,7 +1122,6 @@ indented at the level of the previous list item, indent the paragraph."
 
 *** TODO [#A] S-return
 
-- list item -> paragraph starting at point
 - heading with keywords
    - skip keywords
 
@@ -1130,7 +1129,8 @@ indented at the level of the previous list item, indent the paragraph."
 
 (defun custom/org-super-return ()
   (interactive)
-  (custom/org-insert-subheading-at-point))
+  (cond ((custom/org-relative-line-list) (org-return t))
+	    (t                               (custom/org-insert-subheading-at-point))))
 
 (define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
 
