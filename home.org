@@ -134,6 +134,15 @@
 
 ** General purpose functions
 *** Display
+**** window-resize
+
+#+begin_src emacs-lisp
+
+(defun custom/window-resize (width)
+  (window-resize nil (- width (window-width)) t))
+
+#+end_src
+
 **** window-resize-fraction
 
 #+begin_src emacs-lisp
