@@ -415,7 +415,9 @@ switch to that window; otherwise, switch to that buffer.
 - NOSELECT:   open entry file without selecting it
 - NEW-WINDOW: open entry in new window"
   (setq entry-buffer (custom/find-buffer-by-file-name entry))
-  (setq entry-window (get-buffer-window entry-buffer))
+  (setq entry-window (if entry-buffer
+			    (get-buffer-window entry-buffer)
+		          nil))
   (cond (noselect                      (find-file-noselect entry))
 	   (entry-window                  (select-window entry-window))
 	   ((and entry-buffer new-window) (progn (custom/org-diary-new-window) (switch-to-buffer entry-buffer)))
