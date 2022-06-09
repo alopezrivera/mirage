@@ -1703,6 +1703,8 @@ folded."
 
 * Org Roam
 
+Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-available-aborting-error-when-installing-org-roam-v2-on-mac/2178/6][a C compiler (eg: gcc or clang) must be installed for ~emacsql-sqlite~ to install correctly]].
+
 #+begin_src emacs-lisp
 
 ;; Org Roam
