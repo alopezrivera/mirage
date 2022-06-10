@@ -70,6 +70,7 @@
 	org-metadown
 	org-open-at-mouse
 	swiper
+	swiper-isearch
 	swiper-mc
 	widen
 	))
