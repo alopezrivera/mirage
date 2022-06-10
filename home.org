@@ -682,7 +682,7 @@ not empty. In any case, advance to next line."
     ;; Move to the beginning of the next line
     (beginning-of-line-text 2)))
 
-(global-set-key (kbd "M-;") #'custom/smart-comment)
+(global-set-key (kbd "C-x ;") #'custom/smart-comment)
 
 #+end_src
 
