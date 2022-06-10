@@ -1000,16 +1000,13 @@ buffer is already narrowed, widen buffer."
 
 ;; ivy
 (straight-use-package 'ivy)
-(straight-use-package 'counsel)
 (straight-use-package 'ivy-rich)
 (require 'ivy)
-(require 'counsel)
 (require 'ivy-rich)
 
 (ivy-mode 1)
 (ivy-rich-mode 1)
 
-(global-set-key (kbd "<menu>") 'counsel-M-x)
 
 ;; minibuffer bindings
 (let ((map ivy-minibuffer-map))
@@ -1036,6 +1033,14 @@ buffer is already narrowed, widen buffer."
 
 #+end_src
 
+*** counsel
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'counsel)
+(require 'counsel)
+
+(global-set-key (kbd "<menu>") 'counsel-M-x)
 
 #+end_src
 
