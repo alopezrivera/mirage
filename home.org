@@ -1246,15 +1246,6 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 
 ** Screen
 *** Buffer
-**** Switching
-
-#+begin_src emacs-lisp
-
-;; Counsel buffer switching
-(global-set-key (kbd "C-x b") 'counsel-switch-buffer)
-
-#+end_src
-
 **** Split and follow
 
 #+begin_src emacs-lisp
