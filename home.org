@@ -844,15 +844,19 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
-** Mode line
+** TODO Mode line
+
+- Minor mode
+   - https://webonastick.com/emacs-lisp/hide-mode-line.el
 
 #+begin_src emacs-lisp
 
 (defun custom/hide-modeline ()
+  "Hide `modeline' in current buffer"
   (interactive)
   (if mode-line-format
       (setq mode-line-format nil)
-    (doom-modeline-mode)))
+    (funcall modeline)))
 
 (global-set-key (kbd "M-m") #'custom/hide-modeline)
 
