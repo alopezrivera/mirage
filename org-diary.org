@@ -363,7 +363,7 @@ in an unsaved buffer."
   (let ((entry (file-name-nondirectory (custom/org-diary-time-string-file time))))
     (cl-loop for buffer in (buffer-list)
 	         if (and (buffer-name buffer)
-			 (string-match (buffer-name buffer) entry))
+			 (string-match entry (buffer-name buffer)))
 		    return t
              finally return nil)))
 
