@@ -19,6 +19,7 @@
 	custom/smart-comment
 	custom/smart-mouse-rectangle
 	dired-flag-file-deletion
+	dired-next-line
 	electric-newline-and-maybe-indent
 	elpy-nav-backward-indent
 	elpy-nav-forward-indent
@@ -69,6 +70,8 @@
 	org-babel-tangle
 	org-metadown
 	org-open-at-mouse
+	previous-buffer
+	split-and-follow-horizontally
 	swiper
 	swiper-isearch
 	swiper-mc

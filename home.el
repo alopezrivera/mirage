@@ -1,34 +1,51 @@
 ;;; -*- lexical-binding: t; -*-
 
 ;; Initial frame size
-(add-to-list 'default-frame-alist '(height . 60))
+(add-to-list 'default-frame-alist '(height . 50))
 (add-to-list 'default-frame-alist '(width  . 80))
+
+;; background buffers
+  (defvar background-buffers
+    (list (concat config-directory "local.el")
+	      (concat config-directory "demo.org")
+	  (concat config-directory "ui.org")
+	  (concat config-directory "wild.el")
+	  (concat config-directory "org.org")
+	  (concat config-directory "ide.org")
+	  (concat config-directory "init.org")
+	  (concat config-directory "home.org")
+	  (concat config-directory "theme.org")
+	      (concat config-directory "system.org")
+	      (concat config-directory "dotfiles.org")
+	  (concat config-directory "backlog.org")
+	  (concat config-directory "org-diary.org")
+	  (concat config-directory "org-paragraph.org")))
+
+(defvar spawn-startup-buffers t
+  "Whether to spawn spawn the buffers in the `startup-buffers' list after initialization")
+
+(defvar spawn-background-buffers nil
+  "Whether to spawn spawn the buffers in the `background-buffers' list after initialization")
+  
+  (defun custom/spawn-buffers (buffer-list)
+    "Spawn buffers in buffer list"
+    (cl-loop for buffer in buffer-list
+	     collect (find-file-noselect buffer)))
+
+  (defun custom/spawn-startup-buffers ()
+    (custom/spawn-buffers startup-buffers))
+
+  (defun custom/spawn-background-buffers ()
+    (custom/spawn-buffers background-buffers))
+
+  (if spawn-startup-buffers
+      (add-hook 'after-init-hook #'custom/spawn-startup-buffers))
+
+  (if spawn-background-buffers
+      (add-hook 'after-init-hook #'custom/spawn-background-buffers))
 
 ;; Inhibit startup message
 (setq inhibit-startup-message t)
-
-;; Background buffers
-(defvar background-buffers
-  (list (concat config-directory "local.el")
-	    (concat config-directory "demo.org")
-        (concat config-directory "ui.org")
-        (concat config-directory "wild.el")
-        (concat config-directory "org.org")
-        (concat config-directory "ide.org")
-        (concat config-directory "init.org")
-        (concat config-directory "home.org")
-        (concat config-directory "theme.org")
-	    (concat config-directory "system.org")
-	    (concat config-directory "dotfiles.org")
-        (concat config-directory "backlog.org")
-        (concat config-directory "org-diary.org")
-        (concat config-directory "org-paragraph.org")))
-
-(defun custom/spawn-startup-buffers ()
-  (cl-loop for buffer in (append startup-buffers background-buffers)
-	   collect (find-file-noselect buffer)))
-
-(add-hook 'after-init-hook #'custom/spawn-startup-buffers)
 
 ;; Config directory
 (setq config-directory "~/.emacs.d/")
@@ -289,18 +306,18 @@ kill ring."
 (setq mc/list-file (concat config-directory "mc-lists.el"))
 
 ;; Create cursors
-(global-set-key (kbd "C-.")         'mc/mark-next-like-this)
-(global-set-key (kbd "C-;")         'mc/mark-previous-like-this)
-(global-set-key (kbd "C-<mouse-1>") 'mc/add-cursor-on-click)
+(global-set-key (kbd "C-.")         #'mc/mark-next-like-this)
+(global-set-key (kbd "C-;")         #'mc/mark-previous-like-this)
+(global-set-key (kbd "C-<mouse-1>") #'mc/add-cursor-on-click)
 (global-unset-key [C-down-mouse-1]) ; necessary
 
 ;; Return as usual
-(define-key mc/keymap (kbd "<return>")       'electric-newline-and-maybe-indent)
+(define-key mc/keymap (kbd "<return>")       #'electric-newline-and-maybe-indent)
 
 ;; Exit multiple-cursors-mode
-(define-key mc/keymap (kbd "<escape>")       'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<down-mouse-1>")  nil) ; necessary
+(define-key mc/keymap (kbd "<escape>")       #'multiple-cursors-mode)
+(define-key mc/keymap (kbd "<mouse-1>")      #'multiple-cursors-mode)
+(define-key mc/keymap (kbd "<down-mouse-1>")   nil) ; necessary
 
 (defun custom/smart-comment ()
   "If a region is active, comment out all lines in the
@@ -328,7 +345,7 @@ not empty. In any case, advance to next line."
     ;; Move to the beginning of the next line
     (beginning-of-line-text 2)))
 
-(global-set-key (kbd "M-;") #'custom/smart-comment)
+(global-set-key (kbd "C-x ;") #'custom/smart-comment)
 
 ;; Ensure rectangular-region-mode is loaded
 (require 'rectangular-region-mode)
@@ -362,8 +379,8 @@ not empty. In any case, advance to next line."
 (define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
 
 ;; Exit rectangular-region-mode
-(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
-(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
+(define-key rectangular-region-mode-map (kbd "<escape>") #'rrm/keyboard-quit)
+(define-key rectangular-region-mode-map (kbd "<mouse-1>") #'rrm/keyboard-quit)
 
 (tab-bar-mode 1)
 
@@ -409,15 +426,16 @@ not empty. In any case, advance to next line."
 (add-hook 'prog-mode-hook 'olivetti-mode)
 
 (defun custom/hide-modeline ()
+  "Hide `modeline' in current buffer"
   (interactive)
   (if mode-line-format
       (setq mode-line-format nil)
-    (doom-modeline-mode)))
+    (funcall modeline)))
 
 (global-set-key (kbd "M-m") #'custom/hide-modeline)
 
 ;; Display line numbers by side
-(global-set-key (kbd "C-c l") 'global-display-line-numbers-mode)
+(global-set-key (kbd "C-c l") #'display-line-numbers-mode)
 
 ;; Display column number
 (column-number-mode)
@@ -426,6 +444,13 @@ not empty. In any case, advance to next line."
 (require 'workgroups)
 
 (setq wg-prefix-key (kbd "C-c w"))
+
+;; save commands
+(define-key wg-map (kbd "s")   #'wg-save)
+(define-key wg-map (kbd "C-s") #'wg-update-all-workgroups-and-save)
+
+;; suppress animation
+(setq wg-morph-on nil)
 
 (workgroups-mode 1)
 
@@ -485,46 +510,43 @@ buffer is already narrowed, widen buffer."
   (minibuffer-keyboard-quit))
 
 ;; M-RET: multiple-cursors-mode
-(define-key swiper-map (kbd "M-<return>") 'custom/swiper-multiple-cursors)
+(define-key swiper-map (kbd "M-<return>") #'custom/swiper-multiple-cursors)
 
-(global-set-key (kbd "C-c SPC") 'whitespace-mode)
+(global-set-key (kbd "C-c SPC") #'whitespace-mode)
 
 ;; ivy
 (straight-use-package 'ivy)
-(straight-use-package 'counsel)
-(straight-use-package 'ivy-rich)
 (require 'ivy)
-(require 'counsel)
-(require 'ivy-rich)
 
 (ivy-mode 1)
-(ivy-rich-mode 1)
-
-(global-set-key (kbd "<menu>") 'counsel-M-x)
 
 ;; minibuffer bindings
 (let ((map ivy-minibuffer-map))
-  (dolist (pair '(("<tab>" . ivy-alt-done)
-		      ("<up>"  . ivy-previous-line-or-history)
-		      ("C-l"   . ivy-alt-done)
-		      ("C-j"   . ivy-next-line)
-		      ("C-k"   . ivy-previous-line)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-;; override `custom/nimble-delete-backward'
-(define-key ivy-minibuffer-map (kbd "<backspace>") 'ivy-backward-delete-char)
+  (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
+			        ("<up>"        . ivy-previous-line-or-history)
+				("C-l"         . ivy-alt-done)
+				("C-j"         . ivy-next-line)
+				("C-k"         . ivy-previous-line)
+				("<backspace>" . ivy-backward-delete-char))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
 
 ;; switch-buffer bindings
 (let ((map ivy-switch-buffer-map))
-  (dolist (pair '(("C-k"   . ivy-previous-line)
- 		      ("C-l"   . ivy-done)
-		      ("C-d"   . ivy-switch-buffer-kill)))
-    (define-key map (kbd (car pair)) (cdr pair))))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+ 			        ("C-l"   . ivy-done)
+				("C-d"   . ivy-switch-buffer-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
 
 ;; reverse-i-search bindings
 (let ((map ivy-reverse-i-search-map))
-  (dolist (pair '(("C-k"   . ivy-previous-line)
-		      ("C-d"   . ivy-reverse-i-search-kill)))
-    (define-key map (kbd (car pair)) (cdr pair))))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+			        ("C-d"   . ivy-reverse-i-search-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+(straight-use-package 'counsel)
+(require 'counsel)
+
+(global-set-key (kbd "<menu>") #'counsel-M-x)
 
 ;; Command suggestions
 (straight-use-package 'which-key)
@@ -537,13 +559,13 @@ buffer is already narrowed, widen buffer."
 ;; Replace description key bindings by their helpful equivalents
 (straight-use-package 'helpful)
 
-(setq counsel-describe-function-function #'helpful-callable)
-(setq counsel-describe-variable-function #'helpful-variable)
+(setq counsel-describe-function-function  #'helpful-callable)
+(setq counsel-describe-variable-function  #'helpful-variable)
 
-(global-set-key [remap describe-function] 'helpful-function)
-(global-set-key [remap describe-command]  'helpful-command)
-(global-set-key [remap describe-variable] 'helpful-variable)
-(global-set-key [remap describe-key]      'helpful-key)
+(global-set-key [remap describe-function] #'helpful-function)
+(global-set-key [remap describe-command]  #'helpful-command)
+(global-set-key [remap describe-variable] #'helpful-variable)
+(global-set-key [remap describe-key]      #'helpful-key)
 
 ;; command-log-mode
 (straight-use-package 'command-log-mode)
@@ -587,7 +609,7 @@ of line."
       (end-of-visual-line)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<end>") 'custom/double-end)
+(global-set-key (kbd "<end>") #'custom/double-end)
 
 (defun custom/home ()
   "Conditional homing. 
@@ -628,7 +650,7 @@ If the current line is a wrapped visual line, home to
       (custom/home)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<home>") 'custom/double-home)
+(global-set-key (kbd "<home>") #'custom/double-home)
 
 (defun custom/previous-line (cond)
   "If a region is active and the current mode is derived 
@@ -652,7 +674,7 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
     (set-register 'region-up-register nil)
     (push-mark end)))
 
-(global-set-key (kbd "S-<home>") 'custom/region-up-register)
+(global-set-key (kbd "S-<home>") #'custom/region-up-register)
 
 (defun custom/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
@@ -664,21 +686,18 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 
 (advice-add 'beginning-of-line-text :around #'custom/beginning-of-line-text)
 
-;; Counsel buffer switching
-(global-set-key (kbd "C-x b") 'counsel-switch-buffer)
-
 ;; Split and follow
 (defun split-and-follow-horizontally ()
   (interactive)
   (split-window-below)
   (other-window 1))
-(global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+(global-set-key (kbd "C-x 2") #'split-and-follow-horizontally)
 
 (defun split-and-follow-vertically ()
   (interactive)
   (split-window-right)
   (other-window 1))
-(global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+(global-set-key (kbd "C-x 3") #'split-and-follow-vertically)
 
 ;; ace-window
 (straight-use-package 'ace-window)
@@ -689,7 +708,7 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 ;; winner mode
 (winner-mode)
 
-(global-set-key (kbd "C-x -") 'balance-windows)
+(global-set-key (kbd "C-x -") #'balance-windows)
 
 (setq split-width-threshold 70)
 
@@ -718,10 +737,10 @@ before the execution of any command.")
 	      (progn (select-window target)
 		     (setq custom/window-previous current)))))
 
-(global-set-key (kbd "C-c p") 'custom/goto-window-previous)
+(global-set-key (kbd "C-c p") #'custom/goto-window-previous)
 
 ;; Create new frame
-(global-set-key (kbd "C-S-n") 'make-frame-command)
+(global-set-key (kbd "C-S-n") #'make-frame-command)
 
 ;; Record last sent message
 (defvar last-message nil)
@@ -780,7 +799,7 @@ kill the current buffer and delete its window."
       (custom/escape-window-or-region)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<escape>") 'custom/double-escape)
+(global-set-key (kbd "<escape>") #'custom/double-escape)
 
 ;; projectile
 (straight-use-package 'projectile)
@@ -880,6 +899,8 @@ kill the current buffer and delete its window."
 
 (straight-use-package 'magit)
 
+(global-set-key (kbd "C-x g") #'magit-status)
+
 (require 'ide (concat config-directory "ide.el"))
 
 (require 'org (concat config-directory "org.el"))
@@ -902,7 +923,7 @@ the user for confirmation."
 	     (revert-buffer t t)
 	   (revert-buffer t nil)))))
 
-(global-set-key (kbd "C-c r") 'custom/reload-from-disk)
+(global-set-key (kbd "C-c r") #'custom/reload-from-disk)
 
 (require 'ui (concat config-directory "ui.el"))
 
