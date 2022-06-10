@@ -170,7 +170,7 @@ in an unsaved buffer."
   (let ((entry (file-name-nondirectory (custom/org-diary-time-string-file time))))
     (cl-loop for buffer in (buffer-list)
 	         if (and (buffer-name buffer)
-			 (string-match (buffer-name buffer) entry))
+			 (string-match entry (buffer-name buffer)))
 		    return t
              finally return nil)))
 
@@ -220,9 +220,6 @@ switch to that window; otherwise, switch to that buffer.
        (setq init
 	     (not (or (file-exists-p entry)
 		      (custom/org-diary-entry-unsaved-buffer time))))
-       (print "==========")
-       (print (custom/org-diary-entry-unsaved-buffer time))
-       (print "==========")
        ;; Open entry
        (custom/org-diary-open entry noselect new-window)
        ;; Initialize

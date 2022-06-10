@@ -167,9 +167,9 @@ to the query at execution."
 
 (defun custom/find-buffer-by-file-name (file)
   (cl-loop for buffer in (buffer-list)
-	   if (string-match (buffer-name buffer) file)
-	      return buffer
-      finally return nil))
+	        if (string-equal (buffer-name buffer) (file-name-nondirectory file))
+	           return buffer
+		finally return nil))
 
 (defun custom/get-point (command &rest args)
   (interactive)
