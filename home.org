@@ -729,6 +729,14 @@ not empty. In any case, advance to next line."
 #+end_src
 
 * Display
+** Tabs
+
+#+begin_src emacs-lisp
+
+(tab-bar-mode 1)
+
+#+end_src
+
 ** Menus
 
 #+begin_src emacs-lisp
