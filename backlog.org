@@ -51,11 +51,6 @@
 
 * TODO [#A] owo
 
-* Sessions
-** TODO [#A] org-agenda
-** TODO [#A] org-roam
-
-
 * References
 
 - https://karthinks.com/
