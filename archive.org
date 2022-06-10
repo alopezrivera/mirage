@@ -1,6 +1,18 @@
 #+title:ARCHIVE
 STARTUP: overview
 
+
+* ivy-rich
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'ivy-rich)
+(require 'ivy-rich)
+
+(ivy-rich-mode 1)
+
+#+end_src
+
 * undo-tree
 
 #+begin_src emacs-lisp
