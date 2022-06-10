@@ -621,7 +621,12 @@ CLOSED: [2022-05-06 Fri 17:11]
 - Org refile
    - https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
-     
+* exploration
+
+- metarosetta
+   - https://github.com/73D1/metarosetta
+
+
 * rss
 
 - elfeed
