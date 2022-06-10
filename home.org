@@ -1013,27 +1013,29 @@ buffer is already narrowed, widen buffer."
 
 ;; minibuffer bindings
 (let ((map ivy-minibuffer-map))
-  (dolist (pair '(("<tab>" . ivy-alt-done)
-		      ("<up>"  . ivy-previous-line-or-history)
-		      ("C-l"   . ivy-alt-done)
-		      ("C-j"   . ivy-next-line)
-		      ("C-k"   . ivy-previous-line)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-;; override `custom/nimble-delete-backward'
-(define-key ivy-minibuffer-map (kbd "<backspace>") 'ivy-backward-delete-char)
+  (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
+			        ("<up>"        . ivy-previous-line-or-history)
+				("C-l"         . ivy-alt-done)
+				("C-j"         . ivy-next-line)
+				("C-k"         . ivy-previous-line)
+				("<backspace>" . ivy-backward-delete-char))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
 
 ;; switch-buffer bindings
 (let ((map ivy-switch-buffer-map))
-  (dolist (pair '(("C-k"   . ivy-previous-line)
- 		      ("C-l"   . ivy-done)
-		      ("C-d"   . ivy-switch-buffer-kill)))
-    (define-key map (kbd (car pair)) (cdr pair))))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+ 			        ("C-l"   . ivy-done)
+				("C-d"   . ivy-switch-buffer-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
 
 ;; reverse-i-search bindings
 (let ((map ivy-reverse-i-search-map))
-  (dolist (pair '(("C-k"   . ivy-previous-line)
-		      ("C-d"   . ivy-reverse-i-search-kill)))
-    (define-key map (kbd (car pair)) (cdr pair))))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+			        ("C-d"   . ivy-reverse-i-search-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+#+end_src
+
 
 #+end_src
 
