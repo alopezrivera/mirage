@@ -464,7 +464,7 @@ switch to that window; otherwise, switch to that buffer.
 	   (noselect   (equal arg '(1)))
 	   (new-window (if arg
 			   (not (or (equal arg '(4)) (equal arg '(64))))
-			 (and (not (custom/org-diary-in-entry))
+			 (and (not (custom/org-diary-entry))
 			      (or custom/org-diary-visit-in-new-window
 			          (> (window-width) 70))))))
        ;; Whether to initialize the diary entry
@@ -502,7 +502,7 @@ it does not exist"
 
 (defun custom/org-diary-jump (number)
   (interactive)
-  (let ((custom/org-diary-visit-in-new-window (not (custom/org-diary-in-entry)))
+  (let ((custom/org-diary-visit-in-new-window (not (custom/org-diary-entry)))
 	   (time-jump (time-add (custom/org-diary-entry-time) (days-to-time number))))
     (custom/org-diary-visit time-jump '(4))))
 
@@ -588,7 +588,7 @@ Bindings:
 
 #+begin_src emacs-lisp
 
-(add-hook 'org-mode-hook (lambda () (if (custom/org-diary-in-entry) (custom/org-diary-mode))))
+(add-hook 'org-mode-hook (lambda () (if (custom/org-diary-entry) (custom/org-diary-mode))))
 
 #+end_src
 
