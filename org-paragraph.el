@@ -29,8 +29,7 @@
 		     (progn (setq back (- (point) org-list-indent-offset))
 			    (beginning-of-line-text)
 			    (delete-backward-char org-list-indent-offset)
-			    (goto-char back)
-			    )))))
+			    (goto-char back))))))
 
 (defvar custom/org-paragraph-ignore-errors t
   "Ignore errors in `org-paragraph' calls.")

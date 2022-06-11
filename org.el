@@ -32,18 +32,22 @@
 (defun custom/org-at-eol-heading ()
   (and (custom/org-relative-line-heading) (eolp) (not (custom/org-at-ellipsis-h)) (not (custom/org-relative-line-heading-empty))))
 
-(defun custom/org-at-list-paragraph ()
-  (and (not (custom/org-relative-line-heading))
-       (not (custom/org-relative-line-list))
-       (not (org-in-src-block-p))
-       (custom/org-relative-line-list -1)))
-
 (defun custom/org-after-list-or-indent ()
   (or (custom/org-relative-line-list -1) (custom/relative-line-indented -1)))
 
 (defun custom/org-relative-line-list (&optional number)
-  (interactive)
   (custom/relative-line (lambda () (progn (beginning-of-line-text) (org-at-item-p)))  number))
+
+(defun custom/org-relative-line-heading (&optional number)
+  (custom/relative-line 'org-at-heading-p number))
+
+(defun custom/org-relative-line-paragraph (&optional number)
+  (let ((number (or number 0)))
+    (and (not (custom/org-relative-line-heading number))
+	       (not (custom/org-relative-line-list    number))
+	       (not (org-in-src-block-p))
+	       (or  (custom/org-relative-line-list      (- number 1))
+		    (custom/org-relative-line-paragraph (- number 1))))))
 
 (defun custom/org-relative-line-list-empty (&optional number)
   (and (custom/org-relative-line-list)
@@ -52,12 +56,7 @@
 (defun custom/org-relative-line-list-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
 is on a folded list item."
-  (interactive)
   (custom/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
-
-(defun custom/org-relative-line-heading (&optional number)
-  (interactive)
-  (custom/relative-line 'org-at-heading-p number))
 
 (defun custom/org-relative-line-heading-empty (&optional number)
   (custom/relative-line (lambda () (beginning-of-line-text) (org-point-at-end-of-empty-headline)) number))
@@ -65,7 +64,6 @@ is on a folded list item."
 (defun custom/org-relative-line-heading-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
 is on a folded heading."
-  (interactive)
   (custom/relative-line (lambda () (and (org-at-heading-p) (invisible-p (point-at-eol)))) number))
 
 (defun custom/org-relative-line-heading-or-list (&optional number)
@@ -130,14 +128,16 @@ a `custom/region-blank'."
 
 (defun custom/org-get-title-file (file)
   (with-current-buffer (find-file-noselect file)
-       (custom/org-get-title-current-buffer)))
+       (custom/org-get-title-buffer)))
 
-(defun custom/org-get-title-current-buffer ()
-    (nth 1
-     (assoc "TITLE"
-      (org-element-map (org-element-parse-buffer 'greater-element)
-          '(keyword)
-        #'custom/get-keyword-key-value))))
+(defun custom/org-get-title-buffer (&optional buffer)
+  (let ((buffer (or buffer (current-buffer))))
+    (with-current-buffer buffer
+      (nth 1
+	   (assoc "TITLE"
+		  (org-element-map (org-element-parse-buffer 'greater-element)
+		      '(keyword)
+		    #'custom/get-keyword-key-value))))))
 
 (defun custom/org-set-outline-overlay-data (data)
   "Create visibility overlays for all positions in DATA.
@@ -420,10 +420,22 @@ one character."
 		   (org-current-level))                         (delete-region (point) (custom/get-point 'end-of-line 0)))
 	     ((or  (custom/org-relative-line-heading-empty)
 		   (custom/org-relative-line-list-empty))       (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-	     ((custom/org-at-bol-list)                          (progn (delete-backward-char 2) (insert "  ")))
+	     ((custom/org-at-bol-list)                          (custom/org-toggle-item))
         (t                                                 (custom/nimble-delete-backward))))
 
 (define-key org-mode-map (kbd "<backspace>") 'custom/org-nimble-delete-backward)
+
+(defun custom/org-toggle-item ()
+  (interactive)
+  (let ((toggle-off (custom/org-relative-line-list))
+	     (indent     (+ 1 org-list-indent-offset))
+	     (marker     (point)))
+    (beginning-of-line-text)
+    (delete-backward-char indent)
+    (if toggle-off
+	     (insert (make-string indent ?\s))
+      (org-toggle-item 0))
+    (goto-char marker)))
 
 (defun custom/org-indent-region (command &rest args)
   "Indent Org Mode region.
@@ -482,9 +494,9 @@ Furthermore, if a region is active and its
 beginning lies on an Org Mode heading,
 `custom/org-command-expand-region' to execute ORIG-FUN."
   (interactive)
-  (cond ((custom/org-at-list-paragraph) (custom/org-paragraph orig-fun args))
-	    ((region-active-p)              (custom/org-indent-region orig-fun args))
-	    (t                              (apply orig-fun args))))
+  (cond ((custom/org-relative-line-paragraph) (custom/org-paragraph orig-fun args))
+	    ((region-active-p)                    (custom/org-indent-region orig-fun args))
+	    (t                                    (apply orig-fun args))))
 
 (advice-add 'org-metaleft  :around #'custom/org-meta-arrows-h)
 (advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
@@ -582,6 +594,7 @@ indented at the level of the previous list item, indent the paragraph."
   (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
 	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
 	    ((custom/org-at-ellipsis-l)                     (custom/org-insert-item-respect-content))
+	    ((custom/org-relative-line-paragraph)           (progn (org-return t) (org-insert-item)))
 	    ((custom/org-relative-line-list)                (org-meta-return))
 	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
 	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
@@ -597,7 +610,7 @@ indented at the level of the previous list item, indent the paragraph."
   (cond ((custom/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
 	    ((custom/org-relative-line-heading)    (custom/org-insert-heading-after-subtree))
 	    ((custom/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
-	    ((custom/org-at-list-paragraph)        (custom/org-paragraph-toggle))
+	    ((custom/org-relative-line-paragraph)  (custom/org-paragraph-toggle))
 	    (t                                     (custom/org-insert-heading-after-subtree))))
 
 (define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
@@ -610,8 +623,9 @@ indented at the level of the previous list item, indent the paragraph."
 
 (defun custom/org-super-return ()
   (interactive)
-  (cond ((custom/org-relative-line-list) (org-return t))
-	    (t                               (custom/org-insert-subheading-at-point))))
+  (cond ((or (custom/org-relative-line-list)
+	         (custom/org-relative-line-paragraph)) (org-return t))
+	    (t                                         (custom/org-insert-subheading-at-point))))
 
 (define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
 
