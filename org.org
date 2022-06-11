@@ -109,20 +109,6 @@
 
 #+end_src
 
-***** TODO org-at-list-paragraph
-
-- &option point
-
-#+begin_src emacs-lisp
-
-(defun custom/org-at-list-paragraph ()
-  (and (not (custom/org-relative-line-heading))
-       (not (custom/org-relative-line-list))
-       (not (org-in-src-block-p))
-       (custom/org-relative-line-list -1)))
-
-#+end_src
-
 **** after
 ***** org-after-list-or-indent
 
@@ -140,6 +126,21 @@
 
 (defun custom/org-relative-line-list (&optional number)
   (custom/relative-line (lambda () (progn (beginning-of-line-text) (org-at-item-p)))  number))
+
+#+end_src
+
+
+***** org-relative-line-paragraph
+
+#+begin_src emacs-lisp
+
+(defun custom/org-relative-line-paragraph (&optional number)
+  (let ((number (or number 0)))
+    (and (not (custom/org-relative-line-heading number))
+	       (not (custom/org-relative-line-list    number))
+	       (not (org-in-src-block-p))
+	       (or  (custom/org-relative-line-list      (- number 1))
+		    (custom/org-relative-line-paragraph (- number 1))))))
 
 #+end_src
 
