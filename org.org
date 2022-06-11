@@ -129,6 +129,14 @@
 
 #+end_src
 
+***** org-relative-line-heading
+
+#+begin_src emacs-lisp
+
+(defun custom/org-relative-line-heading (&optional number)
+  (custom/relative-line 'org-at-heading-p number))
+
+#+end_src
 
 ***** org-relative-line-paragraph
 
@@ -162,16 +170,6 @@
   "Returns non-nil if `point-at-eol' of current visual line
 is on a folded list item."
   (custom/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
-
-#+end_src
-
-***** org-relative-line-heading
-
-#+begin_src emacs-lisp
-
-(defun custom/org-relative-line-heading (&optional number)
-  (interactive)
-  (custom/relative-line 'org-at-heading-p number))
 
 #+end_src
 
