@@ -344,9 +344,10 @@ strings in the format `%d/%m/%Y'"
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-entry-time ()
-  (let ((title (custom/org-get-title-current-buffer)))
-    (custom/org-diary-parse-time title)))
+(defun custom/org-diary-entry-time (&optional buffer)
+  "Retrieve the time of an Org Diary entry"
+  (let ((title (custom/org-get-title-buffer buffer)))
+      (custom/org-diary-parse-time title)))
 
 #+end_src
 
@@ -354,10 +355,9 @@ strings in the format `%d/%m/%Y'"
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-entry-date ()
-  "Retrieve the time of the current Org Diary
-file in `custom/org-diary-time-format-file'."
-  (custom/org-diary-time-string-file (custom/org-diary-entry-time)))
+(defun custom/org-diary-entry-file (&optional buffer)
+  "Retrieve the file name of an Org Diary entry"
+  (custom/org-diary-time-string-file (custom/org-diary-entry-time buffer)))
 
 #+end_src
 
