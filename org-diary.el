@@ -164,14 +164,14 @@ strings in the format `%d/%m/%Y'"
     (if bfname
 	    (string-match-p custom/org-diary-entry-regex (file-name-nondirectory bfname)))))
 
+(defun custom/org-diary-entry-file (&optional buffer)
+  "Retrieve the file name of an Org Diary entry"
+  (custom/org-diary-time-string-file (custom/org-diary-entry-time buffer)))
+
 (defun custom/org-diary-entry-time (&optional buffer)
   "Retrieve the time of an Org Diary entry"
   (let ((title (custom/org-get-title-buffer buffer)))
       (custom/org-diary-parse-time title)))
-
-(defun custom/org-diary-entry-file (&optional buffer)
-  "Retrieve the file name of an Org Diary entry"
-  (custom/org-diary-time-string-file (custom/org-diary-entry-time buffer)))
 
 (defun custom/org-diary-entry-unsaved-buffer (time)
   "Return t if the Org Diary entry for TIME exists
