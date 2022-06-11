@@ -127,6 +127,17 @@ notes in `org-diary' format"
 
 #+end_src
 
+*** Auxiliary
+
+#+begin_src emacs-lisp
+
+(defvar custom/org-diary-last-visited nil
+  "Time of the last Org Diary entry being edited before exiting Org Diary.
+Upon being called again, `org-diary' will open this entry so you can
+resume your writing where you left off")
+
+#+end_src
+
 ** Functions
 
 #+begin_src emacs-lisp
