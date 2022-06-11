@@ -321,20 +321,22 @@ a `custom/region-blank'."
 
 (defun custom/org-get-title-file (file)
   (with-current-buffer (find-file-noselect file)
-       (custom/org-get-title-current-buffer)))
+       (custom/org-get-title-buffer)))
 
 #+end_src
 
-**** org-get-title-current-buffer
+**** org-get-title-buffer
 
 #+begin_src emacs-lisp
 
-(defun custom/org-get-title-current-buffer ()
-    (nth 1
-     (assoc "TITLE"
-      (org-element-map (org-element-parse-buffer 'greater-element)
-          '(keyword)
-        #'custom/get-keyword-key-value))))
+(defun custom/org-get-title-buffer (&optional buffer)
+  (let ((buffer (or buffer (current-buffer))))
+    (with-current-buffer buffer
+      (nth 1
+	   (assoc "TITLE"
+		  (org-element-map (org-element-parse-buffer 'greater-element)
+		      '(keyword)
+		    #'custom/get-keyword-key-value))))))
 
 #+end_src
 
