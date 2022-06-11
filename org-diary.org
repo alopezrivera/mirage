@@ -575,11 +575,15 @@ Bindings:
 - C-<down> -> next entry if it exists
 - C-n      -> new entry"
   (interactive)
-  (if (custom/org-diary-in-entry)
-      (progn (custom/org-diary-mode 0)
+  (if (custom/org-diary-entry)
+      (progn (setq custom/org-diary-last-visited (custom/org-diary-entry-time (current-buffer)))
+	       (custom/org-diary-mode 0)
 	       (bury-buffer)
 	       (ignore-errors (delete-window)))
-    (progn (custom/org-diary-today arg)
+    (progn (if (custom/org-diary-window)
+	         (select-window (custom/org-diary-window)))
+	     (let ((time (or custom/org-diary-last-visited (current-time))))
+	       (custom/org-diary-visit time arg))
 	     (custom/org-diary-mode 1))))
 
 #+end_src
