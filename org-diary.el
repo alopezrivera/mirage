@@ -61,6 +61,11 @@
   :group 'custom/org-diary-mode-group
   :type 'string)
 
+(defcustom custom/org-diary-entry-regex       "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org"
+  "Regex query to identify Org Diary entries"
+  :group 'custom/org-diary-mode-group
+  :type 'string)
+
 (defcustom custom/org-diary-time-format-title "%d/%m/%Y"
   "Org Diary time format: entry titles."
   :group 'custom/org-diary-mode-group
@@ -148,8 +153,11 @@ strings in the format `%d/%m/%Y'."
 (defun custom/org-diary-time-string-title (time)
   (format-time-string custom/org-diary-time-format-title time))
 
-(defun custom/org-diary-buffer-entry (buffer)
-  (string-match-p "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org" (file-name-nondirectory buffer)))
+(defun custom/org-diary-entry (&optional buffer)
+  "Return t if BUFFER is an Org Diary entry"
+  (let ((bfname (buffer-file-name (or buffer (current-buffer)))))
+    (if bfname
+	    (string-match-p custom/org-diary-entry-regex (file-name-nondirectory bfname)))))
 
 (defun custom/org-diary-in-entry ()
   "Return t if current buffer is an `custom/org-diary-buffer-entry'."
