@@ -377,6 +377,19 @@ in an unsaved buffer"
 
 #+end_src
 
+** Window
+*** org-diary-window
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-window ()
+  (cl-loop for buffer in (buffer-list)
+	       if (custom/org-diary-entry buffer)
+	          return (get-buffer-window buffer)
+           finally return nil))
+
+#+end_src
+
 * Exploration
 ** TODO org-diary-browse
 
