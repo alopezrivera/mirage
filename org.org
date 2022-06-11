@@ -897,9 +897,9 @@ Furthermore, if a region is active and its
 beginning lies on an Org Mode heading,
 `custom/org-command-expand-region' to execute ORIG-FUN."
   (interactive)
-  (cond ((custom/org-at-list-paragraph) (custom/org-paragraph orig-fun args))
-	    ((region-active-p)              (custom/org-indent-region orig-fun args))
-	    (t                              (apply orig-fun args))))
+  (cond ((custom/org-relative-line-paragraph) (custom/org-paragraph orig-fun args))
+	    ((region-active-p)                    (custom/org-indent-region orig-fun args))
+	    (t                                    (apply orig-fun args))))
 
 (advice-add 'org-metaleft  :around #'custom/org-meta-arrows-h)
 (advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
