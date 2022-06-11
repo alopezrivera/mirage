@@ -59,7 +59,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
   :prefix "custom/org-diary-")
 
 (define-minor-mode custom/org-diary-mode
-  "Org Diary minor mode."
+  "Org Diary minor mode"
   :init-value 1
   :lighter " Diary"
   :group 'custom/org-diary-mode-group
@@ -76,6 +76,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 #+end_src
 
 ** Variables
+*** Custom
 
 #+begin_src emacs-lisp
 
@@ -181,11 +182,11 @@ notes in `org-diary' format"
 
 (defface custom/org-diary-typeface-hhmm
   '((nil :foreground "#eb07b6" :inherit 'fixed-pitch))
-  "Org Diary typeface for hh:mm time stamps."
+  "Org Diary typeface for hh:mm time stamps"
   :group 'custom/org-diary-mode-group)
 
 (defcustom custom/org-diary-keyword-hhmm '("[0-9]\\{2\\}:[0-9]\\{2\\}$" . 'custom/org-diary-typeface-hhmm)
-  "Org Diary hh:mm typeface keyword."
+  "Org Diary hh:mm typeface keyword"
   :group 'custom/org-diary-mode-group)
 
 #+end_src
@@ -195,7 +196,7 @@ notes in `org-diary' format"
 #+begin_src emacs-lisp
 
 (defcustom custom/org-diary-keywords (list custom/org-diary-keyword-hhmm)
-  "Org Diary font-lock keywords.")
+  "Org Diary font-lock keywords")
 
 #+end_src
 
@@ -226,11 +227,11 @@ notes in `org-diary' format"
 #+begin_src emacs-lisp :tangle nil
 
 (defcustom custom/org-diary-line-padding 1.25
-  "Org Diary line padding factor."
+  "Org Diary line padding factor"
   :group 'custom/org-diary-mode-group)
 
 (defun custom/org-diary-line-padding ()
-  "Set padding between Org Diary entry lines."
+  "Set padding between Org Diary entry lines"
   ;; remove padding overlays if they already exist
   (let ((overlays (overlays-at (point-min))))
     (while overlays
@@ -285,7 +286,7 @@ aux variables -> time list
 
 (defun custom/org-diary-parse-time (string)
   "Parse time string. Currently hardcoded to parse time
-strings in the format `%d/%m/%Y'."
+strings in the format `%d/%m/%Y'"
   (let ((dmy (cl-loop for n in (split-string string "/")
 		            collect (string-to-number n))))
     (encode-time (list 0 0 0 (nth 0 dmy) (nth 1 dmy) (nth 2 dmy) nil nil nil))))
@@ -310,10 +311,8 @@ strings in the format `%d/%m/%Y'."
 
 #+end_src
 
-** Queries
-*** TODO org-diary-buffer-entry
-
-- generalize for different file time string formats
+** Entry
+*** org-diary-entry
 
 #+begin_src emacs-lisp
 
@@ -342,7 +341,7 @@ strings in the format `%d/%m/%Y'."
 
 #+end_src
 
-*** org-diary-entry-time
+*** org-diary-entry-file
 
 #+begin_src emacs-lisp
 
@@ -359,7 +358,7 @@ file in `custom/org-diary-time-format-file'."
 
 (defun custom/org-diary-entry-unsaved-buffer (time)
   "Return t if the Org Diary entry for TIME exists
-in an unsaved buffer."
+in an unsaved buffer"
   (let ((entry (file-name-nondirectory (custom/org-diary-time-string-file time))))
     (cl-loop for buffer in (buffer-list)
 	         if (and (buffer-name buffer)
@@ -469,7 +468,7 @@ switch to that window; otherwise, switch to that buffer.
 
 (defun custom/org-diary-today (&optional arg)
   "Open the Org Diary entry for today, creating it if
-it does not exist."
+it does not exist"
   (interactive)
   (custom/org-diary-visit (current-time) arg custom/org-diary-directory))
 
@@ -512,7 +511,7 @@ it does not exist."
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-init (time)
-  "Set up Org Diary entry."
+  "Set up Org Diary entry"
   (interactive)
   (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
   (insert "#+CREATED: ")
@@ -526,7 +525,7 @@ it does not exist."
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-insert-time (format)
-  "Insert current time using the given FORMAT."
+  "Insert current time using the given FORMAT"
   (insert (format-time-string format (current-time))))
 
 #+end_src
@@ -536,7 +535,7 @@ it does not exist."
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-insert-time-hhmm ()
-  "Insert current time using the given FORMAT."
+  "Insert current time using the given FORMAT"
   (interactive)
   (custom/org-diary-insert-time "%H:%M"))
 
@@ -547,9 +546,7 @@ it does not exist."
 #+begin_src emacs-lisp
 
 (defun custom/org-diary (&optional arg)
-  "Org Diary entry point.
-
-Activate when visiting files matching pattern.
+  "Org Diary entry and exit point.
 
 Bindings:
 - C-<up>   -> previous entry if it exists
