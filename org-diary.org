@@ -91,7 +91,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
   :type 'string)
 
 (defcustom custom/org-diary-time-format-title "%d/%m/%Y"
-  "Org Diary time format: entry titles."
+  "Org Diary time format: entry titles"
   :group 'custom/org-diary-mode-group
   :type 'string)
 
@@ -127,7 +127,7 @@ notes in `org-diary' format"
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-file-format (&optional dir)
-  "Org Diary file name format."
+  "Org Diary file name format"
   (let ((dir  (or dir
 		     (if (and custom/org-diary-navigate-in-current-dir buffer-file-name)
 			 (file-name-directory buffer-file-name)
