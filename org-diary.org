@@ -340,6 +340,16 @@ strings in the format `%d/%m/%Y'"
 
 #+end_src
 
+*** org-diary-entry-file
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-entry-file (&optional buffer)
+  "Retrieve the file name of an Org Diary entry"
+  (custom/org-diary-time-string-file (custom/org-diary-entry-time buffer)))
+
+#+end_src
+
 *** org-diary-entry-time
 
 #+begin_src emacs-lisp
@@ -348,16 +358,6 @@ strings in the format `%d/%m/%Y'"
   "Retrieve the time of an Org Diary entry"
   (let ((title (custom/org-get-title-buffer buffer)))
       (custom/org-diary-parse-time title)))
-
-#+end_src
-
-*** org-diary-entry-file
-
-#+begin_src emacs-lisp
-
-(defun custom/org-diary-entry-file (&optional buffer)
-  "Retrieve the file name of an Org Diary entry"
-  (custom/org-diary-time-string-file (custom/org-diary-entry-time buffer)))
 
 #+end_src
 
