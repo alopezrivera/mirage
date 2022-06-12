@@ -1973,10 +1973,9 @@ if it was previously enabled."
 
 #+begin_src emacs-lisp
 
-;; Set Org Agenda files
+;; org-agenda-files
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-files '(config-directory
-			       "/home/dfki/backlog.org")))
+  (setq org-agenda-files (append custom/org-agenda-files `(,config-directory))))
 
 #+end_src
 
