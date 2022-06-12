@@ -22,7 +22,7 @@
    - https://stackoverflow.com/questions/31412903/emacs-switch-paragraphs-with-each-other
    - if no paragraph below or above, move by a line
      
-
+     
 * Internal
 ** TODO org-paragraph-toggle
 
