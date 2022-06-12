@@ -810,6 +810,128 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
+*** Return
+**** return
+
+- reference
+   - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
+
+#+begin_src emacs-lisp
+
+;; org-return
+(defun custom/org-return ()
+  "Conditional `org-return'."
+  (interactive)
+  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
+	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	    ((custom/org-at-ellipsis-l)                     (custom/org-insert-item-respect-content))
+	    ((custom/org-relative-line-paragraph)           (progn (org-return t) (org-insert-item)))
+	    ((custom/org-relative-line-list)                (org-meta-return))
+	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
+	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
+	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
+	    ((custom/org-at-ellipsis-h)                     (org-return))
+	    (t                                              (org-return t))))
+
+(define-key org-mode-map (kbd "<return>") 'custom/org-return)
+
+#+end_src
+
+**** TODO [#A] C-return
+
+- on non-empty line
+   - insert heading at line
+
+- list paragraphs
+   - custom/org-toggle-paragraph
+      - keep cursor in place
+
+- bugs
+   - if at empty heading or heading separated by more than 1 empty line from next
+      - star is inserted in line of next heading
+         - "* " is inserted in line of next heading
+   - cycle previous heading to remove spurious separation line
+
+- if list not empty -> move contents to new item
+- if after list
+   - create list item from current line
+- if before list
+   - create list item at top of list
+
+- if at indented paragraph in list
+   - turn paragraph into list item
+- if at non-empty line, turn entire non-empty line into either header or list item
+   - if at middle of word inside list
+      - new indented list item, break word and place second part in new item
+
+#+begin_src emacs-lisp
+
+;; org-meta-return
+(defun custom/org-control-return ()
+  (interactive)
+  (cond ((custom/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
+	    ((custom/org-relative-line-heading)    (custom/org-insert-heading-after-subtree))
+	    ((custom/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
+	    ((custom/org-relative-line-paragraph)  (custom/org-paragraph-toggle))
+	    (t                                     (custom/org-insert-heading-after-subtree))))
+
+(define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
+
+#+end_src
+
+**** M-return
+
+#+begin_src emacs-lisp
+
+(defun custom/org-meta-return ()
+  (interactive)
+  (custom/org-insert-subheading-after-subtree))
+
+(define-key org-mode-map (kbd "M-<return>") 'custom/org-meta-return)
+
+#+end_src
+
+**** TODO [#A] S-return
+
+- heading with keywords
+   - skip keywords
+
+#+begin_src emacs-lisp
+
+(defun custom/org-super-return ()
+  (interactive)
+  (cond ((or (custom/org-relative-line-list)
+	         (custom/org-relative-line-paragraph)) (org-return t))
+	    (t                                         (custom/org-insert-subheading-at-point))))
+
+(define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
+
+#+end_src
+
+**** MS-return
+
+#+begin_src emacs-lisp
+ 
+(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
+
+#+end_src
+
+**** CS-return
+
+#+begin_src emacs-lisp
+
+(define-key org-mode-map (kbd "C-S-<return>") 'org-insert-todo-heading)
+
+#+end_src
+
+**** CM-return
+
+#+begin_src emacs-lisp
+
+(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-subheading)
+
+#+end_src
+
 *** Delete
 **** Hungry
 
@@ -1046,6 +1168,40 @@ function that sets `deactivate-mark' to t."
 #+end_src
 
 * Display
+** TODO Cycle
+
+- bug
+   - https://lists.gnu.org/archive/html/emacs-orgmode/2022-05/msg00150.html
+   - https://www.reddit.com/r/emacs/comments/ulpdhu/org_mode_command_doesnt_update_a_buffer_if_i_use/
+
+#+begin_src emacs-lisp
+
+(defun custom/org-cycle (orig-fun &rest args)
+  "Conditional `org-cycle'.
+
+Default: `org-cycle'
+
+If cursor lies at `end-of-visual-line' of folded heading or list,
+move cursor to `end-of-line' of the current visual line and then
+call `org-cycle'.
+
+If cursor lies at a paragraph directly under a list item and not
+indented at the level of the previous list item, indent the paragraph."
+  (interactive)
+  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
+      (if (= (point) (custom/get-point 'end-of-visual-line))
+	  (progn (beginning-of-visual-line)
+		 (end-of-line)
+		 (apply orig-fun args))
+	(apply orig-fun args))
+    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
+	      (org-indent-line)
+      (apply orig-fun args))))
+
+(advice-add 'org-cycle :around #'custom/org-cycle)
+
+#+end_src
+
 ** Figures
 
 #+begin_src emacs-lisp
@@ -1103,158 +1259,19 @@ match the indentation of the parent heading."
 
                   #+end_src
 
-* Interface
-** Cycle
+* Capture
 
 #+begin_src emacs-lisp
 
-(defun custom/org-cycle (orig-fun &rest args)
-  "Conditional `org-cycle'.
-
-Default: `org-cycle'
-
-If cursor lies at `end-of-visual-line' of folded heading or list,
-move cursor to `end-of-line' of the current visual line and then
-call `org-cycle'.
-
-If cursor lies at a paragraph directly under a list item and not
-indented at the level of the previous list item, indent the paragraph."
-  (interactive)
-  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
-      (if (= (point) (custom/get-point 'end-of-visual-line))
-	  (progn (beginning-of-visual-line)
-		 (end-of-line)
-		 (apply orig-fun args))
-	(apply orig-fun args))
-    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
-	      (org-indent-line)
-      (apply orig-fun args))))
-
-(advice-add 'org-cycle :around #'custom/org-cycle)
+(require 'org-capture)
 
 #+end_src
 
-** Return
-*** return
+** TODO Templates
 
-- reference
-   - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
-
-#+begin_src emacs-lisp
-
-;; org-return
-(defun custom/org-return ()
-  "Conditional `org-return'."
-  (interactive)
-  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
-	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
-	    ((custom/org-at-ellipsis-l)                     (custom/org-insert-item-respect-content))
-	    ((custom/org-relative-line-paragraph)           (progn (org-return t) (org-insert-item)))
-	    ((custom/org-relative-line-list)                (org-meta-return))
-	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
-	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
-	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
-	    ((custom/org-at-ellipsis-h)                     (org-return))
-	    (t                                              (org-return t))))
-
-(define-key org-mode-map (kbd "<return>") 'custom/org-return)
-
-#+end_src
-
-*** TODO [#A] C-return
-
-- on non-empty line
-   - insert heading at line
-
-- list paragraphs
-   - custom/org-toggle-paragraph
-      - keep cursor in place
-
-- bugs
-   - if at empty heading or heading separated by more than 1 empty line from next
-      - star is inserted in line of next heading
-         - "* " is inserted in line of next heading
-   - cycle previous heading to remove spurious separation line
-
-- if list not empty -> move contents to new item
-- if after list
-   - create list item from current line
-- if before list
-   - create list item at top of list
-
-- if at indented paragraph in list
-   - turn paragraph into list item
-- if at non-empty line, turn entire non-empty line into either header or list item
-   - if at middle of word inside list
-      - new indented list item, break word and place second part in new item
-
-#+begin_src emacs-lisp
-
-;; org-meta-return
-(defun custom/org-control-return ()
-  (interactive)
-  (cond ((custom/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
-	    ((custom/org-relative-line-heading)    (custom/org-insert-heading-after-subtree))
-	    ((custom/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
-	    ((custom/org-relative-line-paragraph)  (custom/org-paragraph-toggle))
-	    (t                                     (custom/org-insert-heading-after-subtree))))
-
-(define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
-
-#+end_src
-
-*** M-return
-
-#+begin_src emacs-lisp
-
-(defun custom/org-meta-return ()
-  (interactive)
-  (custom/org-insert-subheading-after-subtree))
-
-(define-key org-mode-map (kbd "M-<return>") 'custom/org-meta-return)
-
-#+end_src
-
-*** TODO [#A] S-return
-
-- heading with keywords
-   - skip keywords
-
-#+begin_src emacs-lisp
-
-(defun custom/org-super-return ()
-  (interactive)
-  (cond ((or (custom/org-relative-line-list)
-	         (custom/org-relative-line-paragraph)) (org-return t))
-	    (t                                         (custom/org-insert-subheading-at-point))))
-
-(define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
-
-#+end_src
-
-*** MS-return
-
-#+begin_src emacs-lisp
- 
-(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
-
-#+end_src
-
-*** CS-return
-
-#+begin_src emacs-lisp
-
-(define-key org-mode-map (kbd "C-S-<return>") 'org-insert-todo-heading)
-
-#+end_src
-
-*** CM-return
-
-#+begin_src emacs-lisp
-
-(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-subheading)
-
-#+end_src
+- lecture
+   - specify directory
+   - template
 
 * Templates
 ** tempo
