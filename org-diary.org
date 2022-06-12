@@ -568,7 +568,11 @@ it does not exist"
 
 #+end_src
 
-* Diary
+* TODO Diary
+
+- at close
+   - save/generate autosave file
+   - delete empty lines at bottom
 
 #+begin_src emacs-lisp
 
