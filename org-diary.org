@@ -80,22 +80,22 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 #+begin_src emacs-lisp
 
-(defcustom custom/org-diary-directory "/home/diary/"
+(defcustom custom/org-diary-directory           "/home/diary/"
   "Org Diary directory"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
 
-(defcustom custom/org-diary-time-format-file  "%d-%m-%Y"
+(defcustom custom/org-diary-time-format-file    "%d-%m-%Y"
   "Org Diary time format: file names"
   :group 'custom/org-diary-mode-group
   :type 'string)
 
-(defcustom custom/org-diary-entry-regex       "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org"
+(defcustom custom/org-diary-entry-regex         "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org"
   "Regex query to identify Org Diary entries"
   :group 'custom/org-diary-mode-group
   :type 'string)
 
-(defcustom custom/org-diary-time-format-title "%d/%m/%Y"
+(defcustom custom/org-diary-time-format-title   "%d/%m/%Y"
   "Org Diary time format: entry titles"
   :group 'custom/org-diary-mode-group
   :type 'string)
