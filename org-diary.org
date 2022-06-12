@@ -583,7 +583,7 @@ Bindings:
     (progn (if (custom/org-diary-window)
 	         (select-window (custom/org-diary-window))
 	       (let ((time (or custom/org-diary-last-visited (current-time))))
-		    (custom/org-diary-visit time arg)))
+		    (custom/org-diary-visit time arg custom/org-diary-directory)))
 	     (custom/org-diary-mode 1))))
 
 #+end_src
