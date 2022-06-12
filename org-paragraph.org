@@ -74,7 +74,9 @@
 
 #+end_src
 
-* org-paragraph
+* TODO org-paragraph
+
+- mark and cursor relative positions not conserved
 
 #+begin_src emacs-lisp
 
