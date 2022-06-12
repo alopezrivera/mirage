@@ -274,7 +274,11 @@ to the query at execution."
 #+begin_src emacs-lisp
 
 (defun custom/relative-line-regex (pattern &optional number)
-  (custom/relative-line 'looking-at-p number pattern))
+  (let ((number (or number 0)))
+    (save-excursion
+      (beginning-of-line-text (+ number 1))
+      (setq line (buffer-substring-no-properties (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line))))
+    (string-match-p pattern line)))
 
 #+end_src
 
