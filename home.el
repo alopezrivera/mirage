@@ -70,6 +70,8 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
+(straight-use-package 'el-patch)
+
 ;; Buffer evaluation
 (global-set-key (kbd "C-x e") 'eval-buffer)
 
@@ -131,19 +133,23 @@ to the query at execution."
       (apply query args))))
 
 (defun custom/relative-line-regex (pattern &optional number)
-  (custom/relative-line 'looking-at-p number pattern))
+  (let ((number (or number 0)))
+    (save-excursion
+      (beginning-of-line-text (+ number 1))
+      (setq line (buffer-substring-no-properties (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line))))
+    (string-match-p pattern line)))
 
 (defun custom/relative-line-list (&optional number)
   (custom/relative-line-regex "^[[:blank:]]*\\([0-9]+[.\\)]\\{1\\}\\|[-+*]\\{1\\}\\)[[:blank:]]+.*$" number))
 
 (defun custom/relative-line-empty (&optional number)
-  (custom/relative-line-regex "[[:space:]]+$" number))
+  (custom/relative-line-regex "^[[:space:]]+$" number))
 
 (defun custom/relative-line-wrapped ()
   (> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)))
 
 (defun custom/relative-line-indented (&optional number)
-  (custom/relative-line-regex "[[:blank:]]+.*$" number))
+  (custom/relative-line-regex "^[[:blank:]]+.*$" number))
 
 (defun custom/relative-line-list-ordered (&optional number)
   (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+.*$" number))
@@ -153,7 +159,7 @@ to the query at execution."
 
 (defun custom/region-blank (&optional beg end)
   (let ((beg (or beg (region-beginning)))
-	  (end (or end (region-end))))
+	      (end (or end (region-end))))
     (setq region (buffer-substring-no-properties beg end))
     (string-match "\\`[[:space:]]*\\'$" region)))
 
@@ -679,10 +685,12 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 (defun custom/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
   (interactive)
-  (if (custom/relative-line-list-ordered)
-      (progn (beginning-of-line)
-	           (re-search-forward "^[[:blank:]]*[1-9.)]+[[:blank:]]\\{1\\}"))
-    (apply orig-fun args)))
+  (let ((ordered-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}"))
+    (if (save-excursion (beginning-of-line)
+			    (looking-at-p ordered-line-regex))
+	    (progn (beginning-of-line)
+		   (re-search-forward ordered-line-regex))
+      (apply orig-fun args))))
 
 (advice-add 'beginning-of-line-text :around #'custom/beginning-of-line-text)
 

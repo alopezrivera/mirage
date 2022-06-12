@@ -272,7 +272,7 @@ it does not exist"
   (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
   (insert "#+CREATED: ")
   (org-time-stamp-inactive '(16))
-  (insert "\n\n\n"))
+  (insert "\n\n\n\n- "))
 
 (defun custom/org-diary-insert-time (format)
   "Insert current time using the given FORMAT"
@@ -299,7 +299,7 @@ Bindings:
     (progn (if (custom/org-diary-window)
 	         (select-window (custom/org-diary-window))
 	       (let ((time (or custom/org-diary-last-visited (current-time))))
-		    (custom/org-diary-visit time arg)))
+		    (custom/org-diary-visit time arg custom/org-diary-directory)))
 	     (custom/org-diary-mode 1))))
 
 (add-hook 'org-mode-hook (lambda () (if (custom/org-diary-entry) (custom/org-diary-mode))))
