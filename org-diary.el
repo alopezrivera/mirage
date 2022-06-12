@@ -51,22 +51,22 @@
 
 (define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
 
-(defcustom custom/org-diary-directory "/home/diary/"
+(defcustom custom/org-diary-directory           "/home/diary/"
   "Org Diary directory"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
 
-(defcustom custom/org-diary-time-format-file  "%d-%m-%Y"
+(defcustom custom/org-diary-time-format-file    "%d-%m-%Y"
   "Org Diary time format: file names"
   :group 'custom/org-diary-mode-group
   :type 'string)
 
-(defcustom custom/org-diary-entry-regex       "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org"
+(defcustom custom/org-diary-entry-regex         "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org"
   "Regex query to identify Org Diary entries"
   :group 'custom/org-diary-mode-group
   :type 'string)
 
-(defcustom custom/org-diary-time-format-title "%d/%m/%Y"
+(defcustom custom/org-diary-time-format-title   "%d/%m/%Y"
   "Org Diary time format: entry titles"
   :group 'custom/org-diary-mode-group
   :type 'string)
@@ -76,12 +76,17 @@
   :group 'custom/org-diary-mode-group
   :type 'float)
 
+(defcustom custom/org-diary-min-window-width    70
+  "Minimum width of an Org Diary window"
+  :group 'custom/org-diary-mode-group
+  :type 'integer)
+
 (defcustom custom/org-diary-visit-in-new-window t
   "Whether to open diary entries in new window"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
 
-(defcustom custom/org-diary-variable-pitch nil
+(defcustom custom/org-diary-variable-pitch      nil
   "Whether to activate `variable-pitch-mode' in Org Diary entries"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
@@ -118,7 +123,7 @@ resume your writing where you left off")
 
 (defun custom/org-diary-resize-window ()
   (interactive)
-  (custom/window-resize-fraction custom/org-diary-new-window-fraction 60))
+  (custom/window-resize-fraction custom/org-diary-new-window-fraction custom/org-diary-min-window-width))
 
 (defun custom/org-diary-typeset ()
   (if custom/org-diary-variable-pitch
@@ -230,7 +235,7 @@ switch to that window; otherwise, switch to that buffer.
 			   (not (or (equal arg '(4)) (equal arg '(64))))
 			 (and (not (custom/org-diary-entry))
 			      (or custom/org-diary-visit-in-new-window
-			          (> (window-width) 70))))))
+			          (> (window-width) custom/org-diary-min-window-width))))))
        ;; Whether to initialize the diary entry
        (setq init
 	     (not (or (file-exists-p entry)

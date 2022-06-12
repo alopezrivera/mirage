@@ -2,7 +2,7 @@
 
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 50))
-(add-to-list 'default-frame-alist '(width  . 80))
+(add-to-list 'default-frame-alist '(width  . 70))
 
 ;; background buffers
   (defvar background-buffers
@@ -129,7 +129,8 @@ Optionally, `args' may be given as input to be passed
 to the query at execution."
   (let ((number (or number 0)))
     (save-excursion
-      (beginning-of-visual-line (+ number 1))
+      (beginning-of-visual-line)
+      (beginning-of-line-text (+ number 1))
       (apply query args))))
 
 (defun custom/relative-line-regex (pattern &optional number)

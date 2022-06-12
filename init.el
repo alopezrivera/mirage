@@ -2,9 +2,13 @@
 (global-set-key (kbd "C-M-g") (lambda () (interactive) (insert
 "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")))
 
-;; gitlab
+;; gitlab - DFKI
 (global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
 "n~>}xr8AJ*?Y\"XG]")))
+
+;; gitlab
+(global-set-key (kbd "C-M-l") (lambda () (interactive) (insert
+"n2hrBbaVZEE7b8k")))
 
 ;;; -*- lexical-binding: t; -*-
 

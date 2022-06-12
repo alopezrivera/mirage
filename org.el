@@ -122,7 +122,8 @@ is an indented paragraph."
 
 (defun custom/org-relative-line-list-empty (&optional number)
   (and (custom/org-relative-line-list)
-       (custom/relative-line-regex "[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+$" number)))
+       (or (custom/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+$" number)
+	         (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+$" number))))
 
 (defun custom/org-relative-line-list-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
