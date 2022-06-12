@@ -2148,6 +2148,37 @@ if it was previously enabled."
 
 #+end_src
 
+* Org Contacts
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'org-contacts)
+(require 'org-contacts)
+
+(global-set-key (kbd "C-x c") 'org-capture)
+
+#+end_src
+
+** Template
+
+#+begin_src emacs-lisp
+
+(defvar custom/org-capture-contacts "* %(org-contacts-template-name)
+:PROPERTIES:
+:ADDRESS: %^{289 Cleveland St. Brooklyn, 11206 NY, USA}
+:BIRTHDAY: %^{yyyy-mm-dd}
+:EMAIL: %(org-contacts-template-email)
+:NOTE: %^{NOTE}
+:END:" "org-contacts template")
+
+(setq org-capture-templates
+   `(("c" "contact" entry
+      (file ,(nth 0 org-contacts-files))
+      ,custom/org-capture-contacts
+      :empty-lines 1)))
+
+#+end_src
+
 * Org Calendar
 ** calfw
 
