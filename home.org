@@ -1259,10 +1259,12 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 (defun custom/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
   (interactive)
-  (if (custom/relative-line-list-ordered)
-      (progn (beginning-of-line)
-	           (re-search-forward "^[[:blank:]]*[1-9.)]+[[:blank:]]\\{1\\}"))
-    (apply orig-fun args)))
+  (let ((ordered-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}"))
+    (if (save-excursion (beginning-of-line)
+			    (looking-at-p ordered-line-regex))
+	    (progn (beginning-of-line)
+		   (re-search-forward ordered-line-regex))
+      (apply orig-fun args))))
 
 (advice-add 'beginning-of-line-text :around #'custom/beginning-of-line-text)
 
