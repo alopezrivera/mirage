@@ -105,6 +105,11 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
   :group 'custom/org-diary-mode-group
   :type 'float)
 
+(defcustom custom/org-diary-min-window-width    70
+  "Minimum width of an Org Diary window"
+  :group 'custom/org-diary-mode-group
+  :type 'integer)
+
 (defcustom custom/org-diary-visit-in-new-window t
   "Whether to open diary entries in new window"
   :group 'custom/org-diary-mode-group
