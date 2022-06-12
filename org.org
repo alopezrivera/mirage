@@ -1366,6 +1366,7 @@ If `org-at-table-p', go to `org-table-end-of-field'."
 (define-key org-mode-map (kbd "<end>") 'custom/org-double-end)
 
 #+end_src
+
 *** TODO org-home
 
 - home in invisible tags -> to beginning of tag text
