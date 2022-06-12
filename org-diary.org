@@ -15,6 +15,24 @@ to manipulate paragraphs using the Org Mode struct infrastructure.
 Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 ~org-metaleft~, ~org-metaup~ and ~org-metadown~.
 
+* TODO Backlog
+
+- thoughts
+   - two buffers
+      - journal buffer list
+      - long form content
+         - separators
+            - -----
+         - lazy load
+   - show buffer list
+   - get long-form content form buffer if desired
+      - filter journal entry content
+- functions
+   - Exports
+      - select thoughts for export
+      - org-capture selected thoughts
+
+
 * Setup
 ** Mode
 
