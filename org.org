@@ -218,10 +218,13 @@ overwritten, and the table is not marked as requiring realignment."
 #+begin_src emacs-lisp
 
 (defun custom/org-relative-line-paragraph (&optional number)
+  "Determine whether the current line -or the NUMBER'th line relative to it
+is an indented paragraph."
   (let ((number (or number 0)))
     (and (not (custom/org-relative-line-heading number))
 	       (not (custom/org-relative-line-list    number))
 	       (not (org-in-src-block-p))
+	       (custom/relative-line-indented number)
 	       (or  (custom/org-relative-line-list      (- number 1))
 		    (custom/org-relative-line-paragraph (- number 1))))))
 
