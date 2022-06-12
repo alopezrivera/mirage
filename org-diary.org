@@ -538,7 +538,7 @@ it does not exist"
   (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
   (insert "#+CREATED: ")
   (org-time-stamp-inactive '(16))
-  (insert "\n\n\n"))
+  (insert "\n\n\n\n- "))
 
 #+end_src
 
