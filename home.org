@@ -873,8 +873,10 @@ not empty. In any case, advance to next line."
 
 ** TODO Mode line
 
-- Minor mode
+- Hidden mode line mode
+   - https://github.com/hlissner/emacs-hide-mode-line
    - https://webonastick.com/emacs-lisp/hide-mode-line.el
+   - https://github.com/manateelazycat/awesome-tray
 
 #+begin_src emacs-lisp
 
