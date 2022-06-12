@@ -292,7 +292,7 @@ to the query at execution."
 #+begin_src emacs-lisp
 
 (defun custom/relative-line-empty (&optional number)
-  (custom/relative-line-regex "[[:space:]]+$" number))
+  (custom/relative-line-regex "^[[:space:]]+$" number))
 
 #+end_src
 
@@ -312,7 +312,7 @@ to the query at execution."
 #+begin_src emacs-lisp
 
 (defun custom/relative-line-indented (&optional number)
-  (custom/relative-line-regex "[[:blank:]]+.*$" number))
+  (custom/relative-line-regex "^[[:blank:]]+.*$" number))
 
   #+end_src
 
