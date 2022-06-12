@@ -264,7 +264,8 @@ Optionally, `args' may be given as input to be passed
 to the query at execution."
   (let ((number (or number 0)))
     (save-excursion
-      (beginning-of-visual-line (+ number 1))
+      (beginning-of-visual-line)
+      (beginning-of-line-text (+ number 1))
       (apply query args))))
 
 #+end_src
