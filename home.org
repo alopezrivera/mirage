@@ -130,6 +130,14 @@
 #+end_src
 
 ** Configuration management
+*** Patching
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'el-patch)
+
+#+end_src
+
 *** Execution
 
 #+begin_src emacs-lisp
