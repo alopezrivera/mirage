@@ -1647,7 +1647,6 @@ kill the current buffer and delete its window."
 
 #+end_src
 
-* LaTeX
 * Org Mode
 
 #+begin_src emacs-lisp
