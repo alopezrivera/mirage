@@ -180,7 +180,7 @@ resume your writing where you left off")
 
 (defun custom/org-diary-resize-window ()
   (interactive)
-  (custom/window-resize-fraction custom/org-diary-new-window-fraction 60))
+  (custom/window-resize-fraction custom/org-diary-new-window-fraction custom/org-diary-min-window-width))
 
 #+end_src
 
@@ -471,7 +471,7 @@ switch to that window; otherwise, switch to that buffer.
 			   (not (or (equal arg '(4)) (equal arg '(64))))
 			 (and (not (custom/org-diary-entry))
 			      (or custom/org-diary-visit-in-new-window
-			          (> (window-width) 70))))))
+			          (> (window-width) custom/org-diary-min-window-width))))))
        ;; Whether to initialize the diary entry
        (setq init
 	     (not (or (file-exists-p entry)
