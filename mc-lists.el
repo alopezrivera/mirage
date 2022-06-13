@@ -68,6 +68,7 @@
 	org-babel-tangle
 	org-metadown
 	org-open-at-mouse
+	suspend-frame
 	swiper
 	swiper-mc
 	widen
