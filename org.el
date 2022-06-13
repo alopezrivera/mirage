@@ -1129,7 +1129,7 @@ if it was previously enabled."
       (org-roam-timestamps-mode)))
 (add-hook 'org-capture-after-finalize-hook 'custom/org-roam-timestamps-mode-back)
 
-;; Org Agenda
+;; org-agenda
 (global-set-key (kbd "C-c a") 'org-agenda)
 
 ;; org-agenda-files
