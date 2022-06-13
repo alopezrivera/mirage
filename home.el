@@ -91,14 +91,6 @@
   (let ((width (max (if min min 0) (truncate (* fr (frame-width))))))
     (window-resize nil (- width (window-width)) t)))
 
-(defun custom/regex-match-patterns (string patterns)
-  "Return t if all provided regex PATTERNS
-(provided as a list) match STRING."
-  (cl-loop for pattern in patterns
-	        if (not (string-match pattern string))
-		   return nil
-		finally return t))
-
 (defun custom/regex-match-count (regexp str)
   (loop with start = 0
         for count from 0
