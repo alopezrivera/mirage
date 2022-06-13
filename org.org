@@ -1961,8 +1961,7 @@ if it was previously enabled."
 
 #+end_src
 
-** Setup
-*** TODO Agenda files
+** TODO Files
 
 - recursive search
    - (directory-files-recursively "/home/" "\\.org$")
