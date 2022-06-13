@@ -1959,7 +1959,7 @@ if it was previously enabled."
 
 #+begin_src emacs-lisp
 
-;; Org Agenda
+;; org-agenda
 (global-set-key (kbd "C-c a") 'org-agenda)
 
 #+end_src
