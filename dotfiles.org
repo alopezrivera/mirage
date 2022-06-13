@@ -50,6 +50,14 @@ xkb_symbols "capsctrl" {
 
 #+end_src
 
+** Load
+
+#+begin_src emacs-lisp
+
+xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
+
+#+end_src
+
 * .bashrc
 ** default
 
@@ -174,14 +182,6 @@ if ! shopt -oq posix; then
 fi
 
 export PATH="/home/dfki.uni-bremen.de/alopezrivera/.local/bin:$PATH"
-
-#+end_src
-
-** xkb
-
-#+begin_src bash :tangle ~/.bashrc
-
-xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 
 #+end_src
 
