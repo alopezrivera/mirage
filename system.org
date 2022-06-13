@@ -55,17 +55,26 @@ sudo update-alternatives --config emacs
 #+end_src
 
 * LaTeX
-** Debian
+** TeX Live
+*** Debian
 
-#+begin_src emacs-lisp
+#+begin_src shell
 
 sudo apt install texlive
 sudo apt install texlive-xetex
 
 #+end_src
 
-** Vanilla
+*** Vanilla
 
 - https://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
+
+** latexmk
+
+#+begin_src shell
+
+sudo apt-get install latexmk
+
+#+end_src
 
 
