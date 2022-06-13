@@ -36,9 +36,9 @@
 
 #+begin_src emacs-lisp
 
-  (let ((startup (concat config-directory "local.el")))
-    (if (file-exists-p startup)
-	(load-file startup)))
+  (let ((local (concat config-directory "local.el")))
+    (if (file-exists-p local)
+	(load-file local)))
 
 #+end_src
 
