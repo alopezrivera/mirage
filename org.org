@@ -1971,18 +1971,8 @@ if it was previously enabled."
 #+begin_src emacs-lisp
 
 ;; org-agenda-files
-(with-eval-after-load 'org-agenda
-  (setq org-agenda-files (append custom/org-agenda-files `(,config-directory))))
-
-#+end_src
-
-*** Configuration
-
-#+begin_src emacs-lisp
-
-(defmacro custom/org-agenda-bind (key command)
-  `(with-eval-after-load 'org-agenda
-       (define-key org-agenda-mode-map (kbd ,key) ,command)))
+(setq org-agenda-files (append org-agenda-files
+			       `(,config-directory)))
 
 #+end_src
 
@@ -2006,7 +1996,7 @@ if it was previously enabled."
   (interactive)
   (org-agenda-todo 'done))
 
-(custom/org-agenda-bind "d" 'custom/org-agenda-todo-done)
+(define-key org-agenda-mode-map (kbd "d") 'custom/org-agenda-todo-done)
 
 #+end_src
 
@@ -2104,12 +2094,7 @@ if it was previously enabled."
 	     (org-agenda-recenter arg))))
   (put this-command 'custom/last-call-time (current-time)))
 
-
-#+end_src
-
-#+begin_src emacs-lisp
-
-(custom/org-agenda-bind "<tab>" 'org-agenda-recenter)
+(define-key org-agenda-mode-map (kbd "<tab>") 'org-agenda-recenter)
 
 #+end_src
 
