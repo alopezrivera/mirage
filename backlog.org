@@ -10,8 +10,8 @@
 #+latex_class_options: [twocolumn]
 -----
 
-
 - org-agenda
+   - fix
    - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
 
 - reading
