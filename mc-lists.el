@@ -70,6 +70,7 @@
 	org-babel-tangle
 	org-metadown
 	org-open-at-mouse
+	suspend-frame
 	pixel-scroll-precision
 	previous-buffer
 	split-and-follow-horizontally

@@ -52,7 +52,7 @@ xkb_symbols "capsctrl" {
 
 ** Load
 
-#+begin_src shell
+#+begin_src emacs-lisp
 
 xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 
@@ -187,12 +187,10 @@ export PATH="/home/dfki.uni-bremen.de/alopezrivera/.local/bin:$PATH"
 
 ** WSL 2
 
-#+begin_src bash
+#+begin_src bash :tangle nil
 
 # run GUI applications using X Server
 export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0 # in WSL 2
 export LIBGL_ALWAYS_INDIRECT=1
 
 #+end_src
-
-
