@@ -391,6 +391,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 - queries and more
    - https://karl-voit.at/2015/02/01/muttfilter/
 
+- org-vcard
+   - https://github.com/flexibeast/org-vcard
+
 * org-roam
 
 - increase horizontal split threshold for org-roam-node-visit
@@ -645,11 +648,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 * package management
 
-- use-package + require
-   - Clean
-      - https://ianyepan.github.io/posts/setting-up-use-package/
-- el-patch
-   - https://github.com/raxod502/el-patch
+- el-get
+   - https://github.com/dimitri/el-get
+
 
 * performance
 
