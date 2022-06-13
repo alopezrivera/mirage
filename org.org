@@ -1723,16 +1723,13 @@ matches the current theme."
 
 #+begin_src emacs-lisp
 
-;; Trigger org-babel-tangle when saving any org files in the config directory
-(setq source-regex (list ".org" (replace-regexp-in-string "~" (getenv "HOME") config-directory)))
-
-(defun custom/org-babel-tangle-config()
+(defun custom/org-babel-autotangle()
   "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
-     (if (custom/regex-match-patterns (expand-file-name buffer-file-name) source-regex)
-     ;; Tangle ommitting confirmation
-     (let ((org-confirm-babel-evaluate nil)) (org-babel-tangle)))
-)
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-tangle-config)))
+     (if (string-match (concat (getenv "HOME") "/.emacs.d/.*.org$") (expand-file-name buffer-file-name))
+     (let ((org-confirm-babel-evaluate nil))
+       (org-babel-tangle))))
+
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-autotangle)))
 
 #+end_src
 
