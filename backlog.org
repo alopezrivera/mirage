@@ -10,13 +10,8 @@
 #+latex_class_options: [twocolumn]
 -----
 
-- tempo
-   - figure template
-
-- dotfiles
-   - https://evanhahn.com/a-decade-of-dotfiles/
-
 - org-agenda
+   - fix
    - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
 
 - reading
@@ -31,31 +26,8 @@
    - beamer
       - https://latex-beamer.com/tutorials/beamer-figure/
 
-* TODO [#A] git
-
-- subrepo
-   - https://github.com/ingydotnet/git-subrepo#readme
-- multirepo
-   - dotfile managers
-      - vcsh
-         - https://github.com/RichiH/vcsh
-      - yadm
-         - https://github.com/TheLocehiliosan/yadm
-   - magit
-      - https://github.com/magit/magit/issues/460#issuecomment-36139308
-- subtrees
-   - remove subtree
-   - history, bugs
-      - https://gist.github.com/SKempin/b7857a6ff6bddb05717cc17a44091202
-      - https://gitlab.com/douglas.s.leonard/alltrees
-      - https://gitlab.com/douglas.s.leonard/alltrees/-/wikis/home
-
-* TODO [#A] owo
-
-* Sessions
-** TODO [#A] org-agenda
-** TODO [#A] org-roam
-
+- transclusion
+   - https://nobiot.github.io/org-transclusion/
 
 
 * References
@@ -70,6 +42,7 @@
 - https://github.com/ThomasFKJorna/doom-emacs-config
 - https://github.com/rougier/dotemacs
 - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
+-  https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
 
 ** Features
 
@@ -233,6 +206,25 @@ CLOSED: [2022-05-06 Fri 17:11]
 - if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
 
+* Modes
+** bindings
+
+- All key bindings
+   - Org Mode
+- https://github.com/noctuid/general.el
+
+** org-backlog
+
+- minor mode
+   - agenda file editing
+- headings
+   - small
+   - monospace
+   - same color
+   - all equal
+- setup
+   - tag alignment
+
 * Packages
 
 - general purpose functions
@@ -244,26 +236,6 @@ CLOSED: [2022-05-06 Fri 17:11]
    - transient-mark-mode active -> mouse-3 = kill-ring-save
    - smart-comment-region
    - org-indent-region
-
-
-* Modes
-** bindings
-
-- All key bindings
-   - Org Mode
-- https://github.com/noctuid/general.el
-
-** compass
-
-- screens
-   - key bindings
-      - commands
-      - packages
-         - redirect to list-packages
-- key bindings
-   - rendered with svg-tag-mode
-      - search
-      - match bound command + docstrings
 
 
 * portability
@@ -296,7 +268,12 @@ CLOSED: [2022-05-06 Fri 17:11]
 - permanent
    - custom font-lock
 
-     
+* visual cues
+
+- Pulsar
+   - https://protesilaos.com/emacs/pulsar
+
+
 * latex
 
 - https://www.emacswiki.org/emacs/AUCTeX
@@ -335,6 +312,7 @@ CLOSED: [2022-05-06 Fri 17:11]
    - https://github.com/tmalsburg/helm-bibtex
 - org-ref
    - https://github.com/jkitchin/org-ref
+
 - create entry
    - org-noter
       - headings from section titles
@@ -347,6 +325,7 @@ CLOSED: [2022-05-06 Fri 17:11]
       - #+title
       - #+author
       - #+date
+
 
 * org
 
@@ -362,34 +341,8 @@ CLOSED: [2022-05-06 Fri 17:11]
    - imenu-list
       - https://github.com/rougier/dotemacs/blob/master/dotemacs.org#sidebar
 - tag formatting
-
-* org export
-
-- org to anki
-   - https://yiufung.net/post/anki-org/
-- presentations
-   - revealXS
-      - https://www.youtube.com/watch?v=avtiR0AUVlo
-      - Nice code block transitions
-         - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
-   - ioslide
-      - https://github.com/coldnew/org-ioslide
-- Hugo
-   - https://ox-hugo.scripter.co/
-   - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
-   - https://www.youtube.com/watch?app=desktop&v=0g9BcZvQbXU
-
-* org-capture
-
-- lecture
-   - specify directory
-   - template
-
-* org-paragraph
-
-- up, down
-
-* TODO org-agenda
+  
+* org-agenda
 
 - bug
 - time-log of headings
@@ -420,7 +373,7 @@ CLOSED: [2022-05-06 Fri 17:11]
 - interaction
    - https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html
 	
-* TODO org-calendar
+* org-calendar
 
 - C-c more than once -> agenda files lost
 
@@ -433,59 +386,44 @@ CLOSED: [2022-05-06 Fri 17:11]
 - hyperscheduler
    - https://github.com/dmitrym0/org-hyperscheduler/
 
-* TODO org-backlog
+* org-contacts
 
-- minor mode
-   - agenda file editing
-- headings
-   - small
-   - monospace
-   - same color
-   - all equal
-- setup
-   - tag alignment
+- queries and more
+   - https://karl-voit.at/2015/02/01/muttfilter/
 
-* TODO org-journal
+- org-vcard
+   - https://github.com/flexibeast/org-vcard
 
-- minor mode
-- commands
-   - time
-   - Navigation
-      - C-arrows
-   - New entry command
-      - C-n
-	 - org-capture
-- thoughts
-   - two buffers
-      - journal buffer list
-      - long form content
-         - separators
-            - -----
-         - lazy load
-   - show buffer list
-   - get long-form content form buffer if desired
-      - filter journal entry content
-- Functions
-   - Exports
-      - select thoughts for export
-      - org-capture selected thoughts
-
-* TODO org-roam
+* org-roam
 
 - increase horizontal split threshold for org-roam-node-visit
 
-- https://www.orgroam.com/manual.html#Introduction
 - UI
    - deactivate when reloading org mode
      
-* mode line
+* org export
+** web
 
-- awesome-tray
-   - https://github.com/manateelazycat/awesome-tray
+- org -> HTML
+   - https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
+- Hugo
+   - https://ox-hugo.scripter.co/
+   - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
+   - https://www.youtube.com/watch?app=desktop&v=0g9BcZvQbXU
 
-- trouble switching on and off across modes
-- no mode line minor mode
-   - https://github.com/hlissner/emacs-hide-mode-line
+** anki
+
+- https://yiufung.net/post/anki-org/
+
+** presentations
+
+- revealJS
+   - https://www.youtube.com/watch?v=avtiR0AUVlo
+   - Nice code block transitions
+      - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
+- ioslide
+   - https://github.com/coldnew/org-ioslide
+
 
 * runtime
 
@@ -494,7 +432,7 @@ CLOSED: [2022-05-06 Fri 17:11]
 - startup
    - command line arguments
       - https://stackoverflow.com/a/2112346
-
+        
 * display
 
 - golden ratio
@@ -505,12 +443,24 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 * IDE
 
-- projectile
-- treemacs
+- Structure editing
+   - M-arrows
+      - Reorder function definitions
+   - https://github.com/ethan-leba/tree-edit
+- Debugging
+   - dap-mode
+      - https://github.com/emacs-lsp/dap-mode
+- minimap
+   - https://github.com/dengste/minimap
 
-- hideshow
-   - all wrap commands
-      - save-excursion to bol-text
+- Code formatting
+   - https://github.com/raxod502/apheleia
+- Collaborative editing
+   - https://code.librehq.com/qhong/crdt.el
+- Annotations
+   - https://github.com/bastibe/annotate.el
+
+-----
 
 - references
    - https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a
@@ -529,58 +479,8 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 -----
 
-- lsp-mode
-- pipenv
-   - https://github.com/pwalsh/pipenv.el
-- code folding
-   - hideshow
-      - hideshowvis
-   - https://www.reddit.com/r/emacs/comments/746cd0/which_code_folding_package_do_you_use/
-- Project interaction
-   - projectile
-      - helm-projectile
-- Code inspection
-   - C-click
-   - jedi
-      - https://tkf.github.io/emacs-jedi/latest/
-         - https://www.jefftk.com/p/python-navigation-in-emacs
-   - elpy
-      - https://emacs.stackexchange.com/a/19194
-	
-- Structure editing
-   - M-arrows
-      - Reorder function definitions
-   - https://github.com/ethan-leba/tree-edit
-	
-- Autocompletion
-   - company-mode
-- smartparens
-   - https://github.com/Fuco1/smartparens
-- Syntax checking
-   - flycheck
-      - https://www.reddit.com/r/emacs/comments/931la6/tip_how_to_adopt_flycheck_as_your_new_best_friend/
-- Debugging
-   - dap-mode
-      - https://github.com/emacs-lsp/dap-mode
-
-- Pulsar
-   - https://protesilaos.com/emacs/pulsar
-- treemacs
-   - crtl+click
-      - open by side of last active buffer
-- minimap
-   - https://github.com/dengste/minimap
-- tab bar
-   - https://github.com/emacs-tw/awesome-emacs#tabbar
-	
 - C++
    - https://github.com/Andersbakken/rtags
-- Code formatting
-   - https://github.com/raxod502/apheleia
-- Collaborative editing
-   - https://code.librehq.com/qhong/crdt.el
-- Annotations
-   - https://github.com/bastibe/annotate.el
 
 * writing
 
@@ -616,7 +516,12 @@ CLOSED: [2022-05-06 Fri 17:11]
 - Org refile
    - https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
-     
+* exploration
+
+- metarosetta
+   - https://github.com/73D1/metarosetta
+
+
 * rss
 
 - elfeed
@@ -743,11 +648,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 * package management
 
-- use-package + require
-   - Clean
-      - https://ianyepan.github.io/posts/setting-up-use-package/
-- el-patch
-   - https://github.com/raxod502/el-patch
+- el-get
+   - https://github.com/dimitri/el-get
+
 
 * performance
 

@@ -15,6 +15,24 @@ to manipulate paragraphs using the Org Mode struct infrastructure.
 Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 ~org-metaleft~, ~org-metaup~ and ~org-metadown~.
 
+* TODO Backlog
+
+- thoughts
+   - two buffers
+      - journal buffer list
+      - long form content
+         - separators
+            - -----
+         - lazy load
+   - show buffer list
+   - get long-form content form buffer if desired
+      - filter journal entry content
+- functions
+   - Exports
+      - select thoughts for export
+      - org-capture selected thoughts
+
+
 * Setup
 ** Mode
 
@@ -59,7 +77,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
   :prefix "custom/org-diary-")
 
 (define-minor-mode custom/org-diary-mode
-  "Org Diary minor mode."
+  "Org Diary minor mode"
   :init-value 1
   :lighter " Diary"
   :group 'custom/org-diary-mode-group
@@ -68,51 +86,129 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
     (custom/org-diary-typeset))
   (when (not (bound-and-true-p custom/org-diary-mode))
     (custom/org-diary-font-lock-remove)
-    (variable-pitch-mode 0)))
+    (if custom/org-diary-variable-pitch
+	   (variable-pitch-mode 0))))
 
 (define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
 
 #+end_src
 
 ** Variables
+*** Custom
 
 #+begin_src emacs-lisp
 
-(defcustom custom/org-diary-directory "/home/diary/"
-  "Org Diary directory."
-  :group 'custom/org-diary-mode-group)
+(defcustom custom/org-diary-directory           "/home/diary/"
+  "Org Diary directory"
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
 
-(defcustom custom/org-diary-time-format-file  "%d.%m.%Y"
-  "Org Diary time format: file names."
-  :group 'custom/org-diary-mode-group)
+(defcustom custom/org-diary-time-format-file    "%d-%m-%Y"
+  "Org Diary time format: file names"
+  :group 'custom/org-diary-mode-group
+  :type 'string)
 
-(defcustom custom/org-diary-time-format-title "%d/%m/%Y"
-  "Org Diary time format: entry titles."
-  :group 'custom/org-diary-mode-group)
+(defcustom custom/org-diary-entry-regex         "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org"
+  "Regex query to identify Org Diary entries"
+  :group 'custom/org-diary-mode-group
+  :type 'string)
 
-(defcustom custom/org-diary-file-format (concat custom/org-diary-directory
-					  custom/org-diary-time-format-file
-					  ".org")
-  "Org Diary file name format."
-  :group 'custom/org-diary-mode-group)
+(defcustom custom/org-diary-time-format-title   "%d/%m/%Y"
+  "Org Diary time format: entry titles"
+  :group 'custom/org-diary-mode-group
+  :type 'string)
+
+(defcustom custom/org-diary-new-window-fraction 0.25
+  "New Org Diary window width as a fraction of the frame width"
+  :group 'custom/org-diary-mode-group
+  :type 'float)
+
+(defcustom custom/org-diary-min-window-width    70
+  "Minimum width of an Org Diary window"
+  :group 'custom/org-diary-mode-group
+  :type 'integer)
 
 (defcustom custom/org-diary-visit-in-new-window t
-  "Open diary entries in new window."
-  :group 'custom/org-diary-mode-group)
+  "Whether to open diary entries in new window"
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
 
-(defcustom custom/org-diary-new-window-fraction 0.3
-  "New Org Diary window width as a fraction of the frame width."
-  :group 'custom/org-diary-mode-group)
+(defcustom custom/org-diary-variable-pitch      nil
+  "Whether to activate `variable-pitch-mode' in Org Diary entries"
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
+
+(defcustom custom/org-diary-navigate-in-current-dir t
+  "If the current buffer is an `org-diary' buffer, this variable
+determines whether `org-diary-prior' and `org-diary-next' will
+search (or create) the prior or next `org-diary' entry in the directory
+of the current buffer as opposed to in `org-diary-directory'.
+Setting this variable to t is useful to navigate directories with
+notes in `org-diary' format"
+  :group 'custom/org-diary-mode-group
+  :type 'boolean)
+
+#+end_src
+
+*** Auxiliary
+
+#+begin_src emacs-lisp
+
+(defvar custom/org-diary-last-visited nil
+  "Time of the last Org Diary entry being edited before exiting Org Diary.
+Upon being called again, `org-diary' will open this entry so you can
+resume your writing where you left off")
+
+#+end_src
+
+** Functions
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-file-format (&optional dir)
+  "Org Diary file name format"
+  (let ((dir  (or dir
+		     (if (and custom/org-diary-navigate-in-current-dir buffer-file-name)
+			 (file-name-directory buffer-file-name)
+		       custom/org-diary-directory)))
+	   (file custom/org-diary-time-format-file))
+    (concat dir file ".org")))
 
 #+end_src
 
 * Display
+** Window
+*** TODO org-diary-new-window
+
+- new window always on right of frame
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-new-window ()
+  (split-window-horizontally)
+  (windmove-right)
+  (if (not (ignore-errors (custom/org-diary-resize-window)))
+      (delete-other-windows)))
+
+#+end_src
+
+*** org-diary-resize-window
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-resize-window ()
+  (interactive)
+  (custom/window-resize-fraction custom/org-diary-new-window-fraction custom/org-diary-min-window-width))
+
+#+end_src
+
 ** Typeset
 
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-typeset ()
-  (variable-pitch-mode)
+  (if custom/org-diary-variable-pitch
+      (variable-pitch-mode))
   (custom/org-diary-font-lock-add))
 
 #+end_src
@@ -125,11 +221,11 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 (defface custom/org-diary-typeface-hhmm
   '((nil :foreground "#eb07b6" :inherit 'fixed-pitch))
-  "Org Diary typeface for hh:mm time stamps."
+  "Org Diary typeface for hh:mm time stamps"
   :group 'custom/org-diary-mode-group)
 
-(defcustom custom/org-diary-keyword-hhmm '("[0-9]\\{2\\}:[0-9]\\{2\\}.*$" . 'custom/org-diary-typeface-hhmm)
-  "Org Diary hh:mm typeface keyword."
+(defcustom custom/org-diary-keyword-hhmm '("[0-9]\\{2\\}:[0-9]\\{2\\}$" . 'custom/org-diary-typeface-hhmm)
+  "Org Diary hh:mm typeface keyword"
   :group 'custom/org-diary-mode-group)
 
 #+end_src
@@ -139,7 +235,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 #+begin_src emacs-lisp
 
 (defcustom custom/org-diary-keywords (list custom/org-diary-keyword-hhmm)
-  "Org Diary font-lock keywords.")
+  "Org Diary font-lock keywords")
 
 #+end_src
 
@@ -170,11 +266,11 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 #+begin_src emacs-lisp :tangle nil
 
 (defcustom custom/org-diary-line-padding 1.25
-  "Org Diary line padding factor."
+  "Org Diary line padding factor"
   :group 'custom/org-diary-mode-group)
 
 (defun custom/org-diary-line-padding ()
-  "Set padding between Org Diary entry lines."
+  "Set padding between Org Diary entry lines"
   ;; remove padding overlays if they already exist
   (let ((overlays (overlays-at (point-min))))
     (while overlays
@@ -193,7 +289,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 * Internal
 ** Time
-*** TODO parse-time
+*** TODO org-diary-parse-time
 
 1. find separator indices in time string
     - <any code><separator>% -> regex match group
@@ -229,23 +325,23 @@ aux variables -> time list
 
 (defun custom/org-diary-parse-time (string)
   "Parse time string. Currently hardcoded to parse time
-strings in the format `%d/%m/%Y'."
+strings in the format `%d/%m/%Y'"
   (let ((dmy (cl-loop for n in (split-string string "/")
 		            collect (string-to-number n))))
     (encode-time (list 0 0 0 (nth 0 dmy) (nth 1 dmy) (nth 2 dmy) nil nil nil))))
 
 #+end_src
 
-*** time-string-file
+*** org-diary-time-string-file
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-time-string-file (time)
-  (format-time-string custom/org-diary-file-format time))
+(defun custom/org-diary-time-string-file (time &optional dir)
+  (format-time-string (custom/org-diary-file-format dir) time))
 
 #+end_src
 
-*** time-string-title
+*** org-diary-time-string-title
 
 #+begin_src emacs-lisp
 
@@ -254,61 +350,66 @@ strings in the format `%d/%m/%Y'."
 
 #+end_src
 
-** Queries
-*** TODO buffer-entry
-
-- generalize for different file time string formats
+** Entry
+*** org-diary-entry
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-buffer-entry (buffer)
-  (string-match-p "^[0-9]\\{2\\}\\.[0-9]\\{2\\}\\.[0-9]\\{4\\}\\.org" (file-name-nondirectory buffer)))
+(defun custom/org-diary-entry (&optional buffer)
+  "Return t if BUFFER is an Org Diary entry"
+  (let ((bfname (buffer-file-name (or buffer (current-buffer)))))
+    (if bfname
+	    (string-match-p custom/org-diary-entry-regex (file-name-nondirectory bfname)))))
 
 #+end_src
 
-*** in-entry
+*** org-diary-entry-file
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-in-entry ()
-  "Return t if current buffer is an `custom/org-diary-buffer-entry'."
-  (ignore-errors (custom/org-diary-buffer-entry buffer-file-name)))
+(defun custom/org-diary-entry-file (&optional buffer)
+  "Retrieve the file name of an Org Diary entry"
+  (custom/org-diary-time-string-file (custom/org-diary-entry-time buffer)))
 
 #+end_src
 
-*** entry-time
+*** org-diary-entry-time
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-entry-time ()
-  (let ((title (custom/org-get-title-current-buffer)))
-    (custom/org-diary-parse-time title)))
+(defun custom/org-diary-entry-time (&optional buffer)
+  "Retrieve the time of an Org Diary entry"
+  (let ((title (custom/org-get-title-buffer buffer)))
+      (custom/org-diary-parse-time title)))
 
 #+end_src
 
-*** entry-time
-
-#+begin_src emacs-lisp
-
-(defun custom/org-diary-entry-date ()
-  "Retrieve the time of the current Org Diary
-file in `custom/org-diary-time-format-file'."
-  (custom/org-diary-time-string-file (custom/org-diary-entry-time)))
-
-#+end_src
-
-*** entry-unsaved-buffer
+*** org-diary-entry-unsaved-buffer
 
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-entry-unsaved-buffer (time)
   "Return t if the Org Diary entry for TIME exists
-in an unsaved buffer."
-  (let ((file (custom/org-diary-time-string-file time)))
+in an unsaved buffer"
+  (let ((entry (file-name-nondirectory (custom/org-diary-time-string-file time))))
     (cl-loop for buffer in (buffer-list)
-	           if (and (buffer-file-name buffer)
-			   (string-equal file (buffer-file-name buffer))) return t
-		   finally return nil)))
+	         if (and (buffer-name buffer)
+			 (string-match entry (buffer-name buffer)))
+		    return t
+             finally return nil)))
+
+#+end_src
+
+** Window
+*** org-diary-window
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-window ()
+  (cl-loop for buffer in (buffer-list)
+	       if (custom/org-diary-entry buffer)
+	          return (get-buffer-window buffer)
+           finally return nil))
 
 #+end_src
 
@@ -346,37 +447,59 @@ Options:
       - org-capture selected thoughts
 
 * Navigation
+** org-diary-open
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-open (entry &optional noselect new-window)
+  "Open an Org Diary diary.
+
+If a buffer for the entry exists, and the buffer is being displayed in a window,
+switch to that window; otherwise, switch to that buffer.
+
+- NOSELECT:   open entry file without selecting it
+- NEW-WINDOW: open entry in new window"
+  (setq entry-buffer (custom/find-buffer-by-file-name entry))
+  (setq entry-window (if entry-buffer
+			    (get-buffer-window entry-buffer)
+		          nil))
+  (cond (noselect                      (find-file-noselect entry))
+	   (entry-window                  (select-window entry-window))
+	   ((and entry-buffer new-window) (progn (custom/org-diary-new-window) (switch-to-buffer entry-buffer)))
+	   (new-window                    (progn (custom/org-diary-new-window) (find-file        entry)))
+	   (t                             (find-file entry))))
+
+#+end_src
+
 ** org-diary-visit
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-visit (time &optional arg)
-  "Open the Org Diary entry corresponding to the specified time.
+(defun custom/org-diary-visit (time &optional arg dir)
+  "Open the Org Diary entry corresponding to the specified time, and initialize it if necessary.
 -             '(0):  noselect
 - C-u         '(4):  visit in current buffer
 - C-u C-u     '(16): save new entry after initialiation
 - C-u C-u C-u '(64): visit in current buffer and save new entry after initialization"
   (interactive)
-  (let ((entry          (custom/org-diary-time-string-file time))
-	   (save           (or (equal arg '(16)) (equal arg '(64))))
-	   (noselect       (equal arg '(1)))
-	   (current-buffer (if arg
-			       (or (equal arg '(4)) (equal arg '(64)))
-			     (not custom/org-diary-visit-in-new-window))))
+  (let ((entry      (custom/org-diary-time-string-file time dir))
+	   (save       (or (equal arg '(16)) (equal arg '(64))))
+	   (noselect   (equal arg '(1)))
+	   (new-window (if arg
+			   (not (or (equal arg '(4)) (equal arg '(64))))
+			 (and (not (custom/org-diary-entry))
+			      (or custom/org-diary-visit-in-new-window
+			          (> (window-width) custom/org-diary-min-window-width))))))
        ;; Whether to initialize the diary entry
-       (setq init (not (or (file-exists-p entry) (custom/org-diary-entry-unsaved-buffer time))))
+       (setq init
+	     (not (or (file-exists-p entry)
+		      (custom/org-diary-entry-unsaved-buffer time))))
        ;; Open entry
-       (if noselect
-	       (find-file-noselect entry)
-	     (if current-buffer
-		 (find-file entry)
-	       (progn (find-file-other-window entry)
-	              (if (not (ignore-errors (custom/window-resize-fraction custom/org-diary-new-window-fraction)))
-			  (delete-other-windows)))))
+       (custom/org-diary-open entry noselect new-window)
        ;; Initialize
-       (if init (custom/org-diary-init time))
-       ;; Save buffer
-       (if (and init save) (save-buffer))
+       (if init
+	      (progn (custom/org-diary-init time)
+		     (if save (save-buffer))))
        ;; Enable `org-diary-mode'
        (custom/org-diary-mode)
        ;; Go to end of buffer
@@ -390,9 +513,9 @@ Options:
 
 (defun custom/org-diary-today (&optional arg)
   "Open the Org Diary entry for today, creating it if
-it does not exist."
+it does not exist"
   (interactive)
-  (custom/org-diary-visit (current-time) arg))
+  (custom/org-diary-visit (current-time) arg custom/org-diary-directory))
 
 #+end_src
 
@@ -402,9 +525,9 @@ it does not exist."
 
 (defun custom/org-diary-jump (number)
   (interactive)
-  (let ((custom/org-diary-visit-in-new-window (not (custom/org-diary-in-entry)))
-	  (time-jump (time-add (custom/org-diary-entry-time) (days-to-time number))))
-       (custom/org-diary-visit time-jump '(4))))
+  (let ((custom/org-diary-visit-in-new-window (not (custom/org-diary-entry)))
+	   (time-jump (time-add (custom/org-diary-entry-time) (days-to-time number))))
+    (custom/org-diary-visit time-jump '(4))))
 
 #+end_src
 
@@ -433,12 +556,12 @@ it does not exist."
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-init (time)
-  "Set up Org Diary entry."
+  "Set up Org Diary entry"
   (interactive)
   (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
   (insert "#+CREATED: ")
   (org-time-stamp-inactive '(16))
-  (insert "\n\n\n"))
+  (insert "\n\n\n\n- "))
 
 #+end_src
 
@@ -447,7 +570,7 @@ it does not exist."
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-insert-time (format)
-  "Insert current time using the given FORMAT."
+  "Insert current time using the given FORMAT"
   (insert (format-time-string format (current-time))))
 
 #+end_src
@@ -457,31 +580,37 @@ it does not exist."
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-insert-time-hhmm ()
-  "Insert current time using the given FORMAT."
+  "Insert current time using the given FORMAT"
   (interactive)
   (custom/org-diary-insert-time "%H:%M"))
 
 #+end_src
 
-* Diary
+* TODO Diary
+
+- at close
+   - save/generate autosave file
+   - delete empty lines at bottom
 
 #+begin_src emacs-lisp
 
 (defun custom/org-diary (&optional arg)
-  "Org Diary entry point.
-
-Activate when visiting files matching pattern.
+  "Org Diary entry and exit point.
 
 Bindings:
 - C-<up>   -> previous entry if it exists
 - C-<down> -> next entry if it exists
 - C-n      -> new entry"
   (interactive)
-  (if (custom/org-diary-in-entry)
-      (progn (custom/org-diary-mode 0)
+  (if (custom/org-diary-entry)
+      (progn (setq custom/org-diary-last-visited (custom/org-diary-entry-time (current-buffer)))
+	       (custom/org-diary-mode 0)
 	       (bury-buffer)
 	       (ignore-errors (delete-window)))
-    (progn (custom/org-diary-today arg)
+    (progn (if (custom/org-diary-window)
+	         (select-window (custom/org-diary-window))
+	       (let ((time (or custom/org-diary-last-visited (current-time))))
+		    (custom/org-diary-visit time arg custom/org-diary-directory)))
 	     (custom/org-diary-mode 1))))
 
 #+end_src
@@ -490,7 +619,7 @@ Bindings:
 
 #+begin_src emacs-lisp
 
-(add-hook 'org-mode-hook (lambda () (if (custom/org-diary-in-entry) (custom/org-diary-mode))))
+(add-hook 'org-mode-hook (lambda () (if (custom/org-diary-entry) (custom/org-diary-mode))))
 
 #+end_src
 
@@ -501,6 +630,8 @@ Bindings:
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
 (define-key org-mode-map (kbd "C-d")       'custom/org-diary-insert-time-hhmm)
+(define-key org-mode-map (kbd "C-x w")     'custom/org-diary-resize-window)
+(define-key org-mode-map (kbd "C-c t")     'custom/org-diary-today)
 (define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
 (define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 

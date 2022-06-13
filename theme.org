@@ -62,8 +62,7 @@
 
 #+end_src
 
-
-* Mode line
+* Mode lines
 
 #+begin_src emacs-lisp
 
@@ -89,6 +88,16 @@
 (straight-use-package 'doom-modeline)
 
 #+end_src
+
+** Spaceline
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'spaceline)
+(require 'spaceline-config)
+
+#+end_src
+
 
 * Customization
 ** Mode line

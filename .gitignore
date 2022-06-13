@@ -1,10 +1,25 @@
+# local config
+local.el
 
+# files
 *~
 *#*
+nil
+bookmarks
+.workspace
+org-roam.db
+.emacs.desktop
+.emacs.desktop.lock
+projectile-bookmarks.eld
+
+# directories
 tmp/*
-elpa/*
+elpy/*
+.cache/*
+transient/*
 auto-save-list/*
 url/cache/root/https/*
 
-# local config
-local.el
+# repositories
+elpa/*
+straight/*

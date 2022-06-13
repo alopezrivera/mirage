@@ -26,6 +26,9 @@
 ;; doom-modeline
 (straight-use-package 'doom-modeline)
 
+(straight-use-package 'spaceline)
+(require 'spaceline-config)
+
 ;; Bar
 (setq-default doom-modeline-bar-width 0.01)
 

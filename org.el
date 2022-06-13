@@ -5,6 +5,74 @@
 ;; Startup with inline images
 (setq org-startup-with-inline-images t)
 
+(el-patch-feature org)
+(el-patch-defun org-self-insert-command (N)
+  "Like `self-insert-command', use overwrite-mode for whitespace in tables.
+If the cursor is in a table looking at whitespace, the whitespace is
+overwritten, and the table is not marked as requiring realignment."
+  (interactive "p")
+  (el-patch-remove (org-fold-check-before-invisible-edit 'insert))
+  (cond
+   ((and org-use-speed-commands
+	 (let ((kv (this-command-keys-vector)))
+	   (setq org-speed-command
+		 (run-hook-with-args-until-success
+		  'org-speed-command-hook
+		  (make-string 1 (aref kv (1- (length kv))))))))
+    (cond
+     ((commandp org-speed-command)
+      (setq this-command org-speed-command)
+      (call-interactively org-speed-command))
+     ((functionp org-speed-command)
+      (funcall org-speed-command))
+     ((consp org-speed-command)
+      (eval org-speed-command t))
+     (t (let (org-use-speed-commands)
+	  (call-interactively 'org-self-insert-command)))))
+   ((and
+     (= N 1)
+     (not (org-region-active-p))
+     (org-at-table-p)
+     (progn
+       ;; Check if we blank the field, and if that triggers align.
+       (and (featurep 'org-table)
+	    org-table-auto-blank-field
+	    (memq last-command
+		  '(org-cycle org-return org-shifttab org-ctrl-c-ctrl-c))
+	    (if (or (eq (char-after) ?\s) (looking-at "[^|\n]*  |"))
+		;; Got extra space, this field does not determine
+		;; column width.
+		(let (org-table-may-need-update) (org-table-blank-field))
+	      ;; No extra space, this field may determine column
+	      ;; width.
+	      (org-table-blank-field)))
+       t)
+     (looking-at "[^|\n]*  |"))
+    ;; There is room for insertion without re-aligning the table.
+    (self-insert-command N)
+    (org-table-with-shrunk-field
+     (save-excursion
+       (skip-chars-forward "^|")
+       ;; Do not delete last space, which is
+       ;; `org-table-separator-space', but the regular space before
+       ;; it.
+       (delete-region (- (point) 2) (1- (point))))))
+   (t
+    (setq org-table-may-need-update t)
+    (self-insert-command N)
+    (org-fix-tags-on-the-fly)
+    (when org-self-insert-cluster-for-undo
+      (if (not (eq last-command 'org-self-insert-command))
+	  (setq org-self-insert-command-undo-counter 1)
+	(if (>= org-self-insert-command-undo-counter 20)
+	    (setq org-self-insert-command-undo-counter 1)
+	  (and (> org-self-insert-command-undo-counter 0)
+	       buffer-undo-list (listp buffer-undo-list)
+	       (not (cadr buffer-undo-list)) ; remove nil entry
+	       (setcdr buffer-undo-list (cddr buffer-undo-list)))
+	  (setq org-self-insert-command-undo-counter
+		(1+ org-self-insert-command-undo-counter))))))))
+
 ;; `org-in-src-block-p' gives false positives as of Org Mode 9.5.3. For
 ;; this reason, determine if cursor in src block with the more reliable
 ;; `org-babel-where-is-src-block-head'
@@ -32,32 +100,35 @@
 (defun custom/org-at-eol-heading ()
   (and (custom/org-relative-line-heading) (eolp) (not (custom/org-at-ellipsis-h)) (not (custom/org-relative-line-heading-empty))))
 
-(defun custom/org-at-list-paragraph ()
-  (and (not (custom/org-relative-line-heading))
-       (not (custom/org-relative-line-list))
-       (not (org-in-src-block-p))
-       (custom/org-relative-line-list -1)))
-
 (defun custom/org-after-list-or-indent ()
   (or (custom/org-relative-line-list -1) (custom/relative-line-indented -1)))
 
 (defun custom/org-relative-line-list (&optional number)
-  (interactive)
   (custom/relative-line (lambda () (progn (beginning-of-line-text) (org-at-item-p)))  number))
+
+(defun custom/org-relative-line-heading (&optional number)
+  (custom/relative-line 'org-at-heading-p number))
+
+(defun custom/org-relative-line-paragraph (&optional number)
+  "Determine whether the current line -or the NUMBER'th line relative to it
+is an indented paragraph."
+  (let ((number (or number 0)))
+    (and (not (custom/org-relative-line-heading number))
+	       (not (custom/org-relative-line-list    number))
+	       (not (org-in-src-block-p))
+	       (custom/relative-line-indented number)
+	       (or  (custom/org-relative-line-list      (- number 1))
+		    (custom/org-relative-line-paragraph (- number 1))))))
 
 (defun custom/org-relative-line-list-empty (&optional number)
   (and (custom/org-relative-line-list)
-       (custom/relative-line-regex "[[:blank:]]*[-+*]?[0-9.)]*[[:blank:]]+$" number)))
+       (or (custom/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+$" number)
+	         (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+$" number))))
 
 (defun custom/org-relative-line-list-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
 is on a folded list item."
-  (interactive)
   (custom/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
-
-(defun custom/org-relative-line-heading (&optional number)
-  (interactive)
-  (custom/relative-line 'org-at-heading-p number))
 
 (defun custom/org-relative-line-heading-empty (&optional number)
   (custom/relative-line (lambda () (beginning-of-line-text) (org-point-at-end-of-empty-headline)) number))
@@ -65,7 +136,6 @@ is on a folded list item."
 (defun custom/org-relative-line-heading-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
 is on a folded heading."
-  (interactive)
   (custom/relative-line (lambda () (and (org-at-heading-p) (invisible-p (point-at-eol)))) number))
 
 (defun custom/org-relative-line-heading-or-list (&optional number)
@@ -130,14 +200,16 @@ a `custom/region-blank'."
 
 (defun custom/org-get-title-file (file)
   (with-current-buffer (find-file-noselect file)
-       (custom/org-get-title-current-buffer)))
+       (custom/org-get-title-buffer)))
 
-(defun custom/org-get-title-current-buffer ()
-    (nth 1
-     (assoc "TITLE"
-      (org-element-map (org-element-parse-buffer 'greater-element)
-          '(keyword)
-        #'custom/get-keyword-key-value))))
+(defun custom/org-get-title-buffer (&optional buffer)
+  (let ((buffer (or buffer (current-buffer))))
+    (with-current-buffer buffer
+      (nth 1
+	   (assoc "TITLE"
+		  (org-element-map (org-element-parse-buffer 'greater-element)
+		      '(keyword)
+		    #'custom/get-keyword-key-value))))))
 
 (defun custom/org-set-outline-overlay-data (data)
   "Create visibility overlays for all positions in DATA.
@@ -389,6 +461,54 @@ ellipsis in the first line under the heading."
 (dolist (function custom/org-functions-at-ellipsis)
   (advice-add function :around #'custom/org-edit-at-ellipsis))
 
+;; org-return
+(defun custom/org-return ()
+  "Conditional `org-return'."
+  (interactive)
+  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
+	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	    ((custom/org-at-ellipsis-l)                     (custom/org-insert-item-respect-content))
+	    ((custom/org-relative-line-paragraph)           (progn (org-return t) (org-insert-item)))
+	    ((custom/org-relative-line-list)                (org-meta-return))
+	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
+	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
+	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
+	    ((custom/org-at-ellipsis-h)                     (org-return))
+	    (t                                              (org-return t))))
+
+(define-key org-mode-map (kbd "<return>") 'custom/org-return)
+
+;; org-meta-return
+(defun custom/org-control-return ()
+  (interactive)
+  (cond ((custom/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
+	    ((custom/org-relative-line-heading)    (custom/org-insert-heading-after-subtree))
+	    ((custom/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
+	    ((custom/org-relative-line-paragraph)  (custom/org-paragraph-toggle))
+	    (t                                     (custom/org-insert-heading-after-subtree))))
+
+(define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
+
+(defun custom/org-meta-return ()
+  (interactive)
+  (custom/org-insert-subheading-after-subtree))
+
+(define-key org-mode-map (kbd "M-<return>") 'custom/org-meta-return)
+
+(defun custom/org-super-return ()
+  (interactive)
+  (cond ((or (custom/org-relative-line-list)
+	         (custom/org-relative-line-paragraph)) (org-return t))
+	    (t                                         (custom/org-insert-subheading-at-point))))
+
+(define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
+
+(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
+
+(define-key org-mode-map (kbd "C-S-<return>") 'org-insert-todo-heading)
+
+(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-subheading)
+
 (defun custom/org-delete-hungry ()
   "If the region starts at the beginning of an 
 indented line and the cursor lies on an Org Mode
@@ -420,9 +540,22 @@ one character."
 		   (org-current-level))                         (delete-region (point) (custom/get-point 'end-of-line 0)))
 	     ((or  (custom/org-relative-line-heading-empty)
 		   (custom/org-relative-line-list-empty))       (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+	     ((custom/org-at-bol-list)                          (custom/org-toggle-item))
         (t                                                 (custom/nimble-delete-backward))))
 
 (define-key org-mode-map (kbd "<backspace>") 'custom/org-nimble-delete-backward)
+
+(defun custom/org-toggle-item ()
+  (interactive)
+  (let ((toggle-off (custom/org-relative-line-list))
+	     (indent     (+ 1 org-list-indent-offset))
+	     (marker     (point)))
+    (beginning-of-line-text)
+    (delete-backward-char indent)
+    (if toggle-off
+	     (insert (make-string indent ?\s))
+      (org-toggle-item 0))
+    (goto-char marker)))
 
 (defun custom/org-indent-region (command &rest args)
   "Indent Org Mode region.
@@ -481,9 +614,9 @@ Furthermore, if a region is active and its
 beginning lies on an Org Mode heading,
 `custom/org-command-expand-region' to execute ORIG-FUN."
   (interactive)
-  (cond ((custom/org-at-list-paragraph) (custom/org-paragraph orig-fun args))
-	    ((region-active-p)              (custom/org-indent-region orig-fun args))
-	    (t                              (apply orig-fun args))))
+  (cond ((custom/org-relative-line-paragraph) (custom/org-paragraph orig-fun args))
+	    ((region-active-p)                    (custom/org-indent-region orig-fun args))
+	    (t                                    (apply orig-fun args))))
 
 (advice-add 'org-metaleft  :around #'custom/org-meta-arrows-h)
 (advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
@@ -516,6 +649,30 @@ function that sets `deactivate-mark' to t."
 
 ;; Do not insert newline before Org Mode headings
 (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+
+(defun custom/org-cycle (orig-fun &rest args)
+  "Conditional `org-cycle'.
+
+Default: `org-cycle'
+
+If cursor lies at `end-of-visual-line' of folded heading or list,
+move cursor to `end-of-line' of the current visual line and then
+call `org-cycle'.
+
+If cursor lies at a paragraph directly under a list item and not
+indented at the level of the previous list item, indent the paragraph."
+  (interactive)
+  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
+      (if (= (point) (custom/get-point 'end-of-visual-line))
+	  (progn (beginning-of-visual-line)
+		 (end-of-line)
+		 (apply orig-fun args))
+	(apply orig-fun args))
+    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
+	      (org-indent-line)
+      (apply orig-fun args))))
+
+(advice-add 'org-cycle :around #'custom/org-cycle)
 
 (setq org-image-actual-width nil)
 
@@ -550,74 +707,7 @@ match the indentation of the parent heading."
 
 (advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
 
-(defun custom/org-cycle (orig-fun &rest args)
-  "Conditional `org-cycle'.
-
-Default: `org-cycle'
-
-If cursor lies at `end-of-visual-line' of folded heading or list,
-move cursor to `end-of-line' of the current visual line and then
-call `org-cycle'.
-
-If cursor lies at a paragraph directly under a list item and not
-indented at the level of the previous list item, indent the paragraph."
-  (interactive)
-  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
-      (if (= (point) (custom/get-point 'end-of-visual-line))
-	  (progn (beginning-of-visual-line)
-		 (end-of-line)
-		 (apply orig-fun args))
-	(apply orig-fun args))
-    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
-	      (org-indent-line)
-      (apply orig-fun args))))
-
-(advice-add 'org-cycle :around #'custom/org-cycle)
-
-;; org-return
-(defun custom/org-return ()
-  "Conditional `org-return'."
-  (interactive)
-  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
-	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
-	    ((custom/org-at-ellipsis-l)                     (custom/org-insert-item-respect-content))
-	    ((custom/org-relative-line-list)                (org-meta-return))
-	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
-	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
-	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
-	    ((custom/org-at-ellipsis-h)                     (org-return))
-	    (t                                              (org-return t))))
-
-(define-key org-mode-map (kbd "<return>") 'custom/org-return)
-
-;; org-meta-return
-(defun custom/org-control-return ()
-  (interactive)
-  (cond ((custom/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
-	    ((custom/org-relative-line-heading)    (custom/org-insert-heading-after-subtree))
-	    ((custom/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
-	    ((custom/org-at-list-paragraph)        (custom/org-paragraph-toggle))
-	    (t                                     (custom/org-insert-heading-after-subtree))))
-
-(define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
-
-(defun custom/org-meta-return ()
-  (interactive)
-  (custom/org-insert-subheading-after-subtree))
-
-(define-key org-mode-map (kbd "M-<return>") 'custom/org-meta-return)
-
-(defun custom/org-super-return ()
-  (interactive)
-  (custom/org-insert-subheading-at-point))
-
-(define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
-
-(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
-
-(define-key org-mode-map (kbd "C-S-<return>") 'org-insert-todo-heading)
-
-(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-subheading)
+(require 'org-capture)
 
 ;; Required as of Org 9.2
 (require 'org-tempo)
@@ -628,36 +718,30 @@ indented at the level of the previous list item, indent the paragraph."
 
 ;; equations
 (tempo-define-template "latex-equation"
-		          '("#+NAME: eq:"
-			    n
-			    "\\begin{equation}" p "\\end{equation}" >)
+		          '("#+NAME: eq:" p n
+			    "\\begin{equation}" n
+			    p n
+			    "\\end{equation}" >)
 			  "<eq"
 			  "LaTeX equation template")
 
 (tempo-define-template "latex-derivation"
-		          '("#+NAME: eq:"
-			    n
-			    "\\begin{equation}"
-			    n
-			    "\\arraycolsep=3pt\\def\\arraystretch{2.25}"
-			    n
-			    "\\begin{array}{lll}" p "\\end{array}"
-			    n
+		          '("#+NAME: eq:" p n
+			    "\\begin{equation}" n
+			    "\\arraycolsep=3pt\\def\\arraystretch{2.25}" n
+			    "\\begin{array}{lll}" n
+			    p n
+			    "\\end{array}" n
 			    "\\end{equation}" >)
 			  "<de"
 			  "LaTeX derivation template")
 
 ;; figures
 (tempo-define-template "figure"
-		          '("#+NAME: fig:" p
-			    n
-			    "#+CAPTION: " p
-			    n
-			    "#+ATTR_ORG: :width 450"
-			    n
-			    "[[./"
-			    p
-			    "]]" >)
+		          '("#+NAME: fig:" p n
+			    "#+CAPTION: " p n
+			    "#+ATTR_ORG: :width 450" n
+			    "[[./" p "]]" >)
 			  "<f"
 			  "Org Mode figure template")
 
@@ -978,9 +1062,6 @@ folded."
 ;; Org Roam
 (straight-use-package 'org-roam)
 
-;; Directory
-(setq org-roam-directory "~/roam")
-
 ;; Find node
 (global-set-key (kbd "C-c n") 'org-roam-node-find)
 
@@ -1048,13 +1129,12 @@ if it was previously enabled."
       (org-roam-timestamps-mode)))
 (add-hook 'org-capture-after-finalize-hook 'custom/org-roam-timestamps-mode-back)
 
-;; Org Agenda
+;; org-agenda
 (global-set-key (kbd "C-c a") 'org-agenda)
 
-;; Set Org Agenda files
+;; org-agenda-files
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-files '("~/.emacs.d/"
-			       "/home/dfki/backlog.org")))
+  (setq org-agenda-files (append custom/org-agenda-files `(,config-directory))))
 
 (defmacro custom/org-agenda-bind (key command)
   `(with-eval-after-load 'org-agenda
@@ -1142,6 +1222,25 @@ if it was previously enabled."
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)")
 	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+
+(straight-use-package 'org-contacts)
+(require 'org-contacts)
+
+(global-set-key (kbd "C-x c") 'org-capture)
+
+(defvar custom/org-capture-contacts "* %(org-contacts-template-name)
+:PROPERTIES:
+:ADDRESS: %^{289 Cleveland St. Brooklyn, 11206 NY, USA}
+:BIRTHDAY: %^{yyyy-mm-dd}
+:EMAIL: %(org-contacts-template-email)
+:NOTE: %^{NOTE}
+:END:" "org-contacts template")
+
+(setq org-capture-templates
+   `(("c" "contact" entry
+      (file ,(nth 0 org-contacts-files))
+      ,custom/org-capture-contacts
+      :empty-lines 1)))
 
 (straight-use-package 'calfw)
 (straight-use-package 'calfw-org)

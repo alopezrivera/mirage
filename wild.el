@@ -19,8 +19,9 @@
 
 ;; startup buffers
 (defvar background-buffers
-  '("~/.emacs.d/init.el"
-    "~/.emacs.d/wild.el"))
+  (list (concat config-directory "local.el")
+        (concat config-directory "init.el")
+        (concat config-directory "wild.el")))
 
 (defun custom/spawn-startup-buffers ()
   (cl-loop for buffer in (append startup-buffers background-buffers)

@@ -19,6 +19,7 @@
 	custom/smart-comment
 	custom/smart-mouse-rectangle
 	dired-flag-file-deletion
+	dired-next-line
 	electric-newline-and-maybe-indent
 	elpy-nav-backward-indent
 	elpy-nav-forward-indent
@@ -60,6 +61,7 @@
 	custom/swiper-multiple-cursors
 	dabbrev-expand
 	dired-do-flagged-delete
+	end-of-buffer
 	mouse-drag-mode-line
 	mouse-drag-vertical-line
 	mouse-save-then-kill
@@ -69,7 +71,11 @@
 	org-metadown
 	org-open-at-mouse
 	suspend-frame
+	pixel-scroll-precision
+	previous-buffer
+	split-and-follow-horizontally
 	swiper
+	swiper-isearch
 	swiper-mc
 	widen
 	))

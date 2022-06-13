@@ -7,6 +7,49 @@
 #+title:Dotfiles
 #+PROPERTY: header-args :results none
 
+* .xkb
+
+References:
+- https://unix.stackexchange.com/questions/65507/use-setxkbmap-to-swap-the-left-shift-and-left-control/65600#65600
+
+** Keymap
+
+Generate ~xkb_keymap~,
+
+#+begin_src shell
+
+setxkbmap -print > ~/.xkb/keymap/mykbd
+
+#+end_src
+
+and include call to customization script (~capsctrl~ in this case).
+
+#+begin_src shell :tangle ~/.xkb/keymap/mykbd :mkdirp yes
+
+xkb_keymap {
+	xkb_keycodes  { include "evdev+aliases(qwerty)"	};
+	xkb_types     { include "complete"	};
+	xkb_compat    { include "complete"	};
+	xkb_symbols   { include "pc+gb+inet(evdev)+custom(capsctrl)"	};
+	xkb_geometry  { include "pc(pc105)"	};
+};
+
+#+end_src
+
+** Script
+
+Importantly, all modifier keys must be listed as such.
+
+#+begin_src shell :tangle ~/.xkb/symbols/custom :mkdirp yes
+
+partial modifier_keys
+xkb_symbols "capsctrl" {
+    replace key <CAPS> { [ Control_L ] };
+    modifier_map Control { <CAPS>, <LCTL>, <RCTL> };
+};
+
+#+end_src
+
 * .bashrc
 ** default
 
@@ -133,6 +176,7 @@ fi
 export PATH="/home/dfki.uni-bremen.de/alopezrivera/.local/bin:$PATH"
 
 #+end_src
+
 ** xkb
 
 #+begin_src bash :tangle ~/.bashrc
@@ -141,47 +185,12 @@ xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 
 #+end_src
 
-* .xkb
+** WSL 2
 
-References:
-- https://unix.stackexchange.com/questions/65507/use-setxkbmap-to-swap-the-left-shift-and-left-control/65600#65600
+#+begin_src bash :tangle nil
 
-** ~xkb_keymap~
-
-Generate,
-
-#+begin_src shell
-
-setxkbmap -print > ~/.xkb/keymap/mykbd
+# run GUI applications using X Server
+export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0 # in WSL 2
+export LIBGL_ALWAYS_INDIRECT=1
 
 #+end_src
-
-and include call to customization script (~capsctrl~ in this case).
-
-#+begin_src shell :tangle ~/.xkb/keymap/mykbd :mkdirp yes
-
-xkb_keymap {
-	xkb_keycodes  { include "evdev+aliases(qwerty)"	};
-	xkb_types     { include "complete"	};
-	xkb_compat    { include "complete"	};
-	xkb_symbols   { include "pc+gb+inet(evdev)+custom(capsctrl)"	};
-	xkb_geometry  { include "pc(pc105)"	};
-};
-
-#+end_src
-
-** Script
-
-Importantly, all modifier keys must be listed as such.
-
-#+begin_src shell :tangle ~/.xkb/symbols/custom :mkdirp yes
-
-partial modifier_keys
-xkb_symbols "capsctrl" {
-    replace key <CAPS> { [ Control_L ] };
-    modifier_map Control { <CAPS>, <LCTL>, <RCTL> };
-};
-
-#+end_src
-
-

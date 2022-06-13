@@ -2,29 +2,50 @@
 
 ;; Initial frame size
 (add-to-list 'default-frame-alist '(height . 50))
-(add-to-list 'default-frame-alist '(width  . 60))
+(add-to-list 'default-frame-alist '(width  . 70))
+
+;; background buffers
+  (defvar background-buffers
+    (list (concat config-directory "local.el")
+	      (concat config-directory "demo.org")
+	      (concat config-directory "ui.org")
+	      (concat config-directory "wild.el")
+	      (concat config-directory "org.org")
+	      (concat config-directory "ide.org")
+	      (concat config-directory "init.org")
+	      (concat config-directory "home.org")
+	      (concat config-directory "theme.org")
+	      (concat config-directory "system.org")
+	      (concat config-directory "dotfiles.org")
+	      (concat config-directory "backlog.org")
+	      (concat config-directory "org-diary.org")
+	      (concat config-directory "org-paragraph.org")))
+
+(defvar spawn-startup-buffers t
+  "Whether to spawn spawn the buffers in the `startup-buffers' list after initialization")
+
+(defvar spawn-background-buffers nil
+  "Whether to spawn spawn the buffers in the `background-buffers' list after initialization")
+  
+  (defun custom/spawn-buffers (buffer-list)
+    "Spawn buffers in buffer list"
+    (cl-loop for buffer in buffer-list
+	     collect (find-file-noselect buffer)))
+
+  (defun custom/spawn-startup-buffers ()
+    (custom/spawn-buffers startup-buffers))
+
+  (defun custom/spawn-background-buffers ()
+    (custom/spawn-buffers background-buffers))
+
+  (if spawn-startup-buffers
+      (add-hook 'after-init-hook #'custom/spawn-startup-buffers))
+
+  (if spawn-background-buffers
+      (add-hook 'after-init-hook #'custom/spawn-background-buffers))
 
 ;; Inhibit startup message
 (setq inhibit-startup-message t)
-
-;; Background buffers
-(defvar background-buffers
-  '("~/.emacs.d/ui.org"
-    "~/.emacs.d/wild.el"
-    "~/.emacs.d/org.org"
-    "~/.emacs.d/ide.org"
-    "~/.emacs.d/init.org"
-    "~/.emacs.d/home.org"
-    "~/.emacs.d/theme.org"
-    "~/.emacs.d/backlog.org"
-    "~/.emacs.d/org-diary.org"
-    "~/.emacs.d/org-paragraph.org"))
-
-(defun custom/spawn-startup-buffers ()
-  (cl-loop for buffer in (append startup-buffers background-buffers)
-	   collect (find-file-noselect buffer)))
-
-(add-hook 'after-init-hook #'custom/spawn-startup-buffers)
 
 ;; Config directory
 (setq config-directory "~/.emacs.d/")
@@ -49,6 +70,8 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
+(straight-use-package 'el-patch)
+
 ;; Buffer evaluation
 (global-set-key (kbd "C-x e") 'eval-buffer)
 
@@ -59,10 +82,14 @@
 
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
-(defun custom/window-resize-fraction (fr)
+(defun custom/window-resize (width)
+  (window-resize nil (- width (window-width)) t))
+
+(defun custom/window-resize-fraction (fr &optional min)
   "Resize window to a fraction of the frame width."
   (interactive)
-  (window-resize nil (- (truncate (* fr (frame-width))) (window-width)) t))
+  (let ((width (max (if min min 0) (truncate (* fr (frame-width))))))
+    (window-resize nil (- width (window-width)) t)))
 
 (defun custom/regex-match-patterns (string patterns)
   "Return t if all provided regex PATTERNS
@@ -102,23 +129,28 @@ Optionally, `args' may be given as input to be passed
 to the query at execution."
   (let ((number (or number 0)))
     (save-excursion
-      (beginning-of-visual-line (+ number 1))
+      (beginning-of-visual-line)
+      (beginning-of-line-text (+ number 1))
       (apply query args))))
 
 (defun custom/relative-line-regex (pattern &optional number)
-  (custom/relative-line 'looking-at-p number pattern))
+  (let ((number (or number 0)))
+    (save-excursion
+      (beginning-of-line-text (+ number 1))
+      (setq line (buffer-substring-no-properties (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line))))
+    (string-match-p pattern line)))
 
 (defun custom/relative-line-list (&optional number)
   (custom/relative-line-regex "^[[:blank:]]*\\([0-9]+[.\\)]\\{1\\}\\|[-+*]\\{1\\}\\)[[:blank:]]+.*$" number))
 
 (defun custom/relative-line-empty (&optional number)
-  (custom/relative-line-regex "[[:space:]]+$" number))
+  (custom/relative-line-regex "^[[:space:]]+$" number))
 
 (defun custom/relative-line-wrapped ()
   (> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)))
 
 (defun custom/relative-line-indented (&optional number)
-  (custom/relative-line-regex "[[:blank:]]+.*$" number))
+  (custom/relative-line-regex "^[[:blank:]]+.*$" number))
 
 (defun custom/relative-line-list-ordered (&optional number)
   (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+.*$" number))
@@ -128,7 +160,7 @@ to the query at execution."
 
 (defun custom/region-blank (&optional beg end)
   (let ((beg (or beg (region-beginning)))
-	  (end (or end (region-end))))
+	      (end (or end (region-end))))
     (setq region (buffer-substring-no-properties beg end))
     (string-match "\\`[[:space:]]*\\'$" region)))
 
@@ -156,6 +188,12 @@ to the query at execution."
   (setq window (prin1-to-string (get-buffer-window (current-buffer))))
   (string-match "^[^0-9]*\\([0-9]+\\).*$" window)
   (match-string 1 window))
+
+(defun custom/find-buffer-by-file-name (file)
+  (cl-loop for buffer in (buffer-list)
+	        if (string-equal (buffer-name buffer) (file-name-nondirectory file))
+	           return buffer
+		finally return nil))
 
 (defun custom/get-point (command &rest args)
   (interactive)
@@ -238,8 +276,8 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
       (cond ((and (region-active-p) (not (custom/region-blank))) (custom/delete-hungry))
-	          ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-		  (t                                                   (delete-backward-char 1)))
+	        ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+		(t                                                   (delete-backward-char 1)))
     (delete-backward-char 1)))
 
 (global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
@@ -272,21 +310,21 @@ kill ring."
 (require 'multiple-cursors)
 
 ;; mc-lists
-(setq mc/list-file "~/.emacs.d/mc-lists.el")
+(setq mc/list-file (concat config-directory "mc-lists.el"))
 
 ;; Create cursors
-(global-set-key (kbd "C-.")         'mc/mark-next-like-this)
-(global-set-key (kbd "C-;")         'mc/mark-previous-like-this)
-(global-set-key (kbd "C-<mouse-1>") 'mc/add-cursor-on-click)
+(global-set-key (kbd "C-.")         #'mc/mark-next-like-this)
+(global-set-key (kbd "C-;")         #'mc/mark-previous-like-this)
+(global-set-key (kbd "C-<mouse-1>") #'mc/add-cursor-on-click)
 (global-unset-key [C-down-mouse-1]) ; necessary
 
 ;; Return as usual
-(define-key mc/keymap (kbd "<return>")       'electric-newline-and-maybe-indent)
+(define-key mc/keymap (kbd "<return>")       #'electric-newline-and-maybe-indent)
 
 ;; Exit multiple-cursors-mode
-(define-key mc/keymap (kbd "<escape>")       'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<down-mouse-1>")  nil) ; necessary
+(define-key mc/keymap (kbd "<escape>")       #'multiple-cursors-mode)
+(define-key mc/keymap (kbd "<mouse-1>")      #'multiple-cursors-mode)
+(define-key mc/keymap (kbd "<down-mouse-1>")   nil) ; necessary
 
 (defun custom/smart-comment ()
   "If a region is active, comment out all lines in the
@@ -314,7 +352,7 @@ not empty. In any case, advance to next line."
     ;; Move to the beginning of the next line
     (beginning-of-line-text 2)))
 
-(global-set-key (kbd "M-;") #'custom/smart-comment)
+(global-set-key (kbd "C-x ;") #'custom/smart-comment)
 
 ;; Ensure rectangular-region-mode is loaded
 (require 'rectangular-region-mode)
@@ -348,8 +386,10 @@ not empty. In any case, advance to next line."
 (define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
 
 ;; Exit rectangular-region-mode
-(define-key rectangular-region-mode-map (kbd "<escape>") 'rrm/keyboard-quit)
-(define-key rectangular-region-mode-map (kbd "<mouse-1>") 'rrm/keyboard-quit)
+(define-key rectangular-region-mode-map (kbd "<escape>") #'rrm/keyboard-quit)
+(define-key rectangular-region-mode-map (kbd "<mouse-1>") #'rrm/keyboard-quit)
+
+(tab-bar-mode 1)
 
 ;; Disable visible scroll bar
 (scroll-bar-mode -1)
@@ -393,15 +433,16 @@ not empty. In any case, advance to next line."
 (add-hook 'prog-mode-hook 'olivetti-mode)
 
 (defun custom/hide-modeline ()
+  "Hide `modeline' in current buffer"
   (interactive)
   (if mode-line-format
       (setq mode-line-format nil)
-    (doom-modeline-mode)))
+    (funcall modeline)))
 
 (global-set-key (kbd "M-m") #'custom/hide-modeline)
 
 ;; Display line numbers by side
-(global-set-key (kbd "C-c l") 'global-display-line-numbers-mode)
+(global-set-key (kbd "C-c l") #'display-line-numbers-mode)
 
 ;; Display column number
 (column-number-mode)
@@ -410,6 +451,13 @@ not empty. In any case, advance to next line."
 (require 'workgroups)
 
 (setq wg-prefix-key (kbd "C-c w"))
+
+;; save commands
+(define-key wg-map (kbd "s")   #'wg-save)
+(define-key wg-map (kbd "C-s") #'wg-update-all-workgroups-and-save)
+
+;; suppress animation
+(setq wg-morph-on nil)
 
 (workgroups-mode 1)
 
@@ -469,44 +517,43 @@ buffer is already narrowed, widen buffer."
   (minibuffer-keyboard-quit))
 
 ;; M-RET: multiple-cursors-mode
-(define-key swiper-map (kbd "M-<return>") 'custom/swiper-multiple-cursors)
+(define-key swiper-map (kbd "M-<return>") #'custom/swiper-multiple-cursors)
 
-(global-set-key (kbd "C-c SPC") 'whitespace-mode)
+(global-set-key (kbd "C-c SPC") #'whitespace-mode)
 
 ;; ivy
 (straight-use-package 'ivy)
-(straight-use-package 'counsel)
-(straight-use-package 'ivy-rich)
 (require 'ivy)
-(require 'counsel)
-(require 'ivy-rich)
-
-(let ((map ivy-minibuffer-map))
-  (dolist (pair '(("<tab>" . ivy-alt-done)
-		  ("<up>"  . ivy-previous-line-or-history)
-		  ("C-l"   . ivy-alt-done)
-		  ("C-j"   . ivy-next-line)
-		  ("C-k"   . ivy-previous-line)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-
-(let ((map ivy-switch-buffer-map))
-  (dolist (pair '(("C-k"   . ivy-previous-line)
-		  ("C-l"   . ivy-done)
-		  ("C-d"   . ivy-switch-buffer-kill)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-
-(let ((map ivy-reverse-i-search-map))
-  (dolist (pair '(("C-k"   . ivy-previous-line)
-		  ("C-d"   . ivy-reverse-i-search-kill)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-
-(global-set-key (kbd "<menu>") 'counsel-M-x)
 
 (ivy-mode 1)
-(ivy-rich-mode 1)
 
-;; Override `custom/nimble-delete-backward' in Ivy minibuffers
-(define-key ivy-minibuffer-map (kbd "<backspace>") 'ivy-backward-delete-char)
+;; minibuffer bindings
+(let ((map ivy-minibuffer-map))
+  (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
+			        ("<up>"        . ivy-previous-line-or-history)
+				("C-l"         . ivy-alt-done)
+				("C-j"         . ivy-next-line)
+				("C-k"         . ivy-previous-line)
+				("<backspace>" . ivy-backward-delete-char))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+;; switch-buffer bindings
+(let ((map ivy-switch-buffer-map))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+ 			        ("C-l"   . ivy-done)
+				("C-d"   . ivy-switch-buffer-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+;; reverse-i-search bindings
+(let ((map ivy-reverse-i-search-map))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+			        ("C-d"   . ivy-reverse-i-search-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+(straight-use-package 'counsel)
+(require 'counsel)
+
+(global-set-key (kbd "<menu>") #'counsel-M-x)
 
 ;; Command suggestions
 (straight-use-package 'which-key)
@@ -519,13 +566,13 @@ buffer is already narrowed, widen buffer."
 ;; Replace description key bindings by their helpful equivalents
 (straight-use-package 'helpful)
 
-(setq counsel-describe-function-function #'helpful-callable)
-(setq counsel-describe-variable-function #'helpful-variable)
+(setq counsel-describe-function-function  #'helpful-callable)
+(setq counsel-describe-variable-function  #'helpful-variable)
 
-(global-set-key [remap describe-function] 'helpful-function)
-(global-set-key [remap describe-command]  'helpful-command)
-(global-set-key [remap describe-variable] 'helpful-variable)
-(global-set-key [remap describe-key]      'helpful-key)
+(global-set-key [remap describe-function] #'helpful-function)
+(global-set-key [remap describe-command]  #'helpful-command)
+(global-set-key [remap describe-variable] #'helpful-variable)
+(global-set-key [remap describe-key]      #'helpful-key)
 
 ;; command-log-mode
 (straight-use-package 'command-log-mode)
@@ -569,7 +616,7 @@ of line."
       (end-of-visual-line)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<end>") 'custom/double-end)
+(global-set-key (kbd "<end>") #'custom/double-end)
 
 (defun custom/home ()
   "Conditional homing. 
@@ -610,7 +657,7 @@ If the current line is a wrapped visual line, home to
       (custom/home)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<home>") 'custom/double-home)
+(global-set-key (kbd "<home>") #'custom/double-home)
 
 (defun custom/previous-line (cond)
   "If a region is active and the current mode is derived 
@@ -634,41 +681,43 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
     (set-register 'region-up-register nil)
     (push-mark end)))
 
-(global-set-key (kbd "S-<home>") 'custom/region-up-register)
+(global-set-key (kbd "S-<home>") #'custom/region-up-register)
 
 (defun custom/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
   (interactive)
-  (if (custom/relative-line-list-ordered)
-      (progn (beginning-of-line)
-	           (re-search-forward "^[[:blank:]]*[1-9.)]+[[:blank:]]\\{1\\}"))
-    (apply orig-fun args)))
+  (let ((ordered-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}"))
+    (if (save-excursion (beginning-of-line)
+			    (looking-at-p ordered-line-regex))
+	    (progn (beginning-of-line)
+		   (re-search-forward ordered-line-regex))
+      (apply orig-fun args))))
 
 (advice-add 'beginning-of-line-text :around #'custom/beginning-of-line-text)
-
-;; Counsel buffer switching
-(global-set-key (kbd "C-x b") 'counsel-switch-buffer)
 
 ;; Split and follow
 (defun split-and-follow-horizontally ()
   (interactive)
   (split-window-below)
   (other-window 1))
-(global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+(global-set-key (kbd "C-x 2") #'split-and-follow-horizontally)
 
 (defun split-and-follow-vertically ()
   (interactive)
   (split-window-right)
   (other-window 1))
-(global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+(global-set-key (kbd "C-x 3") #'split-and-follow-vertically)
 
 ;; ace-window
+(straight-use-package 'ace-window)
+(require 'ace-window)
+
 (global-set-key (kbd "C-x o") 'ace-window)
 
 ;; winner mode
 (winner-mode)
 
-(global-set-key (kbd "C-x -") 'balance-windows)
+(global-set-key (kbd "C-x -") #'balance-windows)
 
 (setq split-width-threshold 70)
 
@@ -697,10 +746,10 @@ before the execution of any command.")
 	      (progn (select-window target)
 		     (setq custom/window-previous current)))))
 
-(global-set-key (kbd "C-c p") 'custom/goto-window-previous)
+(global-set-key (kbd "C-c p") #'custom/goto-window-previous)
 
 ;; Create new frame
-(global-set-key (kbd "C-S-n") 'make-frame-command)
+(global-set-key (kbd "C-S-n") #'make-frame-command)
 
 ;; Record last sent message
 (defvar last-message nil)
@@ -759,12 +808,107 @@ kill the current buffer and delete its window."
       (custom/escape-window-or-region)))
   (put this-command 'custom/last-call-time (current-time)))
 
-(global-set-key (kbd "<escape>") 'custom/double-escape)
+(global-set-key (kbd "<escape>") #'custom/double-escape)
 
 ;; projectile
 (straight-use-package 'projectile)
+(require 'projectile)
+
+(projectile-mode)
+
+;; command map prefix
+(define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
+
+(straight-use-package 'treemacs)
+(require 'treemacs)
+
+(setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+      treemacs-deferred-git-apply-delay        0.5
+      treemacs-directory-name-transformer      #'identity
+      treemacs-display-in-side-window          t
+      treemacs-eldoc-display                   'simple
+      treemacs-file-event-delay                5000
+      treemacs-file-extension-regex            treemacs-last-period-regex-value
+      treemacs-file-follow-delay               0.2
+      treemacs-file-name-transformer           #'identity
+      treemacs-follow-after-init               t
+      treemacs-expand-after-init               t
+      treemacs-find-workspace-method           'find-for-file-or-pick-first
+      treemacs-git-command-pipe                ""
+      treemacs-goto-tag-strategy               'refetch-index
+      treemacs-indentation                     2
+      treemacs-indentation-string              " "
+      treemacs-is-never-other-window           nil
+      treemacs-max-git-entries                 5000
+      treemacs-missing-project-action          'ask
+      treemacs-move-forward-on-expand          nil
+      treemacs-no-png-images                   nil
+      treemacs-no-delete-other-windows         t
+      treemacs-project-follow-cleanup          nil
+      treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+      treemacs-position                        'left
+      treemacs-read-string-input               'from-child-frame
+      treemacs-recenter-distance               0.1
+      treemacs-recenter-after-file-follow      nil
+      treemacs-recenter-after-tag-follow       nil
+      treemacs-recenter-after-project-jump     'always
+      treemacs-recenter-after-project-expand   'on-distance
+      treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+      treemacs-show-cursor                     nil
+      treemacs-show-hidden-files               t
+      treemacs-silent-filewatch                nil
+      treemacs-silent-refresh                  nil
+      treemacs-sorting                         'alphabetic-asc
+      treemacs-select-when-already-in-treemacs 'move-back
+      treemacs-space-between-root-nodes        t
+      treemacs-tag-follow-cleanup              t
+      treemacs-tag-follow-delay                1.5
+      treemacs-text-scale                      nil
+      treemacs-user-mode-line-format           nil
+      treemacs-user-header-line-format         nil
+      treemacs-wide-toggle-width               70
+      treemacs-width                           35
+      treemacs-width-increment                 1
+      treemacs-width-is-initially-locked       t
+      treemacs-workspace-switch-cleanup        nil)
+
+;; The default width and height of the icons is 22 pixels. If you are
+;; using a Hi-DPI display, uncomment this to double the icon size.
+;; (treemacs-resize-icons 44)
+
+(treemacs-follow-mode t)
+(treemacs-filewatch-mode t)
+(treemacs-fringe-indicator-mode 'always)
+
+(pcase (cons (not (null (executable-find "git")))
+             (not (null treemacs-python-executable)))
+  (`(t . t)
+   (treemacs-git-mode 'deferred))
+  (`(t . _)
+   (treemacs-git-mode 'simple)))
+
+(treemacs-hide-gitignored-files-mode nil)
+
+(cl-loop for binding in '(("M-0"       . treemacs-select-window)
+			      ("C-x t 1"   . treemacs-delete-other-windows)
+			      ("C-x t t"   . treemacs)
+			      ("C-x t d"   . treemacs-select-directory)
+			      ("C-x t B"   . treemacs-bookmark)
+			      ("C-x t C-t" . treemacs-find-file)
+			      ("C-x t M-t" . treemacs-find-tag))
+	 collect (global-set-key (kbd (car binding)) (cdr binding)))
+
+(straight-use-package 'treemacs-icons-dired)
+
+(straight-use-package 'treemacs-projectile)
+
+(straight-use-package 'treemacs-tab-bar)
+
+(straight-use-package 'treemacs-magit)
 
 (straight-use-package 'magit)
+
+(global-set-key (kbd "C-x g") #'magit-status)
 
 (require 'ide (concat config-directory "ide.el"))
 
@@ -774,6 +918,21 @@ kill the current buffer and delete its window."
 (defun custom/dos2unix (&optional dir)
   (let ((default-directory (or dir (file-name-directory buffer-file-name))))
     (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
+
+(defun custom/reload-from-disk (&optional buffer)
+  "Revert BUFFER contents to the contents of its
+file saved on disk, ignoring the auto-save file.
+If the buffer has unsaved modifications, prompt
+the user for confirmation."
+  (interactive)
+  (let ((buffer (or buffer (current-buffer))))
+    (save-window-excursion
+      (switch-to-buffer buffer)
+      (if (not (buffer-modified-p))
+	     (revert-buffer t t)
+	   (revert-buffer t nil)))))
+
+(global-set-key (kbd "C-c r") #'custom/reload-from-disk)
 
 (require 'ui (concat config-directory "ui.el"))
 
