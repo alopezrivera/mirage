@@ -51,7 +51,26 @@
 ;; magit
 (straight-use-package 'magit)
 
-;; multiple cursors
+;; winner
+(winner-mode)
+
+;; workgroups
+(straight-use-package 'workgroups)
+(require 'workgroups)
+(setq wg-prefix-key (kbd "C-c w"))
+(workgroups-mode 1)
+
+;; desktop
+(desktop-save-mode 1)
+
+;; treemacs
+(straight-use-package 'treemacs)
+(global-set-key (kbd "C-x t t") 'treemacs)
+
+;; ide
+(require 'ide (concat config-directory "ide.el"))
+
+;; multiple cursors ------------------------------------------------------------
 (straight-use-package 'multiple-cursors)
 (require 'multiple-cursors)
 
@@ -72,39 +91,33 @@
 (define-key mc/keymap (kbd "<mouse-1>")      'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<down-mouse-1>")  nil) ; necessary
 
-;; ivy
+;; ivy -------------------------------------------------------------------------
 (straight-use-package 'ivy)
-(straight-use-package 'counsel)
-(straight-use-package 'ivy-rich)
 (require 'ivy)
-(require 'counsel)
-(require 'ivy-rich)
-
-(let ((map ivy-minibuffer-map))
-  (dolist (pair '(("<tab>" . ivy-alt-done)
-		  ("<up>"  . ivy-previous-line-or-history)
-		  ("C-l"   . ivy-alt-done)
-		  ("C-j"   . ivy-next-line)
-		  ("C-k"   . ivy-previous-line)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-
-(let ((map ivy-switch-buffer-map))
-  (dolist (pair '(("C-k"   . ivy-previous-line)
-		  ("C-l"   . ivy-done)
-		  ("C-d"   . ivy-switch-buffer-kill)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-
-(let ((map ivy-reverse-i-search-map))
-  (dolist (pair '(("C-k"   . ivy-previous-line)
-		  ("C-d"   . ivy-reverse-i-search-kill)))
-    (define-key map (kbd (car pair)) (cdr pair))))
-
-(global-set-key (kbd "<menu>") 'counsel-M-x)
-
 (ivy-mode 1)
-(ivy-rich-mode 1)
 
-;; swiper
+;; minibuffer bindings
+(let ((map ivy-minibuffer-map))
+  (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
+			        ("<up>"        . ivy-previous-line-or-history)
+				("C-l"         . ivy-alt-done)
+				("C-j"         . ivy-next-line)
+				("C-k"         . ivy-previous-line)
+				("<backspace>" . ivy-backward-delete-char))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+;; switch-buffer bindings
+(let ((map ivy-switch-buffer-map))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+ 			        ("C-l"   . ivy-done)
+				("C-d"   . ivy-switch-buffer-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+;; reverse-i-search bindings
+(let ((map ivy-reverse-i-search-map))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+			        ("C-d"   . ivy-reverse-i-search-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+;; swiper ----------------------------------------------------------------------
 (straight-use-package 'swiper)
 (require 'swiper)
 
@@ -125,21 +138,7 @@
   (minibuffer-keyboard-quit))
 (define-key swiper-map (kbd "M-<return>") 'custom/swiper-multiple-cursors)
 
-;; winner
-(winner-mode)
-
-;; workgroups
-(straight-use-package 'workgroups)
-(require 'workgroups)
-
-(setq wg-prefix-key (kbd "C-c w"))
-
-(workgroups-mode 1)
-
-;; desktop
-(desktop-save-mode 1)
-
-;; org
+;; org -------------------------------------------------------------------------
 (setq org-src-tab-acts-natively        t)
 (setq org-src-preserve-indentation     nil)
 (setq org-edit-src-content-indentation 0)
@@ -161,8 +160,5 @@
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
-
-;; ide
-(require 'ide (concat config-directory "ide.el"))
 
 (provide 'wild)
