@@ -52,7 +52,7 @@ xkb_symbols "capsctrl" {
 
 ** Load
 
-#+begin_src emacs-lisp
+#+begin_src bash
 
 xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 
