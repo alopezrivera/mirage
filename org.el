@@ -991,16 +991,13 @@ matches the current theme."
   "Initiate a bash/sh session named SESSION according to PARAMS."
   (org-babel-sh-initiate-session session _params))
 
-;; Trigger org-babel-tangle when saving any org files in the config directory
-(setq source-regex (list ".org" (replace-regexp-in-string "~" (getenv "HOME") config-directory)))
-
-(defun custom/org-babel-tangle-config()
+(defun custom/org-babel-autotangle()
   "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
-     (if (custom/regex-match-patterns (expand-file-name buffer-file-name) source-regex)
-     ;; Tangle ommitting confirmation
-     (let ((org-confirm-babel-evaluate nil)) (org-babel-tangle)))
-)
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-tangle-config)))
+     (if (string-match (concat (getenv "HOME") "/.emacs.d/.*.org$") (expand-file-name buffer-file-name))
+     (let ((org-confirm-babel-evaluate nil))
+       (org-babel-tangle))))
+
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-autotangle)))
 
 (defun custom/org-fix-bleed-end-line-block (from to flag spec)
   "Toggle fontification of last char of block end lines when cycling.
@@ -1133,12 +1130,8 @@ if it was previously enabled."
 (global-set-key (kbd "C-c a") 'org-agenda)
 
 ;; org-agenda-files
-(with-eval-after-load 'org-agenda
-  (setq org-agenda-files (append custom/org-agenda-files `(,config-directory))))
-
-(defmacro custom/org-agenda-bind (key command)
-  `(with-eval-after-load 'org-agenda
-       (define-key org-agenda-mode-map (kbd ,key) ,command)))
+(setq org-agenda-files (append org-agenda-files
+			       `(,config-directory)))
 
 ;; Tag indentation
 (setq org-tags-column 70)
@@ -1148,7 +1141,7 @@ if it was previously enabled."
   (interactive)
   (org-agenda-todo 'done))
 
-(custom/org-agenda-bind "d" 'custom/org-agenda-todo-done)
+(define-key org-agenda-mode-map (kbd "d") 'custom/org-agenda-todo-done)
 
 ;; Configure custom agenda views
 (setq org-agenda-custom-commands
@@ -1201,8 +1194,6 @@ if it was previously enabled."
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
 (setq org-log-into-drawer t)
-
-(custom/org-agenda-bind "<tab>" 'org-agenda-recenter)
 
 (setq org-tag-alist
       '((:startgroup)

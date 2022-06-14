@@ -204,20 +204,6 @@
 #+end_src
 
 *** Queries
-**** regex-match-patterns
-
-#+begin_src emacs-lisp
-
-(defun custom/regex-match-patterns (string patterns)
-  "Return t if all provided regex PATTERNS
-(provided as a list) match STRING."
-  (cl-loop for pattern in patterns
-	        if (not (string-match pattern string))
-		   return nil
-		finally return t))
-
-#+end_src
-
 **** regex-match-count
 
 #+begin_src emacs-lisp
