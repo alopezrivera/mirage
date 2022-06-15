@@ -3,6 +3,8 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+	Buffer-menu-delete
+	Buffer-menu-execute
 	beginning-of-visual-line
 	custom/del-backward
 	custom/double-end
@@ -26,6 +28,7 @@
 	end-of-visual-line
 	eval-last-sexp
 	ignore
+	indent-for-tab-command
 	keyboard-escape-quit
 	kill-rectangle
 	kill-region
@@ -70,10 +73,10 @@
 	org-babel-tangle
 	org-metadown
 	org-open-at-mouse
-	suspend-frame
 	pixel-scroll-precision
 	previous-buffer
 	split-and-follow-horizontally
+	suspend-frame
 	swiper
 	swiper-isearch
 	swiper-mc
