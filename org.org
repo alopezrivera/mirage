@@ -970,6 +970,9 @@ one character."
 
 **** TODO Backward
 
+- bullets with extra space between marker and text
+   -    no action
+
 - if at beginning of empty heading and a heading lies below
    - bring next heading to level of current one
       - delete newline + stars of the next heading
