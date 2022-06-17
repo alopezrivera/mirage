@@ -55,17 +55,52 @@ sudo update-alternatives --config emacs
 #+end_src
 
 * LaTeX
-** Debian
+** TeX Live
+*** Debian
 
-#+begin_src emacs-lisp
+#+begin_src shell
 
 sudo apt install texlive
 sudo apt install texlive-xetex
 
 #+end_src
 
-** Vanilla
+*** Vanilla
 
 - https://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
+
+** latexmk
+
+#+begin_src shell
+
+sudo apt-get install latexmk
+
+#+end_src
+
+* TODO Sphinx
+
+- python3-sphinx version <4 (master_doc vs root_doc issue)
+   - seems to work in GitHub actions with Ubuntu 18, installing with pip
+
+#+begin_src shell
+
+sudo apt install python3-sphinx
+
+;; LaTeX
+sudo apt install texlive-luatex
+sudo apt install texlive-fonts-extra-links
+
+;; themes
+pip install sphinx-rtd-theme
+
+#+end_src
+
+** better-apidoc
+
+#+begin_src shell
+
+pip install better-apidoc
+
+#+end_src
 
 

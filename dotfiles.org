@@ -7,6 +7,11 @@
 #+title:Dotfiles
 #+PROPERTY: header-args :results none
 
+* references
+
+- https://evanhahn.com/a-decade-of-dotfiles/
+
+
 * .xkb
 
 References:
@@ -52,7 +57,7 @@ xkb_symbols "capsctrl" {
 
 ** Load
 
-#+begin_src bash
+#+begin_src shell
 
 xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 
