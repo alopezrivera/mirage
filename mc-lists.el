@@ -80,5 +80,6 @@
 	swiper
 	swiper-isearch
 	swiper-mc
+	treemacs-leftclick-action
 	widen
 	))
