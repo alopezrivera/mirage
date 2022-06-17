@@ -1806,7 +1806,7 @@ folded."
 
 ;; Suppress security confirmation when evaluating code
 (defun my-org-confirm-babel-evaluate (lang body)
-  (not (member lang '("emacs-lisp" "python"))))
+  (not (member lang '("emacs-lisp" "python" "shell" "bash"))))
 
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
