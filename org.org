@@ -841,6 +841,8 @@ ellipsis in the first line under the heading."
 
 **** TODO [#A] C-return
 
+- at ellipsis -> doesn't work
+
 - on non-empty line
    - insert heading at line
 
