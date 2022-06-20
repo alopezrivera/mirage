@@ -34,6 +34,7 @@
 	kill-region
 	org-babel-execute-src-block
 	org-backward-sentence
+	org-beginning-of-line
 	org-ctrl-c-ctrl-c
 	org-cycle
 	org-delete-char
@@ -80,5 +81,6 @@
 	swiper
 	swiper-isearch
 	swiper-mc
+	treemacs-leftclick-action
 	widen
 	))

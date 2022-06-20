@@ -1510,6 +1510,37 @@ kill the current buffer and delete its window."
 
 #+end_src
 
+*** Filter
+
+#+begin_src emacs-lisp
+
+(defvar custom/treemacs-ignored '(".*__pycache__.*")
+  "Files and directories ignored by treemacs")
+
+(defun custom/treemacs-ignore-filter (file _)
+  (cl-loop for ignored in custom/treemacs-ignored
+	   if (string-match ignored file)
+	      return t
+	   finally return nil))
+(push #'custom/treemacs-ignore-filter treemacs-ignored-file-predicates)
+
+#+end_src
+
+*** Bindings
+
+#+begin_src emacs-lisp
+
+(cl-loop for binding in '(("M-0"       . treemacs-select-window)
+			      ("C-x t 1"   . treemacs-delete-other-windows)
+			      ("C-x t t"   . treemacs)
+			      ("C-x t d"   . treemacs-select-directory)
+			      ("C-x t B"   . treemacs-bookmark)
+			      ("C-x t C-t" . treemacs-find-file)
+			      ("C-x t M-t" . treemacs-find-tag))
+	 collect (global-set-key (kbd (car binding)) (cdr binding)))
+
+#+end_src
+
 *** Settings
 
 #+begin_src emacs-lisp
@@ -1580,21 +1611,6 @@ kill the current buffer and delete its window."
    (treemacs-git-mode 'simple)))
 
 (treemacs-hide-gitignored-files-mode nil)
-
-#+end_src
-
-*** Bindings
-
-#+begin_src emacs-lisp
-
-(cl-loop for binding in '(("M-0"       . treemacs-select-window)
-			      ("C-x t 1"   . treemacs-delete-other-windows)
-			      ("C-x t t"   . treemacs)
-			      ("C-x t d"   . treemacs-select-directory)
-			      ("C-x t B"   . treemacs-bookmark)
-			      ("C-x t C-t" . treemacs-find-file)
-			      ("C-x t M-t" . treemacs-find-tag))
-	 collect (global-set-key (kbd (car binding)) (cdr binding)))
 
 #+end_src
 

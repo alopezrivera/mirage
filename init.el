@@ -32,4 +32,4 @@
 (require (intern config) (concat config-directory (concat config ".el")))
 
 (provide 'init)
-(put 'narrow-to-region 'disabled nil)
+
