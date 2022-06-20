@@ -478,7 +478,6 @@ to the query at execution."
 * Editing
 ** TODO Undo
 
-- vundo
 - undo-fu
 - Back
    - Record character number in current line relative to the end of the line
@@ -487,6 +486,15 @@ to the query at execution."
       - restore visibility before undone command
       - if previous command created heading
          - undo heading creation and restore visibility
+
+#+begin_src emacs-lisp
+
+;; vundo
+(straight-use-package 'vundo)
+
+(global-set-key (kbd "C-v") #'vundo)
+
+#+end_src
 
 ** Delete
 *** Line

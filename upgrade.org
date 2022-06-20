@@ -1,13 +1,5 @@
 #+title:Upgrade
 
-* vundo
-
-#+begin_src emacs-lisp
-
-(use-package vundo
-  :quelpa ((vundo :fetcher github :repo "casouri/vundo") :upgrade t))
-
-#+end_src
 * org-download
 
 #+begin_src emacs-lisp
