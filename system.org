@@ -63,6 +63,9 @@ sudo update-alternatives --config emacs
 sudo apt install texlive
 sudo apt install texlive-xetex
 
+# fontawesome5 and other fonts
+sudo apt install texlive-fonts-extra
+
 #+end_src
 
 *** Vanilla
