@@ -1230,8 +1230,7 @@ if it was previously enabled."
 (setq org-capture-templates
    `(("c" "contact" entry
       (file ,(nth 0 org-contacts-files))
-      ,custom/org-capture-contacts
-      :empty-lines 1)))
+      ,custom/org-capture-contacts)))
 
 (straight-use-package 'calfw)
 (straight-use-package 'calfw-org)

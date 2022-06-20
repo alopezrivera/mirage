@@ -66,10 +66,6 @@
 
 (straight-use-package 'use-package)
 
-;; Customize interface code blocks
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file)
-
 (straight-use-package 'el-patch)
 
 ;; Buffer evaluation
@@ -210,6 +206,11 @@ to the query at execution."
 
 (defun <> (a b c)
   (and (> b a) (> c b)))
+
+;; vundo
+(straight-use-package 'vundo)
+
+(global-set-key (kbd "C-v") #'vundo)
 
 (defun custom/delete-line ()
   (delete-region (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line)))

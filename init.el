@@ -20,23 +20,16 @@
 
 (defvar startup-buffers '())
 
-(let ((startup (concat config-directory "local.el")))
-  (if (file-exists-p startup)
-      (load-file startup)))
+;; local.el
+(let ((local (concat config-directory "local.el")))
+  (if (file-exists-p local)
+      (load-file local)))
+
+;; custom.el
+(setq custom-file (concat config-directory "custom.el"))
+(load custom-file)
 
 (require (intern config) (concat config-directory (concat config ".el")))
 
 (provide 'init)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("c414f69a02b719fb9867b41915cb49c853489930be280ce81385ff7b327b4bf6" "02fff7eedb18d38b8fd09a419c579570673840672da45b77fde401d8708dc6b5" default)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(put 'narrow-to-region 'disabled nil)
