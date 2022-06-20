@@ -10,9 +10,16 @@
 #+latex_class_options: [twocolumn]
 -----
 
+
+- org-paragraph
+   - detection
+      - remove indentation condition
+      - integrate in org-paragraph
+
 - org-agenda
-   - fix
+   - https://github.com/rougier/emacs-gtd
    - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
+   - https://github.com/rougier/agenda
 
 - reading
    - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
@@ -77,15 +84,21 @@
 - WSL
    - https://shelper.github.io/posts/setup-emacs-in-wsl2/
 
-     
-* Improvements
-** code
+
+* Refactoring
+** relative-line
 
 - relative-line -> line
 - remove double commands
    - home
       - if at bol-text -> bol-visual
 
+** config-directory
+
+-> user-emacs-directory
+
+
+* Improvements
 ** regions
 
 - insert char -> delete region
@@ -344,6 +357,9 @@ CLOSED: [2022-05-06 Fri 17:11]
   
 * org-agenda
 
+- workflows
+   - NEXT -> TODO -> DONE
+
 - bug
 - time-log of headings
    - folding after setting element as done (time log)
@@ -564,10 +580,16 @@ CLOSED: [2022-05-06 Fri 17:11]
       - https://emacs.stackexchange.com/questions/299/how-can-i-run-an-async-process-in-the-background-without-popping-up-a-buffer
          - https://github.com/ilya-babanov/emacs-bpr
 
+* evil
+
+- evil
+   - https://github.com/emacs-evil/evil
+- references
+   - https://www.youtube.com/watch?v=Uz_0i27wYbg
+   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
+
 * navigation
 
-- evil mode
-   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 - narrow dwim
    - https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 
