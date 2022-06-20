@@ -66,7 +66,19 @@
 
 ;; treemacs
 (straight-use-package 'treemacs)
+(require 'treemacs)
+
 (global-set-key (kbd "C-x t t") 'treemacs)
+
+(defvar custom/treemacs-ignored '(".*__pycache__.*")
+  "Files and directories ignored by treemacs")
+
+(defun custom/treemacs-ignore-filter (file _)
+  (cl-loop for ignored in custom/treemacs-ignored
+	   if (string-match ignored file)
+	      return t
+	   finally return nil))
+(push #'custom/treemacs-ignore-filter treemacs-ignored-file-predicates)
 
 ;; ide
 (require 'ide (concat config-directory "ide.el"))
