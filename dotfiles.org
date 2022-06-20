@@ -199,3 +199,19 @@ export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/nu
 export LIBGL_ALWAYS_INDIRECT=1
 
 #+end_src
+
+* rc.local
+
+#+begin_src shell
+#!/bin/sh -e
+#+end_src
+
+** Emacs daemon
+
+#+begin_src shell
+
+emacs --daemon
+
+#+end_src
+
+
