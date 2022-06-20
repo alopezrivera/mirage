@@ -36,9 +36,20 @@
 
 #+begin_src emacs-lisp
 
-  (let ((local (concat config-directory "local.el")))
-    (if (file-exists-p local)
-	(load-file local)))
+;; local.el
+(let ((local (concat config-directory "local.el")))
+  (if (file-exists-p local)
+      (load-file local)))
+
+#+end_src
+
+* Custom
+
+#+begin_src emacs-lisp
+
+;; custom.el
+(setq custom-file (concat config-directory "custom.el"))
+(load custom-file)
 
 #+end_src
 

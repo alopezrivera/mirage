@@ -133,16 +133,6 @@
 
 #+end_src
 
-*** Customize interface
-
-#+begin_src emacs-lisp
-
-;; Customize interface code blocks
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file)
-
-#+end_src
-
 ** Configuration management
 *** Patching
 
