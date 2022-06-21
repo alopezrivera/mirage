@@ -100,6 +100,27 @@ overwritten, and the table is not marked as requiring realignment."
 
 #+end_src
 
+*** TODO org-indent--compute-prefixes
+
+- el-patch
+
+#+begin_src emacs-lisp
+
+(defun custom/org-indent--compute-prefixes ()
+  "Recompute line prefixes for regular text to
+match the indentation of the parent heading."
+  (dotimes (n org-indent--deepest-level)
+      (let ((indentation (if (= n 0) 0 1)))
+        (aset org-indent--text-line-prefixes
+	        n
+	        (org-add-props
+	           (concat (make-string (+ n indentation) ?\s))
+		    nil 'face 'org-indent)))))
+
+(advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
+
+                  #+end_src
+
 ** General purpose functions
 *** Queries
 **** in
@@ -1246,27 +1267,6 @@ indented at the level of the previous list item, indent the paragraph."
 (setq-default org-list-indent-offset 1)
 
 #+end_src
-
-** TODO org-indent--compute-prefixes
-
-- el-patch
-
-#+begin_src emacs-lisp
-
-(defun custom/org-indent--compute-prefixes ()
-  "Recompute line prefixes for regular text to
-match the indentation of the parent heading."
-  (dotimes (n org-indent--deepest-level)
-      (let ((indentation (if (= n 0) 0 1)))
-        (aset org-indent--text-line-prefixes
-	        n
-	        (org-add-props
-	           (concat (make-string (+ n indentation) ?\s))
-		    nil 'face 'org-indent)))))
-
-(advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
-
-                  #+end_src
 
 * Capture
 
