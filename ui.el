@@ -4,8 +4,11 @@
 ;; Fixed pitch face
 (set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 93)
 
+;; Italic
+(set-face-attribute 'italic nil :font "Victor Mono"  :height 90 :weight 'bold :slant 'italic)
+
 ;; Variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Linux Libertine"  :height 115 :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 100 :weight 'regular)
 
 ;; Titles
 (setq typeface-title "Latin Modern Roman 17")
