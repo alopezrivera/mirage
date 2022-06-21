@@ -1734,10 +1734,10 @@ the user for confirmation."
       (cl-loop for buffer in (custom/visible-buffers)
 	             collect (select-window (get-buffer-window buffer))
 	 	     if (custom/in-mode "org-mode")
-		        return (org-mode))
+		        collect (org-mode))
       (select-window window))))
 
-(add-hook 'custom/after-enable-theme-hook #'custom/org-theme-reload)
+(add-hook 'custom/load-theme-hook #'custom/org-theme-reload)
 
 #+end_src
 
