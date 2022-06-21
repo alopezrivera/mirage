@@ -12,7 +12,7 @@
 
 ;;; -*- lexical-binding: t; -*-
 
-(defvar config "wild")
+(defvar config "home")
 
 (defvar config-directory "~/.emacs.d/")
 
@@ -32,4 +32,3 @@
 (require (intern config) (concat config-directory (concat config ".el")))
 
 (provide 'init)
-
