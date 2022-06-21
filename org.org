@@ -440,7 +440,7 @@ a `custom/region-blank'."
 
 #+end_src
 
-*** TODO Outline editing
+*** Outline
 
 - deprecated cl warning
    - find dependency
@@ -464,9 +464,7 @@ DATA should have been made by `org-outline-overlay-data'."
 
 #+end_src
 
-***** TODO restore-outline-state
-
-- not working
+***** restore-outline-state
 
 #+begin_src emacs-lisp
 
@@ -1194,9 +1192,9 @@ function that sets `deactivate-mark' to t."
 (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
 #+end_src
-
 * Display
-** TODO Cycle
+** Outline
+*** TODO Cycle
 
 - bug
    - https://lists.gnu.org/archive/html/emacs-orgmode/2022-05/msg00150.html
@@ -1230,6 +1228,9 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
+*** TODO Advice
+
+- not working
 ** Figures
 
 #+begin_src emacs-lisp
