@@ -23,7 +23,7 @@
 (set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 93)
 
 ;; Variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Linux Libertine"  :height 115 :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 100 :weight 'regular)
 
 #+end_src
 
