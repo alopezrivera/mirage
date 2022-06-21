@@ -11,7 +11,7 @@
 (set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 100 :weight 'regular)
 
 ;; Titles
-(setq typeface-title "Latin Modern Roman 17")
+(setq typeface-title "Ringbearer")
 
 ;; Heading face
 (setq typeface-heading "Century Gothic")
