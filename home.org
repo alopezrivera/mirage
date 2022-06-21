@@ -1705,20 +1705,19 @@ the user for confirmation."
 
 #+end_src
 
-** Theme-agnostic enabling hook
+** Theme load hook
 
 #+begin_src emacs-lisp
 
-;; Theme-agnostic enabling hook
-(defvar custom/after-enable-theme-hook nil
-   "Normal hook run after enabling a theme.")
+;; Theme load hook
+(defvar custom/load-theme-hook nil
+   "`load-theme' hook.")
 
-(defun custom/run-after-enable-theme-hook (&rest _args)
-   "Run `after-enable-theme-hook'."
-   (run-hooks 'custom/after-enable-theme-hook))
+(defun custom/load-theme-hook (&rest _args)
+   "Run `load-theme-hook'."
+   (run-hooks 'custom/load-theme-hook))
 
-;; enable-theme
-(advice-add 'enable-theme :after #'custom/run-after-enable-theme-hook)
+(advice-add 'load-theme :after #'custom/load-theme-hook)
 
 #+end_src
 
