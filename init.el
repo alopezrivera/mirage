@@ -12,7 +12,7 @@
 
 ;;; -*- lexical-binding: t; -*-
 
-(defvar config "home")
+(defvar config "wild")
 
 (defvar config-directory "~/.emacs.d/")
 

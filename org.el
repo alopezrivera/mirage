@@ -1088,7 +1088,7 @@ folded."
 ;; enable-theme
 (advice-add 'org-roam-node-visit :after #'custom/run-org-roam-node-visit-hook)
 
-(if (file-directory-p org-roam-directory)
+(if (and (boundp 'org-roam-directory) (file-directory-p org-roam-directory))
     (org-roam-db-autosync-mode))
 
 (add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
@@ -1214,7 +1214,9 @@ if it was previously enabled."
       '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)")
 	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
-(straight-use-package 'org-contacts)
+;; org-contacts
+(straight-use-package
+ '(org-contacts :type git :host nil :repo "https://repo.or.cz/org-contacts.git"))
 (require 'org-contacts)
 
 (global-set-key (kbd "C-x c") 'org-capture)
