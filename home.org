@@ -1726,15 +1726,6 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-mode (orig-fun &rest args)
-  (if (custom/in-mode "org-mode")
-      (progn (custom/org-save-outline-state)
-	           (apply orig-fun args)
-		   (custom/org-restore-outline-state))
-    (apply orig-fun args)))
-
-(advice-add 'org-mode :around #'custom/org-mode)
-
 ;; Reload Org Mode
 (defun custom/org-theme-reload ()
   (if (custom/in-mode "org-mode")
