@@ -4,7 +4,7 @@
 
 
 
-#+title:UI
+#+title:UI 
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./ui.el :mkdirp yes
 
 * Typefaces
@@ -35,7 +35,7 @@
 #+begin_src emacs-lisp
 
 ;; Titles
-(setq typeface-title "Latin Modern Roman 17")
+(setq typeface-title "Ringbearer")
 
 ;; Heading face
 (setq typeface-heading "Century Gothic")
