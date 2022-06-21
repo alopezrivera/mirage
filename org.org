@@ -450,17 +450,17 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
+(defvar-local custom/org-outline-state nil
+  "Place for saving org outline state before reverting the buffer.")
+
+(put 'custom/org-outline-state 'permanent-local t)
+
 (defun custom/org-set-outline-overlay-data (data)
   "Create visibility overlays for all positions in DATA.
 DATA should have been made by `org-outline-overlay-data'."
   (org-with-wide-buffer
    (org-show-all)
    (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
-
-(defvar-local custom/org-outline-state nil
-  "Place for saving org outline state before reverting the buffer.")
-
-(put 'custom/org-outline-state 'permanent-local t)
 
 #+end_src
 
