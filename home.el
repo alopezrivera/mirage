@@ -815,6 +815,25 @@ kill the current buffer and delete its window."
 (straight-use-package 'treemacs)
 (require 'treemacs)
 
+(defvar custom/treemacs-ignored '(".*__pycache__.*")
+  "Files and directories ignored by treemacs")
+
+(defun custom/treemacs-ignore-filter (file _)
+  (cl-loop for ignored in custom/treemacs-ignored
+	   if (string-match ignored file)
+	      return t
+	   finally return nil))
+(push #'custom/treemacs-ignore-filter treemacs-ignored-file-predicates)
+
+(cl-loop for binding in '(("M-0"       . treemacs-select-window)
+			      ("C-x t 1"   . treemacs-delete-other-windows)
+			      ("C-x t t"   . treemacs)
+			      ("C-x t d"   . treemacs-select-directory)
+			      ("C-x t B"   . treemacs-bookmark)
+			      ("C-x t C-t" . treemacs-find-file)
+			      ("C-x t M-t" . treemacs-find-tag))
+	 collect (global-set-key (kbd (car binding)) (cdr binding)))
+
 (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
       treemacs-deferred-git-apply-delay        0.5
       treemacs-directory-name-transformer      #'identity
@@ -882,15 +901,6 @@ kill the current buffer and delete its window."
 
 (treemacs-hide-gitignored-files-mode nil)
 
-(cl-loop for binding in '(("M-0"       . treemacs-select-window)
-			      ("C-x t 1"   . treemacs-delete-other-windows)
-			      ("C-x t t"   . treemacs)
-			      ("C-x t d"   . treemacs-select-directory)
-			      ("C-x t B"   . treemacs-bookmark)
-			      ("C-x t C-t" . treemacs-find-file)
-			      ("C-x t M-t" . treemacs-find-tag))
-	 collect (global-set-key (kbd (car binding)) (cdr binding)))
-
 (straight-use-package 'treemacs-icons-dired)
 
 (straight-use-package 'treemacs-projectile)
@@ -931,25 +941,15 @@ the user for confirmation."
 
 (require 'theme (concat config-directory "theme.el"))
 
-;; Theme-agnostic enabling hook
-(defvar custom/after-enable-theme-hook nil
-   "Normal hook run after enabling a theme.")
+;; Theme load hook
+(defvar custom/load-theme-hook nil
+   "`load-theme' hook.")
 
-(defun custom/run-after-enable-theme-hook (&rest _args)
-   "Run `after-enable-theme-hook'."
-   (run-hooks 'custom/after-enable-theme-hook))
+(defun custom/load-theme-hook (&rest _args)
+   "Run `load-theme-hook'."
+   (run-hooks 'custom/load-theme-hook))
 
-;; enable-theme
-(advice-add 'enable-theme :after #'custom/run-after-enable-theme-hook)
-
-(defun custom/org-mode (orig-fun &rest args)
-  (if (custom/in-mode "org-mode")
-      (progn (custom/org-save-outline-state)
-	           (apply orig-fun args)
-		   (custom/org-restore-outline-state))
-    (apply orig-fun args)))
-
-(advice-add 'org-mode :around #'custom/org-mode)
+(advice-add 'load-theme :after #'custom/load-theme-hook)
 
 ;; Reload Org Mode
 (defun custom/org-theme-reload ()
@@ -960,10 +960,10 @@ the user for confirmation."
       (cl-loop for buffer in (custom/visible-buffers)
 	             collect (select-window (get-buffer-window buffer))
 	 	     if (custom/in-mode "org-mode")
-		        return (org-mode))
+		        collect (org-mode))
       (select-window window))))
 
-(add-hook 'custom/after-enable-theme-hook #'custom/org-theme-reload)
+(add-hook 'custom/load-theme-hook #'custom/org-theme-reload)
 
 ;; Conclude initialization file
 (provide 'home)

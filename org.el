@@ -73,6 +73,19 @@ overwritten, and the table is not marked as requiring realignment."
 	  (setq org-self-insert-command-undo-counter
 		(1+ org-self-insert-command-undo-counter))))))))
 
+(defun custom/org-indent--compute-prefixes ()
+  "Recompute line prefixes for regular text to
+match the indentation of the parent heading."
+  (dotimes (n org-indent--deepest-level)
+      (let ((indentation (if (= n 0) 0 1)))
+        (aset org-indent--text-line-prefixes
+	        n
+	        (org-add-props
+	           (concat (make-string (+ n indentation) ?\s))
+		    nil 'face 'org-indent)))))
+
+(advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
+
 ;; `org-in-src-block-p' gives false positives as of Org Mode 9.5.3. For
 ;; this reason, determine if cursor in src block with the more reliable
 ;; `org-babel-where-is-src-block-head'
@@ -211,17 +224,17 @@ a `custom/region-blank'."
 		      '(keyword)
 		    #'custom/get-keyword-key-value))))))
 
+(defvar-local custom/org-outline-state nil
+  "Place for saving org outline state before reverting the buffer.")
+
+(put 'custom/org-outline-state 'permanent-local t)
+
 (defun custom/org-set-outline-overlay-data (data)
   "Create visibility overlays for all positions in DATA.
 DATA should have been made by `org-outline-overlay-data'."
   (org-with-wide-buffer
    (org-show-all)
    (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
-
-(defvar-local custom/org-outline-state nil
-  "Place for saving org outline state before reverting the buffer.")
-
-(put 'custom/org-outline-state 'permanent-local t)
 
 (defun custom/org-restore-outline-state ()
   "Save org outline state in `custom/org-outline-state'.
@@ -674,6 +687,15 @@ indented at the level of the previous list item, indent the paragraph."
 
 (advice-add 'org-cycle :around #'custom/org-cycle)
 
+(defun custom/org-mode (orig-fun &rest args)
+  (if (custom/in-mode "org-mode")
+      (progn (custom/org-save-outline-state)
+	         (apply orig-fun args)
+		 (custom/org-restore-outline-state))
+    (apply orig-fun args)))
+
+(advice-add 'org-mode :around #'custom/org-mode)
+
 (setq org-image-actual-width nil)
 
 (defface custom/variable-pitch-marker
@@ -693,19 +715,6 @@ indented at the level of the previous list item, indent the paragraph."
 
 ;; List indentation
 (setq-default org-list-indent-offset 1)
-
-(defun custom/org-indent--compute-prefixes ()
-  "Recompute line prefixes for regular text to
-match the indentation of the parent heading."
-  (dotimes (n org-indent--deepest-level)
-      (let ((indentation (if (= n 0) 0 1)))
-        (aset org-indent--text-line-prefixes
-	        n
-	        (org-add-props
-	           (concat (make-string (+ n indentation) ?\s))
-		    nil 'face 'org-indent)))))
-
-(advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
 
 (require 'org-capture)
 

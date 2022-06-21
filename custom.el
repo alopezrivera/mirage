@@ -10,7 +10,7 @@
  '(awesome-tray-mode-line-active-color "#2fafff")
  '(awesome-tray-mode-line-inactive-color "#323232")
  '(custom-safe-themes
-   '("dad40020beea412623b04507a4c185079bff4dcea20a93d8f8451acb6afc8358" "a0415d8fc6aeec455376f0cbcc1bee5f8c408295d1c2b9a1336db6947b89dd98" "c414f69a02b719fb9867b41915cb49c853489930be280ce81385ff7b327b4bf6" "02fff7eedb18d38b8fd09a419c579570673840672da45b77fde401d8708dc6b5" default))
+   '("73b6fb50100174334d220498186ab5ca3ade90052f5a08e8262e5d7820f0a149" "3d54650e34fa27561eb81fc3ceed504970cc553cfd37f46e8a80ec32254a3ec3" "dad40020beea412623b04507a4c185079bff4dcea20a93d8f8451acb6afc8358" "a0415d8fc6aeec455376f0cbcc1bee5f8c408295d1c2b9a1336db6947b89dd98" "c414f69a02b719fb9867b41915cb49c853489930be280ce81385ff7b327b4bf6" "02fff7eedb18d38b8fd09a419c579570673840672da45b77fde401d8708dc6b5" default))
  '(exwm-floating-border-color "#232635")
  '(fci-rule-color "#676E95")
  '(flymake-error-bitmap '(flymake-double-exclamation-mark modus-themes-fringe-red))

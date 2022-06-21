@@ -75,8 +75,7 @@ preserve modeline status through theme changes."
   (setq mode-line-format modeline-status))
 
 ;; enable-theme
-(dolist (load-fn '(load-theme))
-  (advice-add load-fn :around #'custom/theme-specific-advice))
+(advice-add 'load-theme :around #'custom/theme-specific-advice)
 
 (defun custom/theme-toggle ()
   "Toggle between `dark' and `light' themes
