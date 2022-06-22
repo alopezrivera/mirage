@@ -18,6 +18,9 @@
 ;; dialogues
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 
+;; line numbers
+(global-set-key (kbd "C-c l") #'display-line-numbers-mode)
+
 ;; startup buffers
 (defvar background-buffers
   (list (concat config-directory "local.el")
