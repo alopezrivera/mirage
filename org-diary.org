@@ -185,8 +185,11 @@ resume your writing where you left off")
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-new-window ()
-  (split-window-horizontally)
-  (windmove-right)
+  "Create a window for an Org Diary entry or use the current one
+if it is too narrow to split, and resize it."
+  (if (> (window-total-width) custom/org-diary-min-window-width)
+      (progn (split-window-horizontally)
+	         (windmove-right)))
   (if (not (ignore-errors (custom/org-diary-resize-window)))
       (delete-other-windows)))
 
