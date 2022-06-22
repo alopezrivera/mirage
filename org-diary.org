@@ -553,6 +553,18 @@ it does not exist"
 
 #+end_src
 
+** org-diary-revisit
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-revisit ()
+  "Determine whether to revisit the `custom/org-diary-last-visited' entry"
+  (if custom/org-diary-last-visited
+      (let ((entry (custom/org-diary-time-string-file custom/org-diary-last-visited custom/org-diary-directory)))
+	   (custom/find-buffer-by-file-name entry))))
+
+#+end_src
+
 * Editing
 ** Initialization
 
@@ -612,7 +624,7 @@ Bindings:
 	       (ignore-errors (delete-window)))
     (progn (if (custom/org-diary-window)
 	         (select-window (custom/org-diary-window))
-	       (let ((time (or custom/org-diary-last-visited (current-time))))
+	       (let ((time (if (custom/org-diary-revisit) custom/org-diary-last-visited (current-time))))
 		    (custom/org-diary-visit time arg custom/org-diary-directory)))
 	     (custom/org-diary-mode 1))))
 
