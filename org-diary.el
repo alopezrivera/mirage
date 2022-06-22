@@ -116,8 +116,11 @@ resume your writing where you left off")
     (concat dir file ".org")))
 
 (defun custom/org-diary-new-window ()
-  (split-window-horizontally)
-  (windmove-right)
+  "Create a window for an Org Diary entry or use the current one
+if it is too narrow to split, and resize it."
+  (if (> (window-total-width) custom/org-diary-min-window-width)
+      (progn (split-window-horizontally)
+	         (windmove-right)))
   (if (not (ignore-errors (custom/org-diary-resize-window)))
       (delete-other-windows)))
 
@@ -271,6 +274,12 @@ it does not exist"
   (interactive)
   (custom/org-diary-jump 1))
 
+(defun custom/org-diary-revisit ()
+  "Determine whether to revisit the `custom/org-diary-last-visited' entry"
+  (if custom/org-diary-last-visited
+      (let ((entry (custom/org-diary-time-string-file custom/org-diary-last-visited custom/org-diary-directory)))
+	   (custom/find-buffer-by-file-name entry))))
+
 (defun custom/org-diary-init (time)
   "Set up Org Diary entry"
   (interactive)
@@ -303,7 +312,7 @@ Bindings:
 	       (ignore-errors (delete-window)))
     (progn (if (custom/org-diary-window)
 	         (select-window (custom/org-diary-window))
-	       (let ((time (or custom/org-diary-last-visited (current-time))))
+	       (let ((time (if (custom/org-diary-revisit) custom/org-diary-last-visited (current-time))))
 		    (custom/org-diary-visit time arg custom/org-diary-directory)))
 	     (custom/org-diary-mode 1))))
 
