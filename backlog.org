@@ -23,9 +23,6 @@
    - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
    - https://github.com/rougier/agenda
 
-- reading
-   - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
-
 - latex
    - class, style file access
       - https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te
@@ -458,6 +455,15 @@ CLOSED: [2022-05-06 Fri 17:11]
 - vertical padding
    - https://stackoverflow.com/questions/25040666/vertical-padding-or-margin-on-emacs-buffer
 
+* highlights
+
+- solaire
+   - https://github.com/hlissner/emacs-solaire-mode
+- Highlight current line only
+   - https://yannesposito.com/posts/0021-ia-writer-clone-within-doom-emacs/index.html
+- bionic reading
+   - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
+
 
 * IDE
 
@@ -515,8 +521,6 @@ CLOSED: [2022-05-06 Fri 17:11]
          - hunspell < aspell, however hunspell is currently widely used and maintained
    - Language detection
       - https://github.com/tmalsburg/guess-language.el
-- Hyperbole
-   - https://github.com/rswgnu/hyperbole
 
 * templating
 
@@ -556,32 +560,6 @@ CLOSED: [2022-05-06 Fri 17:11]
 - https://github.com/Silex/docker.el
 
 
-* session
-
-- Frame, buffer configuration
-   - switch buffers
-      - numbers if > 2 buffers
-         - exclude certain buffers
-            - dedicated windows
-               - command-log-buffer
-            - expand on solaire file buffer discrimination
-               - https://github.com/hlissner/emacs-solaire-mode
-      - https://github.com/abo-abo/ace-window
-   - https://github.com/Bad-ptr/persp-mode.el
-   - burly
-      - https://github.com/alphapapa/burly.el
-
-
-- Window manager
-   - desktop.el
-   - WXEM
-	
-- async
-   - https://github.com/jwiegley/emacs-async
-   - shells
-      - https://emacs.stackexchange.com/questions/299/how-can-i-run-an-async-process-in-the-background-without-popping-up-a-buffer
-         - https://github.com/ilya-babanov/emacs-bpr
-
 * evil
 
 - evil
@@ -590,21 +568,72 @@ CLOSED: [2022-05-06 Fri 17:11]
    - https://www.youtube.com/watch?v=Uz_0i27wYbg
    - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 
+* hyperbole
+
+- https://github.com/rswgnu/hyperbole
+- https://tilde.town/~ramin_hal9001/articles/intro-to-hyperbole.html
+
+
+* text search
+
+- fzf
+   - https://github.com/junegunn/fzf
+- ripgrep
+   - https://github.com/dajva/rg.el
+
 * navigation
 
 - narrow dwim
    - https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
 
-* completion framework/incremental narrowing
+* window manager
 
-- rank commands by usage
+- WXEM
 
-- vertico
-   - https://github.com/minad/vertico
-- selectrum
-   - https://github.com/raxod502/selectrum
-- regex
-   - https://github.com/benma/visual-regexp-steroids.el/
+
+* theme
+
+- restoring org visibility after theme change
+- https://stackoverflow.com/questions/6666862/org-mode-go-back-from-sparse-tree-to-previous-visibility
+- Frame dividers
+   - https://github.com/minad/org-modern
+- nano-writer
+   - https://github.com/rougier/nano-emacs/blob/master/nano-writer.el
+- nano extensions
+   - https://github.com/rougier/nano-emacs
+
+- Reduce contrast
+   - https://www.emacswiki.org/emacs/AngryFruitSalad
+   - Modus
+      - https://protesilaos.com/emacs/modus-themes#h:51ba3547-b8c8-40d6-ba5a-4586477fd4ae
+- Diacritics
+   - https://masteringemacs.org/article/diacritics-in-emacs
+- Transparent Emacs
+   - https://www.emacswiki.org/emacs/TransparentEmacs
+- Theme switch based on ambient light
+   - https://matthewbilyeu.com/blog/2018-04-09/setting-emacs-theme-based-on-ambient-light
+   - Linux
+      - iio-sensor-proxy
+             
+* mode line
+
+- bespoke
+   - https://github.com/mclear-tools/bespoke-modeline
+
+
+
+* package management
+
+- el-get
+   - https://github.com/dimitri/el-get
+
+
+* async
+
+- https://github.com/jwiegley/emacs-async
+- shells
+   - https://emacs.stackexchange.com/questions/299/how-can-i-run-an-async-process-in-the-background-without-popping-up-a-buffer
+      - https://github.com/ilya-babanov/emacs-bpr
 
 * commands
 
@@ -624,57 +653,6 @@ CLOSED: [2022-05-06 Fri 17:11]
    - Text input
 - Go back to recorded position
    - http://www.gnu.org/software/emacs/manual/html_node/emacs/Mark-Ring.html
-
-
-* theme
-
-- Highlight file windows
-   - https://github.com/hlissner/emacs-solaire-mode
-- restoring org visibility after theme change
-- https://stackoverflow.com/questions/6666862/org-mode-go-back-from-sparse-tree-to-previous-visibility
-- Frame dividers
-   - https://github.com/minad/org-modern
-- nano-writer
-   - https://github.com/rougier/nano-emacs/blob/master/nano-writer.el
-- nano extensions
-   - https://github.com/rougier/nano-emacs
-- Highlight current line only
-   - https://yannesposito.com/posts/0021-ia-writer-clone-within-doom-emacs/index.html
-- Reduce contrast
-   - https://www.emacswiki.org/emacs/AngryFruitSalad
-   - Modus
-      - https://protesilaos.com/emacs/modus-themes#h:51ba3547-b8c8-40d6-ba5a-4586477fd4ae
-- Free century gothic
-- Diacritics
-   - https://masteringemacs.org/article/diacritics-in-emacs
-- Transparent Emacs
-   - https://www.emacswiki.org/emacs/TransparentEmacs
-- Theme switch based on ambient light
-   - https://matthewbilyeu.com/blog/2018-04-09/setting-emacs-theme-based-on-ambient-light
-   - Linux
-      - iio-sensor-proxy
-
-#+title:Special themes
-	
-- warm
-   - https://github.com/ThomasFKJorna/doom-emacs-config
-- warm pragmata
-- custom svg tags
-   - https://github.com/rougier/svg-lib
-   - https://github.com/rougier/svg-tag-mode/tree/07640c97a1dcc305010a384fffdaa7788c342da7
-             
-* mode line
-
-- bespoke
-   - https://github.com/mclear-tools/bespoke-modeline
-
-
-
-* package management
-
-- el-get
-   - https://github.com/dimitri/el-get
-
 
 * performance
 
@@ -699,16 +677,6 @@ CLOSED: [2022-05-06 Fri 17:11]
    - https://github.com/abo-abo/org-download
    - Figure directory
    - Input with reference
-- vundo
-   - https://github.com/casouri/vundo
-- smooth scrolling
-   - https://github.com/io12/good-scroll.el
-   - https://www.reddit.com/r/emacs/comments/tv022a/smooth_scrolling_on_emacs_29_is_a_dream_come_true/
-- fzf
-   - https://github.com/junegunn/fzf
-- ripgrep
-   - https://github.com/dajva/rg.el
-
 
 * note-taking
 
