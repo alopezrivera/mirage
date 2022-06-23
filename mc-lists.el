@@ -6,6 +6,7 @@
 	Buffer-menu-delete
 	Buffer-menu-execute
 	beginning-of-visual-line
+	comment-line
 	custom/del-backward
 	custom/double-end
 	custom/double-home
@@ -58,6 +59,7 @@
       '(
 	clm/toggle-command-log-buffer
 	comint-interrupt-subjob
+	comint-previous-input
 	counsel-M-x
 	custom/double-escape
 	custom/mouse-rectangle
@@ -84,4 +86,5 @@
 	swiper-mc
 	treemacs-leftclick-action
 	widen
+	winner-undo
 	))
