@@ -21,17 +21,7 @@
 ;; line numbers
 (global-set-key (kbd "C-c l") #'display-line-numbers-mode)
 
-;; startup buffers
-(defvar background-buffers
-  (list (concat config-directory "local.el")
-        (concat config-directory "init.el")
-        (concat config-directory "wild.el")))
-
-(defun custom/spawn-startup-buffers ()
-  (cl-loop for buffer in (append startup-buffers background-buffers)
-	   collect (find-file-noselect buffer)))
-
-(add-hook 'after-init-hook #'custom/spawn-startup-buffers)
+;; Package manager =============================================================
 
 ;; straight.el
 (defvar bootstrap-version)
@@ -47,16 +37,28 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+;; IDE =========================================================================
+
+(require 'ide (concat config-directory "ide.el"))
+
+;; Emacs packages ==============================================================
+
+;; winner
+(winner-mode)
+
+;; desktop
+(desktop-save-mode 1)
+
 ;; modus
 (straight-use-package 'modus-themes)
 (modus-themes-load-themes)
 (modus-themes-load-operandi)
 
+;; External packages ===========================================================
+
 ;; magit
 (straight-use-package 'magit)
 
-;; winner
-(winner-mode)
 ;; ace-window
 (straight-use-package 'ace-window)
 (require 'ace-window)
@@ -67,9 +69,6 @@
 (require 'workgroups)
 (setq wg-prefix-key (kbd "C-c w"))
 (workgroups-mode 1)
-
-;; desktop
-(desktop-save-mode 1)
 
 ;; treemacs
 (straight-use-package 'treemacs)
@@ -86,9 +85,6 @@
 	      return t
 	   finally return nil))
 (push #'custom/treemacs-ignore-filter treemacs-ignored-file-predicates)
-
-;; ide
-(require 'ide (concat config-directory "ide.el"))
 
 ;; multiple cursors ------------------------------------------------------------
 (straight-use-package 'multiple-cursors)
@@ -180,5 +176,18 @@
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
+
+;; startup buffers =============================================================
+(defvar background-buffers
+  (list (concat config-directory "local.el")
+        (concat config-directory "init.el")
+        (concat config-directory "wild.el")))
+
+(defun custom/spawn-startup-buffers ()
+  (cl-loop for buffer in (append startup-buffers background-buffers)
+	   collect (find-file-noselect buffer)))
+
+(add-hook 'after-init-hook #'custom/spawn-startup-buffers)
+;; =============================================================================
 
 (provide 'wild)
