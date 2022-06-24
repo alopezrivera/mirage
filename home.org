@@ -466,6 +466,15 @@ to the query at execution."
 #+end_src
 
 * Editing
+** Tabs
+
+#+begin_src emacs-lisp
+
+;; no tabs
+(setq-default indent-tabs-mode nil)
+
+#+end_src
+
 ** TODO Undo
 
 - undo-fu

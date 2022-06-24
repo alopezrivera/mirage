@@ -32,6 +32,9 @@
 ;; line numbers
 (global-set-key (kbd "C-c l") #'display-line-numbers-mode)
 
+;; no tabs
+(setq-default indent-tabs-mode nil)
+
 ;; Package manager =============================================================
 
 ;; straight.el
