@@ -207,6 +207,9 @@ to the query at execution."
 (defun <> (a b c)
   (and (> b a) (> c b)))
 
+;; no tabs
+(setq-default indent-tabs-mode nil)
+
 ;; vundo
 (straight-use-package 'vundo)
 
