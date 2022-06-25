@@ -10,6 +10,12 @@
 #+latex_class_options: [twocolumn]
 -----
 
+- marker typeface
+   - references
+      - org-modern
+      - Ringbearer
+         - *
+
 - desktop
    - https://superuser.com/questions/859761/prevent-emacs-desktop-save-from-holding-onto-theme-elements
 
@@ -35,6 +41,11 @@
 - transclusion
    - https://nobiot.github.io/org-transclusion/
 
+
+-----
+
+- knowledge management
+   - https://users.speakeasy.net/~lion/nb/html/doc003.html
 
 * References
 
@@ -417,7 +428,10 @@ CLOSED: [2022-05-06 Fri 17:11]
    - deactivate when reloading org mode
      
 * org export
-** web
+** site
+
+- references
+   - https://www.reddit.com/r/emacs/comments/vj63n0/yet_another_blog_setup_based_on_emacs_org_mode/
 
 - org -> HTML
    - https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
@@ -589,6 +603,8 @@ CLOSED: [2022-05-06 Fri 17:11]
 * window manager
 
 - WXEM
+- herbstluftwm
+   - https://herbstluftwm.org/
 
 
 * theme
