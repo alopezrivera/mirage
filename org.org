@@ -136,6 +136,15 @@ match the indentation of the parent heading."
 #+end_src
 
 **** at
+***** org-at-ellipsis
+
+#+begin_src emacs-lisp
+
+(defun custom/org-at-ellipsis (&optional position)
+  (or (custom/org-at-ellipsis-h position) (custom/org-at-ellipsis-l position)))
+
+#+end_src
+
 ***** org-at-ellipsis-l
 
 #+begin_src emacs-lisp
@@ -540,7 +549,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 #+begin_src emacs-lisp
 
 (defun custom/org-show (orig-fun &rest args)
-  (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+  (if (custom/org-at-ellipsis)
       (progn (custom/org-goto-heading-bol) (apply orig-fun args))
     (apply orig-fun args)))
 
@@ -569,7 +578,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 (defun custom/org-show-minimum ()
   (if (or (custom/org-relative-line-list-folded)
 	        (custom/org-relative-line-heading-folded))
-      (progn (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+      (progn (if (custom/org-at-ellipsis)
 		       (progn (beginning-of-visual-line) (end-of-line)))
 	           (org-show-entry)
 	           (if (custom/org-heading-has-children) (org-show-children)))))
@@ -1151,7 +1160,7 @@ beginning lies on an Org Mode heading,
 
 (defun custom/org-meta-arrows-v (orig-fun &rest args)
   (interactive)
-  (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+  (if (custom/org-at-ellipsis)
       (progn (beginning-of-visual-line) (end-of-line)))
   (apply orig-fun args)
   (if (custom/org-relative-line-heading-folded)
