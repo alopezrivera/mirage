@@ -1,0 +1,44 @@
+#+STARTUP: overview
+#+FILETAGS: :dotfiles:
+
+
+
+#+title:Git
+#+PROPERTY: header-args :results none
+
+
+* SSH
+** Generating keys
+
+#+begin_src shell
+
+ssh-keygen -t ed25519 -C "<comment>"
+
+#+end_src
+
+** Using keys with hosting services
+
+- GitLab
+  - https://docs.gitlab.com/ee/user/ssh.html
+- GitHub
+  - https://docs.github.com/en/authentication/connecting-to-github-with-ssh
+
+* Patches
+
+Moving files between repos, preserving their history.
+
+** Create
+
+#+begin_src shell
+
+git log --pretty=email --patch-with-stat --reverse --full-index --binary -- path/to/file_or_folder > patch
+
+#+end_src
+
+** Apply
+
+#+begin_src shell
+
+git am --committer-date-is-author-date < ../repository/patch 
+
+#+end_src
