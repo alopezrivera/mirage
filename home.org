@@ -287,7 +287,7 @@ to the query at execution."
 #+begin_src emacs-lisp
 
 (defun custom/relative-line-empty (&optional number)
-  (custom/relative-line-regex "^[[:space:]]+$" number))
+  (custom/relative-line-regex "^[[:space:]]*$" number))
 
 #+end_src
 
@@ -466,6 +466,15 @@ to the query at execution."
 #+end_src
 
 * Editing
+** Tabs
+
+#+begin_src emacs-lisp
+
+;; no tabs
+(setq-default indent-tabs-mode nil)
+
+#+end_src
+
 ** TODO Undo
 
 - undo-fu

@@ -91,6 +91,9 @@ match the indentation of the parent heading."
 ;; `org-babel-where-is-src-block-head'
 (advice-add 'org-in-src-block-p :override 'org-babel-where-is-src-block-head)
 
+(defun custom/org-at-ellipsis (&optional position)
+  (or (custom/org-at-ellipsis-h position) (custom/org-at-ellipsis-l position)))
+
 (defun custom/org-at-ellipsis-l (&optional position)
   (and (custom/org-relative-line-list-folded) (custom/at-point 'end-of-visual-line)))
 
@@ -281,7 +284,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 		        (outline-hide-subtree)))
 
 (defun custom/org-show (orig-fun &rest args)
-  (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+  (if (custom/org-at-ellipsis)
       (progn (custom/org-goto-heading-bol) (apply orig-fun args))
     (apply orig-fun args)))
 
@@ -292,7 +295,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 (defun custom/org-show-minimum ()
   (if (or (custom/org-relative-line-list-folded)
 	        (custom/org-relative-line-heading-folded))
-      (progn (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+      (progn (if (custom/org-at-ellipsis)
 		       (progn (beginning-of-visual-line) (end-of-line)))
 	           (org-show-entry)
 	           (if (custom/org-heading-has-children) (org-show-children)))))
@@ -479,15 +482,15 @@ ellipsis in the first line under the heading."
   "Conditional `org-return'."
   (interactive)
   (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
-	    ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
-	    ((custom/org-at-ellipsis-l)                     (custom/org-insert-item-respect-content))
-	    ((custom/org-relative-line-paragraph)           (progn (org-return t) (org-insert-item)))
-	    ((custom/org-relative-line-list)                (org-meta-return))
-	    ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
-	    ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
-	    ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
-	    ((custom/org-at-ellipsis-h)                     (org-return))
-	    (t                                              (org-return t))))
+	     ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	     ((custom/org-at-ellipsis-l)                     (custom/org-insert-item-respect-content))
+	     ((custom/org-relative-line-paragraph)           (org-insert-item))
+	     ((custom/org-relative-line-list)                (org-meta-return))
+	     ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
+	     ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
+	     ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
+	     ((custom/org-at-ellipsis-h)                     (org-return))
+	     (t                                              (org-return t))))
 
 (define-key org-mode-map (kbd "<return>") 'custom/org-return)
 
@@ -636,7 +639,7 @@ beginning lies on an Org Mode heading,
 
 (defun custom/org-meta-arrows-v (orig-fun &rest args)
   (interactive)
-  (if (or (custom/org-at-ellipsis-h) (custom/org-at-ellipsis-l))
+  (if (custom/org-at-ellipsis)
       (progn (beginning-of-visual-line) (end-of-line)))
   (apply orig-fun args)
   (if (custom/org-relative-line-heading-folded)
@@ -959,16 +962,16 @@ matches the current theme."
                           (cons begin counter))
                          ((string-match "\\\\begin{align}" env)
                           (prog2
-                              (incf counter)
+                              (cl-incf counter)
                               (cons begin counter)                          
                             (with-temp-buffer
                               (insert env)
                               (goto-char (point-min))
                               ;; \\ is used for a new line. Each one leads to a number
-                              (incf counter (count-matches "\\\\$"))
+                              (cl-incf counter (count-matches "\\\\$"))
                               ;; unless there are nonumbers.
                               (goto-char (point-min))
-                              (decf counter (count-matches "\\nonumber")))))
+                              (cl-decf counter (count-matches "\\nonumber")))))
                          (t
                           (cons begin nil)))))
 

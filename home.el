@@ -132,7 +132,7 @@ to the query at execution."
   (custom/relative-line-regex "^[[:blank:]]*\\([0-9]+[.\\)]\\{1\\}\\|[-+*]\\{1\\}\\)[[:blank:]]+.*$" number))
 
 (defun custom/relative-line-empty (&optional number)
-  (custom/relative-line-regex "^[[:space:]]+$" number))
+  (custom/relative-line-regex "^[[:space:]]*$" number))
 
 (defun custom/relative-line-wrapped ()
   (> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)))
@@ -206,6 +206,9 @@ to the query at execution."
 
 (defun <> (a b c)
   (and (> b a) (> c b)))
+
+;; no tabs
+(setq-default indent-tabs-mode nil)
 
 ;; vundo
 (straight-use-package 'vundo)
