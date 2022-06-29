@@ -1,0 +1,73 @@
+#+STARTUP: overview
+#+FILETAGS: :dotfiles:
+
+
+
+#+title:Git
+#+PROPERTY: header-args :results none
+
+
+* Install
+** Debian
+
+#+begin_src shell
+
+sudo add-apt-repository ppa:git-core/ppa -y
+sudo apt-get update
+sudo apt-get install git -y
+git --version
+
+#+end_src
+
+
+* SSH
+** Generating keys
+
+#+begin_src shell
+
+ssh-keygen -t ed25519 -C "<comment>"
+
+#+end_src
+
+** Using keys with hosting services
+
+- GitLab
+  - https://docs.gitlab.com/ee/user/ssh.html
+- GitHub
+  - https://docs.github.com/en/authentication/connecting-to-github-with-ssh
+
+* Patches
+
+Moving files between repos, preserving their history.
+
+** Create
+
+#+begin_src shell
+
+git log --pretty=email --patch-with-stat --reverse --full-index --binary -- path/to/file_or_folder > patch
+
+#+end_src
+
+** Apply
+
+#+begin_src shell
+
+git am --committer-date-is-author-date < ../repository/patch 
+
+#+end_src
+
+* Renaming branches
+
+Rename a branch, locally and in the remote.
+
+#+begin_src shell
+
+old="<old name>"
+new="<new name>"
+
+git branch -b $new
+git branch --delete origin $old
+git push --set-upstream origin $new
+git branch --delete $old
+
+#+end_src

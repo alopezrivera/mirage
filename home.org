@@ -21,13 +21,14 @@
 - blog
 - LaTeX
 
+* Setup
+
 #+begin_src emacs-lisp
 
 ;;; -*- lexical-binding: t; -*-
 
 #+end_src
 
-* Setup
 ** Startup
 *** Frame
 
@@ -864,7 +865,8 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
-** TODO Mode line
+** Mode line
+*** TODO Hide
 
 - Hidden mode line mode
    - https://github.com/hlissner/emacs-hide-mode-line
@@ -881,6 +883,35 @@ not empty. In any case, advance to next line."
     (funcall modeline)))
 
 (global-set-key (kbd "M-m") #'custom/hide-modeline)
+
+#+end_src
+
+*** TODO Invert
+
+- Complete, combine with modeline hiding mode
+
+#+begin_src emacs-lisp
+
+;; default
+(setq header-line-format nil)
+
+(defun custom/variable-replace (a b)
+  "Set the value of `b' to that of `a', and
+that of `a' to nil"
+  (set b a)
+  (set-default b a)
+  (set a nil)
+  (set-default a nil))
+
+(defun custom/mode-line-invert ()
+  (interactive)
+  (let ((top 'header-line-format)
+        (bot 'mode-line-format))
+    (if mode-line-format
+        (custom/variable-replace bot top)
+      (custom/variable-replace top bot))))
+
+(global-set-key (kbd "M-t") #'custom/mode-line-invert)
 
 #+end_src
 

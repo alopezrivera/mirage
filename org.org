@@ -7,6 +7,8 @@
 #+title:Org Mode
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./org.el :mkdirp yes
 
+* Setup
+
 #+begin_src emacs-lisp
 
 ;; Org Mode
@@ -15,7 +17,6 @@
 
 #+end_src
 
-* Setup
 ** Startup
 
 #+begin_src emacs-lisp

@@ -69,9 +69,11 @@
         dabbrev-expand
         dired-do-flagged-delete
         end-of-buffer
+        magit-status
         mouse-drag-mode-line
         mouse-drag-vertical-line
         mouse-save-then-kill
+        mouse-select-window
         mouse-set-region
         mouse-start-rectangle
         org-babel-tangle
@@ -85,7 +87,6 @@
         swiper-isearch
         swiper-mc
         treemacs-leftclick-action
-        undefined
         widen
         winner-undo
         ))
