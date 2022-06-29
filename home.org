@@ -865,7 +865,8 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
-** TODO Mode line
+** Mode line
+*** TODO Hide
 
 - Hidden mode line mode
    - https://github.com/hlissner/emacs-hide-mode-line
