@@ -42,3 +42,19 @@ git log --pretty=email --patch-with-stat --reverse --full-index --binary -- path
 git am --committer-date-is-author-date < ../repository/patch 
 
 #+end_src
+
+* Renaming branches
+
+Rename a branch, locally and in the remote.
+
+#+begin_src shell
+
+old="<old name>"
+new="<new name>"
+
+git branch -b $new
+git branch --delete origin $old
+git push --set-upstream origin $new
+git branch --delete $old
+
+#+end_src
