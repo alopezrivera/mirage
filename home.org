@@ -7,13 +7,13 @@
 #+title:Emacs - Home
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./home.el :mkdirp yes
 
-- git
 - diary
 - notebook
 - zettelkasten
 - agenda
 - calendar
 - contact book
+- git client
 - IDE
 
 -----
