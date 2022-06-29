@@ -10,6 +10,11 @@
 #+latex_class_options: [twocolumn]
 -----
 
+- markdown live edit
+   - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
+
+- backlog editing mode
+
 - marker typeface
    - references
       - org-modern
@@ -53,13 +58,14 @@
 
 ** Configs
 
+- https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
+- https://github.com/jkitchin/scimax
 - https://github.com/alhassy/emacs.d
 - https://yannesposito.com/
 - https://github.com/rougier/notebook-mode
 - https://github.com/ThomasFKJorna/doom-emacs-config
 - https://github.com/rougier/dotemacs
 - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
--  https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
 
 ** Features
 
@@ -268,6 +274,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 - logseq
    - https://coredumped.dev/2021/05/26/taking-org-roam-everywhere-with-logseq/
 
+- mirrors
+   - https://github.com/d12frosted/elpa-mirror
+
 * inspection
 
 - deft
@@ -324,6 +333,9 @@ CLOSED: [2022-05-06 Fri 17:11]
    - https://github.com/weirdNox/org-noter
    - https://www.youtube.com/watch?v=lCc3UoQku-E
 - follow-mode
+
+- crop margin
+   - pdf-view-auto-slice-minor-mode
      
 * bibliography
 
@@ -493,6 +505,7 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 - Code formatting
    - https://github.com/raxod502/apheleia
+   - https://www.reddit.com/r/emacs/comments/vkxsdy/linting_on_save/
 - Collaborative editing
    - https://code.librehq.com/qhong/crdt.el
 - Annotations
