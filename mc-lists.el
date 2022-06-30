@@ -34,6 +34,7 @@
         keyboard-escape-quit
         kill-rectangle
         kill-region
+        nxml-electric-slash
         org-babel-execute-src-block
         org-backward-sentence
         org-beginning-of-line
@@ -76,6 +77,7 @@
         mouse-select-window
         mouse-set-region
         mouse-start-rectangle
+        next-buffer
         org-babel-tangle
         org-metadown
         org-open-at-mouse

@@ -952,6 +952,9 @@ kill the current buffer and delete its window."
 
 (require 'ide (concat config-directory "ide.el"))
 
+;; remove duplicates in shell history
+(setq comint-input-ignoredups t)
+
 (require 'org (concat config-directory "org.el"))
 
 ;; Transform all files in directory from DOS to Unix line breaks
