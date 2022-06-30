@@ -887,12 +887,24 @@ not empty. In any case, advance to next line."
 
 #+begin_src emacs-lisp
 
+(defcustom custom/mode-line nil
+  "Variable containing the format of the hidden mode line")
+
+(defcustom custom/header-line nil
+  "Variable containing the format of the hidden header line")
+
 (defun custom/hide-modeline ()
   "Hide `modeline' in current buffer"
   (interactive)
-  (if mode-line-format
-      (setq mode-line-format nil)
-    (funcall modeline)))
+  (let ((m mode-line-format)
+        (h header-line-format))
+       (custom/@buffers (if (or m h)
+                            (progn (setq custom/mode-line   m)
+                                   (setq custom/header-line h)
+                                   (setq mode-line-format   nil)
+                                   (setq header-line-format nil))
+                          (progn (setq mode-line-format custom/mode-line)
+                                 (setq header-line-format custom/header-line))))))
 
 (global-set-key (kbd "M-m") #'custom/hide-modeline)
 
