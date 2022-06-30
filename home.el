@@ -207,6 +207,11 @@ to the query at execution."
 (defun <> (a b c)
   (and (> b a) (> c b)))
 
+(defmacro custom/@buffers (command)
+  `(cl-loop for buffer in (buffer-list)
+               collect (save-window-excursion (switch-to-buffer buffer)
+                                              ,command)))
+
 ;; no tabs
 (setq-default indent-tabs-mode nil)
 
@@ -428,33 +433,41 @@ not empty. In any case, advance to next line."
 ;; Programming modes
 (add-hook 'prog-mode-hook 'olivetti-mode)
 
+(defcustom custom/mode-line nil
+  "Variable containing the format of the hidden mode line")
+
+(defcustom custom/header-line nil
+  "Variable containing the format of the hidden header line")
+
 (defun custom/hide-modeline ()
   "Hide `modeline' in current buffer"
   (interactive)
-  (if mode-line-format
-      (setq mode-line-format nil)
-    (funcall modeline)))
+  (let ((m mode-line-format)
+        (h header-line-format))
+       (custom/@buffers (if (or m h)
+                            (progn (setq custom/mode-line   m)
+                                   (setq custom/header-line h)
+                                   (setq mode-line-format   nil)
+                                   (setq header-line-format nil))
+                          (progn (setq mode-line-format custom/mode-line)
+                                 (setq header-line-format custom/header-line))))))
 
 (global-set-key (kbd "M-m") #'custom/hide-modeline)
 
-;; default
-(setq header-line-format nil)
-
 (defun custom/variable-replace (a b)
   "Set the value of `b' to that of `a', and
-that of `a' to nil"
-  (set b a)
-  (set-default b a)
-  (set a nil)
-  (set-default a nil))
+that of `a' to nil in all buffers"
+  (let ((line (symbol-value a)))
+    (custom/@buffers (progn (set b line)
+                            (set a nil)))))
 
 (defun custom/mode-line-invert ()
   (interactive)
-  (let ((top 'header-line-format)
-        (bot 'mode-line-format))
+  (let ((m 'mode-line-format)
+        (h 'header-line-format))
     (if mode-line-format
-        (custom/variable-replace bot top)
-      (custom/variable-replace top bot))))
+        (custom/variable-replace m h)
+      (custom/variable-replace h m))))
 
 (global-set-key (kbd "M-t") #'custom/mode-line-invert)
 
