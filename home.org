@@ -466,6 +466,18 @@ to the query at execution."
 
 #+end_src
 
+** General purpose macros
+*** @buffers
+
+#+begin_src emacs-lisp
+
+(defmacro custom/@buffers (command)
+  `(cl-loop for buffer in (buffer-list)
+               collect (save-window-excursion (switch-to-buffer buffer)
+                                              ,command)))
+
+#+end_src
+
 * Editing
 ** Tabs
 
