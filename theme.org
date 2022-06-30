@@ -109,10 +109,12 @@
 
 ;; Color
 (defun custom/modeline-color (bg bg-in face face-in)
-  "Set the color of the mode line and blend the 
+  "Set the color of the mode and header lines and blend the 
 `doom-modeline-bar' with the background."
   (set-face-attribute 'mode-line          nil :foreground face    :background bg    :box nil)
-  (set-face-attribute 'mode-line-inactive nil :foreground face-in :background bg-in :box nil))
+  (set-face-attribute 'mode-line-inactive nil :foreground face-in :background bg-in :box nil)
+  ;; header line
+  (set-face-attribute 'header-line        nil :foreground face    :background bg    :box nil))
 
 (defun custom/dark-modeline ()
   "Mode line for light themes."
