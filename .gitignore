@@ -15,6 +15,7 @@ projectile-bookmarks.eld
 # directories
 tmp/*
 elpy/*
+eshell/*
 .cache/*
 transient/*
 auto-save-list/*
