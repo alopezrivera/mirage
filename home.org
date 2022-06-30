@@ -910,30 +910,24 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
-*** TODO Invert
-
-- Complete, combine with modeline hiding mode
+*** Invert
 
 #+begin_src emacs-lisp
 
-;; default
-(setq header-line-format nil)
-
 (defun custom/variable-replace (a b)
   "Set the value of `b' to that of `a', and
-that of `a' to nil"
-  (set b a)
-  (set-default b a)
-  (set a nil)
-  (set-default a nil))
+that of `a' to nil in all buffers"
+  (let ((line (symbol-value a)))
+    (custom/@buffers (progn (set b line)
+                            (set a nil)))))
 
 (defun custom/mode-line-invert ()
   (interactive)
-  (let ((top 'header-line-format)
-        (bot 'mode-line-format))
+  (let ((m 'mode-line-format)
+        (h 'header-line-format))
     (if mode-line-format
-        (custom/variable-replace bot top)
-      (custom/variable-replace top bot))))
+        (custom/variable-replace m h)
+      (custom/variable-replace h m))))
 
 (global-set-key (kbd "M-t") #'custom/mode-line-invert)
 
