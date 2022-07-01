@@ -55,6 +55,11 @@
 
 (require 'ide (concat config-directory "ide.el"))
 
+;; shell =======================================================================
+
+;; remove duplicates in shell history
+(setq comint-input-ignoredups t)
+
 ;; Emacs packages ==============================================================
 
 ;; winner

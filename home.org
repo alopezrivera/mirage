@@ -1705,6 +1705,15 @@ kill the current buffer and delete its window."
 
 #+end_src
 
+* Shell
+
+#+begin_src emacs-lisp
+
+;; remove duplicates in shell history
+(setq comint-input-ignoredups t)
+
+#+end_src
+
 * Org Mode
 
 #+begin_src emacs-lisp
