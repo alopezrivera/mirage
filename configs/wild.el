@@ -110,7 +110,7 @@
 (require 'multiple-cursors)
 
 ;; mc-lists
-(setq mc/list-file "~/.emacs.d/mc-lists.el")
+(setq mc/list-file "~/.emacs.d/persistent/mc-lists.el")
 
 ;; Create cursors
 (global-set-key (kbd "C-.")         'mc/mark-next-like-this)
