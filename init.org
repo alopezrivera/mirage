@@ -48,7 +48,7 @@
 #+begin_src emacs-lisp
 
 ;; custom.el
-(setq custom-file (concat config-directory "custom.el"))
+(setq custom-file (concat config-directory "persistent/custom.el"))
 (load custom-file)
 
 #+end_src
