@@ -950,12 +950,12 @@ kill the current buffer and delete its window."
 
 (global-set-key (kbd "C-x g") #'magit-status)
 
-(require 'ide (concat config-directory "ide.el"))
+(require 'ide (concat config-directory "modules/ide.el"))
 
 ;; remove duplicates in shell history
 (setq comint-input-ignoredups t)
 
-(require 'org (concat config-directory "org.el"))
+(require 'org (concat config-directory "modules/org.el"))
 
 ;; Transform all files in directory from DOS to Unix line breaks
 (defun custom/dos2unix (&optional dir)
@@ -977,9 +977,9 @@ the user for confirmation."
 
 (global-set-key (kbd "C-c r") #'custom/reload-from-disk)
 
-(require 'ui (concat config-directory "ui.el"))
+(require 'ui (concat config-directory "modules/ui.el"))
 
-(require 'theme (concat config-directory "theme.el"))
+(require 'theme (concat config-directory "modules/theme.el"))
 
 ;; Theme load hook
 (defvar custom/load-theme-hook nil

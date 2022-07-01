@@ -1701,7 +1701,7 @@ kill the current buffer and delete its window."
 
 #+begin_src emacs-lisp
 
-(require 'ide (concat config-directory "ide.el"))
+(require 'ide (concat config-directory "modules/ide.el"))
 
 #+end_src
 
@@ -1718,7 +1718,7 @@ kill the current buffer and delete its window."
 
 #+begin_src emacs-lisp
 
-(require 'org (concat config-directory "org.el"))
+(require 'org (concat config-directory "modules/org.el"))
 
 #+end_src
 
@@ -1760,7 +1760,7 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(require 'ui (concat config-directory "ui.el"))
+(require 'ui (concat config-directory "modules/ui.el"))
 
 #+end_src
 
@@ -1768,7 +1768,7 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(require 'theme (concat config-directory "theme.el"))
+(require 'theme (concat config-directory "modules/theme.el"))
 
 #+end_src
 
