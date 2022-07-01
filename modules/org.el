@@ -622,7 +622,7 @@ or outdenting with `org-metaleft'."
 		(push-mark (+ mark shift)))
     (apply command args)))
 
-(require 'org-paragraph (concat config-directory "org-paragraph.el"))
+(require 'org-paragraph (concat config-directory "packages/org-paragraph.el"))
 
 (defun custom/org-meta-arrows-h (orig-fun &rest args)
   "Paragraph indentation with `org-meta<arrows>'.
@@ -990,7 +990,7 @@ matches the current theme."
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 
-(require 'org-diary (concat config-directory "org-diary.el"))
+(require 'org-diary (concat config-directory "packages/org-diary.el"))
 
 ;; Language packages
 (org-babel-do-load-languages

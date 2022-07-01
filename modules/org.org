@@ -1120,7 +1120,7 @@ or outdenting with `org-metaleft'."
 
 #+begin_src emacs-lisp
 
-(require 'org-paragraph (concat config-directory "org-paragraph.el"))
+(require 'org-paragraph (concat config-directory "packages/org-paragraph.el"))
 
 #+end_src
 
@@ -1725,7 +1725,7 @@ matches the current theme."
 
 #+begin_src emacs-lisp
 
-(require 'org-diary (concat config-directory "org-diary.el"))
+(require 'org-diary (concat config-directory "packages/org-diary.el"))
 
 #+end_src
 
