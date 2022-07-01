@@ -119,13 +119,17 @@
 
 #+end_src
 
+** Configuration management
+*** Littering
 
 #+begin_src emacs-lisp
 
+;; no-littering
+(straight-use-package 'no-littering)
+(require 'no-littering)
 
 #+end_src
 
-** Configuration management
 *** Patching
 
 #+begin_src emacs-lisp
