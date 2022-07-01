@@ -690,6 +690,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 - profiler
    - M-x profiler-start RET
    - M-x profiler-report RET
+     
+- startup
+   - https://blog.d46.us/advanced-emacs-startup/
 - esup
    - bug
       - https://github.com/jschaf/esup
