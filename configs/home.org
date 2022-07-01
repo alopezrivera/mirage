@@ -44,22 +44,26 @@
 
 #+begin_src emacs-lisp
 
-  ;; background buffers
-  (defvar background-buffers
-    (list (concat config-directory "local.el")
-	      (concat config-directory "demo.org")
-	      (concat config-directory "ui.org")
-	      (concat config-directory "wild.el")
-	      (concat config-directory "org.org")
-	      (concat config-directory "ide.org")
-	      (concat config-directory "init.org")
-	      (concat config-directory "home.org")
-	      (concat config-directory "theme.org")
-	      (concat config-directory "system.org")
-	      (concat config-directory "dotfiles.org")
-	      (concat config-directory "backlog.org")
-	      (concat config-directory "org-diary.org")
-	      (concat config-directory "org-paragraph.org")))
+;; background buffers
+(defvar background-buffers
+  (list (concat config-directory "local.el")
+        (concat config-directory "init.org")
+        ;; configs
+        (concat config-directory "home.org")
+        (concat config-directory "wild.el")
+        ;; modules
+        (concat config-directory "modules/org.org")
+        (concat config-directory "modules/ide.org")
+        (concat config-directory "modules/ui.org")
+        (concat config-directory "modules/theme.org")
+        ;; packages
+        (concat config-directory "packages/org-diary.org")
+        (concat config-directory "packages/org-paragraph.org")
+
+        (concat config-directory "demo.org")
+        (concat config-directory "system.org")
+        (concat config-directory "dotfiles.org")
+        (concat config-directory "backlog.org")))
 
 (defvar spawn-startup-buffers t
   "Whether to spawn spawn the buffers in the `startup-buffers' list after initialization")
