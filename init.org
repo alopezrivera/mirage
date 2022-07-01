@@ -57,7 +57,7 @@
 
 #+begin_src emacs-lisp
 
-(require (intern config) (concat config-directory (concat config ".el")))
+(require (intern config) (concat config-directory "configs/" (concat config ".el")))
 
 #+end_src
 
