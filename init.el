@@ -26,9 +26,9 @@
       (load-file local)))
 
 ;; custom.el
-(setq custom-file (concat config-directory "custom.el"))
+(setq custom-file (concat config-directory "persistent/custom.el"))
 (load custom-file)
 
-(require (intern config) (concat config-directory (concat config ".el")))
+(require (intern config) (concat config-directory "configs/" (concat config ".el")))
 
 (provide 'init)

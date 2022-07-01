@@ -1068,14 +1068,8 @@ folded."
 
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
-;; Org Roam
+;; org-roam
 (straight-use-package 'org-roam)
-
-;; Find node
-(global-set-key (kbd "C-c n") 'org-roam-node-find)
-
-;; Insert reference
-(global-set-key (kbd "C-c i") 'org-roam-node-insert)
 
 ;; Org Roam UI
 (straight-use-package 'org-roam-ui)
@@ -1104,6 +1098,12 @@ folded."
     (org-roam-db-autosync-mode))
 
 (add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
+
+;; Find node
+(global-set-key (kbd "C-c n") 'org-roam-node-find)
+
+;; Insert reference
+(global-set-key (kbd "C-c i") 'org-roam-node-insert)
 
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"

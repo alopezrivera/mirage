@@ -5,21 +5,25 @@
 (add-to-list 'default-frame-alist '(width  . 70))
 
 ;; background buffers
-  (defvar background-buffers
-    (list (concat config-directory "local.el")
-	      (concat config-directory "demo.org")
-	      (concat config-directory "ui.org")
-	      (concat config-directory "wild.el")
-	      (concat config-directory "org.org")
-	      (concat config-directory "ide.org")
-	      (concat config-directory "init.org")
-	      (concat config-directory "home.org")
-	      (concat config-directory "theme.org")
-	      (concat config-directory "system.org")
-	      (concat config-directory "dotfiles.org")
-	      (concat config-directory "backlog.org")
-	      (concat config-directory "org-diary.org")
-	      (concat config-directory "org-paragraph.org")))
+(defvar background-buffers
+  (list (concat config-directory "local.el")
+        (concat config-directory "init.org")
+        ;; configs
+        (concat config-directory "home.org")
+        (concat config-directory "wild.el")
+        ;; modules
+        (concat config-directory "modules/org.org")
+        (concat config-directory "modules/ide.org")
+        (concat config-directory "modules/ui.org")
+        (concat config-directory "modules/theme.org")
+        ;; packages
+        (concat config-directory "packages/org-diary.org")
+        (concat config-directory "packages/org-paragraph.org")
+
+        (concat config-directory "demo.org")
+        (concat config-directory "system.org")
+        (concat config-directory "dotfiles.org")
+        (concat config-directory "backlog.org")))
 
 (defvar spawn-startup-buffers t
   "Whether to spawn spawn the buffers in the `startup-buffers' list after initialization")
@@ -47,9 +51,6 @@
 ;; Inhibit startup message
 (setq inhibit-startup-message t)
 
-;; Config directory
-(setq config-directory "~/.emacs.d/")
-
 ;; straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -64,7 +65,9 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-(straight-use-package 'use-package)
+;; no-littering
+(straight-use-package 'no-littering)
+(require 'no-littering)
 
 (straight-use-package 'el-patch)
 
@@ -311,7 +314,7 @@ kill ring."
 (require 'multiple-cursors)
 
 ;; mc-lists
-(setq mc/list-file (concat config-directory "mc-lists.el"))
+(setq mc/list-file (concat config-directory "persistent/mc-lists.el"))
 
 ;; Create cursors
 (global-set-key (kbd "C-.")         #'mc/mark-next-like-this)
