@@ -2121,7 +2121,7 @@ if it was previously enabled."
 - currently- 
    - org-recenter -> all todo items unfolded
 
-#+begin_src emacs-lisp :tangle nil
+#+begin_src emacs-lisp :tangle no
 
 (defun custom/org-agenda-recenter (arg)
   (interactive "P")

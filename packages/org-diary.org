@@ -266,7 +266,7 @@ if it is too narrow to split, and resize it."
 
 - mouse click bug -> cursor about 2 lines below mouse
 
-#+begin_src emacs-lisp :tangle nil
+#+begin_src emacs-lisp :tangle no
 
 (defcustom custom/org-diary-line-padding 1.25
   "Org Diary line padding factor"

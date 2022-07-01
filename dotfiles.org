@@ -192,7 +192,7 @@ export PATH="/home/dfki.uni-bremen.de/alopezrivera/.local/bin:$PATH"
 
 ** WSL 2
 
-#+begin_src bash :tangle nil
+#+begin_src bash :tangle no
 
 # run GUI applications using X Server
 export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0 # in WSL 2

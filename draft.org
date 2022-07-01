@@ -69,7 +69,7 @@ STARTUP: overview
 
 #+end_src
 
-#+begin_src emacs-lisp :tangle nil
+#+begin_src emacs-lisp :tangle no
 
 ;; Install
 (pdf-tools-install)

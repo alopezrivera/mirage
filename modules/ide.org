@@ -85,7 +85,7 @@
 ** Python
 *** elpy
 
-#+begin_src bash :tangle nil
+#+begin_src bash :tangle no
 
 sudo apt-get install python3-venv
 

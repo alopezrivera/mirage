@@ -100,7 +100,7 @@ through as a theme loads."
 
 #+end_src
 
-#+begin_src emacs-lisp :tangle nil
+#+begin_src emacs-lisp :tangle no
 
 (all-the-icons-install-fonts)
 
