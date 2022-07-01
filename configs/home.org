@@ -99,18 +99,7 @@
 
 #+end_src
 
-** System information
-*** Config directory
-
-#+begin_src emacs-lisp
-
-;; Config directory
-(setq config-directory "~/.emacs.d/")
-
-#+end_src
-
-** Package management
-*** straight.el
+** Package manager
 
 #+begin_src emacs-lisp
 
@@ -130,11 +119,9 @@
 
 #+end_src
 
-*** use-package
 
 #+begin_src emacs-lisp
 
-(straight-use-package 'use-package)
 
 #+end_src
 
