@@ -8,7 +8,7 @@ STARTUP: overview
    - Unfit for for backlogs
 
 -----
-#+title:Header-based Org Mode
+#+title:Heading-based Org Mode
 
 * Text
 ** Lists
