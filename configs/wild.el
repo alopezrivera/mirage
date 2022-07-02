@@ -177,6 +177,7 @@
 (setq org-src-tab-acts-natively        t)
 (setq org-src-preserve-indentation     nil)
 (setq org-edit-src-content-indentation 0)
+(setq org-pretty-entities t)
 
 ;; suppress babel block execution confirmation
 (defun my-org-confirm-babel-evaluate (lang body)

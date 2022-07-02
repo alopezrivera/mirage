@@ -1293,6 +1293,15 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
+** Super- and subscripts
+
+#+begin_src emacs-lisp
+
+;; super- and subscripts
+(setq org-pretty-entities t)
+
+#+end_src
+
 * Capture
 
 #+begin_src emacs-lisp
