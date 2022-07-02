@@ -211,16 +211,6 @@ through as a theme loads."
 	      ;; Major modes
 	      (emacs-lisp-mode "EL" :major)))
 
-(setq org-hide-emphasis-markers t)
-
-;; org-appear
-(straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
-(add-hook 'org-mode-hook 'org-appear-mode)
-
-(setq org-appear-autolinks t)
-
-(setq org-hidden-keywords '(title))
-
 (add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
 
 (add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
@@ -229,6 +219,17 @@ through as a theme loads."
 
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
+
+(setq org-hidden-keywords '(title))
+
+(setq org-hide-emphasis-markers t)
+
+;; org-appear
+(straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+;; hyperlinks
+(add-hook 'org-mode-hook 'org-toggle-link-display)
 
 (straight-use-package 'org-modern)
 

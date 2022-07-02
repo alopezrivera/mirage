@@ -48,6 +48,7 @@
         org-metaleft
         org-metaright
         org-self-insert-command
+        org-shiftmetaleft
         org-shiftright
         org-yank
         rectangle-left-char
