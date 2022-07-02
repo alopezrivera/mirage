@@ -20,6 +20,7 @@
       - org-modern
       - Ringbearer
          - *
+   - [[https://github.com/fontforge/fontforge]]
 
 - desktop
    - https://superuser.com/questions/859761/prevent-emacs-desktop-save-from-holding-onto-theme-elements
