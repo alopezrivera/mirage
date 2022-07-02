@@ -295,6 +295,10 @@ CLOSED: [2022-05-06 Fri 17:11]
    - b
    - r
 
+- custom markup
+   - https://github.com/rejeep/wrap-region.el
+   - https://github.com/emacs-evil/evil-surround
+
 - temporary
    - overlays
       - https://github.com/emacsorphanage/ov
