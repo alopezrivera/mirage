@@ -719,6 +719,9 @@ indented at the level of the previous list item, indent the paragraph."
 ;; List indentation
 (setq-default org-list-indent-offset 1)
 
+;; super- and subscripts
+(setq org-pretty-entities t)
+
 (require 'org-capture)
 
 ;; Required as of Org 9.2
