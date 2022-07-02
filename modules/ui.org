@@ -320,30 +320,7 @@ through as a theme loads."
 #+end_src
 
 * Org Mode
-** Setup
-*** Hide
-**** Markup
-
-#+begin_src emacs-lisp
-
-(setq org-hide-emphasis-markers t)
-
-;; org-appear
-(straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
-(add-hook 'org-mode-hook 'org-appear-mode)
-
-(setq org-appear-autolinks t)
-
-#+end_src
-
-**** Keywords
-
-#+begin_src emacs-lisp
-
-(setq org-hidden-keywords '(title))
-
-#+end_src
-
+** Text
 *** visual-line
 
 #+begin_src emacs-lisp
@@ -359,7 +336,6 @@ through as a theme loads."
 (add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
 
 #+end_src
-
 ** LaTeX
 *** Equation preview scale
 
@@ -391,6 +367,31 @@ Candidates:
 
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
+
+#+end_src
+
+** Keywords
+
+#+begin_src emacs-lisp
+
+(setq org-hidden-keywords '(title))
+
+#+end_src
+
+** TODO org-appear
+
+- org-appear-autolinks not working
+
+#+begin_src emacs-lisp
+
+(setq org-hide-emphasis-markers t)
+
+;; org-appear
+(straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+;; hyperlinks
+(add-hook 'org-mode-hook 'org-toggle-link-display)
 
 #+end_src
 
