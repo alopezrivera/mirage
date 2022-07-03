@@ -1,10 +1,17 @@
 #+STARTUP: overview
 #+FILETAGS: :dotfiles:
 
+#+STARTUP: overview
+#+FILETAGS: :system:
+
+
 
 
 #+title:System
 #+PROPERTY: header-args :results none
+
+
+Installation process of fundamental applications for Debian systems, in sequential order.
 
 
 * C compiler
@@ -77,6 +84,7 @@ sudo apt-get remove emacs<version>
 sudo update-alternatives --config emacs
 
 #+end_src
+
 
 * LaTeX
 ** TeX Live
