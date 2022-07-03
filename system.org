@@ -28,6 +28,18 @@ sudo apt-get install git -y
 git --version
 
 #+end_src
+
+** git-subrepo
+
+#+begin_src shell
+
+git clone https://github.com/ingydotnet/git-subrepo ~/git-subrepo
+echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
+
+#+end_src
+
+
+
 * Emacs
 ** Install
 *** Latest
