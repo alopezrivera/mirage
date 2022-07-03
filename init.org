@@ -1,3 +1,17 @@
+#+STARTUP: overview
+#+FILETAGS: :emacs:
+
+
+
+
+#+title:Emacs Configuration File
+#+STARTUP: overview
+#+FILETAGS: :emacs:
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
+
+
+* Keys
+
 #+begin_src emacs-lisp
 
 ;; github
@@ -13,10 +27,8 @@
 "n2hrBbaVZEE7b8k")))
 
 #+end_src
-#+title:Emacs Configuration File
-#+STARTUP: overview
-#+FILETAGS: :emacs:
-#+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
+
+* Variables
 
 #+begin_src emacs-lisp
 
@@ -32,12 +44,15 @@
 
 #+end_src
 
+
 * Local
 
 #+begin_src emacs-lisp
 
+(setq local "local-wsl2.el")
+
 ;; local.el
-(let ((local (concat config-directory "local.el")))
+(let ((local (concat config-directory local)))
   (if (file-exists-p local)
       (load-file local)))
 
