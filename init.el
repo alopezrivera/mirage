@@ -20,8 +20,10 @@
 
 (defvar startup-buffers '())
 
+(setq local "local-wsl2.el")
+
 ;; local.el
-(let ((local (concat config-directory "local.el")))
+(let ((local (concat config-directory local)))
   (if (file-exists-p local)
       (load-file local)))
 
