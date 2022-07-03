@@ -1,6 +1,6 @@
 (setq config "home")
 
-(setq home "/mnt/c/Users/anton/Desktop/")
+(setq home "/mnt/e/")
 
 (setq startup-buffers
       (list (concat home "studio/backlog.org")
