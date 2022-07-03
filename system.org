@@ -11,138 +11,11 @@
 #+PROPERTY: header-args :results none
 
 
-
-* Linux
-
 Installation process of fundamental applications for Debian systems, in sequential order.
 
-** C compiler
-*** gcc
-
-#+begin_src shell
-
-sudo apt install build-essential
-gcc --version
-
-#+end_src
-
-** Git
+* Distro
+** WSL 2
 *** Install
-
-#+begin_src shell
-
-sudo add-apt-repository ppa:git-core/ppa -y
-sudo apt-get update
-sudo apt-get install git -y
-git --version
-
-#+end_src
-
-*** git-subrepo
-
-#+begin_src shell
-
-git clone https://github.com/ingydotnet/git-subrepo ~/git-subrepo
-echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
-
-#+end_src
-
-
-
-** Emacs
-*** Install
-**** Latest
-
-#+begin_src shell
-
-sudo add-apt-repository ppa:ubuntu-elisp/ppa
-sudo apt-get update
-sudo apt install emacs-snapshot
-
-#+end_src
-
-**** Specific version
-
-#+begin_src shell
-
-sudo add-apt-repository ppa:kelleyk/emacs
-sudo apt-get update
-sudo apt install emacs<version>
-
-#+end_src
-
-*** Uninstall
-
-#+begin_src shell
-
-sudo apt-get remove emacs<version>
-
-#+end_src
-
-*** Default command
-
-#+begin_src shell
-
-sudo update-alternatives --config emacs
-
-#+end_src
-
-
-** LaTeX
-*** TeX Live
-**** Debian
-
-#+begin_src shell
-
-sudo apt install texlive
-sudo apt install texlive-xetex
-
-# fontawesome5 and other fonts
-sudo apt install texlive-fonts-extra
-
-#+end_src
-
-**** Vanilla
-
-- https://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
-
-*** latexmk
-
-#+begin_src shell
-
-sudo apt-get install latexmk
-
-#+end_src
-
-** TODO Sphinx
-
-- python3-sphinx version <4 (master_doc vs root_doc issue)
-   - seems to work in GitHub actions with Ubuntu 18, installing with pip
-
-#+begin_src shell
-
-sudo apt install python3-sphinx
-
-;; LaTeX
-sudo apt install texlive-luatex
-sudo apt install texlive-fonts-extra-links
-
-;; themes
-pip install sphinx-rtd-theme
-
-#+end_src
-
-*** better-apidoc
-
-#+begin_src shell
-
-pip install better-apidoc
-
-#+end_src
-
-
-* WSL 2
-** Install
 
 #+begin_src powershell
 
@@ -150,16 +23,16 @@ wsl --install
 
 #+end_src
 
-** Distro
+*** Distro
 
 Install from Microsoft Store.
 
-** X server
-*** Install VcXsrv
+*** X server
+**** Install VcXsrv
 
 Available from [[https://sourceforge.net/projects/vcxsrv/][Sourceforge]].
 
-*** Allow VcXsrv through the Windows Defender Firewall
+**** Allow VcXsrv through the Windows Defender Firewall
 
 1. Open the *Windows Defender Firewall* section of the Control Panel
 2. Click on *Advanced Settings*, among the hyperlinks on the left side of the screen
@@ -168,8 +41,8 @@ Available from [[https://sourceforge.net/projects/vcxsrv/][Sourceforge]].
 5. For each of the rules, right click to open their context menu, and select *Properties*
 6. In the *Action* section, tick *Allow the connection*
 
-** Debugging
-*** Low DPI
+*** Debugging
+**** Low DPI
 
 Set up VcXsrv so applications can *Override high DPI scaling behavior*. From [[https://superuser.com/a/1370548][Biswapriyo in StackOverflow]].
 
@@ -188,7 +61,7 @@ export GDK_DPI_SCALE=1
 
 #+end_src
 
-*** No internet connection
+**** No internet connection
 
 Restart IP configuration. From [[https://stackoverflow.com/a/63578387][Sam in StackOverflow]].
 
@@ -198,6 +71,132 @@ netsh winsock reset
 netsh int ip reset all
 netsh winhttp reset proxy
 ipconfig /flushdns
+
+#+end_src
+
+
+
+* C compiler
+** gcc
+
+#+begin_src shell
+
+sudo apt install build-essential
+gcc --version
+
+#+end_src
+
+* Git
+** Install
+
+#+begin_src shell
+
+sudo add-apt-repository ppa:git-core/ppa -y
+sudo apt-get update
+sudo apt-get install git -y
+git --version
+
+#+end_src
+
+** git-subrepo
+
+#+begin_src shell
+
+git clone https://github.com/ingydotnet/git-subrepo ~/git-subrepo
+echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
+
+#+end_src
+
+
+
+* Emacs
+** Install
+*** Latest
+
+#+begin_src shell
+
+sudo add-apt-repository ppa:ubuntu-elisp/ppa
+sudo apt-get update
+sudo apt install emacs-snapshot
+
+#+end_src
+
+*** Specific version
+
+#+begin_src shell
+
+sudo add-apt-repository ppa:kelleyk/emacs
+sudo apt-get update
+sudo apt install emacs<version>
+
+#+end_src
+
+** Uninstall
+
+#+begin_src shell
+
+sudo apt-get remove emacs<version>
+
+#+end_src
+
+** Default command
+
+#+begin_src shell
+
+sudo update-alternatives --config emacs
+
+#+end_src
+
+
+* LaTeX
+** TeX Live
+*** Debian
+
+#+begin_src shell
+
+sudo apt install texlive
+sudo apt install texlive-xetex
+
+# fontawesome5 and other fonts
+sudo apt install texlive-fonts-extra
+
+#+end_src
+
+*** Vanilla
+
+- https://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
+
+** latexmk
+
+#+begin_src shell
+
+sudo apt-get install latexmk
+
+#+end_src
+
+* TODO Sphinx
+
+- python3-sphinx version <4 (master_doc vs root_doc issue)
+   - seems to work in GitHub actions with Ubuntu 18, installing with pip
+
+#+begin_src shell
+
+sudo apt install python3-sphinx
+
+;; LaTeX
+sudo apt install texlive-luatex
+sudo apt install texlive-fonts-extra-links
+
+;; themes
+pip install sphinx-rtd-theme
+
+#+end_src
+
+** better-apidoc
+
+#+begin_src shell
+
+pip install better-apidoc
 
 #+end_src
 
