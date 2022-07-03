@@ -141,3 +141,63 @@ pip install better-apidoc
 #+end_src
 
 
+* WSL 2
+** Install
+
+#+begin_src powershell
+
+wsl --install
+
+#+end_src
+
+** Distro
+
+Install from Microsoft Store.
+
+** X server
+*** Install VcXsrv
+
+Available from [[https://sourceforge.net/projects/vcxsrv/][Sourceforge]].
+
+*** Allow VcXsrv through the Windows Defender Firewall
+
+1. Open the *Windows Defender Firewall* section of the Control Panel
+2. Click on *Advanced Settings*, among the hyperlinks on the left side of the screen
+3. Select *Inbound Rules*
+4. Find the rules named *VcXsrv windows xserver*
+5. For each of the rules, right click to open their context menu, and select *Properties*
+6. In the *Action* section, tick *Allow the connection*
+
+** Debugging
+*** Low DPI
+
+Set up VcXsrv so applications can *Override high DPI scaling behavior*. From [[https://superuser.com/a/1370548][Biswapriyo in StackOverflow]].
+
+1. Go to the installation directory of VcXsrv and find *vcxsrv.exe*
+2. Close any running instance of the X server
+3. Right click *vcxsrv.exe*, and choose *Properties* in the context menu
+4. Navigate to the *Compatibility* tab
+5. Click on the button labeled *Change high DPI settings*
+6. Tick the box at the bottom of the following pop up, labeled /Override high DPI scaling behavior. Scaling performed by:/, and select *Application* in the drop-down menu
+7. Export the following variables in the shell
+
+#+begin_src shell
+
+export GDK_SCALE=0.5
+export GDK_DPI_SCALE=1
+
+#+end_src
+
+*** No internet connection
+
+Restart IP configuration. From [[https://stackoverflow.com/a/63578387][Sam in StackOverflow]].
+
+#+begin_src cmd
+
+netsh winsock reset 
+netsh int ip reset all
+netsh winhttp reset proxy
+ipconfig /flushdns
+
+#+end_src
+
