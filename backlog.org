@@ -10,6 +10,11 @@
 #+latex_class_options: [twocolumn]
 -----
 
+- media player
+   - MPV
+      - https://mpv.io/
+      - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#mpv
+
 - markdown live edit
    - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
 
