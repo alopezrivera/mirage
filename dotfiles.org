@@ -7,6 +7,7 @@
 #+title:Dotfiles
 #+PROPERTY: header-args :results none
 
+
 * references
 
 - https://evanhahn.com/a-decade-of-dotfiles/
@@ -66,7 +67,7 @@ xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 * .bashrc
 ** default
 
-#+begin_src bash :tangle ~/.bashrc
+#+begin_src bash
 
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
@@ -190,7 +191,6 @@ export PATH="/home/dfki.uni-bremen.de/alopezrivera/.local/bin:$PATH"
 
 #+end_src
 
-** WSL 2
 ** git-subrepo
 
 #+begin_src shell
@@ -199,10 +199,14 @@ echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
 
 #+end_src
 
-#+begin_src bash :tangle no
+** system-specific
+*** WSL 2
+
+#+begin_src bash
 
 # run GUI applications using X Server
-export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0 # in WSL 2
+export DISPLAY_NUMBER="0:0"
+export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):$DISPLAY_NUMBER
 export LIBGL_ALWAYS_INDIRECT=1
 
 #+end_src
