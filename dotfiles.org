@@ -191,6 +191,13 @@ export PATH="/home/dfki.uni-bremen.de/alopezrivera/.local/bin:$PATH"
 #+end_src
 
 ** WSL 2
+** git-subrepo
+
+#+begin_src shell
+
+echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
+
+#+end_src
 
 #+begin_src bash :tangle no
 
