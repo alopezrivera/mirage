@@ -83,6 +83,7 @@
         org-metadown
         org-open-at-mouse
         pixel-scroll-precision
+        pixel-scroll-start-momentum
         previous-buffer
         split-and-follow-horizontally
         suspend-frame
