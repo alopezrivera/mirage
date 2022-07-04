@@ -681,22 +681,10 @@ for a date to visit using the Emacs calendar."
                                     ("C-<next>"  . custom/org-diary-next))
   "Org Diary bindings")
 
-(defun custom/org-diary-scope (orig-fun)
-  "Restrict scope of Org Diary bindings to Org Diar entries.
-
-Command scoping is applied as it is very common to exit an Org
-Diary buffer /without/ closing it by calling `custom/org-diary'
-(`C-d'), for example by changing to another buffer, killing the
-buffer, killing the window, etc., thereby causing `custom/org-diary-mode'
-to remain active, and so its bindings to be available outside
-of `org-diary' buffers"
-  (if (and (bound-and-true-p custom/org-diary-mode) (custom/org-diary-entry))
-      (funcall orig-fun)))
-
 (cl-loop for binding in custom/org-diary-bindings
          collect (let ((k (car binding))
                        (c (cdr binding)))
-                   (define-key custom/org-diary-mode-map (kbd k) `(lambda () (interactive) (custom/org-diary-scope ',c)))))
+                   (define-key custom/org-diary-mode-map (kbd k) c)))
 
 #+end_src
 
