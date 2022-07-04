@@ -49,12 +49,11 @@
 
 #+begin_src emacs-lisp
 
-(setq local "local-wsl2.el")
-
 ;; local.el
-(let ((local (concat config-directory local)))
+(let ((local (concat config-directory "local/local--" (system-name) ".el")))
   (if (file-exists-p local)
-      (load-file local)))
+      (load-file local)
+    (write-region ";; local emacs config" nil local)))
 
 #+end_src
 
