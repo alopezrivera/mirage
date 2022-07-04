@@ -308,6 +308,10 @@ if it is too narrow to split, and resize it."
 ** Time
 *** TODO org-diary-parse-time
 
+org-read-date
+
+-----
+
 1. find separator indices in time string
     - <any code><separator>% -> regex match group
     - assoc list ((code . pos in time list))
