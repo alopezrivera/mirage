@@ -627,6 +627,9 @@ it does not exist"
 
 #+begin_src emacs-lisp
 
+(defun custom/org-diary-exit ()
+  (setq custom/org-diary-last-visited (custom/org-diary-entry-time (current-buffer)))
+  (custom/org-diary-mode 0))
 
 #+end_src
 
@@ -644,8 +647,7 @@ it does not exist"
 for a date to visit using the Emacs calendar."
   (interactive)
   (if (custom/org-diary-entry)
-      (progn (setq custom/org-diary-last-visited (custom/org-diary-entry-time (current-buffer)))
-	       (custom/org-diary-mode 0)
+      (progn (custom/org-diary-exit)
 	       (bury-buffer)
 	       (ignore-errors (delete-window)))
     (progn (if (custom/org-diary-window)
