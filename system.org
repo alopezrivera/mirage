@@ -131,7 +131,7 @@ sudo apt install emacs<version>
 
 #+end_src
 
-** Uninstall
+*** Uninstall
 
 #+begin_src shell
 
@@ -139,7 +139,7 @@ sudo apt-get remove emacs<version>
 
 #+end_src
 
-** Default command
+*** Default command
 
 #+begin_src shell
 
