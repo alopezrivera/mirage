@@ -42,12 +42,11 @@
   :lighter " Diary"
   :group 'custom/org-diary-mode-group
 
-  (when (bound-and-true-p custom/org-diary-mode)
-    (custom/org-diary-typeset))
-  (when (not (bound-and-true-p custom/org-diary-mode))
-    (custom/org-diary-font-lock-remove)
-    (if custom/org-diary-variable-pitch
-	   (variable-pitch-mode 0))))
+  (let ((active (bound-and-true-p custom/org-diary-mode)))
+    (when active
+      (custom/org-diary-typeset))
+    (when (not active)
+      (custom/org-diary-undo-typesetting))))
 
 (define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
 
@@ -129,9 +128,21 @@ if it is too narrow to split, and resize it."
   (custom/window-resize-fraction custom/org-diary-new-window-fraction custom/org-diary-min-window-width))
 
 (defun custom/org-diary-typeset ()
+  "Typeset `org-diary' buffers"
+  ;; variable pitch
   (if custom/org-diary-variable-pitch
       (variable-pitch-mode))
-  (custom/org-diary-font-lock-add))
+  ;; font overlays
+  (custom/org-diary-font-lock-add)
+  ;; pretty entities
+  (if org-pretty-entities
+      (org-toggle-pretty-entities)))
+
+(defun custom/org-diary-undo-typesetting ()
+  "Undo `org-diary' typesetting"
+  (custom/org-diary-font-lock-remove)
+  (if custom/org-diary-variable-pitch
+      (variable-pitch-mode 0)))
 
 (defface custom/org-diary-typeface-hhmm
   '((nil :foreground "#eb07b6" :inherit 'fixed-pitch))
