@@ -1,3 +1,5 @@
+;; local emacs config
+
 (setq config "home")
 
 (setq home "/mnt/e/")
