@@ -41,6 +41,7 @@
   :init-value 1
   :lighter " Diary"
   :group 'custom/org-diary-mode-group
+  :keymap '()
 
   (let ((active (bound-and-true-p custom/org-diary-mode)))
     (when active
@@ -237,11 +238,15 @@ switch to that window; otherwise, switch to that buffer.
 
 (defun custom/org-diary-visit (time &optional arg dir)
   "Open the Org Diary entry corresponding to the specified time, and initialize it if necessary.
+
+ARG is the `current-prefix-arg' of a function wrapping this one, and which passes its
+`current-prefix-arg' to this function.
 -             '(0):  noselect
 - C-u         '(4):  visit in current buffer
 - C-u C-u     '(16): save new entry after initialiation
-- C-u C-u C-u '(64): visit in current buffer and save new entry after initialization"
-  (interactive)
+- C-u C-u C-u '(64): visit in current buffer and save new entry after initialization
+
+DIR is the directory in which to look for the org-diary entry corresponding to TIME."
   (let ((entry      (custom/org-diary-time-string-file time dir))
 	   (save       (or (equal arg '(16)) (equal arg '(64))))
 	   (noselect   (equal arg '(1)))
@@ -265,11 +270,11 @@ switch to that window; otherwise, switch to that buffer.
        ;; Go to end of buffer
        (end-of-buffer)))
 
-(defun custom/org-diary-today (&optional arg)
+(defun custom/org-diary-today ()
   "Open the Org Diary entry for today, creating it if
 it does not exist"
   (interactive)
-  (custom/org-diary-visit (current-time) arg custom/org-diary-directory))
+  (custom/org-diary-visit (current-time) current-prefix-arg custom/org-diary-directory))
 
 (defun custom/org-diary-jump (number)
   (interactive)
@@ -308,13 +313,9 @@ it does not exist"
   (interactive)
   (custom/org-diary-insert-time "%H:%M"))
 
-(defun custom/org-diary (&optional arg)
-  "Org Diary entry and exit point.
-
-Bindings:
-- C-<up>   -> previous entry if it exists
-- C-<down> -> next entry if it exists
-- C-n      -> new entry"
+(defun custom/org-diary ()
+  "Org Diary entry and exit point. If preceded by `C-u', prompt
+for a date to visit using the Emacs calendar."
   (interactive)
   (if (custom/org-diary-entry)
       (progn (setq custom/org-diary-last-visited (custom/org-diary-entry-time (current-buffer)))
@@ -323,19 +324,22 @@ Bindings:
 	       (ignore-errors (delete-window)))
     (progn (if (custom/org-diary-window)
 	         (select-window (custom/org-diary-window))
-	       (let ((time (if (custom/org-diary-revisit) custom/org-diary-last-visited (current-time))))
-		    (custom/org-diary-visit time arg custom/org-diary-directory)))
+	       (let ((time (cond ((equal current-prefix-arg '(4)) (org-read-date nil 'to-time nil ""))
+                               ((custom/org-diary-revisit)      custom/org-diary-last-visited)
+                               (t                               (current-time)))))
+                  (custom/org-diary-visit time nil custom/org-diary-directory)))
 	     (custom/org-diary-mode 1))))
 
 (add-hook 'org-mode-hook (lambda () (if (custom/org-diary-entry) (custom/org-diary-mode))))
 
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
-(define-key org-mode-map (kbd "C-d")       'custom/org-diary-insert-time-hhmm)
-(define-key org-mode-map (kbd "C-x w")     'custom/org-diary-resize-window)
-(define-key org-mode-map (kbd "C-c t")     'custom/org-diary-today)
-(define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
-(define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
+(define-key custom/org-diary-mode-map (kbd "C-c d")     'custom/org-diary)
+(define-key custom/org-diary-mode-map (kbd "C-d")       'custom/org-diary-insert-time-hhmm)
+(define-key custom/org-diary-mode-map (kbd "C-x w")     'custom/org-diary-resize-window)
+(define-key custom/org-diary-mode-map (kbd "C-c t")     'custom/org-diary-today)
+(define-key custom/org-diary-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
+(define-key custom/org-diary-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 
 (provide 'org-diary)
 ;;; org-modern.el ends here
