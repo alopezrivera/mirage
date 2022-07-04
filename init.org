@@ -9,8 +9,21 @@
 #+FILETAGS: :emacs:
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
 
+#+begin_src emacs-lisp
 
-* Keys
+;;; -*- lexical-binding: t; -*-
+
+(defvar config "home")
+
+(defvar config-directory "~/.emacs.d/")
+
+(defvar initial-buffer-choice "")
+
+(defvar startup-buffers '())
+
+#+end_src
+
+-----
 
 #+begin_src emacs-lisp
 
@@ -27,23 +40,6 @@
 "n2hrBbaVZEE7b8k")))
 
 #+end_src
-
-* Variables
-
-#+begin_src emacs-lisp
-
-;;; -*- lexical-binding: t; -*-
-
-(defvar config "home")
-
-(defvar config-directory "~/.emacs.d/")
-
-(defvar initial-buffer-choice "")
-
-(defvar startup-buffers '())
-
-#+end_src
-
 
 * Local
 
