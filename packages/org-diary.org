@@ -8,13 +8,23 @@
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./org-diary.el :mkdirp yes
 
 
-Org Mode paragraphs hitch-hiking their way to first class structural
-editing citizenship.
+Org Diary is a minor mode designed for keeping a diary using Org Mode. With a diary,
+I mean a simple daily note consisting of bullet points in which to write the worthy
+occurrences of the day, scattered thoughts, et cétera.
 
-~org-paragraph~ is a minor mode for Emacs Org Mode which adds primitives
-to manipulate paragraphs using the Org Mode struct infrastructure.
-Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
-~org-metaleft~, ~org-metaup~ and ~org-metadown~.
+Entries live their short lives in a thin strip to the right of your frame. You can
+enter and exit Org Diary with ~C-c d~, and within you can press
+
+   ~C-d~ to insert a timestamp with the current hour and minute
+   ~C-<left arrow>~ to visit the previous entry
+   ~C-<right arrow>~ to visit the next entry
+   ~C-c t~ to go back to today's entry
+   ~C-x w~ to resize the Org Diary window to its righteous size
+
+~org-diary~, the function you call with ~C-c d~, will open Org Diary at either the
+entry for today, or that of the last day you visited. If you wish to choose a
+specific entry to open, you can call ~org-diary~ with the ~C-u~ prefix. This will raise a
+calendar prompt in which to choose a day the entry of which you want to read.
 
 
 * TODO Backlog
