@@ -212,11 +212,16 @@ if it is too narrow to split, and resize it."
 #+begin_src emacs-lisp
 
 (defun custom/org-diary-typeset ()
+  "Typeset `org-diary' buffers"
+  ;; variable pitch
   (if custom/org-diary-variable-pitch
       (variable-pitch-mode))
-  (custom/org-diary-font-lock-add))
+  ;; font overlays
+  (custom/org-diary-font-lock-add)
+  ;; pretty entities
   (if org-pretty-entities
       (org-toggle-pretty-entities)))
+
 (defun custom/org-diary-undo-typesetting ()
   "Undo `org-diary' typesetting"
   (custom/org-diary-font-lock-remove)
