@@ -150,6 +150,7 @@ sudo update-alternatives --config emacs
 ** Local config
 
 #+begin_src emacs-lisp
+;; local emacs config
 
 (setq config "home")
 
