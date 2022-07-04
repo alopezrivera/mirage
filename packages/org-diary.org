@@ -623,7 +623,12 @@ it does not exist"
 
 #+end_src
 
-* Exit
+* TODO Exit
+
+- exit
+   - save/generate autosave file
+- window deletion
+   - save/generate autosave file
 
 #+begin_src emacs-lisp
 
@@ -633,12 +638,7 @@ it does not exist"
 
 #+end_src
 
-* TODO Diary
-
-- exit
-   - save/generate autosave file
-- window deletion
-   - save/generate autosave file
+* Diary
 
 #+begin_src emacs-lisp
 
