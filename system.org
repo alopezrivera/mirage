@@ -96,6 +96,14 @@ git --version
 
 #+end_src
 
+** Setup
+
+#+begin_src shell
+
+git config --global pull.rebase false
+
+#+end_src
+
 ** git-subrepo
 
 #+begin_src shell
