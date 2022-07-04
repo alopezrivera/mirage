@@ -10,6 +10,19 @@
 
 Function case definition.
 
+* TODO filter
+
+Apply single pre-execution filter to a set of functions.
+
+- custom/filters
+   - keys:   filters
+   - values: filtered functions for each filter
+- filter-get
+- filter-remove
+   - remove advice for all filtered functions
+
+Check ~org-diary-scope~ implementation.
+
 
 * table
 
