@@ -898,6 +898,49 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
       ;; else, attempt going to last subheading of previous same-level heading
       (custom/org-goto-child-last))))
 
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
+
+(plist-put org-format-latex-options :scale 1.5)
+
+;; Change ellipsis ("...") to remove clutter
+(setq org-ellipsis " ♢")
+
+(setq org-hidden-keywords '(title))
+
+(setq org-hide-emphasis-markers t)
+
+;; org-appear
+(straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+;; hyperlinks
+(add-hook 'org-mode-hook 'org-toggle-link-display)
+
+(straight-use-package 'org-modern)
+
+(add-hook 'org-mode-hook #'org-modern-mode)
+(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+
+(setq org-modern-list '((?+ . "-")
+ 		  	     (?- . "•")
+ 			     (?* . "▶")))
+
+(setq org-modern-checkbox nil)
+
+;; Vertical table line width
+(setq org-modern-table-vertical 1)
+
+;; Horizontal table line width
+(setq org-modern-table-horizontal 1)
+
+;; Tags
+(setq org-modern-tag nil)
+
+;; Priorities
+(setq org-modern-priority nil)
+
 ;; ox-rst
 (straight-use-package 'ox-rst)
 (require 'ox-rst)
