@@ -80,7 +80,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
 
 (define-minor-mode custom/org-diary-mode
   "Org Diary minor mode"
-  :init-value 1
+  :init-value nil
   :lighter " Diary"
   :group 'custom/org-diary-mode-group
   :keymap '()
