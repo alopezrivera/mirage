@@ -1,3 +1,13 @@
+;;; -*- lexical-binding: t; -*-
+
+(defvar config "home")
+
+(defvar config-directory "~/.emacs.d/")
+
+(defvar initial-buffer-choice "")
+
+(defvar startup-buffers '())
+
 ;; github
 (global-set-key (kbd "C-M-g") (lambda () (interactive) (insert
 "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")))
@@ -9,16 +19,6 @@
 ;; gitlab
 (global-set-key (kbd "C-M-l") (lambda () (interactive) (insert
 "n2hrBbaVZEE7b8k")))
-
-;;; -*- lexical-binding: t; -*-
-
-(defvar config "home")
-
-(defvar config-directory "~/.emacs.d/")
-
-(defvar initial-buffer-choice "")
-
-(defvar startup-buffers '())
 
 (setq local "local-wsl2.el")
 
