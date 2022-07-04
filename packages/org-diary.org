@@ -83,6 +83,7 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
   :init-value 1
   :lighter " Diary"
   :group 'custom/org-diary-mode-group
+  :keymap '()
 
   (let ((active (bound-and-true-p custom/org-diary-mode)))
     (when active
@@ -658,11 +659,12 @@ Bindings:
 
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
-(define-key org-mode-map (kbd "C-d")       'custom/org-diary-insert-time-hhmm)
-(define-key org-mode-map (kbd "C-x w")     'custom/org-diary-resize-window)
-(define-key org-mode-map (kbd "C-c t")     'custom/org-diary-today)
-(define-key org-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
-(define-key org-mode-map (kbd "C-<next>")  'custom/org-diary-next)
+(define-key custom/org-diary-mode-map (kbd "C-c d")     'custom/org-diary)
+(define-key custom/org-diary-mode-map (kbd "C-d")       'custom/org-diary-insert-time-hhmm)
+(define-key custom/org-diary-mode-map (kbd "C-x w")     'custom/org-diary-resize-window)
+(define-key custom/org-diary-mode-map (kbd "C-c t")     'custom/org-diary-today)
+(define-key custom/org-diary-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
+(define-key custom/org-diary-mode-map (kbd "C-<next>")  'custom/org-diary-next)
 
 #+end_src
 
