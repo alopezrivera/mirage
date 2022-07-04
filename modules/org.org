@@ -1581,6 +1581,136 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
+* UI
+** Text
+*** visual-line
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+#+end_src
+
+*** org-indent
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
+
+#+end_src
+** LaTeX
+*** Equation preview scale
+
+#+begin_src emacs-lisp
+
+(plist-put org-format-latex-options :scale 1.5)
+
+#+end_src
+
+** Ellipses
+
+Candidates:
+- triangles
+  ▼
+  ▾
+  ▿
+- rhomboids
+  ⬙
+  ⟡
+  ⬥
+  ♦
+  ♢
+- non-compliant
+  ⧨
+  
+-----
+
+#+begin_src emacs-lisp
+
+;; Change ellipsis ("...") to remove clutter
+(setq org-ellipsis " ♢")
+
+#+end_src
+
+** Keywords
+
+#+begin_src emacs-lisp
+
+(setq org-hidden-keywords '(title))
+
+#+end_src
+
+** TODO org-appear
+
+- org-appear-autolinks not working
+
+#+begin_src emacs-lisp
+
+(setq org-hide-emphasis-markers t)
+
+;; org-appear
+(straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+;; hyperlinks
+(add-hook 'org-mode-hook 'org-toggle-link-display)
+
+#+end_src
+
+** org-modern
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'org-modern)
+
+(add-hook 'org-mode-hook #'org-modern-mode)
+(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+
+#+end_src
+
+*** Lists
+**** Markers
+
+#+begin_src emacs-lisp
+
+(setq org-modern-list '((?+ . "-")
+ 		  	     (?- . "•")
+ 			     (?* . "▶")))
+
+#+end_src
+
+**** Checkboxes
+
+#+begin_src emacs-lisp
+
+(setq org-modern-checkbox nil)
+
+#+end_src
+
+*** Tables
+
+#+begin_src emacs-lisp
+
+;; Vertical table line width
+(setq org-modern-table-vertical 1)
+
+;; Horizontal table line width
+(setq org-modern-table-horizontal 1)
+
+#+end_src
+
+*** Highlights
+
+#+begin_src emacs-lisp
+
+;; Tags
+(setq org-modern-tag nil)
+
+;; Priorities
+(setq org-modern-priority nil)
+
+#+end_src
+
 
 * Export
 ** rst
