@@ -719,7 +719,7 @@ indented at the level of the previous list item, indent the paragraph."
 ;; List indentation
 (setq-default org-list-indent-offset 1)
 
-;; super- and subscripts
+;; symbols, super- and subscripts
 (setq org-pretty-entities t)
 
 (require 'org-capture)
@@ -898,25 +898,35 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
       ;; else, attempt going to last subheading of previous same-level heading
       (custom/org-goto-child-last))))
 
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
-(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
-
-(plist-put org-format-latex-options :scale 1.5)
-
-;; Change ellipsis ("...") to remove clutter
-(setq org-ellipsis " ♢")
+(setq org-hide-emphasis-markers t)
 
 (setq org-hidden-keywords '(title))
-
-(setq org-hide-emphasis-markers t)
 
 ;; org-appear
 (straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
 (add-hook 'org-mode-hook 'org-appear-mode)
 
-;; hyperlinks
-(add-hook 'org-mode-hook 'org-toggle-link-display)
+;; links
+(setq org-appear-autolinks t)
+
+;; keywords
+(setq org-appear-autokeywords t)
+
+;; symbols
+(setq org-appear-autoentities t)
+
+;; subscripts and superscripts
+(setq org-appear-autosubmarkers t)
+(setq org-appear-inside-latex t)
+
+(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+(plist-put org-format-latex-options :scale 1.5)
+
+;; Change ellipsis ("...") to remove clutter
+(setq org-ellipsis " ♢")
 
 (straight-use-package 'org-modern)
 
