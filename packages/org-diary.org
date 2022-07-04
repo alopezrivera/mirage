@@ -215,6 +215,11 @@ if it is too narrow to split, and resize it."
   (if custom/org-diary-variable-pitch
       (variable-pitch-mode))
   (custom/org-diary-font-lock-add))
+(defun custom/org-diary-undo-typesetting ()
+  "Undo `org-diary' typesetting"
+  (custom/org-diary-font-lock-remove)
+  (if custom/org-diary-variable-pitch
+      (variable-pitch-mode 0)))
 
 #+end_src
 
