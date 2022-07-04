@@ -628,13 +628,9 @@ it does not exist"
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary (&optional arg)
-  "Org Diary entry and exit point.
-
-Bindings:
-- C-<up>   -> previous entry if it exists
-- C-<down> -> next entry if it exists
-- C-n      -> new entry"
+(defun custom/org-diary ()
+  "Org Diary entry and exit point. If preceded by `C-u', prompt
+for a date to visit using the Emacs calendar."
   (interactive)
   (if (custom/org-diary-entry)
       (progn (setq custom/org-diary-last-visited (custom/org-diary-entry-time (current-buffer)))
@@ -643,8 +639,10 @@ Bindings:
 	       (ignore-errors (delete-window)))
     (progn (if (custom/org-diary-window)
 	         (select-window (custom/org-diary-window))
-	       (let ((time (if (custom/org-diary-revisit) custom/org-diary-last-visited (current-time))))
-		    (custom/org-diary-visit time arg custom/org-diary-directory)))
+	       (let ((time (cond ((equal current-prefix-arg '(4)) (org-read-date nil 'to-time nil ""))
+                               ((custom/org-diary-revisit)      custom/org-diary-last-visited)
+                               (t                               (current-time)))))
+                  (custom/org-diary-visit time nil custom/org-diary-directory)))
 	     (custom/org-diary-mode 1))))
 
 #+end_src
