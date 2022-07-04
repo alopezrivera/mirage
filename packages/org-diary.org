@@ -84,12 +84,11 @@ Out of the box, org-paragraph adds paragraph support to ~org-metaright~,
   :lighter " Diary"
   :group 'custom/org-diary-mode-group
 
-  (when (bound-and-true-p custom/org-diary-mode)
-    (custom/org-diary-typeset))
-  (when (not (bound-and-true-p custom/org-diary-mode))
-    (custom/org-diary-font-lock-remove)
-    (if custom/org-diary-variable-pitch
-	   (variable-pitch-mode 0))))
+  (let ((active (bound-and-true-p custom/org-diary-mode)))
+    (when active
+      (custom/org-diary-typeset))
+    (when (not active)
+      (custom/org-diary-undo-typesetting))))
 
 (define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
 
