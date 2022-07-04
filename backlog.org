@@ -45,6 +45,8 @@
    - https://github.com/rougier/emacs-gtd
    - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
    - https://github.com/rougier/agenda
+   - mini
+      - https://www.reddit.com/r/emacs/comments/nbaolx/interactive_miniagenda_using_a_minicalendar_in_a/
 
 - latex
    - class, style file access
