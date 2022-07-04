@@ -1,7 +1,4 @@
 #+STARTUP: overview
-#+FILETAGS: :dotfiles:
-
-#+STARTUP: overview
 #+FILETAGS: :system:
 
 
