@@ -15,8 +15,14 @@
       - https://mpv.io/
       - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#mpv
 
-- markdown live edit
-   - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
+- markdown
+   - markdown-mode
+      - https://jblevins.org/projects/markdown-mode/
+   - live preview
+      - in-buffer
+         - https://stackoverflow.com/questions/3409484/render-markdown-in-emacs-buffer/11628141#11628141
+      - other
+         - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
 
 - backlog editing mode
 
