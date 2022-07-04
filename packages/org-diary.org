@@ -532,11 +532,11 @@ switch to that window; otherwise, switch to that buffer.
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-today (&optional arg)
+(defun custom/org-diary-today ()
   "Open the Org Diary entry for today, creating it if
 it does not exist"
   (interactive)
-  (custom/org-diary-visit (current-time) arg custom/org-diary-directory))
+  (custom/org-diary-visit (current-time) current-prefix-arg custom/org-diary-directory))
 
 #+end_src
 
