@@ -434,6 +434,42 @@ in an unsaved buffer"
 
 #+end_src
 
+* Editing
+** Initialization
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-init (time)
+  "Set up Org Diary entry"
+  (interactive)
+  (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
+  (insert "#+CREATED: ")
+  (org-time-stamp-inactive '(16))
+  (insert "\n\n\n\n- "))
+
+#+end_src
+
+** Insert time
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-insert-time (format)
+  "Insert current time using the given FORMAT"
+  (insert (format-time-string format (current-time))))
+
+#+end_src
+
+*** insert-hhmm
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-insert-time-hhmm ()
+  "Insert current time in HH:MM format"
+  (interactive)
+  (custom/org-diary-insert-time "%H:%M"))
+
+#+end_src
+
 * Exploration
 ** TODO org-diary-browse
 
@@ -587,39 +623,10 @@ it does not exist"
 
 #+end_src
 
-* Editing
-** Initialization
+* Exit
 
 #+begin_src emacs-lisp
 
-(defun custom/org-diary-init (time)
-  "Set up Org Diary entry"
-  (interactive)
-  (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
-  (insert "#+CREATED: ")
-  (org-time-stamp-inactive '(16))
-  (insert "\n\n\n\n- "))
-
-#+end_src
-
-** insert-time
-
-#+begin_src emacs-lisp
-
-(defun custom/org-diary-insert-time (format)
-  "Insert current time using the given FORMAT"
-  (insert (format-time-string format (current-time))))
-
-#+end_src
-
-** insert-hhmm
-
-#+begin_src emacs-lisp
-
-(defun custom/org-diary-insert-time-hhmm ()
-  "Insert current time using the given FORMAT"
-  (interactive)
-  (custom/org-diary-insert-time "%H:%M"))
 
 #+end_src
 
