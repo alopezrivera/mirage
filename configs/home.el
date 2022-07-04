@@ -980,6 +980,12 @@ the user for confirmation."
 
 (global-set-key (kbd "C-c r") #'custom/reload-from-disk)
 
+(setq backup-by-copying t)
+(setq version-control t)
+(setq delete-old-versions t)
+(setq kept-new-versions 2)
+(setq kept-old-versions 2)
+
 (require 'ui (concat config-directory "modules/ui.el"))
 
 (require 'theme (concat config-directory "modules/theme.el"))

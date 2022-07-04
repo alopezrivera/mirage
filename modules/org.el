@@ -719,7 +719,7 @@ indented at the level of the previous list item, indent the paragraph."
 ;; List indentation
 (setq-default org-list-indent-offset 1)
 
-;; super- and subscripts
+;; symbols, super- and subscripts
 (setq org-pretty-entities t)
 
 (require 'org-capture)
@@ -897,6 +897,59 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 	    (custom/org-goto-heading-parent)
       ;; else, attempt going to last subheading of previous same-level heading
       (custom/org-goto-child-last))))
+
+(setq org-hide-emphasis-markers t)
+
+(setq org-hidden-keywords '(title))
+
+;; org-appear
+(straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+;; links
+(setq org-appear-autolinks t)
+
+;; keywords
+(setq org-appear-autokeywords t)
+
+;; symbols
+(setq org-appear-autoentities t)
+
+;; subscripts and superscripts
+(setq org-appear-autosubmarkers t)
+(setq org-appear-inside-latex t)
+
+(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+(plist-put org-format-latex-options :scale 1.5)
+
+;; Change ellipsis ("...") to remove clutter
+(setq org-ellipsis " ♢")
+
+(straight-use-package 'org-modern)
+
+(add-hook 'org-mode-hook #'org-modern-mode)
+(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+
+(setq org-modern-list '((?+ . "-")
+ 		  	     (?- . "•")
+ 			     (?* . "▶")))
+
+(setq org-modern-checkbox nil)
+
+;; Vertical table line width
+(setq org-modern-table-vertical 1)
+
+;; Horizontal table line width
+(setq org-modern-table-horizontal 1)
+
+;; Tags
+(setq org-modern-tag nil)
+
+;; Priorities
+(setq org-modern-priority nil)
 
 ;; ox-rst
 (straight-use-package 'ox-rst)

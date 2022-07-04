@@ -1718,7 +1718,8 @@ kill the current buffer and delete its window."
 #+end_src
 
 * File management
-** dos2unix
+** Functions
+*** dos2unix
 
 #+begin_src emacs-lisp
 
@@ -1729,7 +1730,7 @@ kill the current buffer and delete its window."
 
 #+end_src
 
-** Reload from disk
+*** Reload from disk
 
 #+begin_src emacs-lisp
 
@@ -1750,6 +1751,19 @@ the user for confirmation."
 
 #+end_src
 
+** Buffer backups
+
+~backup-directory-alist~, which determines where backups are saved, is set by ~no-littering~.
+
+#+begin_src emacs-lisp
+
+(setq backup-by-copying t)
+(setq version-control t)
+(setq delete-old-versions t)
+(setq kept-new-versions 2)
+(setq kept-old-versions 2)
+
+#+end_src
 
 * UI
 
