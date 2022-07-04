@@ -1718,7 +1718,8 @@ kill the current buffer and delete its window."
 #+end_src
 
 * File management
-** dos2unix
+** Functions
+*** dos2unix
 
 #+begin_src emacs-lisp
 
@@ -1729,7 +1730,7 @@ kill the current buffer and delete its window."
 
 #+end_src
 
-** Reload from disk
+*** Reload from disk
 
 #+begin_src emacs-lisp
 
