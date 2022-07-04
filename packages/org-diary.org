@@ -605,9 +605,10 @@ it does not exist"
 
 * TODO Diary
 
-- at close
+- exit
    - save/generate autosave file
-   - delete empty lines at bottom
+- window deletion
+   - save/generate autosave file
 
 #+begin_src emacs-lisp
 
