@@ -904,7 +904,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 ;; org-appear
 (straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
-(add-hook 'org-mode-hook 'org-appear-mode)
+(add-hook 'org-mode-hook #'org-appear-mode)
 
 ;; links
 (setq org-appear-autolinks t)
@@ -1044,7 +1044,7 @@ matches the current theme."
 ;; org-fragtog
 (straight-use-package 'org-fragtog)
 
-(add-hook 'org-mode-hook 'org-fragtog-mode)
+(add-hook 'org-mode-hook #'org-fragtog-mode)
 
 (require 'org-diary (concat config-directory "packages/org-diary.el"))
 
@@ -1065,7 +1065,7 @@ matches the current theme."
      (let ((org-confirm-babel-evaluate nil))
        (org-babel-tangle))))
 
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'custom/org-babel-autotangle)))
+(add-hook 'after-save-hook #'custom/org-babel-autotangle)
 
 (defun custom/org-fix-bleed-end-line-block (from to flag spec)
   "Toggle fontification of last char of block end lines when cycling.
@@ -1153,7 +1153,7 @@ folded."
 (if (and (boundp 'org-roam-directory) (file-directory-p org-roam-directory))
     (org-roam-db-autosync-mode))
 
-(add-hook 'org-roam-find-file-hook 'variable-pitch-mode)
+(add-hook 'org-roam-find-file-hook #'variable-pitch-mode)
 
 ;; Find node
 (global-set-key (kbd "C-c n") 'org-roam-node-find)
@@ -1176,7 +1176,7 @@ folded."
 (setq org-roam-timestamps-minimum-gap 3600)
 
 ;; visit hook
-(add-hook 'custom/org-roam-node-visit-hook 'org-roam-timestamps-mode)
+(add-hook 'custom/org-roam-node-visit-hook #'org-roam-timestamps-mode)
 
 ;; capture hook
 (defvar custom/org-roam-timestamps-mode-active-before-capture nil)
@@ -1185,14 +1185,14 @@ folded."
   "Disable `org-roam-timestamps-mode' in Org Roam capture buffers."
   (setq custom/org-roam-timestamps-mode-active-before-capture org-roam-timestamps-mode)
   (org-roam-timestamps-mode -1))
-(add-hook 'org-roam-capture-new-node-hook 'custom/org-roam-timestamps-mode-off)
+(add-hook 'org-roam-capture-new-node-hook #'custom/org-roam-timestamps-mode-off)
 
 (defun custom/org-roam-timestamps-mode-back ()
   "Re-enable `org-roam-timestamps-mode' after finalizing capture,
 if it was previously enabled."
   (if custom/org-roam-timestamps-mode-active-before-capture
       (org-roam-timestamps-mode)))
-(add-hook 'org-capture-after-finalize-hook 'custom/org-roam-timestamps-mode-back)
+(add-hook 'org-capture-after-finalize-hook #'custom/org-roam-timestamps-mode-back)
 
 ;; org-agenda
 (global-set-key (kbd "C-c a") 'org-agenda)

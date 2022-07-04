@@ -38,7 +38,7 @@
 
 (define-minor-mode custom/org-diary-mode
   "Org Diary minor mode"
-  :init-value 1
+  :init-value nil
   :lighter " Diary"
   :group 'custom/org-diary-mode-group
   :keymap '()
@@ -209,6 +209,23 @@ in an unsaved buffer"
 	          return (get-buffer-window buffer)
            finally return nil))
 
+(defun custom/org-diary-init (time)
+  "Set up Org Diary entry"
+  (interactive)
+  (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
+  (insert "#+CREATED: ")
+  (org-time-stamp-inactive '(16))
+  (insert "\n\n\n\n- "))
+
+(defun custom/org-diary-insert-time (format)
+  "Insert current time using the given FORMAT"
+  (insert (format-time-string format (current-time))))
+
+(defun custom/org-diary-insert-time-hhmm ()
+  "Insert current time in HH:MM format"
+  (interactive)
+  (custom/org-diary-insert-time "%H:%M"))
+
 (defun custom/org-diary-browse ()
   "Org Agenda-like list of diary entries.
 Options:
@@ -296,30 +313,16 @@ it does not exist"
       (let ((entry (custom/org-diary-time-string-file custom/org-diary-last-visited custom/org-diary-directory)))
 	   (custom/find-buffer-by-file-name entry))))
 
-(defun custom/org-diary-init (time)
-  "Set up Org Diary entry"
-  (interactive)
-  (insert (concat "#+title:" (custom/org-diary-time-string-title time) "\n"))
-  (insert "#+CREATED: ")
-  (org-time-stamp-inactive '(16))
-  (insert "\n\n\n\n- "))
-
-(defun custom/org-diary-insert-time (format)
-  "Insert current time using the given FORMAT"
-  (insert (format-time-string format (current-time))))
-
-(defun custom/org-diary-insert-time-hhmm ()
-  "Insert current time using the given FORMAT"
-  (interactive)
-  (custom/org-diary-insert-time "%H:%M"))
+(defun custom/org-diary-exit ()
+  (setq custom/org-diary-last-visited (custom/org-diary-entry-time (current-buffer)))
+  (custom/org-diary-mode 0))
 
 (defun custom/org-diary ()
   "Org Diary entry and exit point. If preceded by `C-u', prompt
 for a date to visit using the Emacs calendar."
   (interactive)
   (if (custom/org-diary-entry)
-      (progn (setq custom/org-diary-last-visited (custom/org-diary-entry-time (current-buffer)))
-	       (custom/org-diary-mode 0)
+      (progn (custom/org-diary-exit)
 	       (bury-buffer)
 	       (ignore-errors (delete-window)))
     (progn (if (custom/org-diary-window)
@@ -334,12 +337,17 @@ for a date to visit using the Emacs calendar."
 
 (global-set-key (kbd "C-c d") 'custom/org-diary)
 
-(define-key custom/org-diary-mode-map (kbd "C-c d")     'custom/org-diary)
-(define-key custom/org-diary-mode-map (kbd "C-d")       'custom/org-diary-insert-time-hhmm)
-(define-key custom/org-diary-mode-map (kbd "C-x w")     'custom/org-diary-resize-window)
-(define-key custom/org-diary-mode-map (kbd "C-c t")     'custom/org-diary-today)
-(define-key custom/org-diary-mode-map (kbd "C-<prior>") 'custom/org-diary-prior)
-(define-key custom/org-diary-mode-map (kbd "C-<next>")  'custom/org-diary-next)
+(defvar custom/org-diary-bindings '(("C-d"       . custom/org-diary-insert-time-hhmm)
+                                    ("C-x w"     . custom/org-diary-resize-window)
+                                    ("C-c t"     . custom/org-diary-today)
+                                    ("C-<prior>" . custom/org-diary-prior)
+                                    ("C-<next>"  . custom/org-diary-next))
+  "Org Diary bindings")
+
+(cl-loop for binding in custom/org-diary-bindings
+         collect (let ((k (car binding))
+                       (c (cdr binding)))
+                   (define-key custom/org-diary-mode-map (kbd k) c)))
 
 (provide 'org-diary)
 ;;; org-modern.el ends here
