@@ -1,7 +1,4 @@
 #+STARTUP: overview
-#+FILETAGS: :dotfiles:
-
-#+STARTUP: overview
 #+FILETAGS: :system:
 
 
@@ -11,7 +8,8 @@
 #+PROPERTY: header-args :results none
 
 
-Installation process of fundamental applications for Debian systems, in sequential order.
+Installation process of fundamental applications for Debian-based distros, in sequential order.
+
 
 * Distro
 ** WSL 2

@@ -2,15 +2,11 @@
 #+FILETAGS: :emacs:
 
 
+#+begin_src emacs-lisp
 
+;;; -*- lexical-binding: t; -*-
 
-#+title:Emacs Configuration File
-#+STARTUP: overview
-#+FILETAGS: :emacs:
-#+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
-
-
-* Keys
+#+end_src
 
 #+begin_src emacs-lisp
 
@@ -28,11 +24,12 @@
 
 #+end_src
 
-* Variables
+#+title:Emacs Configuration File
+#+STARTUP: overview
+#+FILETAGS: :emacs:
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
 
 #+begin_src emacs-lisp
-
-;;; -*- lexical-binding: t; -*-
 
 (defvar config "home")
 
@@ -43,7 +40,6 @@
 (defvar startup-buffers '())
 
 #+end_src
-
 
 * Local
 
