@@ -418,6 +418,25 @@ not empty. In any case, advance to next line."
 
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 
+;; Record last sent message
+(defvar last-message nil)
+(defadvice message (after my-message pre act) (setq last-message ad-return-value))
+
+(defun custom/undefined-override (orig-fun &rest args)
+  "Override `undefined' function to suppress
+undefined key binding messages when interrupting
+key binding input with C-g."
+  (let ((inhibit-message t)
+	    (message-log-max nil))
+    (progn (apply orig-fun args)
+	       (setq _message last-message)))
+  (if (string-match-p (regexp-quote "C-g is undefined") _message)
+      (keyboard-quit)
+    (message _message)))
+
+;; Override the undefined key binding notice with a keyboard-quit
+(advice-add 'undefined :around #'custom/undefined-override)
+
 (if (version< "29.0" emacs-version)
     (pixel-scroll-precision-mode))
 
@@ -783,65 +802,6 @@ before the execution of any command.")
 
 ;; Create new frame
 (global-set-key (kbd "C-S-n") #'make-frame-command)
-
-;; Record last sent message
-(defvar last-message nil)
-(defadvice message (after my-message pre act) (setq last-message ad-return-value))
-
-(defun custom/undefined-override (orig-fun &rest args)
-  "Override `undefined' function to suppress
-undefined key binding messages when interrupting
-key binding input with C-g."
-  (let ((inhibit-message t)
-	      (message-log-max nil))
-    (progn (apply orig-fun args)
-	         (setq _message last-message)))
-  (if (string-match-p (regexp-quote "C-g is undefined") _message)
-      (keyboard-quit)
-    (message _message)))
-
-;; Override the undefined key binding notice with a keyboard-quit
-(advice-add 'undefined :around #'custom/undefined-override)
-
-(defun custom/escape-window-or-region ()
-  "Set course of action based current window.
-
-If the window is dedicated, `quit-window'.
-If the dedicated window is not deleted by 
-`quit-window' (such as for `command-log-mode'),
-proceed to `delete-window'.
-
-If the window is not dedicated, deactivate
-mark if a region is active."
-  (interactive)
-  (setq escaped-window (custom/current-window-number))  
-  (if (window-dedicated-p (get-buffer-window (current-buffer)))
-      (progn (quit-window)
-	           (if (string-equal escaped-window (custom/current-window-number))
-		       (delete-window)))
-    (if (region-active-p)
-	      (deactivate-mark))))
-
-;; Minibuffer escape
-(add-hook 'minibuffer-setup-hook (lambda () (local-set-key (kbd "<escape>") 'minibuffer-keyboard-quit)))
-
-;; Global double escape
-(defvar custom/double-escape-timeout 1)
-
-(defun custom/double-escape ()
-  "Execute `custom/escape-window-or-region'. If the command 
-is repeated within `custom/double-escape-timeout' seconds, 
-kill the current buffer and delete its window."
-  (interactive)
-  (let ((last-called (get this-command 'custom/last-call-time)))
-    (if (and (eq last-command this-command)
-             (<= (time-to-seconds (time-since last-called)) custom/double-escape-timeout))
-        (if (kill-buffer)
-	          (delete-window))
-      (custom/escape-window-or-region)))
-  (put this-command 'custom/last-call-time (current-time)))
-
-(global-set-key (kbd "<escape>") #'custom/double-escape)
 
 ;; projectile
 (straight-use-package 'projectile)
