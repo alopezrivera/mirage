@@ -5,7 +5,8 @@
 (setq home "/mnt/e/")
 
 (setq startup-buffers
-      (list (concat home "studio/backlog.org")
+      (list (concat config-directory "backlog.org")
+            (concat home "studio/backlog.org")
 	    (concat home "studio/professional/work/DFKI/repos/hopping_leg/backlog.org")))
 
 
