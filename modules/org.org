@@ -1299,7 +1299,7 @@ indented at the level of the previous list item, indent the paragraph."
 #+begin_src emacs-lisp
 
 ;; symbols, super- and subscripts
-(setq org-pretty-entities t)
+(setq org-pretty-entities nil)
 
 #+end_src
 
