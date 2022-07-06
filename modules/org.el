@@ -720,7 +720,7 @@ indented at the level of the previous list item, indent the paragraph."
 (setq-default org-list-indent-offset 1)
 
 ;; symbols, super- and subscripts
-(setq org-pretty-entities t)
+(setq org-pretty-entities nil)
 
 (require 'org-capture)
 
