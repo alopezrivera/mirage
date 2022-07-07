@@ -5,66 +5,36 @@
 
 
 #+title:Backlog
+
+
+
+- academic
+   - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
+
+- docker
+   - https://github.com/Silex/docker.el
+
 -----
-#+latex_class: pbusiness
-#+latex_class_options: [twocolumn]
+sort
+
+- data safety
+   - https://github.com/alphapapa/salv.el
+
 -----
-
-- media player
-   - MPV
-      - https://mpv.io/
-      - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#mpv
-
-- markdown
-   - markdown-mode
-      - https://jblevins.org/projects/markdown-mode/
-   - live preview
-      - in-buffer
-         - https://stackoverflow.com/questions/3409484/render-markdown-in-emacs-buffer/11628141#11628141
-      - other
-         - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
-
-- backlog editing mode
-
-- marker typeface
-   - references
-      - org-modern
-      - Ringbearer
-         - *
-   - [[https://github.com/fontforge/fontforge]]
-
-- desktop
-   - https://superuser.com/questions/859761/prevent-emacs-desktop-save-from-holding-onto-theme-elements
+hotfixes
 
 - org-paragraph
    - detection
       - remove indentation condition
       - integrate in org-paragraph
-
-- org-agenda
-   - https://github.com/rougier/emacs-gtd
-   - https://www.youtube.com/watch?app=desktop&v=88qQlUU0pYM&feature=emb_title
-   - https://github.com/rougier/agenda
-   - mini
-      - https://www.reddit.com/r/emacs/comments/nbaolx/interactive_miniagenda_using_a_minicalendar_in_a/
-
-- latex
-   - class, style file access
-      - https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te
-   - latexmkrc -> load class from different directory
-      - https://stackoverflow.com/a/64860253
-   - org-latex-pdf-process -> latexmk
-   - beamer
-      - https://latex-beamer.com/tutorials/beamer-figure/
-
-- transclusion
-   - https://nobiot.github.io/org-transclusion/
-
+- desktop
+   - https://superuser.com/questions/859761/prevent-emacs-desktop-save-from-holding-onto-theme-elements
 
 -----
+modes
 
-- knowledge management
-   - https://users.speakeasy.net/~lion/nb/html/doc003.html
+- backlog editing mode
+
 
 * References
 
@@ -334,7 +304,11 @@ CLOSED: [2022-05-06 Fri 17:11]
       - https://www.gnu.org/software/auctex/manual/auctex.html#Starting-a-Command
         https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
 
-#+title:Org
+** org
+-----
+#+latex_class: pbusiness
+#+latex_class_options: [twocolumn]
+-----
 
 - https://www.reddit.com/r/emacs/comments/uomvik/org_mode_to_latex_using_a_cls_file/
 
@@ -355,17 +329,29 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 - crop margin
    - pdf-view-auto-slice-minor-mode
-     
+
 * bibliography
 
 - references
    - http://cachestocaches.com/2020/3/org-mode-annotated-bibliography/
+
+-----
+managers
 
 - org-roam-bibtex
    - https://github.com/org-roam/org-roam-bibtex
    - https://github.com/tmalsburg/helm-bibtex
 - org-ref
    - https://github.com/jkitchin/org-ref
+
+-----
+biblatex entry generation
+
+- zotra
+   - https://github.com/mpedramfar/zotra
+
+-----
+workflow
 
 - create entry
    - org-noter
@@ -383,9 +369,8 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 * org
 
-- toggle emphasis markers
-   - org-appear
-      - https://github.com/awth13/org-appear
+- transclusion
+   - https://nobiot.github.io/org-transclusion/
 
 - Jump to heading with completion
    - https://github.com/abo-abo/worf
@@ -395,6 +380,13 @@ CLOSED: [2022-05-06 Fri 17:11]
    - imenu-list
       - https://github.com/rougier/dotemacs/blob/master/dotemacs.org#sidebar
 - tag formatting
+
+- marker typeface
+   - references
+      - org-modern
+      - Ringbearer
+         - *
+   - [[https://github.com/fontforge/fontforge]]
   
 * org-agenda
 
@@ -483,6 +475,16 @@ CLOSED: [2022-05-06 Fri 17:11]
       - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
 - ioslide
    - https://github.com/coldnew/org-ioslide
+
+* markdown
+
+- markdown-mode
+   - https://jblevins.org/projects/markdown-mode/
+- live preview
+   - in-buffer
+      - https://stackoverflow.com/questions/3409484/render-markdown-in-emacs-buffer/11628141#11628141
+   - other
+      - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
 
 
 * runtime
@@ -601,12 +603,9 @@ CLOSED: [2022-05-06 Fri 17:11]
    - Nano
       - https://www.reddit.com/r/emacs/comments/mzgsm0/mu4e_look_and_feel/
 
-* docker
 
-- https://github.com/Silex/docker.el
-
-
-* evil
+* text editing
+** evil
 
 - evil
    - https://github.com/emacs-evil/evil
@@ -614,10 +613,26 @@ CLOSED: [2022-05-06 Fri 17:11]
    - https://www.youtube.com/watch?v=Uz_0i27wYbg
    - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 
+** meow
+
+- meow
+   - https://github.com/meow-edit/meow
+
+** emacs
+
+- repeat-mode
+   - https://karthinks.com/software/it-bears-repeating/
+
 * hyperbole
 
 - https://github.com/rswgnu/hyperbole
 - https://tilde.town/~ramin_hal9001/articles/intro-to-hyperbole.html
+
+* multimedia
+
+- MPV
+   - https://mpv.io/
+   - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#mpv
 
 
 * text search
