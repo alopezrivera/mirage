@@ -210,10 +210,11 @@ to the query at execution."
 (defun <> (a b c)
   (and (> b a) (> c b)))
 
-(defmacro custom/@buffers (command)
-  `(cl-loop for buffer in (buffer-list)
-               collect (save-window-excursion (switch-to-buffer buffer)
-                                              ,command)))
+(defmacro custom/@buffers (command &optional buffers)
+  (let ((buffers (or buffers (buffer-list))))
+    `(cl-loop for buffer in ,buffers
+              collect (save-window-excursion (switch-to-buffer buffer)
+                                             ,command))))
 
 ;; no tabs
 (setq-default indent-tabs-mode nil)
