@@ -212,7 +212,7 @@ to the query at execution."
 
 (defmacro custom/@buffers (command &optional buffers)
   (let ((buffers (or buffers (buffer-list))))
-    `(cl-loop for buffer in ,buffers
+    `(cl-loop for buffer in ',buffers
               collect (save-window-excursion (switch-to-buffer buffer)
                                              ,command))))
 
@@ -462,7 +462,7 @@ key binding input with C-g."
 (defcustom custom/header-line nil
   "Variable containing the format of the hidden header line")
 
-(defun custom/hide-modeline ()
+(defun custom/hide-mode-line ()
   "Hide `modeline' in current buffer"
   (interactive)
   (let ((m mode-line-format)
@@ -475,7 +475,7 @@ key binding input with C-g."
                           (progn (setq mode-line-format custom/mode-line)
                                  (setq header-line-format custom/header-line))))))
 
-(global-set-key (kbd "M-m") #'custom/hide-modeline)
+(global-set-key (kbd "M-m") #'custom/hide-mode-line)
 
 (defun custom/variable-replace (a b)
   "Set the value of `b' to that of `a', and

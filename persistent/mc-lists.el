@@ -22,8 +22,10 @@
         custom/smart-comment
         custom/smart-mouse-rectangle
         dired-flag-file-deletion
+        dired-mark
         dired-next-line
         dired-show-file-type
+        dired-unmark
         electric-newline-and-maybe-indent
         elpy-nav-backward-indent
         elpy-nav-forward-indent
