@@ -468,7 +468,7 @@ to the query at execution."
 
 (defmacro custom/@buffers (command &optional buffers)
   (let ((buffers (or buffers (buffer-list))))
-    `(cl-loop for buffer in ,buffers
+    `(cl-loop for buffer in ',buffers
               collect (save-window-excursion (switch-to-buffer buffer)
                                              ,command))))
 
