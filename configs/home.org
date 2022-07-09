@@ -147,6 +147,14 @@
 
 #+end_src
 
+*** Inspection
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-c SPC") #'whitespace-mode)
+
+#+end_src
+
 *** Debugging
 
 #+begin_src emacs-lisp
@@ -1004,9 +1012,8 @@ that of `a' to nil in all buffers"
 
 #+end_src
 
-* Guidance
-** Search
-*** Swiper
+* Search
+** swiper
 
 #+begin_src emacs-lisp
 
@@ -1016,7 +1023,7 @@ that of `a' to nil in all buffers"
 
 #+end_src
 
-**** isearch
+*** isearch
 
 #+begin_src emacs-lisp
 
@@ -1035,7 +1042,7 @@ that of `a' to nil in all buffers"
 
 #+end_src
 
-**** TODO Narrow search
+*** TODO Narrow search
 
 - C-r in swiper -> quit, widen
 
@@ -1074,7 +1081,7 @@ buffer is already narrowed, widen buffer."
 
 #+end_src
 
-**** Multiple cursors
+*** Multiple cursors
 
 #+begin_src emacs-lisp
 
@@ -1088,94 +1095,14 @@ buffer is already narrowed, widen buffer."
 
 #+end_src
 
-** Diagnosis
 ** ripgrep
 
 #+begin_src emacs-lisp
 
-(global-set-key (kbd "C-c SPC") #'whitespace-mode)
 (straight-use-package 'rg)
 (require 'rg)
 
 #+end_src
-
-** Completion
-*** ivy
-
-#+begin_src emacs-lisp
-
-;; ivy
-(straight-use-package 'ivy)
-(require 'ivy)
-
-(ivy-mode 1)
-
-;; minibuffer bindings
-(let ((map ivy-minibuffer-map))
-  (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
-			        ("<up>"        . ivy-previous-line-or-history)
-				("C-l"         . ivy-alt-done)
-				("C-j"         . ivy-next-line)
-				("C-k"         . ivy-previous-line)
-				("<backspace>" . ivy-backward-delete-char))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
-
-;; switch-buffer bindings
-(let ((map ivy-switch-buffer-map))
-  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
- 			        ("C-l"   . ivy-done)
-				("C-d"   . ivy-switch-buffer-kill))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
-
-;; reverse-i-search bindings
-(let ((map ivy-reverse-i-search-map))
-  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
-			        ("C-d"   . ivy-reverse-i-search-kill))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
-
-#+end_src
-
-*** counsel
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'counsel)
-(require 'counsel)
-
-(global-set-key (kbd "<menu>") #'counsel-M-x)
-
-#+end_src
-
-*** Command suggestions
-
-#+begin_src emacs-lisp
-
-;; Command suggestions
-(straight-use-package 'which-key)
-(require 'which-key)
-
-(setq which-key-idle-delay 1.0)
-
-(which-key-mode)
-
-#+end_src
-** Documentation
-
-#+begin_src emacs-lisp
-
-;; Replace description key bindings by their helpful equivalents
-(straight-use-package 'helpful)
-
-(setq counsel-describe-function-function  #'helpful-callable)
-(setq counsel-describe-variable-function  #'helpful-variable)
-
-(global-set-key [remap describe-function] #'helpful-function)
-(global-set-key [remap describe-command]  #'helpful-command)
-(global-set-key [remap describe-variable] #'helpful-variable)
-(global-set-key [remap describe-key]      #'helpful-key)
-
-#+end_src
-
 
 * Templates
 ** yasnippet
@@ -1217,6 +1144,49 @@ buffer is already narrowed, widen buffer."
 
 #+end_src
 
+
+* Guidance
+** counsel
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'counsel)
+(require 'counsel)
+
+(global-set-key (kbd "<menu>") #'counsel-M-x)
+
+#+end_src
+
+** helpful
+
+#+begin_src emacs-lisp
+
+;; Replace description key bindings by their helpful equivalents
+(straight-use-package 'helpful)
+
+(setq counsel-describe-function-function  #'helpful-callable)
+(setq counsel-describe-variable-function  #'helpful-variable)
+
+(global-set-key [remap describe-function] #'helpful-function)
+(global-set-key [remap describe-command]  #'helpful-command)
+(global-set-key [remap describe-variable] #'helpful-variable)
+(global-set-key [remap describe-key]      #'helpful-key)
+
+#+end_src
+
+** which-key
+
+#+begin_src emacs-lisp
+
+;; Command suggestions
+(straight-use-package 'which-key)
+(require 'which-key)
+
+(setq which-key-idle-delay 1.0)
+
+(which-key-mode)
+
+#+end_src
 * Navigation
 ** Text
 *** TODO end
@@ -1452,6 +1422,90 @@ before the execution of any command.")
 
 #+end_src
 
+* Completion
+** ivy
+
+#+begin_src emacs-lisp
+
+;; ivy
+(straight-use-package 'ivy)
+(require 'ivy)
+
+(ivy-mode 1)
+
+;; minibuffer bindings
+(let ((map ivy-minibuffer-map))
+  (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
+			        ("<up>"        . ivy-previous-line-or-history)
+				("C-l"         . ivy-alt-done)
+				("C-j"         . ivy-next-line)
+				("C-k"         . ivy-previous-line)
+				("<backspace>" . ivy-backward-delete-char))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+;; switch-buffer bindings
+(let ((map ivy-switch-buffer-map))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+ 			        ("C-l"   . ivy-done)
+				("C-d"   . ivy-switch-buffer-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+;; reverse-i-search bindings
+(let ((map ivy-reverse-i-search-map))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+			        ("C-d"   . ivy-reverse-i-search-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+#+end_src
+
+* File management
+** Functions
+*** dos2unix
+
+#+begin_src emacs-lisp
+
+;; Transform all files in directory from DOS to Unix line breaks
+(defun custom/dos2unix (&optional dir)
+  (let ((default-directory (or dir (file-name-directory buffer-file-name))))
+    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
+
+#+end_src
+
+*** Reload from disk
+
+#+begin_src emacs-lisp
+
+(defun custom/reload-from-disk (&optional buffer)
+  "Revert BUFFER contents to the contents of its
+file saved on disk, ignoring the auto-save file.
+If the buffer has unsaved modifications, prompt
+the user for confirmation."
+  (interactive)
+  (let ((buffer (or buffer (current-buffer))))
+    (save-window-excursion
+      (switch-to-buffer buffer)
+      (if (not (buffer-modified-p))
+	     (revert-buffer t t)
+	   (revert-buffer t nil)))))
+
+(global-set-key (kbd "C-c r") #'custom/reload-from-disk)
+
+#+end_src
+
+** Buffer backups
+
+~backup-directory-alist~, which determines where backups are saved, is set by ~no-littering~.
+
+#+begin_src emacs-lisp
+
+(setq backup-by-copying t)
+(setq version-control t)
+(setq delete-old-versions t)
+(setq kept-new-versions 2)
+(setq kept-old-versions 2)
+
+#+end_src
+
 * Project interaction
 ** TODO projectile
 
@@ -1651,53 +1705,6 @@ before the execution of any command.")
 
 #+end_src
 
-* File management
-** Functions
-*** dos2unix
-
-#+begin_src emacs-lisp
-
-;; Transform all files in directory from DOS to Unix line breaks
-(defun custom/dos2unix (&optional dir)
-  (let ((default-directory (or dir (file-name-directory buffer-file-name))))
-    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
-
-#+end_src
-
-*** Reload from disk
-
-#+begin_src emacs-lisp
-
-(defun custom/reload-from-disk (&optional buffer)
-  "Revert BUFFER contents to the contents of its
-file saved on disk, ignoring the auto-save file.
-If the buffer has unsaved modifications, prompt
-the user for confirmation."
-  (interactive)
-  (let ((buffer (or buffer (current-buffer))))
-    (save-window-excursion
-      (switch-to-buffer buffer)
-      (if (not (buffer-modified-p))
-	     (revert-buffer t t)
-	   (revert-buffer t nil)))))
-
-(global-set-key (kbd "C-c r") #'custom/reload-from-disk)
-
-#+end_src
-
-** Buffer backups
-
-~backup-directory-alist~, which determines where backups are saved, is set by ~no-littering~.
-
-#+begin_src emacs-lisp
-
-(setq backup-by-copying t)
-(setq version-control t)
-(setq delete-old-versions t)
-(setq kept-new-versions 2)
-(setq kept-old-versions 2)
-
-#+end_src
 
 * UI
 
