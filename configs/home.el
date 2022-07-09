@@ -74,6 +74,8 @@
 ;; Buffer evaluation
 (global-set-key (kbd "C-x e") 'eval-buffer)
 
+(global-set-key (kbd "C-c SPC") #'whitespace-mode)
+
 (setq debug-on-error t)
 
 ;; Enable rainbow delimiters on all programming modes
@@ -572,66 +574,8 @@ buffer is already narrowed, widen buffer."
 ;; M-RET: multiple-cursors-mode
 (define-key swiper-map (kbd "M-<return>") #'custom/swiper-multiple-cursors)
 
-(global-set-key (kbd "C-c SPC") #'whitespace-mode)
-
-;; ivy
-(straight-use-package 'ivy)
-(require 'ivy)
-
-(ivy-mode 1)
-
-;; minibuffer bindings
-(let ((map ivy-minibuffer-map))
-  (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
-			        ("<up>"        . ivy-previous-line-or-history)
-				("C-l"         . ivy-alt-done)
-				("C-j"         . ivy-next-line)
-				("C-k"         . ivy-previous-line)
-				("<backspace>" . ivy-backward-delete-char))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
-
-;; switch-buffer bindings
-(let ((map ivy-switch-buffer-map))
-  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
- 			        ("C-l"   . ivy-done)
-				("C-d"   . ivy-switch-buffer-kill))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
-
-;; reverse-i-search bindings
-(let ((map ivy-reverse-i-search-map))
-  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
-			        ("C-d"   . ivy-reverse-i-search-kill))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
-
-(straight-use-package 'counsel)
-(require 'counsel)
-
-(global-set-key (kbd "<menu>") #'counsel-M-x)
-
-;; Command suggestions
-(straight-use-package 'which-key)
-(require 'which-key)
-
-(setq which-key-idle-delay 1.0)
-
-(which-key-mode)
-
-;; Replace description key bindings by their helpful equivalents
-(straight-use-package 'helpful)
-
-(setq counsel-describe-function-function  #'helpful-callable)
-(setq counsel-describe-variable-function  #'helpful-variable)
-
-(global-set-key [remap describe-function] #'helpful-function)
-(global-set-key [remap describe-command]  #'helpful-command)
-(global-set-key [remap describe-variable] #'helpful-variable)
-(global-set-key [remap describe-key]      #'helpful-key)
-
-;; command-log-mode
-(straight-use-package 'command-log-mode)
-(require 'command-log-mode)
-
-(global-command-log-mode)
+(straight-use-package 'rg)
+(require 'rg)
 
 ;; yasnippet
 (straight-use-package 'yasnippet)
@@ -653,6 +597,30 @@ buffer is already narrowed, widen buffer."
 
 ;; yasnippet-snippets
 (straight-use-package 'yasnippet-snippets)
+
+(straight-use-package 'counsel)
+(require 'counsel)
+
+(global-set-key (kbd "<menu>") #'counsel-M-x)
+
+;; Replace description key bindings by their helpful equivalents
+(straight-use-package 'helpful)
+
+(setq counsel-describe-function-function  #'helpful-callable)
+(setq counsel-describe-variable-function  #'helpful-variable)
+
+(global-set-key [remap describe-function] #'helpful-function)
+(global-set-key [remap describe-command]  #'helpful-command)
+(global-set-key [remap describe-variable] #'helpful-variable)
+(global-set-key [remap describe-key]      #'helpful-key)
+
+;; Command suggestions
+(straight-use-package 'which-key)
+(require 'which-key)
+
+(setq which-key-idle-delay 1.0)
+
+(which-key-mode)
 
 ;; Double end to go to the beginning of line
 (defvar custom/double-end-timeout 0.4)
@@ -804,6 +772,61 @@ before the execution of any command.")
 ;; Create new frame
 (global-set-key (kbd "C-S-n") #'make-frame-command)
 
+;; ivy
+(straight-use-package 'ivy)
+(require 'ivy)
+
+(ivy-mode 1)
+
+;; minibuffer bindings
+(let ((map ivy-minibuffer-map))
+  (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
+			        ("<up>"        . ivy-previous-line-or-history)
+				("C-l"         . ivy-alt-done)
+				("C-j"         . ivy-next-line)
+				("C-k"         . ivy-previous-line)
+				("<backspace>" . ivy-backward-delete-char))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+;; switch-buffer bindings
+(let ((map ivy-switch-buffer-map))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+ 			        ("C-l"   . ivy-done)
+				("C-d"   . ivy-switch-buffer-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+;; reverse-i-search bindings
+(let ((map ivy-reverse-i-search-map))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+			        ("C-d"   . ivy-reverse-i-search-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+;; Transform all files in directory from DOS to Unix line breaks
+(defun custom/dos2unix (&optional dir)
+  (let ((default-directory (or dir (file-name-directory buffer-file-name))))
+    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
+
+(defun custom/reload-from-disk (&optional buffer)
+  "Revert BUFFER contents to the contents of its
+file saved on disk, ignoring the auto-save file.
+If the buffer has unsaved modifications, prompt
+the user for confirmation."
+  (interactive)
+  (let ((buffer (or buffer (current-buffer))))
+    (save-window-excursion
+      (switch-to-buffer buffer)
+      (if (not (buffer-modified-p))
+	     (revert-buffer t t)
+	   (revert-buffer t nil)))))
+
+(global-set-key (kbd "C-c r") #'custom/reload-from-disk)
+
+(setq backup-by-copying t)
+(setq version-control t)
+(setq delete-old-versions t)
+(setq kept-new-versions 2)
+(setq kept-old-versions 2)
+
 ;; projectile
 (straight-use-package 'projectile)
 (require 'projectile)
@@ -920,32 +943,6 @@ before the execution of any command.")
 (setq comint-input-ignoredups t)
 
 (require 'org (concat config-directory "modules/org.el"))
-
-;; Transform all files in directory from DOS to Unix line breaks
-(defun custom/dos2unix (&optional dir)
-  (let ((default-directory (or dir (file-name-directory buffer-file-name))))
-    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
-
-(defun custom/reload-from-disk (&optional buffer)
-  "Revert BUFFER contents to the contents of its
-file saved on disk, ignoring the auto-save file.
-If the buffer has unsaved modifications, prompt
-the user for confirmation."
-  (interactive)
-  (let ((buffer (or buffer (current-buffer))))
-    (save-window-excursion
-      (switch-to-buffer buffer)
-      (if (not (buffer-modified-p))
-	     (revert-buffer t t)
-	   (revert-buffer t nil)))))
-
-(global-set-key (kbd "C-c r") #'custom/reload-from-disk)
-
-(setq backup-by-copying t)
-(setq version-control t)
-(setq delete-old-versions t)
-(setq kept-new-versions 2)
-(setq kept-old-versions 2)
 
 (require 'ui (concat config-directory "modules/ui.el"))
 
