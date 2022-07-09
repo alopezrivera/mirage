@@ -455,6 +455,7 @@ workflow
 
 - references
    - https://www.reddit.com/r/emacs/comments/vj63n0/yet_another_blog_setup_based_on_emacs_org_mode/
+   - https://m.youtube.com/watch?v=0g9BcZvQbXU
 
 - org -> HTML
    - https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
