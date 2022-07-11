@@ -12,6 +12,7 @@ Installation process of fundamental applications for Debian-based distros, in se
 
 
 * Distro
+** Ubuntu 22.04
 ** WSL 2
 *** Install
 
