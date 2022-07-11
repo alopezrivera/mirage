@@ -10,6 +10,7 @@
 
 - academic
    - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
+   - https://github.com/emacsmirror/zotxt
 
 - docker
    - https://github.com/Silex/docker.el
@@ -502,6 +503,9 @@ workflow
       - https://stackoverflow.com/a/2112346
         
 * display
+
+- frame
+   - https://www.reddit.com/r/emacs/comments/b2r2oj/is_it_possible_to_disable_or_hide_the_titlebar_in/
 
 - golden ratio
    - https://github.com/roman/golden-ratio.el
