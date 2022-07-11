@@ -96,7 +96,16 @@ git --version
 
 #+end_src
 
-** Setup
+** user
+
+#+begin_src emacs-lisp
+
+git config --global user.name <name>
+git config --global user.email <email>
+
+#+end_src
+
+** merge strategy
 
 #+begin_src shell
 
