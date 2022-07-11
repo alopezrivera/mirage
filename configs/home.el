@@ -440,8 +440,16 @@ key binding input with C-g."
 ;; Override the undefined key binding notice with a keyboard-quit
 (advice-add 'undefined :around #'custom/undefined-override)
 
+;; pixel-scroll-precision
 (if (version< "29.0" emacs-version)
     (pixel-scroll-precision-mode))
+(setq pixel-scroll-precision-large-scroll-height 40.0)
+(setq pixel-scroll-precision-interpolation-factor 30)
+
+;; smooth scrolling
+(setq scroll-step 1)
+(setq scroll-conservatively 10000)
+(setq scroll-preserve-screen-position 1)
 
 ;; Center text
 (straight-use-package 'olivetti)
