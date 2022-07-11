@@ -2,7 +2,7 @@
 
 (setq config "home")
 
-(setq home "/mnt/e/")
+(setq home "/media/antonio/T7/")
 
 (setq startup-buffers
       (list (concat config-directory "backlog.org")

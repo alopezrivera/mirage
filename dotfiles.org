@@ -13,12 +13,13 @@
 - https://evanhahn.com/a-decade-of-dotfiles/
 
 
-* .xkb
+* home
+** .xkb
 
 References:
 - https://unix.stackexchange.com/questions/65507/use-setxkbmap-to-swap-the-left-shift-and-left-control/65600#65600
 
-** Keymap
+*** Keymap
 
 Generate ~xkb_keymap~,
 
@@ -36,13 +37,13 @@ xkb_keymap {
 	xkb_keycodes  { include "evdev+aliases(qwerty)"	};
 	xkb_types     { include "complete"	};
 	xkb_compat    { include "complete"	};
-	xkb_symbols   { include "pc+gb+inet(evdev)+custom(capsctrl)"	};
+	xkb_symbols   { include "pc+us+inet(evdev)+custom(capsctrl)"	};
 	xkb_geometry  { include "pc(pc105)"	};
 };
 
 #+end_src
 
-** Script
+*** Script
 
 Importantly, all modifier keys must be listed as such.
 
@@ -56,7 +57,7 @@ xkb_symbols "capsctrl" {
 
 #+end_src
 
-** Load
+*** Load
 
 #+begin_src shell
 
@@ -64,8 +65,8 @@ xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 
 #+end_src
 
-* .bashrc
-** default
+** .bashrc
+*** default
 
 #+begin_src bash
 
@@ -190,8 +191,15 @@ fi
 export PATH="/home/dfki.uni-bremen.de/alopezrivera/.local/bin:$PATH"
 
 #+end_src
+*** binaries
 
-** git-subrepo
+#+begin_src shell
+
+export PATH="/home/antonio/.local/bin:$PATH"
+
+#+end_src
+
+*** git-subrepo
 
 #+begin_src shell
 
@@ -199,8 +207,8 @@ echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
 
 #+end_src
 
-** system-specific
-*** WSL 2
+*** system-specific
+**** WSL 2
 
 #+begin_src bash
 
@@ -211,17 +219,20 @@ export LIBGL_ALWAYS_INDIRECT=1
 
 #+end_src
 
-* rc.local
+* etc
+** rc.local
 
 #+begin_src shell
+
 #!/bin/sh -e
+
 #+end_src
 
-** Emacs daemon
+*** .xkb
 
 #+begin_src shell
 
-emacs --daemon
+xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 
 #+end_src
 

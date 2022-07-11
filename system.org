@@ -12,6 +12,7 @@ Installation process of fundamental applications for Debian-based distros, in se
 
 
 * Distro
+** Ubuntu 22.04
 ** WSL 2
 *** Install
 
@@ -84,8 +85,28 @@ gcc --version
 
 #+end_src
 
+* Python
+
+#+begin_src shell
+
+sudo apt install software-properties-common
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt install python3.8
+
+#+end_src
+
+** poetry
+
+#+begin_src shell
+
+sudo apt install python3-venv
+curl -sSL https://install.python-poetry.org | python3 -
+export PATH="/home/antonio/.local/bin:$PATH"
+
+#+end_src
+
+
 * Git
-** Install
 
 #+begin_src shell
 
@@ -96,7 +117,16 @@ git --version
 
 #+end_src
 
-** Setup
+** user
+
+#+begin_src emacs-lisp
+
+git config --global user.name <name>
+git config --global user.email <email>
+
+#+end_src
+
+** merge strategy
 
 #+begin_src shell
 

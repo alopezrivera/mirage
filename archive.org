@@ -2,6 +2,18 @@
 STARTUP: overview
 
 
+* command-log-mode
+
+#+begin_src emacs-lisp
+
+;; command-log-mode
+(straight-use-package 'command-log-mode)
+(require 'command-log-mode)
+
+(global-command-log-mode)
+
+#+end_src
+
 * ivy-rich
 
 #+begin_src emacs-lisp
