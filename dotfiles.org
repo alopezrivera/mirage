@@ -14,7 +14,10 @@
 
 
 * home
-** .xkb
+** TODO .xkb
+
+- permanent config
+   - https://unix.stackexchange.com/questions/504158/permanently-change-xkb-keybindings
 
 References:
 - https://unix.stackexchange.com/questions/65507/use-setxkbmap-to-swap-the-left-shift-and-left-control/65600#65600

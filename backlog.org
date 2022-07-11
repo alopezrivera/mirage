@@ -56,6 +56,7 @@ modes
 - https://github.com/rougier/notebook-mode
 - https://github.com/ThomasFKJorna/doom-emacs-config
 - https://github.com/rougier/dotemacs
+   - https://www.reddit.com/r/unixporn/comments/s2extx/yabai_emacs_and_my_favorite_emacs_bootloader/
 - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
 
 ** Features
@@ -67,7 +68,11 @@ modes
 
 - https://orgmode.org/worg/org-hacks.html
 - http://doc.norang.ca/org-mode.html
-  
+
+** Packages
+
+- https://www.reddit.com/r/emacs/comments/vcbnht/most_visually_impressive_emacs_packages/
+
 ** Workflows
 
 - Rougier
@@ -512,6 +517,9 @@ workflow
 - vertical padding
    - https://stackoverflow.com/questions/25040666/vertical-padding-or-margin-on-emacs-buffer
 
+- floating minibuffer
+   - https://www.reddit.com/r/emacs/comments/jl8xwl/question_how_to_achieve_this_look/
+
 * highlights
 
 - solaire
@@ -615,15 +623,15 @@ workflow
 
 
 * text editing
-** evil
+** modal
 
-- evil
-   - https://github.com/emacs-evil/evil
 - references
+   - https://www.vimified.com/
    - https://www.youtube.com/watch?v=Uz_0i27wYbg
    - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 
-** meow
+- evil
+   - https://github.com/emacs-evil/evil
 
 - meow
    - https://github.com/meow-edit/meow
