@@ -219,17 +219,20 @@ export LIBGL_ALWAYS_INDIRECT=1
 
 #+end_src
 
-* rc.local
+* etc
+** rc.local
 
 #+begin_src shell
+
 #!/bin/sh -e
+
 #+end_src
 
-** Emacs daemon
+*** .xkb
 
 #+begin_src shell
 
-emacs --daemon
+xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 
 #+end_src
 
