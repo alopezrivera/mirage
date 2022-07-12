@@ -91,7 +91,7 @@ gcc --version
 
 sudo apt install software-properties-common
 sudo add-apt-repository ppa:deadsnakes/ppa
-sudo apt install python3.8
+sudo apt install python3.<version>
 
 #+end_src
 
@@ -104,45 +104,6 @@ curl -sSL https://install.python-poetry.org | python3 -
 export PATH="/home/antonio/.local/bin:$PATH"
 
 #+end_src
-
-
-* Git
-
-#+begin_src shell
-
-sudo add-apt-repository ppa:git-core/ppa -y
-sudo apt-get update
-sudo apt-get install git -y
-git --version
-
-#+end_src
-
-** user
-
-#+begin_src emacs-lisp
-
-git config --global user.name <name>
-git config --global user.email <email>
-
-#+end_src
-
-** merge strategy
-
-#+begin_src shell
-
-git config --global pull.rebase false
-
-#+end_src
-
-** git-subrepo
-
-#+begin_src shell
-
-git clone https://github.com/ingydotnet/git-subrepo ~/git-subrepo
-echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
-
-#+end_src
-
 
 
 * Emacs
@@ -225,6 +186,43 @@ sudo update-alternatives --config emacs
 
 #+end_src
 
+
+* Git
+
+#+begin_src shell
+
+sudo add-apt-repository ppa:git-core/ppa -y
+sudo apt-get update
+sudo apt-get install git -y
+git --version
+
+#+end_src
+
+** user
+
+#+begin_src emacs-lisp
+
+git config --global user.name <name>
+git config --global user.email <email>
+
+#+end_src
+
+** merge strategy
+
+#+begin_src shell
+
+git config --global pull.rebase false
+
+#+end_src
+
+** git-subrepo
+
+#+begin_src shell
+
+git clone https://github.com/ingydotnet/git-subrepo ~/git-subrepo
+echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
+
+#+end_src
 
 * LaTeX
 ** TeX Live
