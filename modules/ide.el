@@ -58,7 +58,4 @@
 (define-key elpy-mode-map (kbd "C-M-n") 'elpy-nav-forward-block)
 (define-key elpy-mode-map (kbd "C-M-p") 'elpy-nav-backward-block)
 
-;; pyenv
-(straight-use-package 'pyenv)
-
 (provide 'ide)
