@@ -1,3 +1,6 @@
+;; prevent Emacs from dabbling inside /mnt/c/WINDOWS/system32/
+(setq default-directory "/tmp/")
+(setq command-line-default-directory "/tmp/")
 ;; local emacs config
 
 (setq config "home")
