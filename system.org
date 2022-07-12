@@ -225,6 +225,13 @@ echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
 #+end_src
 
 * LaTeX
+
+#+begin_src shell
+
+sudo apt install texlive-plain-generic
+
+#+end_src
+
 ** TeX Live
 *** Debian
 
