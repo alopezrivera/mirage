@@ -217,6 +217,14 @@ sudo update-alternatives --config emacs
 
 #+end_src
 
+** Typefaces
+
+#+begin_src emacs-lisp
+
+(all-the-icons-install-fonts)
+
+#+end_src
+
 
 * LaTeX
 ** TeX Live
