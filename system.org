@@ -225,22 +225,36 @@ sudo update-alternatives --config emacs
 
 
 * LaTeX
-** TeX Live
-*** Debian
+
+TeX Live installation process using Debian packages.
+
+Vanilla install:
+- https://tex.stackexchange.com/questions/38978/how-can-i-manually-install-a-latex-package-debian-ubuntu-linux
+- https://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
+
+** TeX
 
 #+begin_src shell
 
 sudo apt install texlive
-sudo apt install texlive-xetex
-
-# fontawesome5 and other fonts
-sudo apt install texlive-fonts-extra
 
 #+end_src
 
-*** Vanilla
+*** XeTeX
 
-- https://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
+#+begin_src shell
+
+sudo apt install texlive-xetex
+
+#+end_src
+
+*** LuaTeX
+
+#+begin_src shell
+
+sudo apt install texlive-luatex
+
+#+end_src
 
 ** latexmk
 
@@ -249,6 +263,37 @@ sudo apt install texlive-fonts-extra
 sudo apt-get install latexmk
 
 #+end_src
+
+** Packages
+*** Typefaces
+
+#+begin_src shell
+
+# fontawesome5 and other fonts
+sudo apt install texlive-fonts-extra
+
+# sphinx
+sudo apt install texlive-fonts-extra-links
+
+#+end_src
+
+*** Typesetting
+**** Mathematics
+
+#+begin_src shell
+
+sudo apt install texlive-science
+
+#+end_src
+
+*** Bibliography
+
+#+begin_src shell
+
+sudo apt install texlive-bibtex-extra
+
+#+end_src
+
 
 * TODO Sphinx
 
@@ -259,12 +304,25 @@ sudo apt-get install latexmk
 
 sudo apt install python3-sphinx
 
-;; LaTeX
-sudo apt install texlive-luatex
+# LaTeX
 sudo apt install texlive-fonts-extra-links
 
-;; themes
+# themes
 pip install sphinx-rtd-theme
+
+#+end_src
+
+** LaTeX
+
+LaTeX dependency install using Debian packages.
+
+#+begin_src shell
+
+# luatex
+sudo apt install texlive-luatex
+
+# typefaces
+sudo apt install texlive-fonts-extra-links
 
 #+end_src
 
