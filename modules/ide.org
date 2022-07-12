@@ -121,15 +121,6 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-*** pyenv
-
-#+begin_src emacs-lisp
-
-;; pyenv
-(straight-use-package 'pyenv)
-
-#+end_src
-
 * Declare
 
 #+begin_src emacs-lisp

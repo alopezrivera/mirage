@@ -101,6 +101,9 @@ through as a theme loads."
 
 #+end_src
 
+Now that ~all-the-icons~ is installed, all the icon typefaces must be actually present in
+the local machine:
+
 #+begin_src emacs-lisp :tangle no
 
 (all-the-icons-install-fonts)
