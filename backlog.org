@@ -8,6 +8,9 @@
 
 
 
+- environment variables
+   - https://github.com/purcell/exec-path-from-shell
+
 - academic
    - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
    - https://github.com/emacsmirror/zotxt
