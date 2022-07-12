@@ -73,6 +73,7 @@
         dabbrev-expand
         dired-do-flagged-delete
         end-of-buffer
+        list-buffers
         magit-status
         mouse-drag-mode-line
         mouse-drag-vertical-line
