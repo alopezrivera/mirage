@@ -90,7 +90,6 @@ ipconfig /flushdns
 #+end_src
 
 
-
 * C
 ** Compiler
 *** gcc
@@ -313,11 +312,14 @@ sudo apt install texlive-fonts-extra-links
 #+end_src
 
 *** Typesetting
-**** Mathematics
 
 #+begin_src shell
 
+# mathematics
 sudo apt install texlive-science
+
+# coffins
+sudo apt install texlive-latex-recommended
 
 #+end_src
 
