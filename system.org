@@ -274,6 +274,14 @@ sudo apt install texlive-luatex
 
 #+end_src
 
+** biber
+
+#+begin_src shell
+
+sudo apt install biber
+
+#+end_src
+
 ** latexmk
 
 #+begin_src shell
