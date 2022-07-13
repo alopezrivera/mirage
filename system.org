@@ -18,6 +18,16 @@ Installation process of fundamental applications for Debian-based distros, in se
 - https://github.com/radstevee/dotfiles
 
 
+** Booting Linux
+*** Creating the drive partition
+**** Securing the space
+**** Creating the partition
+*** Creating a live USB
+*** Disabling UEFI Secure Boot
+*** Booting from the live USB
+*** Creating the distribution's drive partitions
+
+
 ** Ubuntu 22.04
 ** WSL 2
 *** Install
