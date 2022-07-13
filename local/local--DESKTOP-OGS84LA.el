@@ -1,3 +1,14 @@
+;; prevent Emacs from dabbling inside /mnt/c/WINDOWS/system32/
+(setq default-directory "/tmp/")
+(setq command-line-default-directory "/tmp/")
+
+;; sudo find-file
+(defun sudo-find-file (orig-fun FILENAME &optional WILDCARDS)
+  (condition-case nil
+    (funcall orig-fun FILENAME WILDCARDS)
+    (error (funcall orig-fun (concat "/sudo::" FILENAME) WILDCARDS))))
+(advice-add 'find-file :around #'sudo-find-file)
+
 ;; local emacs config
 
 (setq config "home")

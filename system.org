@@ -239,6 +239,7 @@ Vanilla install:
 - https://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
 
 ** TeX
+*** Debian
 
 #+begin_src shell
 
@@ -271,6 +272,15 @@ sudo apt-get install latexmk
 #+end_src
 
 ** Packages
+*** General
+
+#+begin_src shell
+
+# org-mode latex previews
+sudo apt install texlive-plain-generic
+
+#+end_src
+
 *** Typefaces
 
 #+begin_src shell
