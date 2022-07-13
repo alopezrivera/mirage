@@ -380,3 +380,13 @@ pip install better-apidoc
 
 #+end_src
 
+
+* ffmpeg
+
+#+begin_src shell
+
+sudo apt install ffmpeg
+
+#+end_src
+
+
