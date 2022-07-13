@@ -321,6 +321,15 @@ sudo apt install texlive-bibtex-extra
 
 #+end_src
 
+* Drawio
+
+#+begin_src shell
+
+curl -s https://api.github.com/repos/jgraph/drawio-desktop/releases/latest | grep browser_download_url | grep '\.deb' | cut -d '"' -f 4 | wget -i -
+sudo apt -f install ./drawio-amd64-*.deb
+
+#+end_src
+
 
 * TODO Sphinx
 
