@@ -224,11 +224,21 @@ export LIBGL_ALWAYS_INDIRECT=1
 
 * etc
 ** rc.local
+*** default
+
+Keyboard configuration defined in ~/etc/default/keyboard~, as [[https://askubuntu.com/a/1182802][suggested by Gunnar Hjalmarrsson in StackOverflow]].
 
 #+begin_src shell
+# KEYBOARD CONFIGURATION FILE
 
-#!/bin/sh -e
+# Consult the keyboard(5) manual page.
 
+XKBMODEL="pc105"
+XKBLAYOUT="us"
+XKBVARIANT=""
+XKBOPTIONS="caps:ctrl_modifier"
+
+BACKSPACE="guess"
 #+end_src
 
 *** .xkb
