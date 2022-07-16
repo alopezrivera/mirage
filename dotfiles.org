@@ -8,66 +8,12 @@
 #+PROPERTY: header-args :results none
 
 
-* references
+* References
 
 - https://evanhahn.com/a-decade-of-dotfiles/
 
 
-* home
-** TODO .xkb
-
-- permanent config
-   - https://unix.stackexchange.com/questions/504158/permanently-change-xkb-keybindings
-
-References:
-- https://unix.stackexchange.com/questions/65507/use-setxkbmap-to-swap-the-left-shift-and-left-control/65600#65600
-
-*** Keymap
-
-Generate ~xkb_keymap~,
-
-#+begin_src shell
-
-setxkbmap -print > ~/.xkb/keymap/mykbd
-
-#+end_src
-
-and include call to customization script (~capsctrl~ in this case).
-
-#+begin_src shell :tangle ~/.xkb/keymap/mykbd :mkdirp yes
-
-xkb_keymap {
-	xkb_keycodes  { include "evdev+aliases(qwerty)"	};
-	xkb_types     { include "complete"	};
-	xkb_compat    { include "complete"	};
-	xkb_symbols   { include "pc+us+inet(evdev)+custom(capsctrl)"	};
-	xkb_geometry  { include "pc(pc105)"	};
-};
-
-#+end_src
-
-*** Script
-
-Importantly, all modifier keys must be listed as such.
-
-#+begin_src shell :tangle ~/.xkb/symbols/custom :mkdirp yes
-
-partial modifier_keys
-xkb_symbols "capsctrl" {
-    replace key <CAPS> { [ Control_L ] };
-    modifier_map Control { <CAPS>, <LCTL>, <RCTL> };
-};
-
-#+end_src
-
-*** Load
-
-#+begin_src shell
-
-xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
-
-#+end_src
-
+* Shell
 ** .bashrc
 *** default
 
@@ -222,8 +168,8 @@ export LIBGL_ALWAYS_INDIRECT=1
 
 #+end_src
 
-* etc
-** rc.local
+* Keyboard
+** .xkb
 *** default
 
 Keyboard configuration defined in ~/etc/default/keyboard~, as [[https://askubuntu.com/a/1182802][suggested by Gunnar Hjalmarrsson in StackOverflow]].
@@ -241,12 +187,53 @@ XKBOPTIONS="caps:ctrl_modifier"
 BACKSPACE="guess"
 #+end_src
 
-*** .xkb
+*** xkbcomp
+
+Solution as proposed by [[https://unix.stackexchange.com/a/65600][Pablo Saratxaga in StackOverflow]]. Flawed solution however, as the ~xkb~ ~X~
+configuration [[https://unix.stackexchange.com/a/66657][seems to be overridden by GNOME]].
+
+**** Keymap
+
+Generate ~xkb_keymap~,
+
+#+begin_src shell
+
+setxkbmap -print > ~/.xkb/keymap/custom
+
+#+end_src
+
+and include call to customization script (~capsctrl~ in this case).
+
+#+begin_src shell
+
+xkb_keymap {
+	xkb_keycodes  { include "evdev+aliases(qwerty)"	};
+	xkb_types     { include "complete"	};
+	xkb_compat    { include "complete"	};
+	xkb_symbols   { include "pc+us+inet(evdev)+custom(capsctrl)"	};
+	xkb_geometry  { include "pc(pc105)"	};
+};
+
+#+end_src
+
+**** Script
+
+Importantly, all modifier keys must be listed as such in ~~/.xkb/symbols/custom~.
+
+#+begin_src shell
+
+partial modifier_keys
+xkb_symbols "capsctrl" {
+    replace key <CAPS> { [ Control_L ] };
+    modifier_map Control { <CAPS>, <LCTL>, <RCTL> };
+};
+
+#+end_src
+
+**** Load
 
 #+begin_src shell
 
 xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 
 #+end_src
-
-
