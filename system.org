@@ -389,4 +389,12 @@ sudo apt install ffmpeg
 
 #+end_src
 
+* okular
+
+#+begin_src shell
+
+sudo apt install okular
+
+#+end_src
+
 
