@@ -222,6 +222,16 @@ The error was 'BadAlloc'.
 *SOLUTION:* Switch from the Nouveau display driver from ~xserver-xorg-video-nouveau~
 to the ~nvidia-driver-XXX~ driver using the *Additional Drivers* application.
 
+** Desktop environment
+*** GNOME
+**** Settings
+***** IBus
+
+~C-;~ and ~C-.~ are reserved by GNOME as /emoji annotation shortcuts/. To undo this,
+
+1. run ~ibus-setup~ in the terminal
+2. Emoji > Emoji Annotation > ... > Delete
+3. Repeat for ~C-.~
 
 
 * C compiler
