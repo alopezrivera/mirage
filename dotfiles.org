@@ -8,16 +8,112 @@
 #+PROPERTY: header-args :results none
 
 
-* References
 
 - https://evanhahn.com/a-decade-of-dotfiles/
 
 
-* Shell
-** .bashrc
-*** default
 
-#+begin_src bash
+*Utilities*
+
+#+begin_src emacs-lisp
+
+(defun wsl ()
+  "Return `t' if the current operating system is running inside a
+Windows Subsystem for Linux instance"
+  (not (string-equal "" (shell-command-to-string "grep Microsoft /proc/version"))))
+
+#+end_src
+
+
+* shell
+
+This section will introduce login, non-login, interactive and non-interactive shells in Unix
+systems and their configuration files, as well as present the default shell, login and non-login/runtime
+configuration files.
+
+-----
+
+Every Bourne shell and Bash process runs in a shell of its own. Shells may be interactive
+or non-interactive, and login or non-login.
+
+*Interactive, Login Shells*
+
+When logging into a Unix system through a text console, SSH or ~su -~, the user gets an
+interactive login shell. Every shell spawned after this point will be a non-login shell,
+and every child shell forked from an interactive shell will be non-interactive.
+
+Login, Bourne shells read the ~.profile~ configuration file on startup. Bash will attempt
+to read ~.bash_profile~ on startup. If it does not exist, it will attempt to read ~.bash_login~,
+and lastly ~.profile~.
+These files may be referred to as login, startup or profile configuration files. I will use
+/login/ configuration files from here on, referring to ~.profile~ for any system, and ~.bash_profile~,
+~.bash_login~ and ~.profile~, in that sequence, for systems whose shell is Bash.
+
+The content of /login/ configuration files will apply to *all programs* run in the system, including
+programs launched through an icon menu or keyboard shortcuts. As such they are suitable for
+
+- environment variables, as well as
+- executing programs at startup
+
+Importantly, when logging in in /graphical mode/, the user gets a session or window manager instead
+of an interactive login shell. Depending on the graphical login program and window manager or desktop
+environment used, the /login/ configuration files *may or may not be read*.
+
+*Interactive, Non-login Shells*
+
+Interactive, non-login shells will read /runtime/ configuration files: in the case of Bash,
+~.bashrc~. The content of such files will apply *only to programs launched via the shell*, and as
+such are *not ideal* for *environment variables*. As such they are recommended for shell-specific
+settings, such as
+
+- alias and function definitions,
+- shell options, and
+- prompt settings
+
+-----
+
+References:
+
+- [[https://superuser.com/a/183980][Gilles, Answer to "Differences between .bashrc and .bash_profile", StackOverflow]]
+- [[https://unix.stackexchange.com/a/46856][Gilles, Answer to "Difference between Login Shell and Non-Login Shell", StackOverflow]]
+
+** .profile
+
+#+begin_src shell :tangle ~/.profile
+
+# ~/.profile: executed by the command interpreter for login shells.
+# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
+# exists.
+# see /usr/share/doc/bash/examples/startup-files for examples.
+# the files are located in the bash-doc package.
+
+# the default umask is set in /etc/profile; for setting the umask
+# for ssh logins, install and configure the libpam-umask package.
+#umask 022
+
+# if running bash
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+	. "$HOME/.bashrc"
+    fi
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+#+end_src
+
+** .bashrc
+
+#+begin_src bash :tangle ~/.bashrc
 
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
