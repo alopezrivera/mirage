@@ -24,7 +24,9 @@
 * Setup
 
 #+begin_src emacs-lisp
+
 ;;; -*- lexical-binding: t; -*-
+
 #+end_src
 
 ** Startup
