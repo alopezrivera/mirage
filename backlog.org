@@ -8,23 +8,38 @@
 
 
 
-- environment variables
-   - https://github.com/purcell/exec-path-from-shell
+- dirvish
+   - https://github.com/alexluigit/dirvish
+
+-----
 
 - academic
-   - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
-   - https://github.com/emacsmirror/zotxt
+   - guides
+      - workflow
+         - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
+      - tooling
+         - https://www.reddit.com/r/emacs/comments/vxxyb8/comment/ig4hcer/
+   - packages
+      - zotero
+         - https://github.com/emacsmirror/zotxt
+      - input
+         - citar
+            - https://github.com/emacs-citar/citar
+      - database management
+         - ebib
+            - http://joostkremers.github.io/ebib/
 
 - docker
    - https://github.com/Silex/docker.el
 
-- presentation
-   - command log
-      - command-log-mode
-      - https://www.youtube.com/watch?v=QfN0gNaxE2U
+-----
+5-minute
+
+- org-entities to escape markup symbols
+   - https://emacs.stackexchange.com/a/16746
 
 -----
-sort
+stow
 
 - data safety
    - https://github.com/alphapapa/salv.el
@@ -32,6 +47,8 @@ sort
 -----
 hotfixes
 
+- GNOME keys
+   - https://emacs.stackexchange.com/questions/71630/cant-reset-ctrl-or-ctrl-in-emacs
 - org-paragraph
    - detection
       - remove indentation condition
@@ -43,9 +60,28 @@ hotfixes
 modes
 
 - backlog editing mode
+   - headings
+      - small
+      - monospace
+      - same color
+      - all equal
+   - setup
+      - tag alignment
+
+
+-----
+packages
+
+- general.el
+
+- region
+   - transient-mark-mode active -> mouse-3 = kill-ring-save
+   - smart-comment-region
+   - org-indent-region
 
 
 * References
+** Blogs
 
 - https://karthinks.com/
 
@@ -61,6 +97,7 @@ modes
 - https://github.com/rougier/dotemacs
    - https://www.reddit.com/r/unixporn/comments/s2extx/yabai_emacs_and_my_favorite_emacs_bootloader/
 - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
+- https://github.com/Lambda-Emacs/lambda-emacs
 
 ** Features
 
@@ -101,6 +138,15 @@ modes
 
 
 * Refactoring
+** bindings
+*** rewrite
+
+- https://github.com/noctuid/general.el
+
+*** minor modes with key bindings
+
+- Org Mode
+
 ** relative-line
 
 - relative-line -> line
@@ -111,7 +157,6 @@ modes
 ** config-directory
 
 -> user-emacs-directory
-
 
 * Improvements
 ** regions
@@ -233,39 +278,7 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 - if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
-
-* Modes
-** bindings
-
-- All key bindings
-   - Org Mode
-- https://github.com/noctuid/general.el
-
-** org-backlog
-
-- minor mode
-   - agenda file editing
-- headings
-   - small
-   - monospace
-   - same color
-   - all equal
-- setup
-   - tag alignment
-
-* Packages
-
-- general purpose functions
-   - general.org
-      - general
-      - org mode
-
-- region
-   - transient-mark-mode active -> mouse-3 = kill-ring-save
-   - smart-comment-region
-   - org-indent-region
-
-
+  
 * portability
 
 - organice
@@ -711,6 +724,11 @@ workflow
 - el-get
    - https://github.com/dimitri/el-get
 
+
+* shell
+
+- fix missing environment variables
+   - https://github.com/purcell/exec-path-from-shell
 
 * async
 
