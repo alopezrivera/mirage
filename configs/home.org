@@ -1469,6 +1469,18 @@ before the execution of any command.")
 #+end_src
 
 * File management
+** dirvish
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'dirvish)
+(require 'dirvish)
+
+;; override dired
+(dirvish-override-dired-mode)
+
+#+end_src
+
 ** Functions
 *** dos2unix
 
@@ -1706,6 +1718,7 @@ the user for confirmation."
 (setq comint-input-ignoredups t)
 
 #+end_src
+
 
 * Org Mode
 
