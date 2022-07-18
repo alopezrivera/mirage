@@ -398,3 +398,12 @@ sudo apt install okular
 #+end_src
 
 
+* Services
+** systemd
+
+- References
+   - https://unix.stackexchange.com/a/479766
+   - https://jdebp.uk/FGA/systemd-house-of-horror/daemonize.html#first-rule
+
+
+
