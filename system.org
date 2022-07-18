@@ -134,7 +134,7 @@ sudo apt install emacs-snapshot
 
 #+end_src
 
-*** Specific version
+**** Specific version
 
 #+begin_src shell
 
@@ -144,7 +144,7 @@ sudo apt install emacs<version>
 
 #+end_src
 
-*** Uninstall
+**** Uninstall
 
 #+begin_src shell
 
@@ -152,7 +152,7 @@ sudo apt-get remove emacs<version>
 
 #+end_src
 
-*** Default command
+**** Default command
 
 #+begin_src shell
 
@@ -160,7 +160,16 @@ sudo update-alternatives --config emacs
 
 #+end_src
 
-** Local config
+*** Typefaces
+
+#+begin_src emacs-lisp
+
+(all-the-icons-install-fonts)
+
+#+end_src
+
+*** Local config
+**** Default
 
 #+begin_src emacs-lisp
 ;; local emacs config
@@ -194,16 +203,31 @@ sudo update-alternatives --config emacs
 
 #+end_src
 
-** Typefaces
+**** Default directories
 
 #+begin_src emacs-lisp
 
-(all-the-icons-install-fonts)
+;; prevent Emacs from dabbling inside /mnt/c/WINDOWS/system32/
+(setq default-directory "/tmp/")
+(setq command-line-default-directory "/tmp/")
+
+#+end_src
+
+**** Restricted file search
+
+#+begin_src emacs-lisp
+
+;; sudo find-file
+(defun sudo-find-file (orig-fun FILENAME &optional WILDCARDS)
+  (condition-case nil
+    (funcall orig-fun FILENAME WILDCARDS)
+    (error (funcall orig-fun (concat "/sudo::" FILENAME) WILDCARDS))))
+(advice-add 'find-file :around #'sudo-find-file)
 
 #+end_src
 
 
-* Git
+** Git
 
 #+begin_src shell
 
@@ -214,7 +238,7 @@ git --version
 
 #+end_src
 
-** user
+*** user
 
 #+begin_src emacs-lisp
 
@@ -223,7 +247,7 @@ git config --global user.email <email>
 
 #+end_src
 
-** merge strategy
+*** merge strategy
 
 #+begin_src shell
 
@@ -231,7 +255,7 @@ git config --global pull.rebase false
 
 #+end_src
 
-** git-subrepo
+*** git-subrepo
 
 #+begin_src shell
 
@@ -240,7 +264,8 @@ echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
 
 #+end_src
 
-* LaTeX
+
+** LaTeX
 
 TeX Live installation process using Debian packages.
 
@@ -248,8 +273,8 @@ Vanilla install:
 - https://tex.stackexchange.com/questions/38978/how-can-i-manually-install-a-latex-package-debian-ubuntu-linux
 - https://tex.stackexchange.com/questions/1092/how-to-install-vanilla-texlive-on-debian-or-ubuntu
 
-** TeX
-*** Debian
+*** TeX
+**** TeX Live
 
 #+begin_src shell
 
@@ -257,7 +282,7 @@ sudo apt install texlive
 
 #+end_src
 
-*** XeTeX
+**** XeTeX
 
 #+begin_src shell
 
@@ -265,7 +290,7 @@ sudo apt install texlive-xetex
 
 #+end_src
 
-*** LuaTeX
+**** LuaTeX
 
 #+begin_src shell
 
@@ -273,7 +298,7 @@ sudo apt install texlive-luatex
 
 #+end_src
 
-** biber
+*** biber
 
 #+begin_src shell
 
@@ -281,7 +306,7 @@ sudo apt install biber
 
 #+end_src
 
-** latexmk
+*** latexmk
 
 #+begin_src shell
 
@@ -289,8 +314,8 @@ sudo apt-get install latexmk
 
 #+end_src
 
-** Packages
-*** General
+*** Packages
+**** General
 
 #+begin_src shell
 
@@ -299,7 +324,7 @@ sudo apt install texlive-plain-generic
 
 #+end_src
 
-*** Typefaces
+**** Typefaces
 
 #+begin_src shell
 
@@ -311,7 +336,7 @@ sudo apt install texlive-fonts-extra-links
 
 #+end_src
 
-*** Typesetting
+**** Typesetting
 
 #+begin_src shell
 
@@ -323,7 +348,7 @@ sudo apt install texlive-latex-recommended
 
 #+end_src
 
-*** Bibliography
+**** Bibliography
 
 #+begin_src shell
 
@@ -331,17 +356,27 @@ sudo apt install texlive-bibtex-extra
 
 #+end_src
 
-* Drawio
+** Python
 
 #+begin_src shell
 
-curl -s https://api.github.com/repos/jgraph/drawio-desktop/releases/latest | grep browser_download_url | grep '\.deb' | cut -d '"' -f 4 | wget -i -
-sudo apt -f install ./drawio-amd64-*.deb
+sudo apt install software-properties-common
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt install python3.<version>
 
 #+end_src
 
+*** poetry
 
-* TODO Sphinx
+#+begin_src shell
+
+sudo apt install python3-venv
+curl -sSL https://install.python-poetry.org | python3 -
+export PATH="/home/antonio/.local/bin:$PATH"
+
+#+end_src
+
+*** TODO sphinx
 
 - python3-sphinx version <4 (master_doc vs root_doc issue)
    - seems to work in GitHub actions with Ubuntu 18, installing with pip
@@ -358,7 +393,7 @@ pip install sphinx-rtd-theme
 
 #+end_src
 
-** LaTeX
+**** LaTeX
 
 LaTeX dependency install using Debian packages.
 
@@ -372,7 +407,7 @@ sudo apt install texlive-fonts-extra-links
 
 #+end_src
 
-** better-apidoc
+**** better-apidoc
 
 #+begin_src shell
 
@@ -381,7 +416,17 @@ pip install better-apidoc
 #+end_src
 
 
-* ffmpeg
+** Drawio
+
+#+begin_src shell
+
+curl -s https://api.github.com/repos/jgraph/drawio-desktop/releases/latest | grep browser_download_url | grep '\.deb' | cut -d '"' -f 4 | wget -i -
+sudo apt -f install ./drawio-amd64-*.deb
+
+#+end_src
+
+
+** ffmpeg
 
 #+begin_src shell
 
@@ -389,7 +434,7 @@ sudo apt install ffmpeg
 
 #+end_src
 
-* okular
+** okular
 
 #+begin_src shell
 
