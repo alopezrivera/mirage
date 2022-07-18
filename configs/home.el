@@ -802,6 +802,12 @@ before the execution of any command.")
 			        ("C-d"   . ivy-reverse-i-search-kill))
             collect (define-key map (kbd (car binding)) (cdr binding))))
 
+(straight-use-package 'dirvish)
+(require 'dirvish)
+
+;; override dired
+(dirvish-override-dired-mode)
+
 ;; Transform all files in directory from DOS to Unix line breaks
 (defun custom/dos2unix (&optional dir)
   (let ((default-directory (or dir (file-name-directory buffer-file-name))))
