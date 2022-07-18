@@ -11,26 +11,14 @@
 Installation process of fundamental applications for Debian-based distros, in sequential order.
 
 
-* Distro
-** References
-*** Arch
+* Linux
+** Platform
 
-- https://github.com/radstevee/dotfiles
+Linux may be run as the OS of the machine or using the Windows Subsystem
+for Linux.
 
-
-** Booting Linux
-*** Creating the drive partition
-**** Securing the space
-**** Creating the partition
-*** Creating a live USB
-*** Disabling UEFI Secure Boot
-*** Booting from the live USB
-*** Creating the distribution's drive partitions
-
-
-** Ubuntu 22.04
-** WSL 2
-*** Install
+*** WSL 2
+**** Install
 
 #+begin_src powershell
 
@@ -38,16 +26,16 @@ wsl --install
 
 #+end_src
 
-*** Distro
+**** Distro
 
 Install from Microsoft Store.
 
-*** X server
-**** Install VcXsrv
+**** X server
+***** Install VcXsrv
 
 Available from [[https://sourceforge.net/projects/vcxsrv/][Sourceforge]].
 
-**** Allow VcXsrv through the Windows Defender Firewall
+***** Allow VcXsrv through the Windows Defender Firewall
 
 1. Open the *Windows Defender Firewall* section of the Control Panel
 2. Click on *Advanced Settings*, among the hyperlinks on the left side of the screen
@@ -56,10 +44,10 @@ Available from [[https://sourceforge.net/projects/vcxsrv/][Sourceforge]].
 5. For each of the rules, right click to open their context menu, and select *Properties*
 6. In the *Action* section, tick *Allow the connection*
 
-*** Debugging
-**** Low DPI
+**** Debugging
+***** Low DPI
 
-Set up VcXsrv so applications can *Override high DPI scaling behavior*. From [[https://superuser.com/a/1370548][Biswapriyo in StackOverflow]].
+*SOLUTION:* Set up VcXsrv so applications can *Override high DPI scaling behavior*. From [[https://superuser.com/a/1370548][Biswapriyo in StackOverflow]].
 
 1. Go to the installation directory of VcXsrv and find *vcxsrv.exe*
 2. Close any running instance of the X server
@@ -76,9 +64,9 @@ export GDK_DPI_SCALE=1
 
 #+end_src
 
-**** No internet connection
+***** No internet connection
 
-Restart IP configuration. From [[https://stackoverflow.com/a/63578387][Sam in StackOverflow]].
+*SOLUTION:* Restart IP configuration.
 
 #+begin_src cmd
 
@@ -89,10 +77,155 @@ ipconfig /flushdns
 
 #+end_src
 
+-----
+References:
 
-* C
-** Compiler
-*** gcc
+- [[https://stackoverflow.com/a/63578387][Sam, Answer to "No internet connection on WSL Ubuntu (Windows Subsystem for Linux)," StackOverflow]]
+
+*** Migrating
+**** Creating a drive partition
+
+*Disk Management*
+
+The Disk Management application displays a menu with the system's drives.
+
+To create a partition, right click on the drive you wish to partition and
+select *shrink* in the context menu. The tool will evaluate the space available
+for a new partition.
+
+There are chances that the *available space for the partition is very low* in
+relation with the free space in the drive. There are three main causes for
+this:
+
+1. Virtual Memory, responsible for the page/swap/paging file
+2. System Restore
+3. Hybernation
+
+***** Increasing the space available for the partition
+****** Turn off Virtual Memory
+
+1. Control Panel > All Control Panel Items > System
+2. Advanced system settings
+3. Performance > Settings
+4. Advanced > Virtual Memory > Change
+5. Un-check *Automatically manage paging file for all drives*
+6. Select *No paging file*
+7. Click *Set*
+8. Click *Ok*
+9. Restart
+
+-----
+References:
+
+- [[https://superuser.com/a/1086485][Fazer87, Answer to "How can I increase my shrink space in disk management?", SuperUser]]
+
+****** Turn off System Restore
+
+1. Control Panel > System and Security > System
+2. Advanced system settings
+3. System Protection > Protection Settings
+4. Select your drive of choice
+5. Click *Configure*
+6. Turn off *Protection*
+7. Click *Ok*
+8. Restart
+
+-----
+References:
+
+- [[https://superuser.com/a/983965][Stewart, Answer to "How can I increase my shrink space in disk management?", SuperUser]]
+
+****** Turn off Hybernation
+
+#+begin_src cmd
+
+powercfg -h off
+
+#+end_src
+
+-----
+References:
+
+- [[https://superuser.com/a/1529511][SolidSloth, Answer to "How can I increase my shrink space in disk management?", StackOverflow]]
+
+**** Creating a live USB
+
+Tutorials easily available using Rufus or other tools.
+
+**** Disabling UEFI Secure Boot
+
+To boot from a live USB you may need to disable UEFI Secure Boot
+from within the system's BIOS.
+
+***** HP
+
+In the case of HP machines, this may be done by
+
+1. Connect the live USB to the machine
+2. Restart
+3. Press ESC until the BIOS menu appears
+4. Press F9 to access the boot configuration
+5. Advanced > Configure Legacy Support and Secure Boot > *Legacy Support Enable and Secure Boot Disable*
+6. Save settings and proceed to boot
+
+**** Changing the boot order
+
+It may be preferable to change the boot order to make your Linux distro
+your system's default OS.
+
+***** HP
+
+In the case of HP machines the boot order may be changed as follows.
+
+1. Connect the live USB to the machine
+2. Restart
+3. Press ESC until the BIOS menu appears
+4. Press F9 to access the boot configuration
+5. Advanced > Scroll down to Legacy Boot Order
+6. *Check Legacy Boot Order*
+7. *Click on Legacy Boot Order*
+8. Modify boot order as desired
+9. Save settings and proceed to boot
+
+**** Booting from the live USB
+
+Restart the machine. A boot menu will appear including the option to boot
+from the live USB. Choose this option and proceed to distro installation.
+
+** Distro
+*** Arch
+
+- https://github.com/radstevee/dotfiles
+
+*** Ubuntu
+**** Drive partitions
+
+-----
+References:
+
+- [[https://askubuntu.com/questions/343268/how-to-use-manual-partitioning-during-installation][Community Wiki, AskUbuntu]]
+
+**** Debugging
+***** FireFox stops working
+
+With a *'BadAlloc'* error. Error trace similar to the one below. The cause of the error
+is the default Noveau GPU driver.
+
+#+begin_src shell
+
+(firefox:60465): Gdk-WARNING **: 18:42:01.096: The program 'firefox' received an X Window System error.
+This probably reflects a bug in the program.
+The error was 'BadAlloc'.
+
+#+end_src
+
+*SOLUTION:* Switch from the Nouveau display driver from ~xserver-xorg-video-nouveau~
+to the ~nvidia-driver-XXX~ driver using the *Additional Drivers* application.
+
+
+
+* C compiler
+** gcc
 
 #+begin_src shell
 
@@ -101,30 +234,11 @@ gcc --version
 
 #+end_src
 
-* Python
 
-#+begin_src shell
-
-sudo apt install software-properties-common
-sudo add-apt-repository ppa:deadsnakes/ppa
-sudo apt install python3.<version>
-
-#+end_src
-
-** poetry
-
-#+begin_src shell
-
-sudo apt install python3-venv
-curl -sSL https://install.python-poetry.org | python3 -
-export PATH="/home/antonio/.local/bin:$PATH"
-
-#+end_src
-
-
-* Emacs
-** Install
-*** Latest
+* Software
+** Emacs
+*** Install
+**** Latest
 
 #+begin_src shell
 
