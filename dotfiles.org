@@ -137,29 +137,57 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export PATH="/home/dfki.uni-bremen.de/alopezrivera/.local/bin:$PATH"
-
 #+end_src
-*** binaries
 
-#+begin_src shell
+
+* PATH
+
+#+begin_src shell :tangle ~/.profile
 
 export PATH="/home/antonio/.local/bin:$PATH"
 
 #+end_src
 
-*** git-subrepo
+* poetry
 
-#+begin_src shell
+#+begin_src shell :tangle ~/.profile
 
-echo 'source ~/git-subrepo/.rc' >> ~/.bashrc
+export PATH="$HOME/.poetry/bin:$PATH"
 
 #+end_src
 
-*** system-specific
-**** WSL 2
+* git-subrepo
 
-#+begin_src bash
+#+begin_src shell :tangle ~/.profile
+
+source ~/git-subrepo/.rc
+
+#+end_src
+
+
+* file explorer
+** Nautilus
+*** Collation locale
+
+Use character point value comparison to sort files.
+
+#+begin_src shell :tangle ~/.profile
+
+export LC_COLLATE=C
+
+#+end_src
+
+-----
+
+References:
+
+- [[https://askubuntu.com/a/115756][James Henstridge, Answer to "How do I force folder view sort order to not ignore special characters?", StackOverflow]]
+
+
+* display
+** WSL 2
+
+#+begin_src bash :tangle (if (wsl) "~/.bashrc" "no")
 
 # run GUI applications using X Server
 export DISPLAY_NUMBER="0"
@@ -168,8 +196,8 @@ export LIBGL_ALWAYS_INDIRECT=1
 
 #+end_src
 
-* Keyboard
-** .xkb
+* keyboard
+** XKB
 *** default
 
 Keyboard configuration defined in ~/etc/default/keyboard~, as [[https://askubuntu.com/a/1182802][suggested by Gunnar Hjalmarrsson in StackOverflow]].
@@ -237,3 +265,5 @@ xkb_symbols "capsctrl" {
 xkbcomp -I$HOME/.xkb ~/.xkb/keymap/mykbd $DISPLAY
 
 #+end_src
+
+
