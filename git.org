@@ -88,3 +88,9 @@ git subrepo init $subdir -r <remote> -b <branch>
 
 #+end_src
 
+
+* multirepo
+
+Multiple repositories in a single directory
+
+
