@@ -8,10 +8,6 @@
 
 
 
-- dirvish
-   - https://github.com/alexluigit/dirvish
-
------
 
 - academic
    - guides
@@ -33,10 +29,12 @@
    - https://github.com/Silex/docker.el
 
 -----
-5-minute
+guides
 
 - org-entities to escape markup symbols
    - https://emacs.stackexchange.com/a/16746
+- dired
+   - https://pragmaticemacs.wordpress.com/2015/05/07/dired-marking-copying-moving-and-deleting-files/
 
 -----
 stow
@@ -47,8 +45,6 @@ stow
 -----
 hotfixes
 
-- GNOME keys
-   - https://emacs.stackexchange.com/questions/71630/cant-reset-ctrl-or-ctrl-in-emacs
 - org-paragraph
    - detection
       - remove indentation condition
@@ -99,21 +95,13 @@ packages
 - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
 - https://github.com/Lambda-Emacs/lambda-emacs
 
-** Features
+** General
+*** Features
 
 - completion at point
    - https://with-emacs.com/
 
-** Org Mode
-
-- https://orgmode.org/worg/org-hacks.html
-- http://doc.norang.ca/org-mode.html
-
-** Packages
-
-- https://www.reddit.com/r/emacs/comments/vcbnht/most_visually_impressive_emacs_packages/
-
-** Workflows
+*** Workflows
 
 - Rougier
    - https://www.labri.fr/perso/nrougier/GTD/index.html
@@ -122,7 +110,22 @@ packages
    - https://tony-zorman.com/posts/phd-workflow/2022-05-01-my-phd-workflow.html
    - https://castel.dev/post/research-workflow/
      
-** Emacs Lisp
+*** Aesthetics
+
+- https://www.reddit.com/r/emacs/comments/vcbnht/most_visually_impressive_emacs_packages/
+
+*** Performance
+
+- WSL
+   - https://shelper.github.io/posts/setup-emacs-in-wsl2/
+
+** Specific
+*** Org Mode
+
+- https://orgmode.org/worg/org-hacks.html
+- http://doc.norang.ca/org-mode.html
+
+*** Emacs Lisp
 
 - interactive
    - http://xahlee.info/emacs/emacs_manual/elisp/Interactive-Codes.html
@@ -131,10 +134,9 @@ packages
 - editing
    - https://github.com/bbatsov/crux
 
-** Performance
+** Miscellaneous
 
-- WSL
-   - https://shelper.github.io/posts/setup-emacs-in-wsl2/
+- https://github.com/alphapapa/unpackaged.el
 
 
 * Refactoring
