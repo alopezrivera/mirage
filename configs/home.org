@@ -7,6 +7,17 @@
 #+title:Emacs - Home
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./home.el :mkdirp yes
 
+
+
+A single program to jot down notes and write documents and prose, to write code,
+to do version control, to keep track and plan tasks and projects, to save contacts.
+To manage the configuration of your machine.
+
+To publish to the web or in document form, to manage email.
+
+
+-----
+
 - diary
 - notebook
 - zettelkasten
