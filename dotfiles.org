@@ -9,9 +9,21 @@
 
 
 
+*References*
+
 - https://evanhahn.com/a-decade-of-dotfiles/
+- https://github.com/ingydotnet/...
+-----
 
+*Tools*
 
+- vcsh
+   - https://github.com/RichiH/vcsh
+   - Magit
+      - https://github.com/magit/magit/issues/460#issuecomment-36139308
+- yadm
+   - https://github.com/TheLocehiliosan/yadm
+-----
 
 *Utilities*
 
