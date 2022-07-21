@@ -76,8 +76,13 @@
   :group 'custom/org-diary-mode-group
   :type 'float)
 
-(defcustom custom/org-diary-min-window-width    70
+(defcustom custom/org-diary-min-window-width    65
   "Minimum width of an Org Diary window"
+  :group 'custom/org-diary-mode-group
+  :type 'integer)
+
+(defcustom custom/org-diary-morph-window-width  120
+  "Window width below which `org-diary' will switch to the appropriate Org Diary entry and resize the current window"
   :group 'custom/org-diary-mode-group
   :type 'integer)
 
@@ -118,7 +123,7 @@ resume your writing where you left off")
 (defun custom/org-diary-new-window ()
   "Create a window for an Org Diary entry or use the current one
 if it is too narrow to split, and resize it."
-  (if (> (window-total-width) custom/org-diary-min-window-width)
+  (if (> (window-total-width) custom/org-diary-morph-window-width)
       (progn (split-window-horizontally)
 	         (windmove-right)))
   (if (not (ignore-errors (custom/org-diary-resize-window)))
@@ -271,7 +276,7 @@ DIR is the directory in which to look for the org-diary entry corresponding to T
 			   (not (or (equal arg '(4)) (equal arg '(64))))
 			 (and (not (custom/org-diary-entry))
 			      (or custom/org-diary-visit-in-new-window
-			          (> (window-width) custom/org-diary-min-window-width))))))
+			          (> (window-width) custom/org-diary-morph-window-width))))))
        ;; Whether to initialize the diary entry
        (setq init
 	     (not (or (file-exists-p entry)

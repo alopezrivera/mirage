@@ -9,7 +9,7 @@
 
 ;; Italic
 (defface custom/italic
-  '((t :font "Victor Mono" :height  90 :weight  bold :slant italic))
+  '((t :font "Victor Mono" :height  86 :weight  bold :slant italic))
   "Italic typeface")
 
 ;; accent typefaces
