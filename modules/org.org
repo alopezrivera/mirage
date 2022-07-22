@@ -1743,6 +1743,39 @@ Candidates:
 
 ** Options
 
+Importantly, ~modus-vivendi~ will not behave correctly with
+the default ~org-format-latex-options~, with LaTeX previews
+displaying as white boxes. [[https://debbugs.gnu.org/db/52/52277.html][This has been previously reported]].
+
+~org-format-latex-options~ has ~:foreground~ and ~:background~
+attributes. These may be assigned to
+
+- a color,
+- ~default~, instructing Org Mode to determine ~:foreground~ or
+  ~:background~ from the foreground or background color of the
+  default face, or
+- ~auto~, doing the same for the text face.
+
+By default, the ~:foreground~ and ~:background~ in ~org-format-latex-options~
+are set to ~default~. With default settings, changing the color
+of the ~default~ font has the following effects on the LaTeX preview SVGs:
+
+- modus-operandi
+   - ~default :foreground~: text color
+   - ~default :background~: no effect
+- modus-vivendi
+   - ~default :foreground~: background color
+   - ~default :background~: no effect
+
+By eliminating the ~:background~ attribute from ~org-format-latex-options~
+the issue is resolved.
+
+1. ~modus-operandi~ does not suffer from this issue nor do various
+   other themes. This makes me believe the issue lies with
+   ~modus-vivendi~ itself.
+2. However, the ~:background~ attribute in ~org-format-latex-options~
+   seems to have no effect, a potential bug in Org Mode
+
 #+begin_src emacs-lisp
 
 (setq org-format-latex-options
