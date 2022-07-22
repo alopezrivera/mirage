@@ -1810,8 +1810,8 @@ ensuring the LaTeX preview directory
 matches the current theme."
   (if (custom/in-mode "org-mode")
       (progn (org-latex-preview '(64))
-	           (custom/latex-preview-directory)
-		   (org-latex-preview '(16)))))
+	        (custom/latex-preview-directory)
+		(org-latex-preview '(16)))))
 
 (add-hook 'org-mode-hook #'custom/latex-preview-reload)
 
