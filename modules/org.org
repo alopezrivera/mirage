@@ -1746,6 +1746,7 @@ Candidates:
 #+begin_src emacs-lisp
 
 (setq org-format-latex-options
+        (list :foreground 'default
               :scale      1.2))
 
 #+end_src
