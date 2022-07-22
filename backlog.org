@@ -83,6 +83,7 @@ packages
 
 ** Configs
 
+- https://github.com/radian-software/radian
 - https://github.com/SystemCrafters/rational-emacs
 - https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
 - https://github.com/jkitchin/scimax
@@ -322,6 +323,8 @@ CLOSED: [2022-05-06 Fri 17:11]
 
 - Pulsar
    - https://protesilaos.com/emacs/pulsar
+- process
+   - https://github.com/haji-ali/procress
 
 
 * latex
