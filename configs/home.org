@@ -111,6 +111,7 @@ To publish to the web or in document form, to manage email.
 #+end_src
 
 ** Package manager
+*** straight
 
 #+begin_src emacs-lisp
 
@@ -127,6 +128,97 @@ To publish to the web or in document form, to manage email.
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+#+end_src
+
+*** lockfile
+
+As explained by Luca Ambiaghi,
+
+#+begin_quote
+
+We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/default.el~. The content of the file can then be kept in a code block, under version control. The code block can then be tangle again to ~straight/versions/default.el~. We can then restore package versions using M-x ~straight-thaw-versions~.
+
+#+end_quote
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/straight/versions/default.el
+
+(("Emacs-wgrep" . "f9687c28bbc2e84f87a479b6ce04407bb97cfb23")
+ ("Highlight-Indentation-for-Emacs" . "d88db4248882da2d4316e76ed673b4ac1fa99ce3")
+ ("ace-window" . "0577c426a9833ab107bab46c60d1885c611b2fb9")
+ ("all-the-icons.el" . "9c90dbaa31a2fdc163e4394514bf9ee359e46ee5")
+ ("autothemer" . "1dbc06ad430c51b5ec1a602a808ee46b9bd4bafa")
+ ("avy" . "ba5f035be33693d1a136a5cbeedb24327f551a92")
+ ("cfrs" . "f3a21f237b2a54e6b9f8a420a9da42b4f0a63121")
+ ("circadian.el" . "bf5a00ea45c14dfdcda72c5d9f61bcd230c48159")
+ ("company-mode" . "1490c235b96acdbcc3927751473c67c1d32b2148")
+ ("compat" . "e1a22bf72ff8af445157db421adae2fbc549b224")
+ ("dash.el" . "0ac1ecf6b56eb67bb81a3cf70f8d4354b5782341")
+ ("delight" . "70cb8cec9e5eb2c24364e065d85c2ea8f14a587c")
+ ("dirvish" . "0f61b3e3f73bdfebe29ea6cab810f71f8c9d3540")
+ ("doom-modeline" . "1d1f37c0a73eb131c2fbd44b6b08237760dd4e43")
+ ("el-get" . "bf3dba444dcd240b8cb358a0850c8c5a92606134")
+ ("el-patch" . "156c61b72c1c9c61bd886b5931b8a382153f52fa")
+ ("elisp-refs" . "af73739084637c8ebadad337a8fe58ff4f1d2ec1")
+ ("elpy" . "de31d30003c515c25ff7bfd3a361c70c298f78bb")
+ ("emacs-calfw" . "03abce97620a4a7f7ec5f911e669da9031ab9088")
+ ("emacs-chocolate-theme" . "ccc05f7ad96d3d1332727689bf6250443adc7ec0")
+ ("emacs-web-server" . "22ce66ea43e0eadb9ec1d691a35d9695fc29cee6")
+ ("emacs-websocket" . "82b370602fa0158670b1c6c769f223159affce9b")
+ ("emacs-which-key" . "1ab1d0cc88843c9a614ed3226c5a1070e32e4823")
+ ("emacsmirror-mirror" . "ebaa7a97ab71b1af4236e730e54845b380eb1792")
+ ("emacsql" . "373975cbccf7776af771e23f86043b236a330702")
+ ("epl" . "78ab7a85c08222cd15582a298a364774e3282ce6")
+ ("f.el" . "d2019d4f9625bcc44349c69fe46d6645fd9ff4ff")
+ ("flycheck" . "c955fd6fb970eed5fdecf675369d3d61a41f6c68")
+ ("gnu-elpa-mirror" . "aa9f0535e6e034acd89312ca0de3dd5a20f0f883")
+ ("helpful" . "94a07d49a80f66f8ebc54a49a4b4f6899a65fbe3")
+ ("ht.el" . "c4c1be487d6ecb353d07881526db05d7fc90ea87")
+ ("hydra" . "9e9e00cb240ea1903ffd36a54956b3902c379d29")
+ ("let-alist" . "592553db5929b54db40af0df90c5add0aaca045b")
+ ("magit" . "acd26dd9f3708602d4c721395d790a4af7937eed")
+ ("melpa" . "f1f3d4dc42a050f6d1b466459593fa198cd151c4")
+ ("modus-themes" . "2860a94f78154dfdd0b2d01bdf0af7992195f34c")
+ ("multiple-cursors.el" . "225fc0e889e094bfd2913cfd448084cb49211ac6")
+ ("nano-modeline" . "35276a9139293c42287565d3bf84f46090a86e8e")
+ ("nano-theme" . "de3118f14e0fb696983c1c9f93453609010ffd14")
+ ("no-littering" . "d9db6d88ccae0727fa96125fae8601cac80efde0")
+ ("olivetti" . "8d287a80c5e3d72ac01b56c8afe60b01f18500b4")
+ ("org" . "5b45ad083c92f24f0e8a859f1873edc0c6820d74")
+ ("org-appear" . "60ba267c5da336e75e603f8c7ab3f44e6f4e4dac")
+ ("org-contacts" . "dba21b48952e78e9db27e25628bcfb0353c19b24")
+ ("org-fragtog" . "ede4ac61e8cb580f63f882bdee2b0e573cd3dd60")
+ ("org-modern" . "239c02aa99dc52755edf38d5e9c9e986683c4249")
+ ("org-roam" . "c3867619147175faf89ed8f3e90a1e67a4fd9655")
+ ("org-roam-timestamps" . "604fdad0feb61419751d3d6b828cc443a99f418f")
+ ("org-roam-ui" . "9474a254390b1e42488a1801fed5826b32a8030b")
+ ("ox-rst" . "99fa790da55b57a3f2e9aa187493ba434a64250e")
+ ("pfuture" . "f9e67bd7edbd5b4e033efd82c0acc4a85ff860a8")
+ ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
+ ("posframe" . "0d23bc5f7cfac00277d83ae7ba52c48685bcbc68")
+ ("powerline" . "566c77844f053cb39fa7acdfbc143a855450f0b5")
+ ("projectile" . "2e4105c947610986e08980dcf1a891cf1f4303e1")
+ ("pyvenv" . "31ea715f2164dd611e7fc77b26390ef3ca93509b")
+ ("rainbow-delimiters" . "a32b39bdfe6c61c322c37226d66e1b6d4f107ed0")
+ ("rainbow-mode" . "55a8c15782197cd9db8950d2f5ed1b9caca08dae")
+ ("rg.el" . "51596cb516d7af1737d964ffdbb4c4d416d6dfaf")
+ ("s.el" . "08661efb075d1c6b4fa812184c1e5e90c08795a9")
+ ("shrink-path.el" . "c14882c8599aec79a6e8ef2d06454254bb3e1e41")
+ ("spaceline" . "9a81afa52738544ad5e8b71308a37422ca7e25ba")
+ ("straight.el" . "4517e118ee43f849f708025dbb2cf4f281793121")
+ ("svg-lib" . "1e7834642fb74d4d5b2b84973fbb2095d5b7618b")
+ ("svg-tag-mode" . "efd22edf650fb25e665269ba9fed7ccad0771a2f")
+ ("sweet-theme" . "78f741806ecebe01224bf54d09ad80e306652508")
+ ("swiper" . "2051de5882706246da298ce5f60482cd7f469fe7")
+ ("themes" . "d79a41f593c69697af1ddaac971c0c47ecc446a8")
+ ("transient" . "a583d2b2f5f8963f08cb5a15a4d4dd55faa13585")
+ ("treemacs" . "e80c3020270720ff114f7a2ad62c85e1fb627678")
+ ("vundo" . "80f5cb5775bb4120e36b2959db07fc88993eff81")
+ ("with-editor" . "cfcbc2731e402b9169c0dc03e89b5b57aa988502")
+ ("workgroups.el" . "9572b3492ee09054dc329f64ed846c962b395e39")
+ ("yasnippet" . "5cbdbf0d2015540c59ed8ee0fcf4788effdf75b6")
+ ("yasnippet-snippets" . "c5bf4c4085aa61b9c07563de89f7aacc2a357db5"))
+:beta
 
 #+end_src
 
