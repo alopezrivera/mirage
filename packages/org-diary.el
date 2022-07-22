@@ -81,7 +81,7 @@
   :group 'custom/org-diary-mode-group
   :type 'integer)
 
-(defcustom custom/org-diary-morph-window-width  120
+(defcustom custom/org-diary-morph-window-width  100
   "Window width below which `org-diary' will switch to the appropriate Org Diary entry and resize the current window"
   :group 'custom/org-diary-mode-group
   :type 'integer)

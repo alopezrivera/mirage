@@ -923,8 +923,6 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 (add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
 
-(plist-put org-format-latex-options :scale 1.5)
-
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
 
@@ -954,6 +952,10 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 ;; ox-rst
 (straight-use-package 'ox-rst)
 (require 'ox-rst)
+
+(setq org-format-latex-options
+        (list :foreground 'default
+              :scale      1.2))
 
 ;; Justify equation labels - [fleqn]
 ;; Preview page width      - 10.5cm
@@ -993,8 +995,8 @@ ensuring the LaTeX preview directory
 matches the current theme."
   (if (custom/in-mode "org-mode")
       (progn (org-latex-preview '(64))
-	           (custom/latex-preview-directory)
-		   (org-latex-preview '(16)))))
+	        (custom/latex-preview-directory)
+		(org-latex-preview '(16)))))
 
 (add-hook 'org-mode-hook #'custom/latex-preview-reload)
 

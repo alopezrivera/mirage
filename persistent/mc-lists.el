@@ -10,6 +10,7 @@
         custom/del-backward
         custom/double-end
         custom/double-home
+        custom/kill-ring-mouse
         custom/nimble-delete-backward
         custom/nimble-delete-forward
         custom/org-control-return
