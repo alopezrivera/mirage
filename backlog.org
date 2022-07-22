@@ -25,6 +25,13 @@
          - ebib
             - http://joostkremers.github.io/ebib/
 
+- workflow
+   - org-clock-report
+      - https://orgmode.org/manual/The-clock-table.html
+   - notifications
+      - https://github.com/marcinkoziej/org-pomodoro
+      - https://github.com/akhramov/org-wild-notifier.el
+
 - docker
    - https://github.com/Silex/docker.el
 
