@@ -1741,7 +1741,9 @@ Candidates:
       - derivations
          - \arraycolsep=3pt\def\arraystretch{2.25}
 
-** Options
+** TODO Options
+
+- mail bug in
 
 Importantly, ~modus-vivendi~ will not behave correctly with
 the default ~org-format-latex-options~, with LaTeX previews
