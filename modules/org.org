@@ -1640,15 +1640,6 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-** LaTeX
-*** Equation preview scale
-
-#+begin_src emacs-lisp
-
-(plist-put org-format-latex-options :scale 1.5)
-
-#+end_src
-
 ** Ellipses
 
 Candidates:
@@ -1749,6 +1740,15 @@ Candidates:
          - \arraycolsep=1.4pt\def\arraystretch{1.5}
       - derivations
          - \arraycolsep=3pt\def\arraystretch{2.25}
+
+** Options
+
+#+begin_src emacs-lisp
+
+(setq org-format-latex-options
+              :scale      1.2))
+
+#+end_src
 
 ** Header
 
