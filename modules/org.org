@@ -1745,6 +1745,8 @@ Candidates:
 
 - mail bug in
 
+-----
+
 Importantly, ~modus-vivendi~ will not behave correctly with
 the default ~org-format-latex-options~, with LaTeX previews
 displaying as white boxes. [[https://debbugs.gnu.org/db/52/52277.html][This has been previously reported]].
