@@ -51,22 +51,22 @@
 
 (define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
 
-(defcustom custom/org-diary-directory           "/home/diary/"
+(defcustom custom/org-diary-directory         "/home/diary/"
   "Org Diary directory"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
 
-(defcustom custom/org-diary-time-format-file    "%d-%m-%Y"
+(defcustom custom/org-diary-time-format-file  "%d-%m-%Y"
   "Org Diary time format: file names"
   :group 'custom/org-diary-mode-group
   :type 'string)
 
-(defcustom custom/org-diary-entry-regex         "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org"
+(defcustom custom/org-diary-entry-regex       "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org"
   "Regex query to identify Org Diary entries"
   :group 'custom/org-diary-mode-group
   :type 'string)
 
-(defcustom custom/org-diary-time-format-title   "%d/%m/%Y"
+(defcustom custom/org-diary-time-format-title "%d/%m/%Y"
   "Org Diary time format: entry titles"
   :group 'custom/org-diary-mode-group
   :type 'string)
@@ -76,7 +76,7 @@
   :group 'custom/org-diary-mode-group
   :type 'float)
 
-(defcustom custom/org-diary-min-window-width    65
+(defcustom custom/org-diary-min-window-width 65
   "Minimum width of an Org Diary window"
   :group 'custom/org-diary-mode-group
   :type 'integer)
@@ -94,7 +94,7 @@ the current window and resize it if necessary"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
 
-(defcustom custom/org-diary-variable-pitch      nil
+(defcustom custom/org-diary-variable-pitch nil
   "Whether to activate `variable-pitch-mode' in Org Diary entries"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
