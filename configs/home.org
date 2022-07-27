@@ -1805,14 +1805,6 @@ the user for confirmation."
 
 #+end_src
 
-* IDE
-
-#+begin_src emacs-lisp
-
-(require 'ide (concat config-directory "modules/ide.el"))
-
-#+end_src
-
 * Shell
 
 #+begin_src emacs-lisp
@@ -1823,20 +1815,19 @@ the user for confirmation."
 #+end_src
 
 
-* Org Mode
-
-#+begin_src emacs-lisp
-
-(require 'org (concat config-directory "modules/org.el"))
-
-#+end_src
-
-
 * UI
 
 #+begin_src emacs-lisp
 
 (require 'ui (concat config-directory "modules/ui.el"))
+
+#+end_src
+
+* IDE
+
+#+begin_src emacs-lisp
+
+(require 'ide (concat config-directory "modules/ide.el"))
 
 #+end_src
 
