@@ -17,14 +17,14 @@
 
 #+begin_src emacs-lisp
 
-;; Default face
+;; default face
 (set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
 
-;; Fixed pitch face
+;; fixed pitch face
 (set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 93)
 
-;; Variable pitch face
-(set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 100 :weight 'regular)
+;; variable pitch face
+(set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 105 :weight 'regular)
 
 #+end_src
 
@@ -33,7 +33,7 @@
 
 #+begin_src emacs-lisp
 
-;; Italic
+;; italic
 (defface custom/italic
   '((t :font "Victor Mono" :height  86 :weight  bold :slant italic))
   "Italic typeface")
