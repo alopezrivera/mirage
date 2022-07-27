@@ -1,13 +1,13 @@
-;; Default face
+;; default face
 (set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
 
-;; Fixed pitch face
+;; fixed pitch face
 (set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 93)
 
-;; Variable pitch face
-(set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 100 :weight 'regular)
+;; variable pitch face
+(set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 105 :weight 'regular)
 
-;; Italic
+;; italic
 (defface custom/italic
   '((t :font "Victor Mono" :height  86 :weight  bold :slant italic))
   "Italic typeface")
@@ -37,80 +37,11 @@ through as a theme loads."
 
 (advice-add 'load-theme :around #'custom/theme-accents)
 
-;; Titles
-(setq typeface-title "Ringbearer")
-
-;; Heading face
-(setq typeface-heading "Century Gothic")
-
 ;; Mode line
 (set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
 
 ;; Symbol library
 (straight-use-package 'all-the-icons)
-
-;; Title face
-
-(defun custom/org-typeface-title ()
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :font typeface-title :height 300 :weight 'regular :foreground 'unspecified)))
-
-(add-hook 'org-mode-hook #'custom/org-typeface-title)
-
-(defun custom/org-typefaces-body ()
-  (with-eval-after-load 'org-faces
-
-    ;; Code
-    (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
-
-    ;; Tables
-    (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
-
-    ;; Lists
-    (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
-
-    ;; Meta
-    (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
-
-(add-hook 'org-mode-hook #'custom/org-typefaces-body)
-
-(defun custom/org-typeface-indent ()
-  "Indent typeface used in `org-indent-mode' and `visual-line-mode'."
-  (with-eval-after-load 'org-indent-mode
-    (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))))
-
-(add-hook 'org-mode-hook #'custom/org-typeface-indent)
-
-;; Use levels 1 through 8
-(setq org-n-level-faces 8)
-
-;; Do not cycle header style after 8th level
-(setq org-cycle-level-faces nil)
-
-;; Hide leading stars
-(setq org-hide-leading-starts t)
-
-;; Font sizes
-(defun custom/org-header-setup () 
-  (with-eval-after-load 'org-faces
-
-    ;; Heading font sizes
-    (dolist (face '((org-level-1 . 1.6)
-                    (org-level-2 . 1.4)
-                    (org-level-3 . 1.3)
-                    (org-level-4 . 1.2)
-                    (org-level-5 . 1.15)
-                    (org-level-6 . 1.10)
-                    (org-level-7 . 1.05)
-                    (org-level-8 . 1.00)))
-         (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
-
-(add-hook 'org-mode-hook #'custom/org-header-setup)
 
 (straight-use-package 'svg-tag-mode)
 
