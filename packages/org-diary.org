@@ -155,7 +155,7 @@ the current window and resize it if necessary"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
 
-(defcustom custom/org-diary-variable-pitch      nil
+(defcustom custom/org-diary-variable-pitch      t
   "Whether to activate `variable-pitch-mode' in Org Diary entries"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
