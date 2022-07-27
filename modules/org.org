@@ -1584,43 +1584,102 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 * UI
 ** Text
-*** Hiden
-**** Markup
+*** Typefaces
 
 #+begin_src emacs-lisp
 
-(setq org-hide-emphasis-markers t)
+;; titles
+(setq typeface-title "Ringbearer")
+
+;; heading face
+(setq typeface-heading "Century Gothic")
 
 #+end_src
 
-**** Keywords
+**** Title
 
 #+begin_src emacs-lisp
 
-(setq org-hidden-keywords '(title))
+;; title face
+
+(defun custom/org-typeface-title ()
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-document-title nil :font typeface-title :height 300 :weight 'regular :foreground 'unspecified)))
+
+(add-hook 'org-mode-hook #'custom/org-typeface-title)
 
 #+end_src
 
-**** org-appear
+**** Body
 
 #+begin_src emacs-lisp
 
-;; org-appear
-(straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
-(add-hook 'org-mode-hook #'org-appear-mode)
+(defun custom/org-typefaces-body ()
+  (with-eval-after-load 'org-faces
 
-;; links
-(setq org-appear-autolinks t)
+    ;; Code
+    (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
 
-;; keywords
-(setq org-appear-autokeywords t)
+    ;; Tables
+    (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
 
-;; symbols
-(setq org-appear-autoentities t)
+    ;; Lists
+    (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
 
-;; subscripts and superscripts
-(setq org-appear-autosubmarkers t)
-(setq org-appear-inside-latex t)
+    ;; Meta
+    (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
+
+(add-hook 'org-mode-hook #'custom/org-typefaces-body)
+
+#+end_src
+
+**** Indent
+
+#+begin_src emacs-lisp
+
+(defun custom/org-typeface-indent ()
+  "Indent typeface used in `org-indent-mode' and `visual-line-mode'."
+  (with-eval-after-load 'org-indent-mode
+    (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))))
+
+(add-hook 'org-mode-hook #'custom/org-typeface-indent)
+
+#+end_src
+
+**** Headings
+
+#+begin_src emacs-lisp
+
+;; use levels 1 through 8
+(setq org-n-level-faces 8)
+
+;; do not cycle header style after 8th level
+(setq org-cycle-level-faces nil)
+
+;; hide leading stars
+(setq org-hide-leading-starts t)
+
+;; font sizes
+(defun custom/org-header-setup () 
+  (with-eval-after-load 'org-faces
+
+    ;; heading font sizes
+    (dolist (face '((org-level-1 . 1.6)
+                    (org-level-2 . 1.4)
+                    (org-level-3 . 1.3)
+                    (org-level-4 . 1.2)
+                    (org-level-5 . 1.15)
+                    (org-level-6 . 1.10)
+                    (org-level-7 . 1.05)
+                    (org-level-8 . 1.00)))
+         (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
+
+(add-hook 'org-mode-hook #'custom/org-header-setup)
 
 #+end_src
 
