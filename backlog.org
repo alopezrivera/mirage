@@ -10,25 +10,51 @@
 -----
 refactor
 
-- ui
-   - ui-typefaces
-   - ui-highlights
-   - ui-modeline
-- theme
-   - theme-customization
-   - theme-advice
-   - theme-switch
-- ide
+- modules
+   - base
+      - base
+      - base-editing
+      - base-display
+      - base-guidance
+      - base-navigation
+      - base-shell
+   - ui
+      - ui-typefaces
+      - ui-highlights
+      - ui-modeline
+   - theme
+      - theme-customization
+      - theme-advice
+      - theme-switch
    - ide
-- org
-   - org-patches
-   - org-functions
-   - org-editing
-   - org-display
-   - org-export
-   - org-ui
-   - org-latex
+      - ide
+   - org
+      - org-patches
+      - org-functions
+      - org-editing
+      - org-display
+      - org-export
+      - org-ui
+      - org-latex
 - packages
+   - base
+      - straight
+      - no-littering
+      - el-patch
+
+      - rainbow-delimiters
+      - workgroups
+      - swiper
+      - ripgrep
+      - yasnippet
+      - counsel
+      - helpful
+      - which-key
+      - ivy
+      - dirvish
+      - magit
+      - projectile
+      - treemacs
    - ui
       - all-the-icons
       - svg-tag-mode
@@ -50,11 +76,14 @@ refactor
       - elpy
    - org
       - org
+
       - org-appear
       - org-modern
+      - *org-paragraph*
+
       - org-tempo
       - org-capture
-      - org-diary
+      - *org-diary*
       - org-babel
       - org-roam
       - org-agenda
