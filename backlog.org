@@ -7,7 +7,83 @@
 #+title:Backlog
 
 
+-----
+refactor
 
+- ui
+   - ui-typefaces
+   - ui-highlights
+   - ui-modeline
+- theme
+   - theme-customization
+   - theme-advice
+   - theme-switch
+- ide
+   - ide
+- org
+   - org-patches
+   - org-functions
+   - org-editing
+   - org-display
+   - org-export
+   - org-ui
+   - org-latex
+- packages
+   - ui
+      - all-the-icons
+      - svg-tag-mode
+      - rainbow-mode
+      - delight
+   - theme
+      - nano-theme
+      - doom-themes
+      - modus-themes
+      - sweet-theme
+      - chocolate-theme
+      - nano-modeline
+      - doom-modeline
+      - spaceline
+   - ide
+      - hideshow
+      - company
+      - flycheck
+      - elpy
+   - org
+      - org
+      - org-appear
+      - org-modern
+      - org-tempo
+      - org-capture
+      - org-diary
+      - org-babel
+      - org-roam
+      - org-agenda
+      - org-contacts
+      - org-calendar
+      - ox-rst
+
+- tangled from org files?
+   - init
+      - config variables
+   - emacs
+   - org
+   - packages
+- configs
+   - home
+   - wild
+   - term
+- modules
+   - ivy
+   - ...
+   - org
+   - org-agenda
+   - org-calendar
+   - ...
+- packages
+   - org-diary
+   - org-paragraph
+
+-----
 
 - academic
    - guides
@@ -642,7 +718,19 @@ workflow
 
 - elfeed
    - https://github.com/skeeto/elfeed
-     
+
+- sources
+   - Management
+      - [[https://blog.aaronbieber.com/]]
+   - Technical
+      - [[http://cachestocaches.com/]]
+      - [[https://redgreenrepeat.com/2021/04/09/org-mode-agenda-getting-started-scheduled-items-and-todos/]]
+      - [[https://christine.website/]]
+   - Sciences
+      - [[https://scottaaronson.blog/]]
+   - Cultural
+      - [[https://acoup.blog/]]
+
 * email
 
 - mu4e
