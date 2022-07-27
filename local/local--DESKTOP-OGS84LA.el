@@ -17,7 +17,7 @@
 
 (setq startup-buffers
       (list (concat config-directory "backlog.org")
-            (concat home "studio/backlog.org")
+            (concat home "backlog.org")
 	    (concat home "studio/professional/work/DFKI/repos/hopping_leg/backlog.org")))
 
 
