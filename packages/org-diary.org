@@ -197,6 +197,17 @@ resume your writing where you left off")
 
 * Display
 ** Window
+*** org-diary-window-width
+
+#+begin_src emacs-lisp
+
+(defun custom/org-diary-window-width ()
+  "Width of an Org Diary window in the current frame"
+  (max (* (frame-width) custom/org-diary-new-window-fraction)
+       custom/org-diary-min-window-width))
+
+#+end_src
+
 *** TODO org-diary-new-window
 
 - new window always on right of frame
