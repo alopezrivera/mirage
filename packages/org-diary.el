@@ -71,7 +71,7 @@
   :group 'custom/org-diary-mode-group
   :type 'string)
 
-(defcustom custom/org-diary-new-window-fraction 0.2
+(defcustom custom/org-diary-new-window-fraction 0.225
   "New Org Diary window width as a fraction of the frame width"
   :group 'custom/org-diary-mode-group
   :type 'float)
