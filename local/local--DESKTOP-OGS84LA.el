@@ -29,10 +29,10 @@
 (setq org-contacts-files (list (concat home "studio/contacts.org")))
 
 ;; org-roam directory
-(setq org-roam-directory (concat home "home/roam"))
+(setq org-roam-directory (concat home "home/scribbles/roam"))
 
 ;; org-diary directory
-(setq custom/org-diary-directory (concat home "home/journal/diary/"))
+(setq custom/org-diary-directory (concat home "home/scribbles/journal/diary/"))
 
 
 ;; projectile
