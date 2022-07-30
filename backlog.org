@@ -112,7 +112,7 @@ refactor
    - org-diary
    - org-paragraph
 
------
+** next
 
 - academic
    - guides
@@ -139,6 +139,8 @@ refactor
 
 - docker
    - https://github.com/Silex/docker.el
+
+** other
 
 -----
 guides
@@ -809,6 +811,9 @@ workflow
 
 - narrow dwim
    - https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+
+- repeat-mode
+   - https://karthinks.com/software/it-bears-repeating/
 
 * window manager
 
