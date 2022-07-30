@@ -178,16 +178,27 @@ modes
    - setup
       - tag alignment
 
-
 -----
 packages
-
-- general.el
 
 - region
    - transient-mark-mode active -> mouse-3 = kill-ring-save
    - smart-comment-region
    - org-indent-region
+
+
+* Evil
+
+- practice
+   - https://www.vimified.com/
+
+- god-mode
+   - https://github.com/emacsorphanage/god-mode#usage-with-evil
+
+- guides
+   - https://github.com/noctuid/evil-guide#advice
+   - https://www.youtube.com/watch?v=Uz_0i27wYbg
+   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 
 
 * References
@@ -768,25 +779,6 @@ workflow
    - Nano
       - https://www.reddit.com/r/emacs/comments/mzgsm0/mu4e_look_and_feel/
 
-
-* text editing
-** modal
-
-- references
-   - https://www.vimified.com/
-   - https://www.youtube.com/watch?v=Uz_0i27wYbg
-   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
-
-- evil
-   - https://github.com/emacs-evil/evil
-
-- meow
-   - https://github.com/meow-edit/meow
-
-** emacs
-
-- repeat-mode
-   - https://karthinks.com/software/it-bears-repeating/
 
 * hyperbole
 
