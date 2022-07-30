@@ -7,8 +7,49 @@
 #+title:Backlog
 
 
+
+
+* plan
+** refactor
+
 -----
-refactor
+shapeshifter
+-----
+
+- ~
+   - emacs
+      - configs
+         - home
+         - wild
+         - term
+      - sources
+         - ... .org
+      - modules
+         - ... .el
+      - packages
+         - ... .el
+      - init.org
+
+      - backlog.org
+
+      - draft.org
+      - demo.org
+
+      - upgrade.org
+      - archive.org
+   - .emacs.d
+      - init.el
+      - configs
+      - modules
+      - packages
+
+      - elpa
+      - elpy
+      - etc
+      - persistent
+      - snippets
+      - straight
+      - var
 
 - modules
    - base
@@ -111,6 +152,10 @@ refactor
 - packages
    - org-diary
    - org-paragraph
+
+- system
+   - git.org
+   - dotfiles.org
 
 ** next
 
