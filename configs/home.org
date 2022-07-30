@@ -1835,6 +1835,14 @@ the user for confirmation."
 
 #+end_src
 
+* God
+
+#+begin_src emacs-lisp
+
+(load-file (concat config-directory "modules/god-mode.el"))
+
+#+end_src
+
 * Theme
 
 #+begin_src emacs-lisp
