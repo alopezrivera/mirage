@@ -994,12 +994,13 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 ;; SVG LaTeX equation preview
 (setq org-latex-create-formula-image-program 'dvisvgm)
 
-;; Theme-specific LaTeX preview directory
+;; theme-specific LaTeX preview directory
 (defun custom/latex-preview-directory ()
+  "Set `org-preview-latex-image-directory' to the SVG
+LaTeX preview directory of the current theme"
   (setq org-preview-latex-image-directory
-   (concat config-directory "tmp/" "ltximg/" (custom/current-theme) "/")))
+   (concat "/tmp/ltximg/" (custom/current-theme) "/")))
 
-;; Reload LaTeX equation previews
 (defun custom/latex-preview-reload ()
   "Reload all LaTeX previews in buffer,
 ensuring the LaTeX preview directory
@@ -1011,7 +1012,7 @@ matches the current theme."
 
 (add-hook 'org-mode-hook #'custom/latex-preview-reload)
 
-;; Continuous numbering of Org Mode equations
+;; continuous numbering of Org Mode equations
 (defun org-renumber-environment (orig-fun &rest args)
   (let ((results '()) 
         (counter -1)
