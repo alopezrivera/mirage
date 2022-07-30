@@ -1816,7 +1816,7 @@ the issue is resolved.
 ;; Theme-specific LaTeX preview directory
 (defun custom/latex-preview-directory ()
   (setq org-preview-latex-image-directory
-   (concat config-directory "tmp/" "ltximg/" (custom/current-theme) "/")))
+   (concat "/tmp/ltximg/" (custom/current-theme) "/")))
 
 #+end_src
 
