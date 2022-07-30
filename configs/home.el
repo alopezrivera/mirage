@@ -951,6 +951,8 @@ the user for confirmation."
 
 (require 'ide (concat config-directory "modules/ide.el"))
 
+(load-file (concat config-directory "modules/god-mode.el"))
+
 (require 'theme (concat config-directory "modules/theme.el"))
 
 (require 'org (concat config-directory "modules/org.el"))
