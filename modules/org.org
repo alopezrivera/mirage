@@ -1813,8 +1813,10 @@ the issue is resolved.
 
 #+begin_src emacs-lisp
 
-;; Theme-specific LaTeX preview directory
+;; theme-specific LaTeX preview directory
 (defun custom/latex-preview-directory ()
+  "Set `org-preview-latex-image-directory' to the SVG
+LaTeX preview directory of the current theme"
   (setq org-preview-latex-image-directory
    (concat "/tmp/ltximg/" (custom/current-theme) "/")))
 
@@ -1824,7 +1826,6 @@ the issue is resolved.
 
 #+begin_src emacs-lisp
 
-;; Reload LaTeX equation previews
 (defun custom/latex-preview-reload ()
   "Reload all LaTeX previews in buffer,
 ensuring the LaTeX preview directory
@@ -1842,7 +1843,7 @@ matches the current theme."
 
 #+begin_src emacs-lisp
 
-;; Continuous numbering of Org Mode equations
+;; continuous numbering of Org Mode equations
 (defun org-renumber-environment (orig-fun &rest args)
   (let ((results '()) 
         (counter -1)
