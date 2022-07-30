@@ -5,7 +5,7 @@
 
 
 #+title:IDE
-#+PROPERTY: header-args:emacs-lisp :results none :tangle ./ide.el :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ../modules/ide.el :mkdirp yes
 
 
 * General

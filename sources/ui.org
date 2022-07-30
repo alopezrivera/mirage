@@ -5,7 +5,7 @@
 
 
 #+title:UI 
-#+PROPERTY: header-args:emacs-lisp :results none :tangle ./ui.el :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ../modules/ui.el :mkdirp yes
 
 
 * Typefaces

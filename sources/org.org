@@ -5,7 +5,7 @@
 
 
 #+title:Org Mode
-#+PROPERTY: header-args:emacs-lisp :results none :tangle ./org.el :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ../modules/org.el :mkdirp yes
 
 
 * Setup

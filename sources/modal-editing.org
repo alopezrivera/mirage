@@ -13,7 +13,7 @@
 
 * evil
 :PROPERTIES:
-:header-args: emacs-lisp :tangle evil.el
+:header-args: emacs-lisp :tangle ../modules/evil.el
 :END:
 
 #+begin_src emacs-lisp
@@ -62,7 +62,7 @@
   
 * god-mode
 :PROPERTIES:
-:header-args: emacs-lisp :tangle god-mode.el
+:header-args: emacs-lisp :tangle ../modules/god-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -86,7 +86,7 @@
 
 * meow
 :PROPERTIES:
-:header-args: emacs-lisp :tangle meow.el
+:header-args: emacs-lisp :tangle ../modules/meow.el
 :END:
 
 #+begin_src emacs-lisp

@@ -5,7 +5,7 @@
 
 
 #+title:Theme
-#+PROPERTY: header-args:emacs-lisp :results none :tangle ./theme.el :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ../modules/theme.el :mkdirp yes
 
 #+begin_src emacs-lisp
 
