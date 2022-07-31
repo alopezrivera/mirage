@@ -3,7 +3,6 @@
 ;; display
 (setq inhibit-startup-message t)
 (menu-bar-mode -1)
-(tab-bar-mode 1)
 
 ;; dialogues
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
