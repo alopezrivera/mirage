@@ -9,6 +9,156 @@
 
 
 
+* plan
+** refactor
+
+-----
+shapeshifter
+-----
+
+- ~
+   - emacs
+      - configs
+         - home
+         - wild
+         - term
+      - sources
+         - ... .org
+      - modules
+         - ... .el
+      - packages
+         - ... .el
+      - init.org
+
+      - backlog.org
+
+      - draft.org
+      - demo.org
+
+      - upgrade.org
+      - archive.org
+   - .emacs.d
+      - init.el
+      - configs
+      - modules
+      - packages
+
+      - elpa
+      - elpy
+      - etc
+      - persistent
+      - snippets
+      - straight
+      - var
+
+- modules
+   - base
+      - base
+      - base-editing
+      - base-display
+      - base-guidance
+      - base-navigation
+      - base-shell
+   - ui
+      - ui-typefaces
+      - ui-highlights
+      - ui-modeline
+   - theme
+      - theme-customization
+      - theme-advice
+      - theme-switch
+   - ide
+      - ide
+   - org
+      - org-patches
+      - org-functions
+      - org-editing
+      - org-display
+      - org-export
+      - org-ui
+      - org-latex
+- packages
+   - base
+      - straight
+      - no-littering
+      - el-patch
+
+      - rainbow-delimiters
+      - workgroups
+      - swiper
+      - ripgrep
+      - yasnippet
+      - counsel
+      - helpful
+      - which-key
+      - ivy
+      - dirvish
+      - magit
+      - projectile
+      - treemacs
+   - ui
+      - all-the-icons
+      - svg-tag-mode
+      - rainbow-mode
+      - delight
+   - theme
+      - nano-theme
+      - doom-themes
+      - modus-themes
+      - sweet-theme
+      - chocolate-theme
+      - nano-modeline
+      - doom-modeline
+      - spaceline
+   - ide
+      - hideshow
+      - company
+      - flycheck
+      - elpy
+   - org
+      - org
+
+      - org-appear
+      - org-modern
+      - *org-paragraph*
+
+      - org-tempo
+      - org-capture
+      - *org-diary*
+      - org-babel
+      - org-roam
+      - org-agenda
+      - org-contacts
+      - org-calendar
+      - ox-rst
+
+- tangled from org files?
+   - init
+      - config variables
+   - emacs
+   - org
+   - packages
+- configs
+   - home
+   - wild
+   - term
+- modules
+   - ivy
+   - ...
+   - org
+   - org-agenda
+   - org-calendar
+   - ...
+- packages
+   - org-diary
+   - org-paragraph
+
+- system
+   - git.org
+   - dotfiles.org
+
+** next
+
 - academic
    - guides
       - workflow
@@ -34,6 +184,8 @@
 
 - docker
    - https://github.com/Silex/docker.el
+
+** other
 
 -----
 guides
@@ -71,16 +223,27 @@ modes
    - setup
       - tag alignment
 
-
 -----
 packages
-
-- general.el
 
 - region
    - transient-mark-mode active -> mouse-3 = kill-ring-save
    - smart-comment-region
    - org-indent-region
+
+
+* Evil
+
+- practice
+   - https://www.vimified.com/
+
+- god-mode
+   - https://github.com/emacsorphanage/god-mode#usage-with-evil
+
+- guides
+   - https://github.com/noctuid/evil-guide#advice
+   - https://www.youtube.com/watch?v=Uz_0i27wYbg
+   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 
 
 * References
@@ -642,32 +805,25 @@ workflow
 
 - elfeed
    - https://github.com/skeeto/elfeed
-     
+
+- sources
+   - Management
+      - [[https://blog.aaronbieber.com/]]
+   - Technical
+      - [[http://cachestocaches.com/]]
+      - [[https://redgreenrepeat.com/2021/04/09/org-mode-agenda-getting-started-scheduled-items-and-todos/]]
+      - [[https://christine.website/]]
+   - Sciences
+      - [[https://scottaaronson.blog/]]
+   - Cultural
+      - [[https://acoup.blog/]]
+
 * email
 
 - mu4e
    - Nano
       - https://www.reddit.com/r/emacs/comments/mzgsm0/mu4e_look_and_feel/
 
-
-* text editing
-** modal
-
-- references
-   - https://www.vimified.com/
-   - https://www.youtube.com/watch?v=Uz_0i27wYbg
-   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
-
-- evil
-   - https://github.com/emacs-evil/evil
-
-- meow
-   - https://github.com/meow-edit/meow
-
-** emacs
-
-- repeat-mode
-   - https://karthinks.com/software/it-bears-repeating/
 
 * hyperbole
 
@@ -692,6 +848,9 @@ workflow
 
 - narrow dwim
    - https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+
+- repeat-mode
+   - https://karthinks.com/software/it-bears-repeating/
 
 * window manager
 

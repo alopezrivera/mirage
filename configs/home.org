@@ -9,11 +9,15 @@
 
 
 
-A single program to jot down notes and write documents and prose, to write code,
-to do version control, to keep track and plan tasks and projects, to save contacts.
+A single program to jot down notes and write documents and prose.
+
+To write code and do version control.
+
+To keep track and plan tasks and projects, to save contacts.
+
 To manage the configuration of your machine.
 
-To publish to the web or in document form, to manage email.
+To publish to the web, in document form, to manage email.
 
 
 -----
@@ -1805,29 +1809,12 @@ the user for confirmation."
 
 #+end_src
 
-* IDE
-
-#+begin_src emacs-lisp
-
-(require 'ide (concat config-directory "modules/ide.el"))
-
-#+end_src
-
 * Shell
 
 #+begin_src emacs-lisp
 
 ;; remove duplicates in shell history
 (setq comint-input-ignoredups t)
-
-#+end_src
-
-
-* Org Mode
-
-#+begin_src emacs-lisp
-
-(require 'org (concat config-directory "modules/org.el"))
 
 #+end_src
 
@@ -1840,6 +1827,22 @@ the user for confirmation."
 
 #+end_src
 
+* IDE
+
+#+begin_src emacs-lisp
+
+(require 'ide (concat config-directory "modules/ide.el"))
+
+#+end_src
+
+* God
+
+#+begin_src emacs-lisp
+
+(load-file (concat config-directory "modules/god-mode.el"))
+
+#+end_src
+
 * Theme
 
 #+begin_src emacs-lisp
@@ -1848,41 +1851,14 @@ the user for confirmation."
 
 #+end_src
 
-** Theme load hook
+* Org Mode
 
 #+begin_src emacs-lisp
 
-;; Theme load hook
-(defvar custom/load-theme-hook nil
-   "`load-theme' hook.")
-
-(defun custom/load-theme-hook (&rest _args)
-   "Run `load-theme-hook'."
-   (run-hooks 'custom/load-theme-hook))
-
-(advice-add 'load-theme :after #'custom/load-theme-hook)
+(require 'org (concat config-directory "modules/org.el"))
 
 #+end_src
 
-*** Org Mode
-
-#+begin_src emacs-lisp
-
-;; Reload Org Mode
-(defun custom/org-theme-reload ()
-  (if (custom/in-mode "org-mode")
-      (org-mode)
-    (progn
-      (setq window (get-buffer-window (current-buffer)))
-      (cl-loop for buffer in (custom/visible-buffers)
-	             collect (select-window (get-buffer-window buffer))
-	 	     if (custom/in-mode "org-mode")
-		        collect (org-mode))
-      (select-window window))))
-
-(add-hook 'custom/load-theme-hook #'custom/org-theme-reload)
-
-#+end_src
 
 * Declare
 

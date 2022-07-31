@@ -51,38 +51,41 @@
 
 (define-globalized-minor-mode custom/org-diary-global-minor-mode custom/org-diary-mode custom/org-diary-mode :group 'custom/org-diary-mode-group)
 
-(defcustom custom/org-diary-directory           "/home/diary/"
+(defcustom custom/org-diary-directory         "/home/diary/"
   "Org Diary directory"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
 
-(defcustom custom/org-diary-time-format-file    "%d-%m-%Y"
+(defcustom custom/org-diary-time-format-file  "%d-%m-%Y"
   "Org Diary time format: file names"
   :group 'custom/org-diary-mode-group
   :type 'string)
 
-(defcustom custom/org-diary-entry-regex         "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org"
+(defcustom custom/org-diary-entry-regex       "^[0-9]\\{2\\}\\-[0-9]\\{2\\}\\-[0-9]\\{4\\}\\.org"
   "Regex query to identify Org Diary entries"
   :group 'custom/org-diary-mode-group
   :type 'string)
 
-(defcustom custom/org-diary-time-format-title   "%d/%m/%Y"
+(defcustom custom/org-diary-time-format-title "%d/%m/%Y"
   "Org Diary time format: entry titles"
   :group 'custom/org-diary-mode-group
   :type 'string)
 
-(defcustom custom/org-diary-new-window-fraction 0.25
+(defcustom custom/org-diary-new-window-fraction 0.225
   "New Org Diary window width as a fraction of the frame width"
   :group 'custom/org-diary-mode-group
   :type 'float)
 
-(defcustom custom/org-diary-min-window-width    65
+(defcustom custom/org-diary-min-window-width 65
   "Minimum width of an Org Diary window"
   :group 'custom/org-diary-mode-group
   :type 'integer)
 
-(defcustom custom/org-diary-morph-window-width  100
-  "Window width below which `org-diary' will switch to the appropriate Org Diary entry and resize the current window"
+(defcustom custom/org-diary-morph-window-width-factor 1.5
+  "Multipled with the width of an Org Diary window in the current frame
+to determine the width below which `org-diary' will not split the current
+window to create one for the appropriate entry, but rather switch to it in
+the current window and resize it if necessary"
   :group 'custom/org-diary-mode-group
   :type 'integer)
 
@@ -91,7 +94,7 @@
   :group 'custom/org-diary-mode-group
   :type 'boolean)
 
-(defcustom custom/org-diary-variable-pitch      nil
+(defcustom custom/org-diary-variable-pitch nil
   "Whether to activate `variable-pitch-mode' in Org Diary entries"
   :group 'custom/org-diary-mode-group
   :type 'boolean)
@@ -120,10 +123,15 @@ resume your writing where you left off")
 	   (file custom/org-diary-time-format-file))
     (concat dir file ".org")))
 
+(defun custom/org-diary-window-width ()
+  "Width of an Org Diary window in the current frame"
+  (max (* (frame-width) custom/org-diary-new-window-fraction)
+       custom/org-diary-min-window-width))
+
 (defun custom/org-diary-new-window ()
   "Create a window for an Org Diary entry or use the current one
 if it is too narrow to split, and resize it."
-  (if (> (window-total-width) custom/org-diary-morph-window-width)
+  (if (> (window-total-width) (* custom/org-diary-morph-window-width-factor (custom/org-diary-window-width)))
       (progn (split-window-horizontally)
 	         (windmove-right)))
   (if (not (ignore-errors (custom/org-diary-resize-window)))
@@ -276,7 +284,7 @@ DIR is the directory in which to look for the org-diary entry corresponding to T
 			   (not (or (equal arg '(4)) (equal arg '(64))))
 			 (and (not (custom/org-diary-entry))
 			      (or custom/org-diary-visit-in-new-window
-			          (> (window-width) custom/org-diary-morph-window-width))))))
+			          (> (window-width) (* custom/org-diary-morph-window-width-factor (custom/org-diary-window-width))))))))
        ;; Whether to initialize the diary entry
        (setq init
 	     (not (or (file-exists-p entry)

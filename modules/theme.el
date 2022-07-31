@@ -82,6 +82,29 @@ preserve modeline status through theme changes."
 ;; enable-theme
 (advice-add 'load-theme :around #'custom/theme-specific-advice)
 
+(defvar custom/load-theme-hook nil
+   "`load-theme' hook.")
+
+(defun custom/load-theme-hook (&rest _args)
+   "Run `load-theme-hook'."
+   (run-hooks 'custom/load-theme-hook))
+
+(advice-add 'load-theme :after #'custom/load-theme-hook)
+
+;; reload Org Mode
+(defun custom/org-theme-reload ()
+  (if (custom/in-mode "org-mode")
+      (org-mode)
+    (progn
+      (setq window (get-buffer-window (current-buffer)))
+      (cl-loop for buffer in (custom/visible-buffers)
+	             collect (select-window (get-buffer-window buffer))
+	 	     if (custom/in-mode "org-mode")
+		        collect (org-mode))
+      (select-window window))))
+
+(add-hook 'custom/load-theme-hook #'custom/org-theme-reload)
+
 (defun custom/theme-toggle ()
   "Toggle between `dark' and `light' themes
 using `enable-theme'"
