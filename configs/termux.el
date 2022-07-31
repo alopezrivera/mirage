@@ -15,7 +15,7 @@
 (setq-default indent-tabs-mode nil)
 
 ;; bindings
-(global-set-key (kbd "M-p") (lambda () (interactive) (insert
+(global-set-key (kbd "C-p") (lambda () (interactive) (insert
 "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")))
 
 ;; Package manager =============================================================
