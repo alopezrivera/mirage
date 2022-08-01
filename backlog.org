@@ -153,10 +153,6 @@ shapeshifter
    - org-diary
    - org-paragraph
 
-- system
-   - git.org
-   - dotfiles.org
-
 ** next
 
 - academic
