@@ -4,11 +4,12 @@
 #+FILETAGS: :emacs:
 
 
-#+begin_src emacs-lisp
 
-;;; -*- lexical-binding: t; -*-
 
-#+end_src
+#+title:Emacs Initialization
+#+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
+
+
 
 
 * early-init
