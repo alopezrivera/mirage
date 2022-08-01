@@ -53,11 +53,12 @@
 
 #+end_src
 
-* Local
+* init
+** Local
 
 #+begin_src emacs-lisp
 
-;; local.el
+;; local settings
 (let ((local (concat config-directory "local/local--" (system-name) ".el")))
   (if (file-exists-p local)
       (load-file local)
@@ -65,13 +66,12 @@
 
 #+end_src
 
-* Custom
+** Config
 
 #+begin_src emacs-lisp
 
-;; custom.el
-(setq custom-file (concat config-directory "persistent/custom.el"))
-(load custom-file)
+;; load config
+(require (intern config) (concat config-directory "configs/" (concat config ".el")))
 
 #+end_src
 
@@ -84,7 +84,7 @@
 
 #+end_src
 
-* Declare
+** Declare
 
 #+begin_src emacs-lisp
 
