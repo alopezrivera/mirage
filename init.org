@@ -1,3 +1,5 @@
+# -*- mode: Org; org-use-property-inheritance: t -*-
+
 #+STARTUP: overview
 #+FILETAGS: :emacs:
 
@@ -8,38 +10,46 @@
 
 #+end_src
 
+
+* early-init
+:PROPERTIES:
+:header-args: emacs-lisp :tangle ./early-init.el
+:END:
+** Variables
+
 #+begin_src emacs-lisp
 
-    ;;; -*- lexical-binding: t; -*-
-  
-  (defcustom config "home"
-    "Emacs configuration of choice")
+;;; -*- lexical-binding: t; -*-
 
-  (defcustom config-directory "~/.emacs.d/"
-    "Emacs configuration directory")
+(defcustom config "home"
+  "Emacs configuration of choice")
 
-  (defcustom initial-buffer-choice ""
-    "Buffer displayed at startup")
+(defcustom config-directory "~/.emacs.d/"
+  "Emacs configuration directory")
 
-  (defcustom startup-buffers '()
-    "Buffers opened at startup")
+(defcustom initial-buffer-choice ""
+  "Buffer displayed at startup")
+
+(defcustom startup-buffers '()
+  "Buffers opened at startup")
 
 #+end_src
 
-#+title:Emacs Configuration File
-#+STARTUP: overview
-#+FILETAGS: :emacs:
-#+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
+** Customize interface
 
 #+begin_src emacs-lisp
 
-(defvar config "home")
+;; customize interface file
+(setq custom-file (concat config-directory "persistent/custom.el"))
+(load-file custom-file)
 
-(defvar config-directory "~/.emacs.d/")
+#+end_src
 
-(defvar initial-buffer-choice "")
+** Declare
 
-(defvar startup-buffers '())
+#+begin_src emacs-lisp
+
+(provide 'early-init)
 
 #+end_src
 
