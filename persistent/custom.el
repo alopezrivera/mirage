@@ -52,6 +52,7 @@
  '(pdf-view-midnight-colors (cons "#EEFFFF" "#292D3E"))
  '(rustic-ansi-faces
    ["#292D3E" "#ff5370" "#c3e88d" "#ffcb6b" "#82aaff" "#c792ea" "#89DDFF" "#EEFFFF"])
+ '(safe-local-variable-values '((org-use-property-inheritance . t)))
  '(vc-annotate-background "#292D3E")
  '(vc-annotate-background-mode nil)
  '(vc-annotate-color-map
