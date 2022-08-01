@@ -1,35 +1,33 @@
 ;;; -*- lexical-binding: t; -*-
 
-;; github
-(global-set-key (kbd "C-M-g") (lambda () (interactive) (insert
-"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")))
+(defcustom config "home"
+  "Emacs configuration of choice")
 
-;; gitlab - DFKI
-(global-set-key (kbd "C-M-p") (lambda () (interactive) (insert
-"n~>}xr8AJ*?Y\"XG]")))
+(defcustom config-directory "~/.emacs.d/"
+  "Emacs configuration directory")
 
-;; gitlab
-(global-set-key (kbd "C-M-l") (lambda () (interactive) (insert
-"n2hrBbaVZEE7b8k")))
+(defcustom initial-buffer-choice ""
+  "Buffer displayed at startup")
 
-(defvar config "home")
+(defcustom startup-buffers '()
+  "Buffers opened at startup")
 
-(defvar config-directory "~/.emacs.d/")
+;; customize interface file
+(setq custom-file (concat config-directory "persistent/custom.el"))
+(load-file custom-file)
 
-(defvar initial-buffer-choice "")
+(provide 'early-init)
 
-(defvar startup-buffers '())
-
-;; local.el
+;; local settings
 (let ((local (concat config-directory "local/local--" (system-name) ".el")))
   (if (file-exists-p local)
       (load-file local)
     (write-region ";; local emacs config" nil local)))
 
-;; custom.el
-(setq custom-file (concat config-directory "persistent/custom.el"))
-(load custom-file)
-
+;; load config
 (require (intern config) (concat config-directory "configs/" (concat config ".el")))
+
+;; credentials
+(load-file (concat config-directory "creds.el.gpg"))
 
 (provide 'init)
