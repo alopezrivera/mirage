@@ -208,6 +208,12 @@ configs
 ** other
 
 -----
+bindings
+
+- general
+   - https://github.com/noctuid/general.el#about
+
+-----
 tangling
 
 - tangle block to all files
@@ -281,12 +287,19 @@ packages
 
 
 * References
+** Docs
+
+- org
+   - header args
+      - https://orgmode.org/manual/Using-Header-Arguments.html
+
 ** Blogs
 
 - https://karthinks.com/
 
 ** Configs
 
+- https://gitlab.com/public-repositories/emacs-groundup
 - https://github.com/radian-software/radian
 - https://github.com/SystemCrafters/rational-emacs
 - https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
@@ -507,6 +520,9 @@ CLOSED: [2022-05-06 Fri 17:11]
 - diff between two different files
 
 * text highlighting
+
+- highlight-symbol
+   - https://github.com/nschum/highlight-symbol.el
 
 - highligher colors
    - y
@@ -742,8 +758,13 @@ workflow
 - vertical padding
    - https://stackoverflow.com/questions/25040666/vertical-padding-or-margin-on-emacs-buffer
 
+* minibuffer
+
 - floating minibuffer
    - https://www.reddit.com/r/emacs/comments/jl8xwl/question_how_to_achieve_this_look/
+- embark
+   - https://github.com/oantolin/embark
+
 
 * highlights
 
@@ -756,6 +777,14 @@ workflow
 
 
 * IDE
+
+- general
+   - https://github.com/jacktasia/dumb-jump
+- lisp
+   - https://github.com/joaotavora/sly
+   - https://github.com/abo-abo/lispy
+
+-----
 
 - Structure editing
    - M-arrows
@@ -821,6 +850,14 @@ workflow
 - autotyping
    - https://www.gnu.org/software/emacs/manual/html_mono/autotype.html
    - https://sachachua.com/blog/2015/01/developing-emacs-micro-habits-text-automation/
+
+* text editing
+
+- completion at point
+   - https://github.com/minad/corfu
+
+- text object editing
+   - https://github.com/clemera/objed
 
 * file management
 
