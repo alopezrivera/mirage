@@ -93,7 +93,7 @@
   (shapes-load "extensions" extension))
 
 ;; load config
-(require (intern config) (concat config-directory "configs/" (concat config ".el")))
+(load-file (concat config-directory "configs/" (concat config ".el")))
 
 #+end_src
 
