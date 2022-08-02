@@ -72,6 +72,8 @@
       (add-hook 'after-init-hook #'custom/spawn-background-buffers))
 
 ;; credentials
-(load-file (concat config-directory "creds.el.gpg"))
+(condition-case nil
+    (load-file (concat config-directory "creds.el.gpg"))
+  (error nil))
 
 (provide 'init)
