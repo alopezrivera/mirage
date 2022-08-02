@@ -82,10 +82,10 @@
   "Load a shapeshifter MODULE by name"
   (shapes-load "modules" module))
 
-;; shapeshifter outfits
-(defun shapes-outfit (outfit)
-  "Load a shapeshifter OUTFIT by name"
-  (shapes-load "outfits" outfit))
+;; shapeshifter layers
+(defun shapes-layer (layer)
+  "Load a shapeshifter LAYER by name"
+  (shapes-load "layers" layer))
 
 ;; shapeshifter extensions
 (defun shapes-extend (extension)
