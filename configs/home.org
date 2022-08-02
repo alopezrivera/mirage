@@ -246,7 +246,7 @@ We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/d
 
 #+begin_src emacs-lisp
 
-(desktop-save-mode 1)
+(shapes-module "desktop")
 
 #+end_src
 
@@ -356,6 +356,15 @@ We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/d
 
 ;; Display column number
 (column-number-mode)
+
+#+end_src
+
+** Modules
+*** olivetti
+
+#+begin_src emacs-lisp
+
+(shapes-module "olivetti")
 
 #+end_src
 
@@ -641,7 +650,16 @@ We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/d
 #+end_src
 
 * Themes
+** Extensions
+
+#+begin_src emacs-lisp
+
+(shapes-extend "theme")
+
+#+end_src
+
 ** Settings
+*** Theme
 
 #+begin_src emacs-lisp
 
@@ -679,65 +697,6 @@ We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/d
 
 #+end_src
 
-** Extensions
-
-#+begin_src emacs-lisp
-
-(shapes-extend "theme")
-
-#+end_src
-
-
-* IDE
-** Modules
-*** hideshow
-
-#+begin_src emacs-lisp
-
-(shapes-module "hideshow")
-
-#+end_src
-
-*** company
-
-#+begin_src emacs-lisp
-
-(shapes-module "company")
-
-#+end_src
-
-*** flycheck
-
-#+begin_src emacs-lisp
-
-(shapes-module "flycheck")
-
-#+end_src
-
-*** elpy
-
-#+begin_src emacs-lisp
-
-(shapes-module "elpy")
-
-#+end_src
-
-** Extensions
-
-#+begin_src emacs-lisp
-
-(shapes-extend "ide")
-
-#+end_src
-
-* Shell
-
-#+begin_src emacs-lisp
-
-;; remove duplicates in shell history
-(setq comint-input-ignoredups t)
-
-#+end_src
 
 * Org Mode
 
@@ -876,6 +835,15 @@ Candidates:
 
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
+
+#+end_src
+
+**** Images
+
+#+begin_src emacs-lisp
+
+;; Startup with inline images
+(setq org-startup-with-inline-images t)
 
 #+end_src
 
@@ -1153,6 +1121,57 @@ matches the current theme."
 #+end_src
 
 
+* Shell
+
+#+begin_src emacs-lisp
+
+(shapes-outfit "shell")
+
+#+end_src
+
+* Programming
+** Modules
+*** hideshow
+
+#+begin_src emacs-lisp
+
+(shapes-module "hideshow")
+
+#+end_src
+
+*** company
+
+#+begin_src emacs-lisp
+
+(shapes-module "company")
+
+#+end_src
+
+*** flycheck
+
+#+begin_src emacs-lisp
+
+(shapes-module "flycheck")
+
+#+end_src
+
+*** elpy
+
+#+begin_src emacs-lisp
+
+(shapes-module "elpy")
+
+#+end_src
+
+** Extensions
+
+#+begin_src emacs-lisp
+
+(shapes-extend "programming")
+
+#+end_src
+
+
 * Declare
 
 #+begin_src emacs-lisp
@@ -1161,4 +1180,3 @@ matches the current theme."
 (provide 'home)
 
 #+end_src
-* 
