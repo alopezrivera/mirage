@@ -2802,7 +2802,7 @@ if it was previously enabled."
 
 #+end_src
 
-****** bash
+****** Bash
 
 #+begin_src emacs-lisp
 
