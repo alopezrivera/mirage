@@ -2,9 +2,6 @@
 (straight-use-package 'org)
 (require 'org)
 
-;; Startup with inline images
-(setq org-startup-with-inline-images t)
-
 (el-patch-feature org)
 (el-patch-defun org-self-insert-command (N)
   "Like `self-insert-command', use overwrite-mode for whitespace in tables.

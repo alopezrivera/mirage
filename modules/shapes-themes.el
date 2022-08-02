@@ -1,5 +1,0 @@
-(shapes-module "nano-theme")
-(shapes-module "doom-themes")
-(shapes-module "modus-themes")
-(shapes-module "sweet-theme")
-(shapes-module "chocolate-theme")
