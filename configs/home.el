@@ -27,7 +27,7 @@
 
 (shapes-extend "editing")
 
-(desktop-save-mode 1)
+(shapes-module "desktop")
 
 (shapes-module "workgroups")
 
@@ -65,6 +65,8 @@
 
 ;; Display column number
 (column-number-mode)
+
+(shapes-module "olivetti")
 
 (shapes-extend "display")
 
@@ -149,6 +151,8 @@
 
 (shapes-extend "ui")
 
+(shapes-extend "theme")
+
 (setq light    'modus-operandi)
 
 (setq dark     'modus-vivendi)
@@ -161,21 +165,6 @@
 (shapes-outfit "mode-lines")
 
 (shapes-module "circadian")
-
-(shapes-extend "theme")
-
-(shapes-module "hideshow")
-
-(shapes-module "company")
-
-(shapes-module "flycheck")
-
-(shapes-module "elpy")
-
-(shapes-extend "ide")
-
-;; remove duplicates in shell history
-(setq comint-input-ignoredups t)
 
 (shapes-module "org")
 
@@ -248,6 +237,9 @@
 
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
+
+;; Startup with inline images
+(setq org-startup-with-inline-images t)
 
 (setq org-image-actual-width nil)
 
@@ -332,6 +324,18 @@ matches the current theme."
 (shapes-module "org-babel")
 
 (shapes-extend "org")
+
+(shapes-outfit "shell")
+
+(shapes-module "hideshow")
+
+(shapes-module "company")
+
+(shapes-module "flycheck")
+
+(shapes-module "elpy")
+
+(shapes-extend "programming")
 
 ;; Conclude initialization file
 (provide 'home)
