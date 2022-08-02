@@ -9,6 +9,8 @@
   "Initiate a bash/sh session named SESSION according to PARAMS."
   (org-babel-sh-initiate-session session _params))
 
+(setq org-babel-python-command "python3")
+
 (defun custom/org-babel-autotangle()
   "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
      (if (string-match (concat (getenv "HOME") "/.emacs.d/.*.org$") (expand-file-name buffer-file-name))
