@@ -16,10 +16,8 @@
 
 (shapes-layer "input")
 
-(setq light    'modus-operandi)
-
-(setq dark     'modus-vivendi)
-
+(setq light   'modus-operandi)
+(setq dark    'modus-vivendi)
 (shapes-layer "themes")
 
 (setq modeline 'doom-modeline-mode)
