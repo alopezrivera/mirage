@@ -9,11 +9,603 @@
 #+title:Shapeshifter
 #+PROPERTY: header-args:emacs-lisp :results none :mkdirp yes
 
+
+* Layers
+** UI
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-ui.el
+:END:
+*** Text
+**** Typefaces
+
 #+begin_src emacs-lisp
 
-;;; -*- lexical-binding: t; -*-
+;; icons
+(shapes-module "all-the-icons")
 
 #+end_src
+
+**** Highlights
+
+#+begin_src emacs-lisp
+
+;; highlights
+(shapes-module "rainbow-mode")
+
+#+end_src
+
+*** Buffer
+
+#+begin_src emacs-lisp
+
+;; centering
+(shapes-module "olivetti")
+
+;; line numbers
+(global-set-key (kbd "C-c l") #'display-line-numbers-mode)
+
+#+end_src
+
+*** Frame
+
+#+begin_src emacs-lisp
+
+;; size
+(add-to-list 'default-frame-alist '(height . 50))
+(add-to-list 'default-frame-alist '(width  . 70))
+
+;; tabs
+(tab-bar-mode 1)
+
+;; no visible scroll bar
+(scroll-bar-mode -1)
+;; no toolbar
+(tool-bar-mode -1)
+;; no tooltips
+(tooltip-mode -1)
+;; no menu bar
+(menu-bar-mode -1)
+
+;; title
+(setq-default frame-title-format '("Emacs [%m] %b"))
+
+#+end_src
+
+*** Window
+
+#+begin_src emacs-lisp
+
+;; fringes
+(set-fringe-mode nil)
+
+;; balance
+(global-set-key (kbd "C-x -") #'balance-windows)
+
+;; split threshold
+(setq split-width-threshold 70)
+
+#+end_src
+
+*** Warnings
+
+#+begin_src emacs-lisp
+
+;; visible bell
+(setq visible-bell t)
+
+#+end_src
+
+*** Mode line
+
+#+begin_src emacs-lisp
+
+;; time
+(display-time-mode t)
+
+;; column numbers
+(column-number-mode)
+
+;; mode display
+(shapes-module "delight")
+
+#+end_src
+
+*** Extensions
+
+#+begin_src emacs-lisp
+
+;; extensions
+(shapes-extend "ui")
+
+#+end_src
+
+** Input
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-input.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; commands
+(shapes-module "god-mode")
+
+;; confirmation
+(advice-add 'yes-or-no-p :override #'y-or-n-p)
+
+#+end_src
+
+** Themes
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-themes.el
+:END:
+
+Shapeshifter themes layer. It requires three variables to be defined: the light and dark themes (~light~ and ~dark~ respectively), and the mode line of choice (~modeline~).
+
+#+begin_src emacs-lisp
+
+(defcustom light 'modus-operandi
+  "Light theme")
+(defcustom dark  'modus-vivendi
+  "Dark theme")
+
+;; themes
+(shapes-module "nano-theme")
+(shapes-module "doom-themes")
+(shapes-module "modus-themes")
+(shapes-module "sweet-theme")
+(shapes-module "chocolate-theme")
+
+;; extensions
+(shapes-extend "themes")
+
+;; scheduling
+(shapes-module "circadian")
+
+#+end_src
+
+** Mode line
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-mode-line.el
+:END:
+
+#+begin_src emacs-lisp
+
+(defcustom modeline 'doom-modeline-mode
+  "Mode line")
+
+;; mode lines
+(shapes-module "nano-modeline")
+(shapes-module "doom-modeline")
+(shapes-module "spaceline")
+
+;; mode line initialization hook
+(add-hook 'after-init-hook modeline)
+
+#+end_src
+
+
+** Editing
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-editing.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "vundo")
+(shapes-module "multiple-cursors")
+
+;; extensions
+(shapes-extend "editing")
+
+#+end_src
+
+
+** Navigation
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-navigation.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; frame
+(global-set-key (kbd "C-S-n") #'make-frame-command)
+
+;; window
+(shapes-module "winner")
+(shapes-module "ace-window")
+
+;; extensions
+(shapes-extend "navigation")
+
+#+end_src
+
+
+** File management
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-file-management.el
+:END:
+
+~backup-directory-alist~, which determines where backups are saved, is set by ~no-littering~.
+
+#+begin_src emacs-lisp
+
+;; buffer backups
+(setq backup-by-copying t)
+(setq version-control t)
+(setq delete-old-versions t)
+(setq kept-new-versions 2)
+(setq kept-old-versions 2)
+
+;; file manager
+(shapes-module "dirvish")
+
+;; extensions
+(shapes-extend "file-management")
+
+#+end_src
+
+
+
+** IDE
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-ide.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; remove duplicates in shell history
+(setq comint-input-ignoredups t)
+
+;; folding
+(shapes-module "hideshow")
+;; completion
+(shapes-module "company")
+;; syntax checking
+(shapes-module "flycheck")
+
+;; lisp
+(shapes-module "rainbow-delimiters")
+;; python
+(shapes-module "elpy")
+
+#+end_src
+
+** Org Mode
+*** org
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-org.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "org")
+
+;; editing
+(shapes-module "org-paragraph")
+
+;; templates
+(shapes-module "org-tempo")
+(shapes-module "org-capture")
+
+;; export
+(shapes-module "ox-rst")
+
+;; notes
+(shapes-module "org-diary")
+(shapes-module "org-roam")
+
+;; agenda
+(shapes-module "org-agenda")
+(shapes-module "org-contacts")
+(shapes-module "org-calendar")
+
+;; programming
+(shapes-module "org-babel")
+
+;; extensions
+(shapes-extend "org")
+
+#+end_src
+
+*** org-ui
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-org-ui.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "org-modern")
+(shapes-module "org-appear")
+
+#+end_src
+
+**** Text
+***** Typefaces
+****** Title
+
+#+begin_src emacs-lisp
+
+;; title face
+
+(defun custom/org-typeface-title ()
+  (with-eval-after-load 'org-faces
+    (set-face-attribute 'org-document-title nil :font typeface-title :height 300 :weight 'regular :foreground 'unspecified)))
+
+(add-hook 'org-mode-hook #'custom/org-typeface-title)
+
+#+end_src
+
+****** Body
+
+#+begin_src emacs-lisp
+
+(defun custom/org-typefaces-body ()
+  (with-eval-after-load 'org-faces
+
+    ;; Code
+    (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
+
+    ;; Tables
+    (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
+
+    ;; Lists
+    (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
+
+    ;; Meta
+    (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
+
+(add-hook 'org-mode-hook #'custom/org-typefaces-body)
+
+#+end_src
+
+****** Indent
+
+#+begin_src emacs-lisp
+
+(defun custom/org-typeface-indent ()
+  "Indent typeface used in `org-indent-mode' and `visual-line-mode'."
+  (with-eval-after-load 'org-indent-mode
+    (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))))
+
+(add-hook 'org-mode-hook #'custom/org-typeface-indent)
+
+#+end_src
+
+****** Headings
+
+#+begin_src emacs-lisp
+
+;; use levels 1 through 8
+(setq org-n-level-faces 8)
+
+;; do not cycle header style after 8th level
+(setq org-cycle-level-faces nil)
+
+;; hide leading stars
+(setq org-hide-leading-starts t)
+
+;; font sizes
+(defun custom/org-header-setup () 
+  (with-eval-after-load 'org-faces
+
+    ;; heading font sizes
+    (dolist (face '((org-level-1 . 1.6)
+                    (org-level-2 . 1.4)
+                    (org-level-3 . 1.3)
+                    (org-level-4 . 1.2)
+                    (org-level-5 . 1.15)
+                    (org-level-6 . 1.10)
+                    (org-level-7 . 1.05)
+                    (org-level-8 . 1.00)))
+         (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
+
+(add-hook 'org-mode-hook #'custom/org-header-setup)
+
+#+end_src
+
+***** Indentation
+
+#+begin_src emacs-lisp
+
+;; org-indent-mode
+(add-hook 'org-mode-hook #'org-indent-mode)
+
+;; list indentation
+(setq-default org-list-indent-offset 1)
+
+#+end_src
+
+***** Line-wrapping
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+#+end_src
+
+***** Pretty entities
+
+#+begin_src emacs-lisp
+
+;; symbols, super- and subscripts
+(setq org-pretty-entities nil)
+
+#+end_src
+
+**** Icons
+***** Ellipses
+
+Candidates:
+- triangles
+  ▼
+  ▾
+  ▿
+- rhomboids
+  ⬙
+  ⟡
+  ⬥
+  ♦
+  ♢
+- non-compliant
+  ⧨
+  
+-----
+
+#+begin_src emacs-lisp
+
+;; Change ellipsis ("...") to remove clutter
+(setq org-ellipsis " ♢")
+
+#+end_src
+
+**** Figures
+
+#+begin_src emacs-lisp
+
+;; startup with inline images
+(setq org-startup-with-inline-images t)
+
+;; no actual width
+(setq org-image-actual-width nil)
+
+#+end_src
+
+*** TODO org-latex-preview
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./layers/shapes-org-latex-preview.el
+:END:
+
+- org LaTeX equations
+   - custom array envs
+      - cases
+         - \arraycolsep=1.4pt\def\arraystretch{1.5}
+      - derivations
+         - \arraycolsep=3pt\def\arraystretch{2.25}
+
+#+begin_src emacs-lisp
+
+(shapes-module "org-fragtog")
+
+#+end_src
+
+**** TODO Options
+
+- mail bug in
+
+Importantly, ~modus-vivendi~ will not behave correctly with
+the default ~org-format-latex-options~, with LaTeX previews
+displaying as white boxes. [[https://debbugs.gnu.org/db/52/52277.html][This has been previously reported]].
+
+~org-format-latex-options~ has ~:foreground~ and ~:background~
+attributes. These may be assigned to
+
+- a color,
+- ~default~, instructing Org Mode to determine ~:foreground~ or
+  ~:background~ from the foreground or background color of the
+  default face, or
+- ~auto~, doing the same for the text face.
+
+By default, the ~:foreground~ and ~:background~ in ~org-format-latex-options~
+are set to ~default~. With default settings, changing the color
+of the ~default~ font has the following effects on the LaTeX preview SVGs:
+
+- modus-operandi
+   - ~default :foreground~: text color
+   - ~default :background~: no effect
+- modus-vivendi
+   - ~default :foreground~: background color
+   - ~default :background~: no effect
+
+By eliminating the ~:background~ attribute from ~org-format-latex-options~
+the issue is resolved.
+
+1. ~modus-operandi~ does not suffer from this issue nor do various
+   other themes. This makes me believe the issue lies with
+   ~modus-vivendi~ itself.
+2. However, the ~:background~ attribute in ~org-format-latex-options~
+   seems to have no effect, a potential bug in Org Mode
+
+#+begin_src emacs-lisp
+
+(setq org-format-latex-options
+        (list :foreground 'default
+              :scale      1.2))
+
+#+end_src
+
+**** Header
+
+#+begin_src emacs-lisp
+
+;; Justify equation labels - [fleqn]
+;; Preview page width      - 10.5cm
+(setq org-format-latex-header
+      (string-join '("\\documentclass[fleqn]{article}"
+		        "\\usepackage[usenames]{color}"
+			
+			"\\usepackage{bm}"
+			
+			"\\pagestyle{empty}"
+			"\\setlength{\\textwidth}{10.5cm}"
+			"\\addtolength{\\textwidth}{-3cm}"
+			"\\setlength{\\oddsidemargin}{1.5cm}"
+			"\\addtolength{\\oddsidemargin}{-2.54cm}"
+			"\\setlength{\\evensidemargin}{\\oddsidemargin}"
+			"\\setlength{\\textheight}{\\paperheight}"
+			"\\addtolength{\\textheight}{-\\headheight}"
+			"\\addtolength{\\textheight}{-\\headsep}"
+			"\\addtolength{\\textheight}{-\\footskip}"
+			"\\addtolength{\\textheight}{-3cm}"
+			"\\setlength{\\topmargin}{1.5cm}"
+			"\\addtolength{\\topmargin}{-2.54cm}")
+		   "\n"))
+
+#+end_src
+
+**** Equation preview format
+
+#+begin_src emacs-lisp
+
+;; SVG LaTeX equation preview
+(setq org-latex-create-formula-image-program 'dvisvgm)
+
+#+end_src
+
+**** Equation preview directory
+
+#+begin_src emacs-lisp
+
+;; theme-specific LaTeX preview directory
+(defun custom/latex-preview-directory ()
+  "Set `org-preview-latex-image-directory' to the SVG
+LaTeX preview directory of the current theme"
+  (setq org-preview-latex-image-directory
+   (concat "/tmp/ltximg/" (custom/current-theme) "/")))
+
+#+end_src
+
+**** Equation preview reload hook
+
+#+begin_src emacs-lisp
+
+(defun custom/latex-preview-reload ()
+  "Reload all LaTeX previews in buffer,
+ensuring the LaTeX preview directory
+matches the current theme."
+  (if (custom/in-mode "org-mode")
+      (progn (org-latex-preview '(64))
+	        (custom/latex-preview-directory)
+		(org-latex-preview '(16)))))
+
+(add-hook 'org-mode-hook #'custom/latex-preview-reload)
+
+#+end_src
+
 
 * Modules
 ** Infrastructure
@@ -69,115 +661,57 @@
 #+end_src
 
 
-** Input
-*** Modal
-**** god-mode
-:PROPERTIES:
-:header-args: emacs-lisp :tangle ./modules/shapes-god-mode.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'god-mode)
-(require 'god-mode)
-
-;; god
-(global-set-key (kbd "<escape>") #'god-mode-all)
-
-;; local
-(define-key god-local-mode-map (kbd "i") #'god-local-mode)
-
-;; bindings
-(define-key god-local-mode-map (kbd ".") #'repeat)
-(define-key god-local-mode-map (kbd "]") #'forward-paragraph)
-(define-key god-local-mode-map (kbd "[") #'backward-paragraph)
-
-#+end_src
-
-*** Templates
-**** yasnippet
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-yasnippet.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; yasnippet
-(straight-use-package 'yasnippet)
-
-(yas-global-mode 1)
-
-#+end_src
-
-***** <
-
-#+begin_src emacs-lisp
-
-(defun custom/<-snippet (orig-fun &rest args)
-  "Require < before snippets."
-  (interactive)
-  (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-	(if (not (string-equal line ""))
-	    (if (string-equal (substring line 0 1) "<")
-		(progn (save-excursion (move-beginning-of-line nil)
-				       (right-char 1)
-				       (delete-region (line-beginning-position) (point)))
-		       (apply orig-fun args)))))
-
-(advice-add 'yas-expand :around #'custom/<-snippet)
-
-#+end_src
-
-***** Snippets
-
-#+begin_src emacs-lisp
-
-;; yasnippet-snippets
-(straight-use-package 'yasnippet-snippets)
-
-#+end_src
-
-*** Completion
-**** ivy
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-ivy.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; ivy
-(straight-use-package 'ivy)
-(require 'ivy)
-
-(ivy-mode 1)
-
-;; minibuffer bindings
-(let ((map ivy-minibuffer-map))
-  (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
-			        ("<up>"        . ivy-previous-line-or-history)
-			        ("C-l"         . ivy-alt-done)
-			        ("C-j"         . ivy-next-line)
-			        ("C-k"         . ivy-previous-line)
-			        ("<backspace>" . ivy-backward-delete-char))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
-
-;; switch-buffer bindings
-(let ((map ivy-switch-buffer-map))
-  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
- 			        ("C-l"   . ivy-done)
-			        ("C-d"   . ivy-switch-buffer-kill))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
-
-;; reverse-i-search bindings
-(let ((map ivy-reverse-i-search-map))
-  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
-			        ("C-d"   . ivy-reverse-i-search-kill))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
-
-#+end_src
-
-
 ** UI
+*** Buffer
+**** olivetti
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-olivetti.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; centering
+(straight-use-package 'olivetti)
+
+(add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
+
+;; normal modes
+(dolist (mode '(org-mode-hook
+		    magit-mode-hook
+		    shell-mode-hook
+		    markdown-mode-hook))
+  (add-hook mode 'olivetti-mode))
+
+;; Programming modes
+(add-hook 'prog-mode-hook 'olivetti-mode)
+
+#+end_src
+
+*** Mode line
+**** delight
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-delight.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; Customize names displayed in mode line
+(straight-use-package 'delight)
+(require 'delight)
+
+;; Remove default modes from mode line
+(delight '((global-command-log-mode nil "")
+	      (olivetti-mode           nil "")
+	      (which-key-mode          nil "")
+	      (visual-line-mode        nil "simple")
+	      (buffer-face-mode        nil "simple")
+	      (org-indent-mode         nil "org")
+	      (eldoc-mode              nil "eldoc")
+	      ;; Major modes
+	      (emacs-lisp-mode "EL" :major)))
+
+#+end_src
+
 *** Typefaces
 **** all-the-icons
 :PROPERTIES:
@@ -301,215 +835,8 @@ the local machine:
 
 #+end_src
 
-*** Mode line
-**** delight
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-delight.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; Customize names displayed in mode line
-(straight-use-package 'delight)
-(require 'delight)
-
-;; Remove default modes from mode line
-(delight '((global-command-log-mode nil "")
-	      (olivetti-mode           nil "")
-	      (which-key-mode          nil "")
-	      (visual-line-mode        nil "simple")
-	      (buffer-face-mode        nil "simple")
-	      (org-indent-mode         nil "org")
-	      (eldoc-mode              nil "eldoc")
-	      ;; Major modes
-	      (emacs-lisp-mode "EL" :major)))
-
-#+end_src
-
-*** Centering
-**** olivetti
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-olivetti.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; centering
-(straight-use-package 'olivetti)
-
-(add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 0.9)))
-
-;; normal modes
-(dolist (mode '(org-mode-hook
-		    magit-mode-hook
-		    shell-mode-hook
-		    markdown-mode-hook))
-  (add-hook mode 'olivetti-mode))
-
-;; Programming modes
-(add-hook 'prog-mode-hook 'olivetti-mode)
-
-#+end_src
-
-** Theme
-*** Themes
-**** Nano
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-nano-theme.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'nano-theme)
-(require 'nano-theme)
-
-#+end_src
-
-**** Doom
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-doom-themes.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'doom-themes)
-(require 'doom-themes)
-
-#+end_src
-
-**** Modus
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-modus-themes.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'modus-themes)
-(modus-themes-load-themes)
-
-#+end_src
-
-Commit 64c8009 of July the 8th 2022 dresses Org Mode titles with a ghastly cyan
-in ~modus-operandi~, and a strident turquoise in ~modus-vivendi~. This can be undone
-by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-headings~.
-
-#+begin_src emacs-lisp
-
-(setq modus-themes-headings
-      '((0 . (monochrome))))
-
-#+end_src
-
-**** Standalone
-***** Sweet
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-sweet-theme.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'sweet-theme)
-(require 'sweet-theme)
-
-#+end_src
-
-***** Chocolate
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-chocolate-theme.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'chocolate-theme)
-(require 'chocolate-theme)
-
-#+end_src
-
-*** Mode lines
-**** Nano
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-nano-modeline.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; nano-modeline
-(straight-use-package 'nano-modeline)
-
-#+end_src
-
-**** Doom
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-doom-modeline.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; doom-modeline
-(straight-use-package 'doom-modeline)
-
-#+end_src
-
-**** Spaceline
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-spaceline.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'spaceline)
-(require 'spaceline-config)
-
-#+end_src
-
-*** Scheduling
-**** circadian
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-circadian.el
-:END:
-
-#+begin_src emacs-lisp
-
-(setq calendar-latitude      52.00667)
-(setq calendar-longitude     4.355561)
-(setq calendar-loadtion-name "Delft")
-(setq calendar-standard-time-zone-name "CEST")
-(setq calendar-daylight-time-zone-name "CET")
-
-(straight-use-package 'circadian)
-(setq circadian-themes `((:sunrise . ,light)  
-			    (:sunset  . ,dark)))
-(circadian-setup)
-
-#+end_src
-
-
-** Editing
-*** Undo
-**** TODO vundo
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-vundo.el
-:END:
-
-- undo-fu
-- Back
-   - Record character number in current line relative to the end of the line
-   - If impossible to go to previous position, to recorded character number of previous line
-   - Org Mode
-      - restore visibility before undone command
-      - if previous command created heading
-         - undo heading creation and restore visibility
-
-#+begin_src emacs-lisp
-
-;; vundo
-(straight-use-package 'vundo)
-
-(global-set-key (kbd "C-v") #'vundo)
-
-#+end_src
-
-*** Modal
+** Input
+*** Editing
 **** evil
 :PROPERTIES:
 :header-args: emacs-lisp :tangle ./modules/shapes-evil.el
@@ -671,6 +998,193 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 #+end_src
 
+*** Commands
+**** god-mode
+:PROPERTIES:
+:header-args: emacs-lisp :tangle ./modules/shapes-god-mode.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'god-mode)
+(require 'god-mode)
+
+;; god
+(global-set-key (kbd "<escape>") #'god-mode-all)
+
+;; local
+(define-key god-local-mode-map (kbd "i") #'god-local-mode)
+
+;; bindings
+(define-key god-local-mode-map (kbd ".") #'repeat)
+(define-key god-local-mode-map (kbd "]") #'forward-paragraph)
+(define-key god-local-mode-map (kbd "[") #'backward-paragraph)
+
+;; global god-mode
+(god-mode-all)
+
+#+end_src
+
+** Themes
+*** Themes
+**** Nano
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-nano-theme.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'nano-theme)
+(require 'nano-theme)
+
+#+end_src
+
+**** Doom
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-doom-themes.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'doom-themes)
+(require 'doom-themes)
+
+#+end_src
+
+**** Modus
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-modus-themes.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'modus-themes)
+(modus-themes-load-themes)
+
+#+end_src
+
+Commit 64c8009 of July the 8th 2022 dresses Org Mode titles with a ghastly cyan
+in ~modus-operandi~, and a strident turquoise in ~modus-vivendi~. This can be undone
+by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-headings~.
+
+#+begin_src emacs-lisp
+
+(setq modus-themes-headings
+      '((0 . (monochrome))))
+
+#+end_src
+
+**** Standalone
+***** Sweet
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-sweet-theme.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'sweet-theme)
+(require 'sweet-theme)
+
+#+end_src
+
+***** Chocolate
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-chocolate-theme.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'chocolate-theme)
+(require 'chocolate-theme)
+
+#+end_src
+
+*** Scheduling
+**** circadian
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-circadian.el
+:END:
+
+#+begin_src emacs-lisp
+
+(setq calendar-latitude      52.00667)
+(setq calendar-longitude     4.355561)
+(setq calendar-loadtion-name "Delft")
+(setq calendar-standard-time-zone-name "CEST")
+(setq calendar-daylight-time-zone-name "CET")
+
+(straight-use-package 'circadian)
+(setq circadian-themes `((:sunrise . ,light)  
+			    (:sunset  . ,dark)))
+(circadian-setup)
+
+#+end_src
+** Mode line
+*** Nano
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-nano-modeline.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; nano-modeline
+(straight-use-package 'nano-modeline)
+
+#+end_src
+
+*** Doom
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-doom-modeline.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; doom-modeline
+(straight-use-package 'doom-modeline)
+
+;; bar
+(setq-default doom-modeline-bar-width 0.01)
+
+#+end_src
+
+*** Spaceline
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-spaceline.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'spaceline)
+(require 'spaceline-config)
+
+#+end_src
+
+
+** Editing
+*** Undo
+**** TODO vundo
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-vundo.el
+:END:
+
+- undo-fu
+- Back
+   - Record character number in current line relative to the end of the line
+   - If impossible to go to previous position, to recorded character number of previous line
+   - Org Mode
+      - restore visibility before undone command
+      - if previous command created heading
+         - undo heading creation and restore visibility
+
+#+begin_src emacs-lisp
+
+;; vundo
+(straight-use-package 'vundo)
+
+(global-set-key (kbd "C-v") #'vundo)
+
+#+end_src
+
 *** Multiline
 **** multiple-cursors
 :PROPERTIES:
@@ -796,6 +1310,89 @@ buffer is already narrowed, widen buffer."
 
 (straight-use-package 'rg)
 (require 'rg)
+
+#+end_src
+
+** Shortcuts
+*** Templates
+**** yasnippet
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-yasnippet.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; yasnippet
+(straight-use-package 'yasnippet)
+
+(yas-global-mode 1)
+
+#+end_src
+
+***** <
+
+#+begin_src emacs-lisp
+
+(defun custom/<-snippet (orig-fun &rest args)
+  "Require < before snippets."
+  (interactive)
+  (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+	(if (not (string-equal line ""))
+	    (if (string-equal (substring line 0 1) "<")
+		(progn (save-excursion (move-beginning-of-line nil)
+				       (right-char 1)
+				       (delete-region (line-beginning-position) (point)))
+		       (apply orig-fun args)))))
+
+(advice-add 'yas-expand :around #'custom/<-snippet)
+
+#+end_src
+
+***** Snippets
+
+#+begin_src emacs-lisp
+
+;; yasnippet-snippets
+(straight-use-package 'yasnippet-snippets)
+
+#+end_src
+
+*** Completion
+**** ivy
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-ivy.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; ivy
+(straight-use-package 'ivy)
+(require 'ivy)
+
+(ivy-mode 1)
+
+;; minibuffer bindings
+(let ((map ivy-minibuffer-map))
+  (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
+			        ("<up>"        . ivy-previous-line-or-history)
+			        ("C-l"         . ivy-alt-done)
+			        ("C-j"         . ivy-next-line)
+			        ("C-k"         . ivy-previous-line)
+			        ("<backspace>" . ivy-backward-delete-char))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+;; switch-buffer bindings
+(let ((map ivy-switch-buffer-map))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+ 			        ("C-l"   . ivy-done)
+			        ("C-d"   . ivy-switch-buffer-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
+
+;; reverse-i-search bindings
+(let ((map ivy-reverse-i-search-map))
+  (cl-loop for binding in '(("C-k"   . ivy-previous-line)
+			        ("C-d"   . ivy-reverse-i-search-kill))
+            collect (define-key map (kbd (car binding)) (cdr binding))))
 
 #+end_src
 
@@ -1060,107 +1657,55 @@ buffer is already narrowed, widen buffer."
 
 #+end_src
 
-
-** Programming
-*** General
-**** hideshow
+** Navigation
+*** winner
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-hideshow.el
+:header-args:emacs-lisp: :tangle ./modules/shapes-winner.el
 :END:
 
 #+begin_src emacs-lisp
 
-(require 'hideshow)
-
-(add-hook 'prog-mode-hook #'hs-minor-mode)
+(winner-mode)
 
 #+end_src
 
-**** company
+*** ace-window
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-company.el
+:header-args:emacs-lisp: :tangle ./modules/shapes-ace-window.el
 :END:
 
 #+begin_src emacs-lisp
 
-;; company
-(straight-use-package 'company)
-(require 'company)
+;; ace-window
+(straight-use-package 'ace-window)
+(require 'ace-window)
+
+(global-set-key (kbd "C-x o") 'ace-window)
 
 #+end_src
 
-**** flycheck
+*** TODO pixel-scroll-precision
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-flycheck.el
+:header-args:emacs-lisp: :tangle ./modules/shapes-pixel-scroll-precision.el
 :END:
 
-#+begin_src emacs-lisp
+- pixel-scroll-precision-mode
+   - sudden jumps
 
-;; flycheck
-(straight-use-package 'flycheck)
-(require 'flycheck)
+- scrolling without moving mark
 
-(add-hook 'prog-mode-hook #'flycheck-mode)
-
-#+end_src
-
-*** Lisp
-**** Syntax highlighting
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-rainbow-delimiters.el
-:END:
+- sources
+   - https://www.reddit.com/r/emacs/comments/6osik2/random_scroll_jumps_in_emacs/
+   - https://www.emacswiki.org/emacs/SmoothScrolling
 
 #+begin_src emacs-lisp
 
-;; rainbow-delimieters
-(straight-use-package 'rainbow-delimiters)
-(require 'rainbow-delimiters)
-
-;; enable rainbow delimiters on all programming modes
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(setq scroll-step 1)
+(setq scroll-conservatively 101)
+(setq scroll-preserve-screen-position 1)
 
 #+end_src
 
-*** Python
-**** elpy
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-elpy.el
-:END:
-
-#+begin_src bash :tangle no
-
-sudo apt-get install python3-venv
-
-#+end_src
-
-#+begin_src emacs-lisp
-
-;; elpy
-(straight-use-package 'elpy)
-(elpy-enable)
-
-#+end_src
-
-***** RPC
-
-#+begin_src emacs-lisp
-
-(setq elpy-rpc-timeout 5)
-
-(setq elpy-rpc-backend "jedi")
-
-(setq elpy-rpc-python-command "python3")
-
-#+end_src
-
-***** Navigation
-
-#+begin_src emacs-lisp
-
-(define-key elpy-mode-map (kbd "C-M-n") 'elpy-nav-forward-block)
-(define-key elpy-mode-map (kbd "C-M-p") 'elpy-nav-backward-block)
-
-#+end_src
 
 ** Version control
 *** magit
@@ -1193,6 +1738,152 @@ sudo apt-get install python3-venv
 
 #+end_src
 
+
+** IDE
+*** General
+**** hideshow
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-hideshow.el
+:END:
+
+#+begin_src emacs-lisp
+
+(require 'hideshow)
+
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+
+#+end_src
+
+***** TODO Cycle
+
+- fold back in 1 when no children
+
+#+begin_src emacs-lisp
+
+(defun custom/hs-cycle (&optional level)
+  (interactive "p")
+  (save-excursion
+    (let (message-log-max (inhibit-message t))
+      (if (= level 1)
+	  (pcase last-command
+	    ('hs-cycle
+	     (hs-hide-level 1)
+	   (setq this-command 'hs-cycle-children))
+	    ('hs-cycle-children
+	     ;; TODO: Fix this case. `hs-show-block' needs to be
+	     ;; called twice to open all folds of the parent
+	     ;; block.
+	     (save-excursion (hs-show-block))
+	     (hs-show-block)
+	     (setq this-command 'hs-cycle-subtree))
+	    ('hs-cycle-subtree
+	     (hs-hide-block))
+	    (_
+	     (if (not (hs-already-hidden-p))
+		 (hs-hide-block)
+	       (hs-hide-level 1)
+	       (setq this-command 'hs-cycle-children))))
+	(hs-hide-level level)
+	(setq this-command 'hs-hide-level)))))
+
+(defun custom/hs-global-cycle ()
+  (interactive)
+  (pcase last-command
+    ('hs-global-cycle
+     (save-excursion (hs-show-all))
+     (setq this-command 'hs-global-show))
+    (_ (hs-hide-all))))
+
+(define-key hs-minor-mode-map (kbd "C-\\") #'custom/hs-cycle)
+
+#+end_src
+
+**** company
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-company.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; company
+(straight-use-package 'company)
+(require 'company)
+
+#+end_src
+
+**** flycheck
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-flycheck.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; flycheck
+(straight-use-package 'flycheck)
+(require 'flycheck)
+
+(add-hook 'prog-mode-hook #'flycheck-mode)
+
+#+end_src
+
+*** Specific
+**** Lisp
+***** Syntax highlighting
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-rainbow-delimiters.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; rainbow-delimieters
+(straight-use-package 'rainbow-delimiters)
+(require 'rainbow-delimiters)
+
+;; enable rainbow delimiters on all programming modes
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+#+end_src
+
+**** Python
+***** elpy
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-elpy.el
+:END:
+
+#+begin_src bash :tangle no
+
+sudo apt-get install python3-venv
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+;; elpy
+(straight-use-package 'elpy)
+(elpy-enable)
+
+#+end_src
+
+****** RPC
+
+#+begin_src emacs-lisp
+
+(setq elpy-rpc-timeout 5)
+
+(setq elpy-rpc-backend "jedi")
+
+(setq elpy-rpc-python-command "python3")
+
+#+end_src
+
+****** Navigation
+
+#+begin_src emacs-lisp
+
+(define-key elpy-mode-map (kbd "C-M-n") 'elpy-nav-forward-block)
+(define-key elpy-mode-map (kbd "C-M-p") 'elpy-nav-backward-block)
+
+#+end_src
 
 ** Org Mode
 :PROPERTIES:
@@ -2110,54 +2801,16 @@ folded."
 #+end_src
 
 
-* Layers
-** Shell
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./outfits/shapes-shell.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; remove duplicates in shell history
-(setq comint-input-ignoredups t)
-
-#+end_src
-
-** Themes
-*** Themes
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./outfits/shapes-themes.el
-:END:
-
-#+begin_src emacs-lisp
-
-(shapes-module "nano-theme")
-(shapes-module "doom-themes")
-(shapes-module "modus-themes")
-(shapes-module "sweet-theme")
-(shapes-module "chocolate-theme")
-
-#+end_src
-
-*** Mode lines
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./outfits/shapes-mode-lines.el
-:END:
-
-#+begin_src emacs-lisp
-
-(shapes-module "nano-modeline")
-(shapes-module "doom-modeline")
-(shapes-module "spaceline")
-
-#+end_src
-
-
 * Extensions
 ** General purpose
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./extensions/shapes-general.el
 :END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 *** Queries
 **** regex-match-count
 
@@ -2448,7 +3101,12 @@ to the query at execution."
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./extensions/shapes-ui.el
 :END:
-*** Typefaces
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
+*** Text
 **** Theme accents
 
 #+begin_src emacs-lisp
@@ -2480,10 +3138,120 @@ through as a theme loads."
 
 #+end_src
 
-** Theme
+*** Window
+**** Resize
+***** window-resize
+
+#+begin_src emacs-lisp
+
+(defun custom/window-resize (width)
+  (window-resize nil (- width (window-width)) t))
+
+#+end_src
+
+***** window-resize-fraction
+
+#+begin_src emacs-lisp
+
+(defun custom/window-resize-fraction (fr &optional min)
+  "Resize window to a fraction of the frame width."
+  (interactive)
+  (let ((width (max (if min min 0) (truncate (* fr (frame-width))))))
+    (window-resize nil (- width (window-width)) t)))
+
+#+end_src
+
+*** Warnings
+**** C-g is undefined
+
+#+begin_src emacs-lisp
+
+;; Record last sent message
+(defvar last-message nil)
+(defadvice message (after my-message pre act) (setq last-message ad-return-value))
+
+(defun custom/undefined-override (orig-fun &rest args)
+  "Override `undefined' function to suppress
+undefined key binding messages when interrupting
+key binding input with C-g."
+  (let ((inhibit-message t)
+	    (message-log-max nil))
+    (progn (apply orig-fun args)
+	       (setq _message last-message)))
+  (if (string-match-p (regexp-quote "C-g is undefined") _message)
+      (keyboard-quit)
+    (message _message)))
+
+;; Override the undefined key binding notice with a keyboard-quit
+(advice-add 'undefined :around #'custom/undefined-override)
+
+#+end_src
+
+*** Mode line
+**** TODO Hide
+
+- Hidden mode line mode
+   - https://github.com/hlissner/emacs-hide-mode-line
+   - https://webonastick.com/emacs-lisp/hide-mode-line.el
+   - https://github.com/manateelazycat/awesome-tray
+
+#+begin_src emacs-lisp
+
+(defcustom custom/mode-line nil
+  "Variable containing the format of the hidden mode line")
+
+(defcustom custom/header-line nil
+  "Variable containing the format of the hidden header line")
+
+(defun custom/hide-mode-line ()
+  "Hide `modeline' in current buffer"
+  (interactive)
+  (let ((m mode-line-format)
+        (h header-line-format))
+       (custom/@buffers (if (or m h)
+                            (progn (setq custom/mode-line   m)
+                                   (setq custom/header-line h)
+                                   (setq mode-line-format   nil)
+                                   (setq header-line-format nil))
+                          (progn (setq mode-line-format custom/mode-line)
+                                 (setq header-line-format custom/header-line))))))
+
+(global-set-key (kbd "M-m") #'custom/hide-mode-line)
+
+#+end_src
+
+**** Invert
+
+#+begin_src emacs-lisp
+
+(defun custom/variable-replace (a b)
+  "Set the value of `b' to that of `a', and
+that of `a' to nil in all buffers"
+  (let ((line (symbol-value a)))
+    (custom/@buffers (progn (set b line)
+                            (set a nil)))))
+
+(defun custom/mode-line-invert ()
+  (interactive)
+  (let ((m 'mode-line-format)
+        (h 'header-line-format))
+    (if mode-line-format
+        (custom/variable-replace m h)
+      (custom/variable-replace h m))))
+
+(global-set-key (kbd "M-t") #'custom/mode-line-invert)
+
+#+end_src
+
+** Themes
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./extensions/shapes-theme.el
+:header-args:emacs-lisp: :tangle ./extensions/shapes-themes.el
 :END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 *** Switch
 **** Hook
 
@@ -2543,10 +3311,7 @@ using `enable-theme'"
 
 #+begin_src emacs-lisp
 
-;; Bar
-(setq-default doom-modeline-bar-width 0.01)
-
-;; Color
+;; color
 (defun custom/modeline-color (bg bg-in face face-in)
   "Set the color of the mode and header lines and blend the 
 `doom-modeline-bar' with the background."
@@ -2620,120 +3385,16 @@ preserve modeline status through theme changes."
 
 #+end_src
 
-** Display
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./extensions/shapes-display.el
-:END:
-*** Window
-**** Resize
-***** window-resize
-
-#+begin_src emacs-lisp
-
-(defun custom/window-resize (width)
-  (window-resize nil (- width (window-width)) t))
-
-#+end_src
-
-***** window-resize-fraction
-
-#+begin_src emacs-lisp
-
-(defun custom/window-resize-fraction (fr &optional min)
-  "Resize window to a fraction of the frame width."
-  (interactive)
-  (let ((width (max (if min min 0) (truncate (* fr (frame-width))))))
-    (window-resize nil (- width (window-width)) t)))
-
-#+end_src
-
-*** Mode line
-**** TODO Hide
-
-- Hidden mode line mode
-   - https://github.com/hlissner/emacs-hide-mode-line
-   - https://webonastick.com/emacs-lisp/hide-mode-line.el
-   - https://github.com/manateelazycat/awesome-tray
-
-#+begin_src emacs-lisp
-
-(defcustom custom/mode-line nil
-  "Variable containing the format of the hidden mode line")
-
-(defcustom custom/header-line nil
-  "Variable containing the format of the hidden header line")
-
-(defun custom/hide-mode-line ()
-  "Hide `modeline' in current buffer"
-  (interactive)
-  (let ((m mode-line-format)
-        (h header-line-format))
-       (custom/@buffers (if (or m h)
-                            (progn (setq custom/mode-line   m)
-                                   (setq custom/header-line h)
-                                   (setq mode-line-format   nil)
-                                   (setq header-line-format nil))
-                          (progn (setq mode-line-format custom/mode-line)
-                                 (setq header-line-format custom/header-line))))))
-
-(global-set-key (kbd "M-m") #'custom/hide-mode-line)
-
-#+end_src
-
-**** Invert
-
-#+begin_src emacs-lisp
-
-(defun custom/variable-replace (a b)
-  "Set the value of `b' to that of `a', and
-that of `a' to nil in all buffers"
-  (let ((line (symbol-value a)))
-    (custom/@buffers (progn (set b line)
-                            (set a nil)))))
-
-(defun custom/mode-line-invert ()
-  (interactive)
-  (let ((m 'mode-line-format)
-        (h 'header-line-format))
-    (if mode-line-format
-        (custom/variable-replace m h)
-      (custom/variable-replace h m))))
-
-(global-set-key (kbd "M-t") #'custom/mode-line-invert)
-
-#+end_src
-
-*** Warnings
-**** C-g is undefined
-
-#+begin_src emacs-lisp
-
-;; Record last sent message
-(defvar last-message nil)
-(defadvice message (after my-message pre act) (setq last-message ad-return-value))
-
-(defun custom/undefined-override (orig-fun &rest args)
-  "Override `undefined' function to suppress
-undefined key binding messages when interrupting
-key binding input with C-g."
-  (let ((inhibit-message t)
-	    (message-log-max nil))
-    (progn (apply orig-fun args)
-	       (setq _message last-message)))
-  (if (string-match-p (regexp-quote "C-g is undefined") _message)
-      (keyboard-quit)
-    (message _message)))
-
-;; Override the undefined key binding notice with a keyboard-quit
-(advice-add 'undefined :around #'custom/undefined-override)
-
-#+end_src
-
 
 ** Editing
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./extensions/shapes-editing.el
 :END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 *** Tabs
 
 #+begin_src emacs-lisp
@@ -2997,6 +3658,11 @@ not empty. In any case, advance to next line."
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./extensions/shapes-navigation.el
 :END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 *** Text
 **** TODO end
 
@@ -3121,7 +3787,7 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 
 #+end_src
 
-*** Buffer
+*** Window
 **** Split and follow
 
 #+begin_src emacs-lisp
@@ -3141,7 +3807,6 @@ from `prog-mode', arrow-up to `end-of-visual-line' of
 
 #+end_src
 
-*** Window
 **** Previous window
 ***** Record
 
@@ -3185,63 +3850,15 @@ before the execution of any command.")
 #+end_src
 
 
-** Programming
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle ./extensions/shapes-programming.el
-:END:
-*** Folding
-**** TODO Cycle
-
-- fold back in 1 when no children
-
-#+begin_src emacs-lisp
-
-(defun custom/hs-cycle (&optional level)
-  (interactive "p")
-  (save-excursion
-    (let (message-log-max (inhibit-message t))
-      (if (= level 1)
-	  (pcase last-command
-	    ('hs-cycle
-	     (hs-hide-level 1)
-	   (setq this-command 'hs-cycle-children))
-	    ('hs-cycle-children
-	     ;; TODO: Fix this case. `hs-show-block' needs to be
-	     ;; called twice to open all folds of the parent
-	     ;; block.
-	     (save-excursion (hs-show-block))
-	     (hs-show-block)
-	     (setq this-command 'hs-cycle-subtree))
-	    ('hs-cycle-subtree
-	     (hs-hide-block))
-	    (_
-	     (if (not (hs-already-hidden-p))
-		 (hs-hide-block)
-	       (hs-hide-level 1)
-	       (setq this-command 'hs-cycle-children))))
-	(hs-hide-level level)
-	(setq this-command 'hs-hide-level)))))
-
-(defun custom/hs-global-cycle ()
-  (interactive)
-  (pcase last-command
-    ('hs-global-cycle
-     (save-excursion (hs-show-all))
-     (setq this-command 'hs-global-show))
-    (_ (hs-hide-all))))
-
-(define-key hs-minor-mode-map (kbd "C-\\") #'custom/hs-cycle)
-
-#+end_src
-
-
-
-
-
 ** File management
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./extensions/shapes-file-management.el
 :END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 *** DOS to UNIX
 
 #+begin_src emacs-lisp
@@ -3279,6 +3896,11 @@ the user for confirmation."
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./extensions/shapes-org.el
 :END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 *** General purpose
 **** Queries
 ***** in

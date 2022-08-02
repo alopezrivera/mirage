@@ -36,27 +36,7 @@ To publish to the web, in document form, to manage email.
 - blog
 - LaTeX
 
-* Setup
-** Startup
-*** Frame
-
-#+begin_src emacs-lisp
-
-;; Initial frame size
-(add-to-list 'default-frame-alist '(height . 50))
-(add-to-list 'default-frame-alist '(width  . 70))
-
-#+end_src
-
-*** Message
-
-#+begin_src emacs-lisp
-
-;; Inhibit startup message
-(setq inhibit-startup-message t)
-
-#+end_src
-
+* Infrastructure
 ** General purpose
 
 #+begin_src emacs-lisp
@@ -206,295 +186,152 @@ We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/d
 
 #+end_src
 
-* Modal
-** god-mode
+
+* UI
 
 #+begin_src emacs-lisp
 
-(shapes-module "god-mode")
+(shapes-layer "ui")
 
 #+end_src
+
+* Input
+
+#+begin_src emacs-lisp
+
+(shapes-layer "input")
+
+#+end_src
+
+* Themes
+
+#+begin_src emacs-lisp
+
+(setq light    'modus-operandi)
+
+(setq dark     'modus-vivendi)
+
+(shapes-layer "themes")
+
+#+end_src
+
+* Mode line
+
+#+begin_src emacs-lisp
+
+(setq modeline 'doom-modeline-mode)
+
+(shapes-layer "mode-line")
+
+#+end_src
+
+* TODO Typefaces
+
+- dpi font size scaling
+
+#+begin_src emacs-lisp
+
+;; default
+(set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
+
+;; fixed pitch
+(set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 93)
+
+;; variable pitch
+(set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 105 :weight 'regular)
+
+;; italic
+(defface custom/italic
+  '((t :font "Victor Mono" :height  86 :weight  bold :slant italic))
+  "Italic typeface")
+
+;; titles
+(setq typeface-title "Ringbearer")
+
+;; headings
+(setq typeface-heading "Century Gothic")
+
+;; mode line
+(set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
+
+#+end_src
+
 
 * Editing
-** Modules
-*** vundo
 
 #+begin_src emacs-lisp
 
-(shapes-module "vundo")
-
-#+end_src
-
-*** multiple-cursors
-
-#+begin_src emacs-lisp
-
-(shapes-module "multiple-cursors")
-
-#+end_src
-
-** Extensions
-
-#+begin_src emacs-lisp
-
-(shapes-extend "editing")
-
-#+end_src
-
-* Session
-** desktop
-
-#+begin_src emacs-lisp
-
-(shapes-module "desktop")
-
-#+end_src
-
-** workgroups
-
-#+begin_src emacs-lisp
-
-(shapes-module "workgroups")
-
-#+end_src
-
-* Display
-** Settings
-*** Tabs
-
-#+begin_src emacs-lisp
-
-(tab-bar-mode 1)
-
-#+end_src
-
-*** Menus
-
-#+begin_src emacs-lisp
-
-;; Disable visible scroll bar
-(scroll-bar-mode -1)
-
-;; Disable toolbar
-(tool-bar-mode -1)
-
-;; Disable tooltips
-(tooltip-mode -1)
-
-;; Disable menu bar
-(menu-bar-mode -1)
-
-#+end_src
-
-*** Frame
-
-#+begin_src emacs-lisp
-
-;; Frame name
-(setq-default frame-title-format '("Emacs [%m] %b"))
-
-#+end_src
-
-*** Fringes
-
-#+begin_src emacs-lisp
-
-;; Fringe mode
-(set-fringe-mode nil)
-
-#+end_src
-
-*** Warnings
-**** Visible bell
-
-#+begin_src emacs-lisp
-
-;; Enable visual bell
-(setq visible-bell t)
-
-#+end_src
-
-**** Confirmations
-
-#+begin_src emacs-lisp
-
-(advice-add 'yes-or-no-p :override #'y-or-n-p)
-
-#+end_src
-
-*** TODO Scrolling
-
-- pixel-scroll-precision-mode
-   - sudden jumps
-
-- scrolling without moving mark
-
-- sources
-   - https://www.reddit.com/r/emacs/comments/6osik2/random_scroll_jumps_in_emacs/
-   - https://www.emacswiki.org/emacs/SmoothScrolling
-
-#+begin_src emacs-lisp
-
-(setq scroll-step 1)
-(setq scroll-conservatively 101)
-(setq scroll-preserve-screen-position 1)
-
-#+end_src
-
-*** Line numbers
-
-#+begin_src emacs-lisp
-
-;; Display line numbers by side
-(global-set-key (kbd "C-c l") #'display-line-numbers-mode)
-
-#+end_src
-
-*** Column numbers
-
-#+begin_src emacs-lisp
-
-;; Display column number
-(column-number-mode)
-
-#+end_src
-
-** Modules
-*** olivetti
-
-#+begin_src emacs-lisp
-
-(shapes-module "olivetti")
-
-#+end_src
-
-** Extensions
-
-#+begin_src emacs-lisp
-
-(shapes-extend "display")
+(shapes-layer "editing")
 
 #+end_src
 
 * Search
-** swiper
 
 #+begin_src emacs-lisp
 
 (shapes-module "swiper")
-
-#+end_src
-
-** ripgrep
-
-#+begin_src emacs-lisp
-
 (shapes-module "rg")
 
 #+end_src
 
 * Templates
-** yasnippet
 
 #+begin_src emacs-lisp
 
+;; templates
 (shapes-module "yasnippet")
 
 #+end_src
 
+* Completion
+
+#+begin_src emacs-lisp
+
+;; completion
+(shapes-module "ivy")
+
+#+end_src
+
+
+* Workflow
+** Session
+
+#+begin_src emacs-lisp
+
+(shapes-module "desktop")
+(shapes-module "workgroups")
+
+#+end_src
+
+** Project interaction
+
+#+begin_src emacs-lisp
+
+(shapes-module "projectile")
+(shapes-module "treemacs")
+
+#+end_src
+
 * Guidance
-** counsel
 
 #+begin_src emacs-lisp
 
 (shapes-module "counsel")
-
-#+end_src
-
-** helpful
-
-#+begin_src emacs-lisp
-
 (shapes-module "helpful")
-
-#+end_src
-
-** which-key
-
-#+begin_src emacs-lisp
-
 (shapes-module "which-key")
 
 #+end_src
 
 * Navigation
-** Settings
-*** Frame
 
 #+begin_src emacs-lisp
 
-;; Create new frame
-(global-set-key (kbd "C-S-n") #'make-frame-command)
+(shapes-layer "navigation")
 
 #+end_src
 
-*** Window
-**** ace-window
-
-#+begin_src emacs-lisp
-
-;; ace-window
-(straight-use-package 'ace-window)
-(require 'ace-window)
-
-(global-set-key (kbd "C-x o") 'ace-window)
-
-#+end_src
-
-**** winner-mode
-
-#+begin_src emacs-lisp
-
-;; winner mode
-(winner-mode)
-
-#+end_src
-
-**** balance-windows
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-x -") #'balance-windows)
-
-#+end_src
-
-**** split-width-threshold
-
-#+begin_src emacs-lisp
-
-(setq split-width-threshold 70)
-
-#+end_src
-
-** Extensions
-
-#+begin_src emacs-lisp
-
-(shapes-extend "navigation")
-
-#+end_src
-
-* Completion
-** ivy
-
-#+begin_src emacs-lisp
-
-(shapes-module "ivy")
-
-#+end_src
 
 * Version control
-** magit
 
 #+begin_src emacs-lisp
 
@@ -503,680 +340,28 @@ We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/d
 #+end_src
 
 * File management
-** Settings
-*** Buffer backups
-
-~backup-directory-alist~, which determines where backups are saved, is set by ~no-littering~.
 
 #+begin_src emacs-lisp
 
-(setq backup-by-copying t)
-(setq version-control t)
-(setq delete-old-versions t)
-(setq kept-new-versions 2)
-(setq kept-old-versions 2)
-
-#+end_src
-
-** Modules
-*** dirvish
-
-#+begin_src emacs-lisp
-
-(shapes-module "dirvish")
-
-#+end_src
-
-** Extensions
-
-#+begin_src emacs-lisp
-
-(shapes-extend "file-management")
-
-#+end_src
-
-* Project interaction
-** projectile
-
-#+begin_src emacs-lisp
-
-(shapes-module "projectile")
-
-#+end_src
-
-** treemacs
-
-#+begin_src emacs-lisp
-
-(shapes-module "treemacs")
+(shapes-layer "file-management")
 
 #+end_src
 
 
-
-* UI
-** Settings
-*** TODO Typefaces
-
-- dpi font size scaling
-
-**** Body
+* IDE
 
 #+begin_src emacs-lisp
 
-;; default face
-(set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
-
-;; fixed pitch face
-(set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 93)
-
-;; variable pitch face
-(set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 105 :weight 'regular)
+(shapes-layer "ide")
 
 #+end_src
-
-**** Accents
-
-#+begin_src emacs-lisp
-
-;; italic
-(defface custom/italic
-  '((t :font "Victor Mono" :height  86 :weight  bold :slant italic))
-  "Italic typeface")
-
-#+end_src
-
-**** Headings
-
-#+begin_src emacs-lisp
-
-;; titles
-(setq typeface-title "Ringbearer")
-
-;; heading face
-(setq typeface-heading "Century Gothic")
-
-#+end_src
-
-**** Mode line
-
-#+begin_src emacs-lisp
-
-;; Mode line
-(set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
-
-#+end_src
-
-*** Mode line
-**** Data
-
-#+begin_src emacs-lisp
-
-(display-time-mode t)
-
-#+end_src
-
-** Modules
-*** delight
-
-#+begin_src emacs-lisp
-
-(shapes-module "delight")
-
-#+end_src
-
-*** all-the-icons
-
-#+begin_src emacs-lisp
-
-(shapes-module "all-the-icons")
-
-#+end_src
-
-*** rainbow-mode
-
-#+begin_src emacs-lisp
-
-(shapes-module "rainbow-mode")
-
-#+end_src
-
-** Extensions
-
-#+begin_src emacs-lisp
-
-(shapes-extend "ui")
-
-#+end_src
-
-* Themes
-** Extensions
-
-#+begin_src emacs-lisp
-
-(shapes-extend "theme")
-
-#+end_src
-
-** Settings
-*** Theme
-
-#+begin_src emacs-lisp
-
-(setq light    'modus-operandi)
-
-(setq dark     'modus-vivendi)
-
-(setq modeline 'doom-modeline-mode)
-
-#+end_src
-
-*** Mode line
-
-#+begin_src emacs-lisp
-
-(add-hook 'after-init-hook modeline)
-
-#+end_src
-
-** Outfits
-
-#+begin_src emacs-lisp
-
-(shapes-outfit "themes")
-(shapes-outfit "mode-lines")
-
-#+end_src
-
-** Modules
-*** circadian
-
-#+begin_src emacs-lisp
-
-(shapes-module "circadian")
-
-#+end_src
-
 
 * Org Mode
 
 #+begin_src emacs-lisp
 
-(shapes-module "org")
-
-#+end_src
-
-** Settings
-*** UI
-**** Text
-***** Typefaces
-****** Title
-
-#+begin_src emacs-lisp
-
-;; title face
-
-(defun custom/org-typeface-title ()
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :font typeface-title :height 300 :weight 'regular :foreground 'unspecified)))
-
-(add-hook 'org-mode-hook #'custom/org-typeface-title)
-
-#+end_src
-
-****** Body
-
-#+begin_src emacs-lisp
-
-(defun custom/org-typefaces-body ()
-  (with-eval-after-load 'org-faces
-
-    ;; Code
-    (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
-
-    ;; Tables
-    (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
-
-    ;; Lists
-    (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
-
-    ;; Meta
-    (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
-
-(add-hook 'org-mode-hook #'custom/org-typefaces-body)
-
-#+end_src
-
-****** Indent
-
-#+begin_src emacs-lisp
-
-(defun custom/org-typeface-indent ()
-  "Indent typeface used in `org-indent-mode' and `visual-line-mode'."
-  (with-eval-after-load 'org-indent-mode
-    (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))))
-
-(add-hook 'org-mode-hook #'custom/org-typeface-indent)
-
-#+end_src
-
-****** Headings
-
-#+begin_src emacs-lisp
-
-;; use levels 1 through 8
-(setq org-n-level-faces 8)
-
-;; do not cycle header style after 8th level
-(setq org-cycle-level-faces nil)
-
-;; hide leading stars
-(setq org-hide-leading-starts t)
-
-;; font sizes
-(defun custom/org-header-setup () 
-  (with-eval-after-load 'org-faces
-
-    ;; heading font sizes
-    (dolist (face '((org-level-1 . 1.6)
-                    (org-level-2 . 1.4)
-                    (org-level-3 . 1.3)
-                    (org-level-4 . 1.2)
-                    (org-level-5 . 1.15)
-                    (org-level-6 . 1.10)
-                    (org-level-7 . 1.05)
-                    (org-level-8 . 1.00)))
-         (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
-
-(add-hook 'org-mode-hook #'custom/org-header-setup)
-
-#+end_src
-
-***** Indentation
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
-
-#+end_src
-
-***** Line-wrapping
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
-#+end_src
-
-**** Ellipses
-
-Candidates:
-- triangles
-  ▼
-  ▾
-  ▿
-- rhomboids
-  ⬙
-  ⟡
-  ⬥
-  ♦
-  ♢
-- non-compliant
-  ⧨
-  
------
-
-#+begin_src emacs-lisp
-
-;; Change ellipsis ("...") to remove clutter
-(setq org-ellipsis " ♢")
-
-#+end_src
-
-**** Images
-
-#+begin_src emacs-lisp
-
-;; Startup with inline images
-(setq org-startup-with-inline-images t)
-
-#+end_src
-
-*** Display
-**** Figures
-
-#+begin_src emacs-lisp
-
-(setq org-image-actual-width nil)
-
-#+end_src
-
-**** List indentation
-
-#+begin_src emacs-lisp
-
-;; List indentation
-(setq-default org-list-indent-offset 1)
-
-#+end_src
-
-**** Symbols, super- and subscripts
-
-#+begin_src emacs-lisp
-
-;; symbols, super- and subscripts
-(setq org-pretty-entities nil)
-
-#+end_src
-
-*** TODO LaTeX
-
-- org LaTeX equations
-   - custom array envs
-      - cases
-         - \arraycolsep=1.4pt\def\arraystretch{1.5}
-      - derivations
-         - \arraycolsep=3pt\def\arraystretch{2.25}
-
-**** TODO Options
-
-- mail bug in
-
------
-
-Importantly, ~modus-vivendi~ will not behave correctly with
-the default ~org-format-latex-options~, with LaTeX previews
-displaying as white boxes. [[https://debbugs.gnu.org/db/52/52277.html][This has been previously reported]].
-
-~org-format-latex-options~ has ~:foreground~ and ~:background~
-attributes. These may be assigned to
-
-- a color,
-- ~default~, instructing Org Mode to determine ~:foreground~ or
-  ~:background~ from the foreground or background color of the
-  default face, or
-- ~auto~, doing the same for the text face.
-
-By default, the ~:foreground~ and ~:background~ in ~org-format-latex-options~
-are set to ~default~. With default settings, changing the color
-of the ~default~ font has the following effects on the LaTeX preview SVGs:
-
-- modus-operandi
-   - ~default :foreground~: text color
-   - ~default :background~: no effect
-- modus-vivendi
-   - ~default :foreground~: background color
-   - ~default :background~: no effect
-
-By eliminating the ~:background~ attribute from ~org-format-latex-options~
-the issue is resolved.
-
-1. ~modus-operandi~ does not suffer from this issue nor do various
-   other themes. This makes me believe the issue lies with
-   ~modus-vivendi~ itself.
-2. However, the ~:background~ attribute in ~org-format-latex-options~
-   seems to have no effect, a potential bug in Org Mode
-
-#+begin_src emacs-lisp
-
-(setq org-format-latex-options
-        (list :foreground 'default
-              :scale      1.2))
-
-#+end_src
-
-**** Header
-
-#+begin_src emacs-lisp
-
-;; Justify equation labels - [fleqn]
-;; Preview page width      - 10.5cm
-(setq org-format-latex-header
-      (string-join '("\\documentclass[fleqn]{article}"
-		        "\\usepackage[usenames]{color}"
-			
-			"\\usepackage{bm}"
-			
-			"\\pagestyle{empty}"
-			"\\setlength{\\textwidth}{10.5cm}"
-			"\\addtolength{\\textwidth}{-3cm}"
-			"\\setlength{\\oddsidemargin}{1.5cm}"
-			"\\addtolength{\\oddsidemargin}{-2.54cm}"
-			"\\setlength{\\evensidemargin}{\\oddsidemargin}"
-			"\\setlength{\\textheight}{\\paperheight}"
-			"\\addtolength{\\textheight}{-\\headheight}"
-			"\\addtolength{\\textheight}{-\\headsep}"
-			"\\addtolength{\\textheight}{-\\footskip}"
-			"\\addtolength{\\textheight}{-3cm}"
-			"\\setlength{\\topmargin}{1.5cm}"
-			"\\addtolength{\\topmargin}{-2.54cm}")
-		   "\n"))
-
-#+end_src
-
-**** Equation preview format
-
-#+begin_src emacs-lisp
-
-;; SVG LaTeX equation preview
-(setq org-latex-create-formula-image-program 'dvisvgm)
-
-#+end_src
-
-**** Equation preview directory
-
-#+begin_src emacs-lisp
-
-;; theme-specific LaTeX preview directory
-(defun custom/latex-preview-directory ()
-  "Set `org-preview-latex-image-directory' to the SVG
-LaTeX preview directory of the current theme"
-  (setq org-preview-latex-image-directory
-   (concat "/tmp/ltximg/" (custom/current-theme) "/")))
-
-#+end_src
-
-**** Equation preview reload hook
-
-#+begin_src emacs-lisp
-
-(defun custom/latex-preview-reload ()
-  "Reload all LaTeX previews in buffer,
-ensuring the LaTeX preview directory
-matches the current theme."
-  (if (custom/in-mode "org-mode")
-      (progn (org-latex-preview '(64))
-	        (custom/latex-preview-directory)
-		(org-latex-preview '(16)))))
-
-(add-hook 'org-mode-hook #'custom/latex-preview-reload)
-
-#+end_src
-
-** Modules
-*** UI
-**** org-modern
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-modern")
-
-#+end_src
-
-**** org-appear
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-appear")
-
-#+end_src
-
-**** org-fragtog
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-fragtog")
-
-#+end_src
-
-*** Editing
-**** org-paragraph
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-paragraph")
-
-#+end_src
-
-*** Notes
-**** org-diary
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-diary")
-
-#+end_src
-
-**** org-roam
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-roam")
-
-#+end_src
-
-*** Export
-**** ox-rst
-
-#+begin_src emacs-lisp
-
-(shapes-module "ox-rst")
-
-#+end_src
-
-*** Agenda
-**** org-agenda
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-agenda")
-
-#+end_src
-
-**** org-contacts
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-contacts")
-
-#+end_src
-
-**** org-calendar
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-calendar")
-
-#+end_src
-
-*** Templates
-**** org-tempo
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-tempo")
-
-#+end_src
-
-**** org-capture
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-capture")
-
-#+end_src
-
-*** Programming
-**** org-babel
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-babel")
-
-#+end_src
-
-** Outfits
-*** 
-** Extensions
-
-#+begin_src emacs-lisp
-
-(shapes-extend "org")
-
-#+end_src
-
-
-* Shell
-
-#+begin_src emacs-lisp
-
-(shapes-outfit "shell")
-
-#+end_src
-
-* Programming
-** Modules
-*** hideshow
-
-#+begin_src emacs-lisp
-
-(shapes-module "hideshow")
-
-#+end_src
-
-*** company
-
-#+begin_src emacs-lisp
-
-(shapes-module "company")
-
-#+end_src
-
-*** flycheck
-
-#+begin_src emacs-lisp
-
-(shapes-module "flycheck")
-
-#+end_src
-
-*** elpy
-
-#+begin_src emacs-lisp
-
-(shapes-module "elpy")
-
-#+end_src
-
-** Extensions
-
-#+begin_src emacs-lisp
-
-(shapes-extend "programming")
-
-#+end_src
-
-
-* Declare
-
-#+begin_src emacs-lisp
-
-;; Conclude initialization file
-(provide 'home)
+(shapes-layer "org")
+(shapes-layer "org-ui")
+(shapes-layer "org-latex-preview")
 
 #+end_src
