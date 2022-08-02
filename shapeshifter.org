@@ -633,6 +633,37 @@ matches the current theme."
 
 #+end_src
 
+**** use-package                                                      :arch:
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-use-package.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; package
+(require 'package)
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			   ("org"   . "https://orgmode.org/elpa/")
+			   ("elpa"  . "https://elpa.gnu.org/packages/")))
+(package-initialize)
+
+;; use-package
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(require 'use-package)
+
+;; ensure
+(setq use-package-always-ensure t)
+
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+
+;; update package database
+(package-refresh-contents)
+
+#+end_src
+
 *** Config management
 **** Littering
 :PROPERTIES:
@@ -1185,6 +1216,39 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 #+end_src
 
+**** undo-tree                                                        :arch:
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-undo-tree.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; undo-tree
+(use-package undo-tree
+  :bind (("M-/" . undo-tree-visualize)
+         :map undo-tree-visualizer-mode-map
+         ("RET" . undo-tree-visualizer-quit)
+         ("ESC" . undo-tree-visualizer-quit))
+  :config
+  (global-undo-tree-mode))
+
+#+end_src
+
+***** Visualize in side buffer
+
+#+begin_src emacs-lisp
+
+;; visualize in side buffer
+(defun custom/undo-tree-split-side-by-side (orig-fun &rest args)
+  "Split undo-tree side-by-side"
+  (let ((split-height-threshold nil)
+        (split-width-threshold 0))
+    (apply orig-fun args)))
+
+(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
+
+#+end_src
+
 *** Multiline
 **** multiple-cursors
 :PROPERTIES:
@@ -1312,10 +1376,8 @@ buffer is already narrowed, widen buffer."
 (require 'rg)
 
 #+end_src
-
-** Shortcuts
-*** Templates
-**** yasnippet
+** Templates
+*** yasnippet
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./modules/shapes-yasnippet.el
 :END:
@@ -1329,7 +1391,7 @@ buffer is already narrowed, widen buffer."
 
 #+end_src
 
-***** <
+**** <
 
 #+begin_src emacs-lisp
 
@@ -1348,7 +1410,7 @@ buffer is already narrowed, widen buffer."
 
 #+end_src
 
-***** Snippets
+**** Snippets
 
 #+begin_src emacs-lisp
 
@@ -1357,8 +1419,8 @@ buffer is already narrowed, widen buffer."
 
 #+end_src
 
-*** Completion
-**** ivy
+** Completion
+*** ivy
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./modules/shapes-ivy.el
 :END:
@@ -1393,6 +1455,20 @@ buffer is already narrowed, widen buffer."
   (cl-loop for binding in '(("C-k"   . ivy-previous-line)
 			        ("C-d"   . ivy-reverse-i-search-kill))
             collect (define-key map (kbd (car binding)) (cdr binding))))
+
+#+end_src
+
+*** ivy-rich                                                          :arch:
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-ivy-rich.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'ivy-rich)
+(require 'ivy-rich)
+
+(ivy-rich-mode 1)
 
 #+end_src
 
@@ -1654,6 +1730,20 @@ buffer is already narrowed, widen buffer."
 (setq which-key-idle-delay 1.0)
 
 (which-key-mode)
+
+#+end_src
+
+*** command-log-mode                                                  :arch:
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-command-log-mode.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'command-log-mode)
+(require 'command-log-mode)
+
+(global-command-log-mode)
 
 #+end_src
 
@@ -2154,6 +2244,21 @@ beginning lies on an Org Mode heading,
 
 (advice-add 'org-metaup   :around #'custom/org-meta-arrows-v)
 (advice-add 'org-metadown :around #'custom/org-meta-arrows-v)
+
+#+end_src
+
+**** org-download
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-org-download.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'org-download)
+
+(dolist (mode '(org-mode-hook
+		     dired-mode-hook))
+  (add-hook mode 'org-download-enable))
 
 #+end_src
 
