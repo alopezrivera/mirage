@@ -14,7 +14,7 @@
 
 * early-init
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ./early-init.el
+:header-args:emacs-lisp: :tangle ./early-init.el
 :END:
 ** Variables
 
