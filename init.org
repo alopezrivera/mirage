@@ -151,7 +151,9 @@
 #+begin_src emacs-lisp
 
 ;; credentials
-(load-file (concat config-directory "creds.el.gpg"))
+(condition-case nil
+    (load-file (concat config-directory "creds.el.gpg"))
+  (error nil))
 
 #+end_src
 
