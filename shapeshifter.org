@@ -2812,6 +2812,14 @@ if it was previously enabled."
 
 #+end_src
 
+****** Python
+
+#+begin_src emacs-lisp
+
+(setq org-babel-python-command "python3")
+
+#+end_src
+
 ***** Auto-tangle
 
 #+begin_src emacs-lisp
