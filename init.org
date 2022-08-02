@@ -6,7 +6,7 @@
 
 
 
-#+title:Emacs Initialization
+#+title:Initialization
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
 
 
