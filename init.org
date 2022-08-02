@@ -20,8 +20,6 @@
 
 #+begin_src emacs-lisp
 
-;;; -*- lexical-binding: t; -*-
-
 (defcustom config "home"
   "Emacs configuration of choice")
 
@@ -46,7 +44,7 @@
 
 #+end_src
 
-** Declare
+** Provide
 
 #+begin_src emacs-lisp
 
@@ -157,7 +155,7 @@
 
 #+end_src
 
-** Declare
+** Provide
 
 #+begin_src emacs-lisp
 
