@@ -184,6 +184,20 @@ shapeshifter
 ** other
 
 -----
+tangling
+
+- tangle block to all files
+   - noweb block references
+      - https://www.reddit.com/r/emacs/comments/5r9s4l/comment/dd6an2n/?utm_source=share&utm_medium=web2x&context=3
+   - property -> :tangle all
+      1. get list of tangle destinations in org file
+      2. block with :tangle all
+          - tangle to all files in list
+
+- async auto tangle
+   - https://elblogdelazaro.org/posts/2019-12-16-org-mode-mi-fichero-de-configuracion/#acabando
+
+-----
 guides
 
 - org-entities to escape markup symbols
