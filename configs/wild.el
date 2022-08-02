@@ -2,13 +2,17 @@
 
 ;;; Commentary
 
-;; Minimal Emacs Config
-;; ====================
+;; Minimal Emacs configuration
+;;
 ;; Contents
 ;; --------
 ;; Setup
 ;;   - Infrastructure
 ;;   - Startup
+;; Functions
+;;   - IDE
+;;   - Org Mode
+;;   - Version Control
 ;; Looks
 ;;   - UI
 ;;   - Themes
@@ -18,10 +22,6 @@
 ;;   - Editing
 ;;   - Completion
 ;;   - Search
-;; Functions
-;;   - IDE
-;;   - Org Mode
-;;   - Version Control
 ;; --------------------
 
 ;;; Code
@@ -54,6 +54,87 @@
   (cl-loop for buffer in startup-buffers
 	   collect (find-file-noselect buffer)))
 (add-hook 'after-init-hook #'spawn-startup-buffers)
+
+;; ===================
+;;         IDE
+;; ===================
+
+;; remove duplicates in shell history
+(setq comint-input-ignoredups t)
+
+;; file tree
+(straight-use-package 'treemacs)
+(require 'treemacs)
+(global-set-key (kbd "C-x t t") 'treemacs)
+
+(defvar custom/treemacs-ignored '(".*__pycache__.*")
+  "Files, directories and patterns ignored by treemacs.")
+(defun custom/treemacs-ignore-filter (file _)
+  "If FILE matches any entry of `treemacs-ignored', return t."
+  (cl-loop for ignored in custom/treemacs-ignored
+	   if (string-match ignored file)
+	      return t
+	   finally return nil))
+(push #'custom/treemacs-ignore-filter treemacs-ignored-file-predicates)
+
+;; completion
+(straight-use-package 'company)
+(require 'company)
+
+;; syntax checker
+(straight-use-package 'flycheck)
+(require 'flycheck)
+(add-hook 'prog-mode-hook #'flycheck-mode)
+
+;; lisp
+(straight-use-package 'rainbow-delimiters)
+(require 'rainbow-delimiters)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+;; python
+(straight-use-package 'elpy)
+(elpy-enable)
+
+(setq elpy-rpc-timeout 5)
+(setq elpy-rpc-backend "jedi")
+(setq elpy-rpc-python-command "python3")
+
+(define-key elpy-mode-map (kbd "C-M-n") 'elpy-nav-forward-block)
+(define-key elpy-mode-map (kbd "C-M-p") 'elpy-nav-backward-block)
+
+;; ===================
+;;       Org Mode
+;; ===================
+
+(setq org-src-tab-acts-natively        t)
+(setq org-src-preserve-indentation     nil)
+(setq org-edit-src-content-indentation 0)
+(setq org-pretty-entities t)
+
+;; suppress babel block execution confirmation
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (member lang '("emacs-lisp" "python" "shell" "bash"))))
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+;; babel languages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)
+   (shell      . t)))
+
+;; tempo
+(require 'org-tempo)
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+
+;; ===================
+;;   Version Control
+;; ===================
+
+;; magit
+(straight-use-package 'magit)
 
 ;; ===================
 ;;        UI
@@ -187,86 +268,6 @@
   (minibuffer-keyboard-quit))
 (define-key swiper-map (kbd "M-<return>") 'custom/swiper-multiple-cursors)
 
-;; ===================
-;;         IDE
-;; ===================
-
-;; remove duplicates in shell history
-(setq comint-input-ignoredups t)
-
-;; file tree
-(straight-use-package 'treemacs)
-(require 'treemacs)
-(global-set-key (kbd "C-x t t") 'treemacs)
-
-(defvar custom/treemacs-ignored '(".*__pycache__.*")
-  "Files, directories and patterns ignored by treemacs.")
-(defun custom/treemacs-ignore-filter (file _)
-  "If FILE matches any entry of `treemacs-ignored', return t."
-  (cl-loop for ignored in custom/treemacs-ignored
-	   if (string-match ignored file)
-	      return t
-	   finally return nil))
-(push #'custom/treemacs-ignore-filter treemacs-ignored-file-predicates)
-
-;; completion
-(straight-use-package 'company)
-(require 'company)
-
-;; syntax checker
-(straight-use-package 'flycheck)
-(require 'flycheck)
-(add-hook 'prog-mode-hook #'flycheck-mode)
-
-;; lisp
-(straight-use-package 'rainbow-delimiters)
-(require 'rainbow-delimiters)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-
-;; python
-(straight-use-package 'elpy)
-(elpy-enable)
-
-(setq elpy-rpc-timeout 5)
-(setq elpy-rpc-backend "jedi")
-(setq elpy-rpc-python-command "python3")
-
-(define-key elpy-mode-map (kbd "C-M-n") 'elpy-nav-forward-block)
-(define-key elpy-mode-map (kbd "C-M-p") 'elpy-nav-backward-block)
-
-;; ===================
-;;       Org Mode
-;; ===================
-
-(setq org-src-tab-acts-natively        t)
-(setq org-src-preserve-indentation     nil)
-(setq org-edit-src-content-indentation 0)
-(setq org-pretty-entities t)
-
-;; suppress babel block execution confirmation
-(defun my-org-confirm-babel-evaluate (lang body)
-  (not (member lang '("emacs-lisp" "python" "shell" "bash"))))
-(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
-
-;; babel languages
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python     . t)
-   (shell      . t)))
-
-;; tempo
-(require 'org-tempo)
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py" . "src python"))
-
-;; ===================
-;;   Version Control
-;; ===================
-
-;; magit
-(straight-use-package 'magit)
 
 (provide 'wild)
 ;;; wild.el ends here
