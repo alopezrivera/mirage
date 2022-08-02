@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (defvar custom/load-theme-hook nil
    "`load-theme' hook.")
 
@@ -33,10 +35,7 @@ using `enable-theme'"
 
 (global-set-key (kbd "C-t") 'custom/theme-toggle)
 
-;; Bar
-(setq-default doom-modeline-bar-width 0.01)
-
-;; Color
+;; color
 (defun custom/modeline-color (bg bg-in face face-in)
   "Set the color of the mode and header lines and blend the 
 `doom-modeline-bar' with the background."

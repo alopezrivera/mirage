@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; Transform all files in directory from DOS to Unix line breaks
 (defun custom/dos2unix (&optional dir)
   (let ((default-directory (or dir (file-name-directory buffer-file-name))))

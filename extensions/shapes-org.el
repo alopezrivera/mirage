@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; `org-in-src-block-p' gives false positives as of Org Mode 9.5.3. For
 ;; this reason, determine if cursor in src block with the more reliable
 ;; `org-babel-where-is-src-block-head'

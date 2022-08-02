@@ -1,5 +1,3 @@
-;;; -*- lexical-binding: t; -*-
-
 (defcustom config "home"
   "Emacs configuration of choice")
 
@@ -11,6 +9,9 @@
 
 (defcustom startup-buffers '()
   "Buffers opened at startup")
+
+(defcustom spawn-startup-buffers t
+  "Whether to spawn spawn the buffers in the `startup-buffers' list after initialization")
 
 ;; customize interface file
 (setq custom-file (concat config-directory "persistent/custom.el"))

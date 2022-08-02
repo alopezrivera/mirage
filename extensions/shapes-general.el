@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (defun custom/regex-match-count (regexp str)
   (loop with start = 0
         for count from 0

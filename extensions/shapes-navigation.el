@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; Double end to go to the beginning of line
 (defvar custom/double-end-timeout 0.4)
 
