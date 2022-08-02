@@ -5,82 +5,16 @@
 
 
 #+title:UI 
-#+PROPERTY: header-args:emacs-lisp :results none :tangle ../modules/ui.el :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :results none :mkdirp yes
 
 
-* Typefaces
-** TODO Text
 
-- dpi font size scaling
-
-*** Body
-
-#+begin_src emacs-lisp
-
-;; default face
-(set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
-
-;; fixed pitch face
-(set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 93)
-
-;; variable pitch face
-(set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 105 :weight 'regular)
-
-#+end_src
-
-*** Accents
-**** Italic
-
-#+begin_src emacs-lisp
-
-;; italic
-(defface custom/italic
-  '((t :font "Victor Mono" :height  86 :weight  bold :slant italic))
-  "Italic typeface")
-
-#+end_src
-
-**** Advice
-
-#+begin_src emacs-lisp
-
-;; accent typefaces
-(defvar custom/accents '(custom/italic))
-
-(defun custom/theme-accents (orig-fun &rest args)
-  "Many themes will override certain face *attributes*, such as `italic'. To prevent
-this, this function loops over all accent typefaces in `custom/accents', which contains
-faces (defined with `defface') named ~custom/<attribute>~, and makes the ~<attribute>~
-inherit from ~custom/<attribute>~.
-
-As such, when this function is run, the `italic' face attribute will be made to
-inherit from `custom/italic' as in the expression below.
-
-   (set-face-attribute 'italic nil :inherit 'custom/italic)
-
-Thus, our preferred accent typefaces will stand whatever harassment they may be put
-through as a theme loads."
-  ;; load theme
-  (apply orig-fun args)
-  ;; restore accents
-  (cl-loop for accent in custom/accents
-	   collect (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
-		     (set-face-attribute face nil :inherit accent))))
-
-(advice-add 'load-theme :around #'custom/theme-accents)
- 
-#+end_src
-
-*** Mode line
-
-#+begin_src emacs-lisp
-
-;; Mode line
-(set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
-
-#+end_src
-
-** Icons
+* Modules
+** Typefaces
+*** all-the-icons
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-all-the-icons.el
+:END:
 
 #+begin_src emacs-lisp
 
@@ -98,8 +32,11 @@ the local machine:
 
 #+end_src
 
-* Highlights
-** Tags
+** Highlights
+*** svg-tag-mode
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-svg-tag-mode.el
+:END:
 
 #+begin_src emacs-lisp
 
@@ -184,25 +121,23 @@ the local machine:
 
 #+end_src
 
-** HTML colors
+*** rainbow-mode
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-rainbow-mode.el
+:END:
 
 #+begin_src emacs-lisp
 
-;; Highlight HTML color strings in their own color
+;; highlight HTML color strings in their own color
 (straight-use-package 'rainbow-mode)
 
 #+end_src
 
-* Mode line
-** Time
-
-#+begin_src emacs-lisp
-
-(display-time-mode t)
-
-#+end_src
-
-** Mode display
+** Mode line
+*** delight
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-delight.el
+:END:
 
 #+begin_src emacs-lisp
 
@@ -223,11 +158,43 @@ the local machine:
 
 #+end_src
 
-* Declare
+
+* Outfits
+
+* Extensions
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../extensions/shapes-ui.el
+:END:
+** Typefaces
+*** Theme accents
 
 #+begin_src emacs-lisp
 
-;; Provide theme
-(provide 'ui)
+;; accent typefaces
+(defvar custom/accents '(custom/italic))
+
+(defun custom/theme-accents (orig-fun &rest args)
+  "Many themes will override certain face *attributes*, such as `italic'. To prevent
+this, this function loops over all accent typefaces in `custom/accents', which contains
+faces (defined with `defface') named ~custom/<attribute>~, and makes the ~<attribute>~
+inherit from ~custom/<attribute>~.
+
+As such, when this function is run, the `italic' face attribute will be made to
+inherit from `custom/italic' as in the expression below.
+
+   (set-face-attribute 'italic nil :inherit 'custom/italic)
+
+Thus, our preferred accent typefaces will stand whatever harassment they may be put
+through as a theme loads."
+  ;; load theme
+  (apply orig-fun args)
+  ;; restore accents
+  (cl-loop for accent in custom/accents
+	   collect (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
+		     (set-face-attribute face nil :inherit accent))))
+
+(advice-add 'load-theme :around #'custom/theme-accents)
 
 #+end_src
+
+

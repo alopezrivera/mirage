@@ -1,0 +1,146 @@
+#+STARTUP: overview
+#+FILETAGS: :emacs:
+
+
+
+
+#+title:IDE
+#+PROPERTY: header-args:emacs-lisp :results none :mkdirp yes
+
+
+* Modules
+** hideshow
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-hideshow.el
+:END:
+
+#+begin_src emacs-lisp
+
+(require 'hideshow)
+
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+
+#+end_src
+
+** company
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-company.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; company
+(straight-use-package 'company)
+(require 'company)
+
+#+end_src
+
+** flycheck
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-flycheck.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; flycheck
+(straight-use-package 'flycheck)
+(require 'flycheck)
+
+(add-hook 'prog-mode-hook #'flycheck-mode)
+
+#+end_src
+
+** elpy
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-elpy.el
+:END:
+
+#+begin_src bash :tangle no
+
+sudo apt-get install python3-venv
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+;; elpy
+(straight-use-package 'elpy)
+(elpy-enable)
+
+#+end_src
+
+*** RPC
+
+#+begin_src emacs-lisp
+
+(setq elpy-rpc-timeout 5)
+
+(setq elpy-rpc-backend "jedi")
+
+(setq elpy-rpc-python-command "python3")
+
+#+end_src
+
+*** Navigation
+
+#+begin_src emacs-lisp
+
+(define-key elpy-mode-map (kbd "C-M-n") 'elpy-nav-forward-block)
+(define-key elpy-mode-map (kbd "C-M-p") 'elpy-nav-backward-block)
+
+#+end_src
+
+
+* Outfits
+
+* Extensions
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../extensions/shapes-ide.el
+:END:
+** Folding
+*** TODO Cycle
+
+- fold back in 1 when no children
+
+#+begin_src emacs-lisp
+
+(defun custom/hs-cycle (&optional level)
+  (interactive "p")
+  (save-excursion
+    (let (message-log-max (inhibit-message t))
+      (if (= level 1)
+	  (pcase last-command
+	    ('hs-cycle
+	     (hs-hide-level 1)
+	   (setq this-command 'hs-cycle-children))
+	    ('hs-cycle-children
+	     ;; TODO: Fix this case. `hs-show-block' needs to be
+	     ;; called twice to open all folds of the parent
+	     ;; block.
+	     (save-excursion (hs-show-block))
+	     (hs-show-block)
+	     (setq this-command 'hs-cycle-subtree))
+	    ('hs-cycle-subtree
+	     (hs-hide-block))
+	    (_
+	     (if (not (hs-already-hidden-p))
+		 (hs-hide-block)
+	       (hs-hide-level 1)
+	       (setq this-command 'hs-cycle-children))))
+	(hs-hide-level level)
+	(setq this-command 'hs-hide-level)))))
+
+(defun custom/hs-global-cycle ()
+  (interactive)
+  (pcase last-command
+    ('hs-global-cycle
+     (save-excursion (hs-show-all))
+     (setq this-command 'hs-global-show))
+    (_ (hs-hide-all))))
+
+(define-key hs-minor-mode-map (kbd "C-\\") #'custom/hs-cycle)
+
+#+end_src
+
+
+

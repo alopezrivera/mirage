@@ -5,10 +5,13 @@
 
 
 #+title:Org Mode
-#+PROPERTY: header-args:emacs-lisp :results none :tangle ../modules/org.el :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :results none :mkdirp yes
 
 
-* Setup
+* Org Mode
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org.el
+:END:
 
 #+begin_src emacs-lisp
 
@@ -123,7 +126,12 @@ match the indentation of the parent heading."
 
                   #+end_src
 
-** General purpose functions
+
+* Extensions
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../extensions/shapes-org.el
+:END:
+** General purpose
 *** Queries
 **** in
 ***** org-in-src-block-p
@@ -451,7 +459,7 @@ a `custom/region-blank'."
 
 #+end_src
 
-*** Outline
+*** TODO Outline
 
 - deprecated cl warning
    - find dependency
@@ -587,9 +595,9 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-* Editing
-** Text
-*** Undo
+** Editing
+*** Text
+**** Undo
 
 #+begin_src emacs-lisp
 
@@ -612,9 +620,9 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-*** Insert
-**** Items
-***** org-insert-item-respect-content
+**** Insert
+***** Items
+****** org-insert-item-respect-content
 
 #+begin_src emacs-lisp
 
@@ -633,9 +641,9 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-**** Headings
-***** Margins
-****** org-heading-margin-post
+***** Headings
+****** Margins
+******* org-heading-margin-post
 
 #+begin_src emacs-lisp
 
@@ -654,7 +662,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-****** org-heading-margin-delete-post
+******* org-heading-margin-delete-post
 
 #+begin_src emacs-lisp
 
@@ -666,7 +674,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-****** org-heading-margin-insert-previous
+******* org-heading-margin-insert-previous
 
 #+begin_src emacs-lisp
 
@@ -684,7 +692,7 @@ insert a margin of 1 empty line."
 
 #+end_src
 
-***** org-insert-heading
+****** org-insert-heading
 
 #+begin_src emacs-lisp
 
@@ -725,7 +733,7 @@ If MARGIN is t:
 
 #+end_src
 
-***** org-insert-subheading
+****** org-insert-subheading
 
 #+begin_src emacs-lisp
 
@@ -739,7 +747,7 @@ If MARGIN is t:
 
 #+end_src
 
-***** org-insert-heading-at-point
+****** org-insert-heading-at-point
 
 #+begin_src emacs-lisp
 
@@ -749,7 +757,7 @@ If MARGIN is t:
 
 #+end_src
 
-***** org-insert-subheading-at-point
+****** org-insert-subheading-at-point
 
 #+begin_src emacs-lisp
 
@@ -759,7 +767,7 @@ If MARGIN is t:
 
 #+end_src
 
-***** org-insert-heading-after-subtree
+****** org-insert-heading-after-subtree
 
 #+begin_src emacs-lisp
 
@@ -801,7 +809,7 @@ the previous heading is folded:
   
 #+end_src
 
-***** org-insert-subheading-after-subtree
+****** org-insert-subheading-after-subtree
 
 #+begin_src emacs-lisp
 
@@ -817,7 +825,7 @@ the previous heading is folded:
 
 #+end_src
 
-**** Edition at ellipses
+***** Edition at ellipses
 
 #+begin_src emacs-lisp
 
@@ -842,8 +850,8 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-*** Return
-**** return
+**** Return
+***** return
 
 - reference
    - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
@@ -869,7 +877,7 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-**** TODO [#A] C-return
+***** TODO [#A] C-return
 
 - at ellipsis -> doesn't work
 
@@ -913,7 +921,7 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-**** M-return
+***** M-return
 
 #+begin_src emacs-lisp
 
@@ -925,7 +933,7 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-**** TODO [#A] S-return
+***** TODO [#A] S-return
 
 - heading with keywords
    - skip keywords
@@ -942,7 +950,7 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-**** MS-return
+***** MS-return
 
 #+begin_src emacs-lisp
  
@@ -950,7 +958,7 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-**** CS-return
+***** CS-return
 
 #+begin_src emacs-lisp
 
@@ -958,7 +966,7 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-**** CM-return
+***** CM-return
 
 #+begin_src emacs-lisp
 
@@ -966,8 +974,8 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-*** Delete
-**** Hungry
+**** Delete
+***** Hungry
 
 #+begin_src emacs-lisp
 
@@ -981,7 +989,7 @@ one character."
 
 #+end_src
 
-**** TODO Forward
+***** TODO Forward
 
 - next line = empty list item -> delete next line
 
@@ -1000,7 +1008,7 @@ one character."
 
 #+end_src
 
-**** TODO Backward
+***** TODO Backward
 
 - bullets with extra space between marker and text
    -    no action
@@ -1034,8 +1042,8 @@ one character."
 
 #+end_src
 
-*** Toggle
-**** org-toggle-item
+**** Toggle
+***** org-toggle-item
 
 #+begin_src emacs-lisp
 
@@ -1053,8 +1061,8 @@ one character."
 
 #+end_src
 
-** Structure
-*** TODO indent-region
+*** Structure
+**** TODO indent-region
 
 - use markers
    - https://www.gnu.org/software/emacs/manual/html_node/elisp/Overview-of-Markers.html
@@ -1117,64 +1125,8 @@ or outdenting with `org-metaleft'."
 
 #+end_src
 
-*** org-paragraph
-
-#+begin_src emacs-lisp
-
-(require 'org-paragraph (concat config-directory "packages/org-paragraph.el"))
-
-#+end_src
-
-*** org-meta-arrows-h
-
-#+begin_src emacs-lisp
-
-(defun custom/org-meta-arrows-h (orig-fun &rest args)
-  "Paragraph indentation with `org-meta<arrows>'.
-Furthermore, if a region is active and its
-beginning lies on an Org Mode heading,
-`custom/org-command-expand-region' to execute ORIG-FUN."
-  (interactive)
-  (cond ((custom/org-relative-line-paragraph) (custom/org-paragraph orig-fun args))
-	    ((region-active-p)                    (custom/org-indent-region orig-fun args))
-	    (t                                    (apply orig-fun args))))
-
-(advice-add 'org-metaleft  :around #'custom/org-meta-arrows-h)
-(advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
-
-#+end_src
-
-*** TODO org-meta-arrows-v
-
-- paragraphs
-- visibility change when heading visibility is CHILDREN
-   - save previous visibility
-      - custom/org-subtree-state
-         - overlay = overlays-in subtree-beg subtree-end
-         - overlay-properties?
-   - org-meta-v
-   - if post visibility is not equal to previous
-      - cycle back to previous visibility
-   - rough
-      - visibility change -> assume prev was CHILDREN -> 2 x org-cycle-internal-local
-
-#+begin_src emacs-lisp
-
-(defun custom/org-meta-arrows-v (orig-fun &rest args)
-  (interactive)
-  (if (custom/org-at-ellipsis)
-      (progn (beginning-of-visual-line) (end-of-line)))
-  (apply orig-fun args)
-  (if (custom/org-relative-line-heading-folded)
-      (outline-hide-subtree)))
-
-(advice-add 'org-metaup   :around #'custom/org-meta-arrows-v)
-(advice-add 'org-metadown :around #'custom/org-meta-arrows-v)
-
-#+end_src
-
-** Preferences
-*** Keep text selection after executing commands
+*** Preferences
+**** Keep text selection after executing commands
 
 #+begin_src emacs-lisp
 
@@ -1195,7 +1147,7 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-*** Do not insert newline before Org Mode headigs
+**** Do not insert newline before Org Mode headigs
 
 #+begin_src emacs-lisp
 
@@ -1203,9 +1155,10 @@ function that sets `deactivate-mark' to t."
 (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
 #+end_src
-* Display
-** Outline
-*** TODO Cycle
+
+** Display
+*** Outline
+**** TODO Cycle
 
 - bug
    - https://lists.gnu.org/archive/html/emacs-orgmode/2022-05/msg00150.html
@@ -1239,7 +1192,7 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-*** TODO Advice
+**** TODO Advice
 
 - not working
 
@@ -1256,15 +1209,7 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-** Figures
-
-#+begin_src emacs-lisp
-
-(setq org-image-actual-width nil)
-
-#+end_src
-
-** Variable pitch
+*** Variable pitch
 
 #+begin_src emacs-lisp
 
@@ -1277,35 +1222,66 @@ indented at the level of the previous list item, indent the paragraph."
   "Indent typeface.")
 
 (defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
-					    ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
-					    ("^[[:blank:]]+"                                      0 'custom/variable-pitch-indent))
+					     ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
+					     ("^[[:blank:]]+"                                      0 'custom/variable-pitch-indent))
   "Variable pitch font-lock keywords.")
 
 (font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
 
 #+end_src
 
-** List indentation
+*** Continuous numbering of equations
 
 #+begin_src emacs-lisp
 
-;; List indentation
-(setq-default org-list-indent-offset 1)
+;; continuous numbering of Org Mode equations
+(defun org-renumber-environment (orig-fun &rest args)
+  (let ((results '()) 
+        (counter -1)
+        (numberp))
+
+    (setq results (cl-loop for (begin .  env) in 
+                        (org-element-map (org-element-parse-buffer) 'latex-environment
+                          (lambda (env)
+                            (cons
+                             (org-element-property :begin env)
+                             (org-element-property :value env))))
+                        collect
+                        (cond
+                         ((and (string-match "\\\\begin{equation}" env)
+                               (not (string-match "\\\\tag{" env)))
+                          (cl-incf counter)
+                          (cons begin counter))
+                         ((string-match "\\\\begin{align}" env)
+                          (prog2
+                              (cl-incf counter)
+                              (cons begin counter)                          
+                            (with-temp-buffer
+                              (insert env)
+                              (goto-char (point-min))
+                              ;; \\ is used for a new line. Each one leads to a number
+                              (cl-incf counter (count-matches "\\\\$"))
+                              ;; unless there are nonumbers.
+                              (goto-char (point-min))
+                              (cl-decf counter (count-matches "\\nonumber")))))
+                         (t
+                          (cons begin nil)))))
+
+    (when (setq numberp (cdr (assoc (point) results)))
+      (setf (car args)
+            (concat
+             (format "\\setcounter{equation}{%s}\n" numberp)
+             (car args)))))
+  
+  (apply orig-fun args))
+
+(advice-add 'org-create-formula-image :around #'org-renumber-environment)
 
 #+end_src
 
-** Symbols, super- and subscripts
-
-#+begin_src emacs-lisp
-
-;; symbols, super- and subscripts
-(setq org-pretty-entities nil)
-
-#+end_src
-
-* Navigation
-** Line
-*** org-end
+** Navigation
+*** Line
+**** org-end
 
 #+begin_src emacs-lisp
 
@@ -1338,7 +1314,7 @@ If `org-at-table-p', go to `org-table-end-of-field'."
 
 #+end_src
 
-*** TODO org-home
+**** TODO org-home
 
 - home in invisible tags -> to beginning of tag text
 
@@ -1396,7 +1372,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src 
 
-*** org-previous-line
+**** org-previous-line
 
 #+begin_src emacs-lisp
 
@@ -1404,8 +1380,8 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-** Subtree
-*** org-goto-child-last
+*** Subtree
+**** org-goto-child-last
 
 #+begin_src emacs-lisp
 
@@ -1416,7 +1392,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-*** org-goto-subtree-end
+**** org-goto-subtree-end
 
 #+begin_src emacs-lisp
 
@@ -1427,8 +1403,8 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-** Heading
-*** org-goto-heading-bol
+*** Heading
+**** org-goto-heading-bol
 
 #+begin_src emacs-lisp
 
@@ -1438,7 +1414,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-*** org-goto-heading-next
+**** org-goto-heading-next
 
 #+begin_src emacs-lisp
 
@@ -1452,7 +1428,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-*** org-goto-heading-parent
+**** org-goto-heading-parent
 
 #+begin_src emacs-lisp
 
@@ -1465,7 +1441,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-*** org-goto-heading-current
+**** org-goto-heading-current
 
 #+begin_src emacs-lisp
 
@@ -1474,7 +1450,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-*** org-goto-heading-previous
+**** org-goto-heading-previous
 
 #+begin_src emacs-lisp
 
@@ -1491,116 +1467,70 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-* UI
-** Text
-*** Typefaces
+
+* Modules
+** UI
+*** org-modern
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-modern.el
+:END:
 
 #+begin_src emacs-lisp
 
-;; titles
-(setq typeface-title "Ringbearer")
+(straight-use-package 'org-modern)
 
-;; heading face
-(setq typeface-heading "Century Gothic")
+(add-hook 'org-mode-hook #'org-modern-mode)
+(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
 
 #+end_src
 
-**** Title
+**** Lists
+***** Markers
 
 #+begin_src emacs-lisp
 
-;; title face
-
-(defun custom/org-typeface-title ()
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :font typeface-title :height 300 :weight 'regular :foreground 'unspecified)))
-
-(add-hook 'org-mode-hook #'custom/org-typeface-title)
+(setq org-modern-list '((?+ . "-")
+ 		  	     (?- . "•")
+ 			     (?* . "▶")))
 
 #+end_src
 
-**** Body
+***** Checkboxes
 
 #+begin_src emacs-lisp
 
-(defun custom/org-typefaces-body ()
-  (with-eval-after-load 'org-faces
-
-    ;; Code
-    (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
-
-    ;; Tables
-    (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
-
-    ;; Lists
-    (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
-
-    ;; Meta
-    (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
-
-(add-hook 'org-mode-hook #'custom/org-typefaces-body)
+(setq org-modern-checkbox nil)
 
 #+end_src
 
-**** Indent
+**** Tables
 
 #+begin_src emacs-lisp
 
-(defun custom/org-typeface-indent ()
-  "Indent typeface used in `org-indent-mode' and `visual-line-mode'."
-  (with-eval-after-load 'org-indent-mode
-    (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))))
+;; Vertical table line width
+(setq org-modern-table-vertical 1)
 
-(add-hook 'org-mode-hook #'custom/org-typeface-indent)
+;; Horizontal table line width
+(setq org-modern-table-horizontal 1)
 
 #+end_src
 
-**** Headings
+**** Highlights
 
 #+begin_src emacs-lisp
 
-;; use levels 1 through 8
-(setq org-n-level-faces 8)
+;; Tags
+(setq org-modern-tag nil)
 
-;; do not cycle header style after 8th level
-(setq org-cycle-level-faces nil)
-
-;; hide leading stars
-(setq org-hide-leading-starts t)
-
-;; font sizes
-(defun custom/org-header-setup () 
-  (with-eval-after-load 'org-faces
-
-    ;; heading font sizes
-    (dolist (face '((org-level-1 . 1.6)
-                    (org-level-2 . 1.4)
-                    (org-level-3 . 1.3)
-                    (org-level-4 . 1.2)
-                    (org-level-5 . 1.15)
-                    (org-level-6 . 1.10)
-                    (org-level-7 . 1.05)
-                    (org-level-8 . 1.00)))
-         (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
-
-(add-hook 'org-mode-hook #'custom/org-header-setup)
-
-#+end_src
-
-*** Indentation
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-mode-hook (lambda () (org-indent-mode 1)))
+;; Priorities
+(setq org-modern-priority nil)
 
 #+end_src
 
 *** org-appear
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-appear.el
+:END:
 
 #+begin_src emacs-lisp
 
@@ -1627,382 +1557,86 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
-*** Line-wrapping
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
-#+end_src
-
-** Style
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'org-modern)
-
-(add-hook 'org-mode-hook #'org-modern-mode)
-(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
-
-#+end_src
-
-*** Lists
-**** Markers
-
-#+begin_src emacs-lisp
-
-(setq org-modern-list '((?+ . "-")
- 		  	     (?- . "•")
- 			     (?* . "▶")))
-
-#+end_src
-
-**** Checkboxes
-
-#+begin_src emacs-lisp
-
-(setq org-modern-checkbox nil)
-
-#+end_src
-
-*** Tables
-
-#+begin_src emacs-lisp
-
-;; Vertical table line width
-(setq org-modern-table-vertical 1)
-
-;; Horizontal table line width
-(setq org-modern-table-horizontal 1)
-
-#+end_src
-
-*** Highlights
-
-#+begin_src emacs-lisp
-
-;; Tags
-(setq org-modern-tag nil)
-
-;; Priorities
-(setq org-modern-priority nil)
-
-#+end_src
-
-** Ellipses
-
-Candidates:
-- triangles
-  ▼
-  ▾
-  ▿
-- rhomboids
-  ⬙
-  ⟡
-  ⬥
-  ♦
-  ♢
-- non-compliant
-  ⧨
-  
------
-
-#+begin_src emacs-lisp
-
-;; Change ellipsis ("...") to remove clutter
-(setq org-ellipsis " ♢")
-
-#+end_src
-
-
-* TODO LaTeX
-
-- org LaTeX equations
-   - custom array envs
-      - cases
-         - \arraycolsep=1.4pt\def\arraystretch{1.5}
-      - derivations
-         - \arraycolsep=3pt\def\arraystretch{2.25}
-
-** TODO Options
-
-- mail bug in
-
------
-
-Importantly, ~modus-vivendi~ will not behave correctly with
-the default ~org-format-latex-options~, with LaTeX previews
-displaying as white boxes. [[https://debbugs.gnu.org/db/52/52277.html][This has been previously reported]].
-
-~org-format-latex-options~ has ~:foreground~ and ~:background~
-attributes. These may be assigned to
-
-- a color,
-- ~default~, instructing Org Mode to determine ~:foreground~ or
-  ~:background~ from the foreground or background color of the
-  default face, or
-- ~auto~, doing the same for the text face.
-
-By default, the ~:foreground~ and ~:background~ in ~org-format-latex-options~
-are set to ~default~. With default settings, changing the color
-of the ~default~ font has the following effects on the LaTeX preview SVGs:
-
-- modus-operandi
-   - ~default :foreground~: text color
-   - ~default :background~: no effect
-- modus-vivendi
-   - ~default :foreground~: background color
-   - ~default :background~: no effect
-
-By eliminating the ~:background~ attribute from ~org-format-latex-options~
-the issue is resolved.
-
-1. ~modus-operandi~ does not suffer from this issue nor do various
-   other themes. This makes me believe the issue lies with
-   ~modus-vivendi~ itself.
-2. However, the ~:background~ attribute in ~org-format-latex-options~
-   seems to have no effect, a potential bug in Org Mode
-
-#+begin_src emacs-lisp
-
-(setq org-format-latex-options
-        (list :foreground 'default
-              :scale      1.2))
-
-#+end_src
-
-** Header
-
-#+begin_src emacs-lisp
-
-;; Justify equation labels - [fleqn]
-;; Preview page width      - 10.5cm
-(setq org-format-latex-header
-      (string-join '("\\documentclass[fleqn]{article}"
-		        "\\usepackage[usenames]{color}"
-			
-			"\\usepackage{bm}"
-			
-			"\\pagestyle{empty}"
-			"\\setlength{\\textwidth}{10.5cm}"
-			"\\addtolength{\\textwidth}{-3cm}"
-			"\\setlength{\\oddsidemargin}{1.5cm}"
-			"\\addtolength{\\oddsidemargin}{-2.54cm}"
-			"\\setlength{\\evensidemargin}{\\oddsidemargin}"
-			"\\setlength{\\textheight}{\\paperheight}"
-			"\\addtolength{\\textheight}{-\\headheight}"
-			"\\addtolength{\\textheight}{-\\headsep}"
-			"\\addtolength{\\textheight}{-\\footskip}"
-			"\\addtolength{\\textheight}{-3cm}"
-			"\\setlength{\\topmargin}{1.5cm}"
-			"\\addtolength{\\topmargin}{-2.54cm}")
-		   "\n"))
-
-#+end_src
-
-** Equation preview format
-
-#+begin_src emacs-lisp
-
-;; SVG LaTeX equation preview
-(setq org-latex-create-formula-image-program 'dvisvgm)
-
-#+end_src
-
-** Equation preview directory
-
-#+begin_src emacs-lisp
-
-;; theme-specific LaTeX preview directory
-(defun custom/latex-preview-directory ()
-  "Set `org-preview-latex-image-directory' to the SVG
-LaTeX preview directory of the current theme"
-  (setq org-preview-latex-image-directory
-   (concat "/tmp/ltximg/" (custom/current-theme) "/")))
-
-#+end_src
-
-** Equation preview reload hook
-
-#+begin_src emacs-lisp
-
-(defun custom/latex-preview-reload ()
-  "Reload all LaTeX previews in buffer,
-ensuring the LaTeX preview directory
-matches the current theme."
-  (if (custom/in-mode "org-mode")
-      (progn (org-latex-preview '(64))
-	        (custom/latex-preview-directory)
-		(org-latex-preview '(16)))))
-
-(add-hook 'org-mode-hook #'custom/latex-preview-reload)
-
-#+end_src
-
-** Continuous numbering of equations
-
-#+begin_src emacs-lisp
-
-;; continuous numbering of Org Mode equations
-(defun org-renumber-environment (orig-fun &rest args)
-  (let ((results '()) 
-        (counter -1)
-        (numberp))
-
-    (setq results (cl-loop for (begin .  env) in 
-                        (org-element-map (org-element-parse-buffer) 'latex-environment
-                          (lambda (env)
-                            (cons
-                             (org-element-property :begin env)
-                             (org-element-property :value env))))
-                        collect
-                        (cond
-                         ((and (string-match "\\\\begin{equation}" env)
-                               (not (string-match "\\\\tag{" env)))
-                          (cl-incf counter)
-                          (cons begin counter))
-                         ((string-match "\\\\begin{align}" env)
-                          (prog2
-                              (cl-incf counter)
-                              (cons begin counter)                          
-                            (with-temp-buffer
-                              (insert env)
-                              (goto-char (point-min))
-                              ;; \\ is used for a new line. Each one leads to a number
-                              (cl-incf counter (count-matches "\\\\$"))
-                              ;; unless there are nonumbers.
-                              (goto-char (point-min))
-                              (cl-decf counter (count-matches "\\nonumber")))))
-                         (t
-                          (cons begin nil)))))
-
-    (when (setq numberp (cdr (assoc (point) results)))
-      (setf (car args)
-            (concat
-             (format "\\setcounter{equation}{%s}\n" numberp)
-             (car args)))))
-  
-  (apply orig-fun args))
-
-(advice-add 'org-create-formula-image :around #'org-renumber-environment)
-
-#+end_src
-
-** Disable preview when cursor lies on equation
+*** org-fragtog
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-fragtog.el
+:END:
 
 #+begin_src emacs-lisp
 
 ;; org-fragtog
 (straight-use-package 'org-fragtog)
+(require 'org-fragtog)
 
 (add-hook 'org-mode-hook #'org-fragtog-mode)
 
 #+end_src
 
-
-* Export
-** ox-rst
-
-#+begin_src emacs-lisp
-
-;; ox-rst
-(straight-use-package 'ox-rst)
-(require 'ox-rst)
-
-#+end_src
-
-
-* org-tempo
+** Editing
+*** org-paragraph
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-paragraph.el
+:END:
 
 #+begin_src emacs-lisp
 
-;; Required as of Org 9.2
-(require 'org-tempo)
-
-;; Navigation
-(global-set-key (kbd "C-<tab>")         'tempo-forward-mark)
-(global-set-key (kbd "C-<iso-lefttab>") 'tempo-backward-mark)
+(require 'org-paragraph (concat config-directory "packages/org-paragraph.el"))
 
 #+end_src
 
-** LaTeX
+**** org-meta-arrows-h
 
 #+begin_src emacs-lisp
 
-;; equations
-(tempo-define-template "latex-equation"
-		          '("#+NAME: eq:" p n
-			    "\\begin{equation}" n
-			    p n
-			    "\\end{equation}" >)
-			  "<eq"
-			  "LaTeX equation template")
+(defun custom/org-meta-arrows-h (orig-fun &rest args)
+  "Paragraph indentation with `org-meta<arrows>'.
+Furthermore, if a region is active and its
+beginning lies on an Org Mode heading,
+`custom/org-command-expand-region' to execute ORIG-FUN."
+  (interactive)
+  (cond ((custom/org-relative-line-paragraph) (custom/org-paragraph orig-fun args))
+	    ((region-active-p)                    (custom/org-indent-region orig-fun args))
+	    (t                                    (apply orig-fun args))))
 
-(tempo-define-template "latex-derivation"
-		          '("#+NAME: eq:" p n
-			    "\\begin{equation}" n
-			    "\\arraycolsep=3pt\\def\\arraystretch{2.25}" n
-			    "\\begin{array}{lll}" n
-			    p n
-			    "\\end{array}" n
-			    "\\end{equation}" >)
-			  "<de"
-			  "LaTeX derivation template")
+(advice-add 'org-metaleft  :around #'custom/org-meta-arrows-h)
+(advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
 
 #+end_src
 
-** Figures
+**** TODO org-meta-arrows-v
+
+- paragraphs
+- visibility change when heading visibility is CHILDREN
+   - save previous visibility
+      - custom/org-subtree-state
+         - overlay = overlays-in subtree-beg subtree-end
+         - overlay-properties?
+   - org-meta-v
+   - if post visibility is not equal to previous
+      - cycle back to previous visibility
+   - rough
+      - visibility change -> assume prev was CHILDREN -> 2 x org-cycle-internal-local
 
 #+begin_src emacs-lisp
 
-;; figures
-(tempo-define-template "figure"
-		          '("#+NAME: fig:" p n
-			    "#+CAPTION: " p n
-			    "#+ATTR_ORG: :width 450" n
-			    "[[./" p "]]" >)
-			  "<f"
-			  "Org Mode figure template")
+(defun custom/org-meta-arrows-v (orig-fun &rest args)
+  (interactive)
+  (if (custom/org-at-ellipsis)
+      (progn (beginning-of-visual-line) (end-of-line)))
+  (apply orig-fun args)
+  (if (custom/org-relative-line-heading-folded)
+      (outline-hide-subtree)))
+
+(advice-add 'org-metaup   :around #'custom/org-meta-arrows-v)
+(advice-add 'org-metadown :around #'custom/org-meta-arrows-v)
 
 #+end_src
 
-** Code blocks
-
-#+begin_src emacs-lisp
-
-(defun custom/tempo-code-block (key language)
-  (tempo-define-template language
-		         `("#+begin_src " ,language n
-			   n
-			   p n
-			   n
-			   "#+end_src" >)
-			 key
-			 language))
-
-(dolist (pair '(("<sh"   "shell")
-		   ("<el"   "emacs-lisp")
-		   ("<py"   "python")
-		   ("<bash" "bash")))
-  (apply 'custom/tempo-code-block pair))
-
-#+end_src
-
-* org-capture
-
-#+begin_src emacs-lisp
-
-(require 'org-capture)
-
-#+end_src
-
-** TODO Templates
-
-- lecture
-   - specify directory
-   - template
-
-* org-diary
+** Notes
+*** org-diary
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-diary.el
+:END:
 
 #+begin_src emacs-lisp
 
@@ -2010,124 +1644,10 @@ matches the current theme."
 
 #+end_src
 
-* org-babel
-** Languages
-
-#+begin_src emacs-lisp
-
-;; Language packages
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python     . t)
-   (shell      . t)))
-
-#+end_src
-
-*** bash
-
-#+begin_src emacs-lisp
-
-(defun org-babel-bash-initiate-session (&optional session _params)
-  "Initiate a bash/sh session named SESSION according to PARAMS."
-  (org-babel-sh-initiate-session session _params))
-
-#+end_src
-
-** Auto-tangle
-
-#+begin_src emacs-lisp
-
-(defun custom/org-babel-autotangle()
-  "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
-     (if (string-match (concat (getenv "HOME") "/.emacs.d/.*.org$") (expand-file-name buffer-file-name))
-     (let ((org-confirm-babel-evaluate nil))
-       (org-babel-tangle))))
-
-(add-hook 'after-save-hook #'custom/org-babel-autotangle)
-
-#+end_src
-
-** Code block bleeding
-
-#+begin_src emacs-lisp
-
-(defun custom/org-fix-bleed-end-line-block (from to flag spec)
-  "Toggle fontification of last char of block end lines when cycling.
-
-This avoids the bleeding of `org-block-end-line' when block is
-folded."
-  (when (and (eq spec 'org-hide-block)
-             (/= (point-max) to))
-    (save-excursion
-      (if flag
-          (font-lock-unfontify-region to (1+ to))
-        (font-lock-flush to (1+ to))))))
-
-(advice-add 'org-flag-region :after #'custom/org-fix-bleed-end-line-block)
-
-(defun custom/org-fix-bleed-end-line-cycle (state)
-  "Toggle fontification of last char of block lines when cycling.
-
-This avoids the bleeding of `org-block-end-line' when outline is
-folded."
-  (save-excursion
-    (when org-fontify-whole-block-delimiter-line
-      (let ((case-fold-search t)
-            beg end)
-        (cond ((memq state '(overview contents all))
-               (setq beg (point-min)
-                     end (point-max)))
-              ((memq state '(children folded subtree))
-               (setq beg (point)
-                     end (org-end-of-subtree t t))))
-        (when beg           ; should always be true, but haven't tested enough
-          (goto-char beg)
-          (while (search-forward "#+end" end t)
-            (end-of-line)
-            (unless (= (point) (point-max))
-              (if (org-invisible-p (1- (point)))
-                  (font-lock-unfontify-region (point) (1+ (point)))
-                (font-lock-flush (point) (1+ (point)))))))))))
-
-(add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
-
-#+end_src
-** Code block execution
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-x C-x") 'org-babel-execute-src-block)
-
-#+end_src
-** Code block indentation
-
-#+begin_src emacs-lisp
-
-;; Set indentation of code blocks to 0
-(setq org-edit-src-content-indentation 0)
-
-;; Indent code blocks appropriately when inside headers
-(setq org-src-preserve-indentation     nil)
-
-;; Make code indentation reasonable
-(setq org-src-tab-acts-natively        t)
-
-#+end_src
-
-** Code-block execution confirmation
-
-#+begin_src emacs-lisp
-
-;; Suppress security confirmation when evaluating code
-(defun my-org-confirm-babel-evaluate (lang body)
-  (not (member lang '("emacs-lisp" "python" "shell" "bash"))))
-
-(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
-
-#+end_src
-
-* org-roam
+*** org-roam
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-roam.el
+:END:
 
 Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-available-aborting-error-when-installing-org-roam-v2-on-mac/2178/6][a C compiler (eg: gcc or clang) must be installed for ~emacsql-sqlite~ to install correctly]].
 
@@ -2138,7 +1658,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-** UI
+**** UI
 
 #+begin_src emacs-lisp
 
@@ -2147,7 +1667,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-**** Follow
+****** Follow
 
 #+begin_src emacs-lisp
 
@@ -2155,7 +1675,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-**** Theme
+****** Theme
 
 #+begin_src emacs-lisp
 
@@ -2164,7 +1684,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-**** Startup
+****** Startup
 
 #+begin_src emacs-lisp
 
@@ -2172,7 +1692,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-**** Update
+****** Update
 
 #+begin_src emacs-lisp
 
@@ -2180,7 +1700,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-** Hooks
+**** Hooks
 
 #+begin_src emacs-lisp
 
@@ -2197,8 +1717,8 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-** Startup
-*** db-autosync-mode
+**** Startup
+***** db-autosync-mode
 
 #+begin_src emacs-lisp
 
@@ -2207,7 +1727,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-*** variable-pitch-mode
+***** variable-pitch-mode
 
 #+begin_src emacs-lisp
 
@@ -2215,7 +1735,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-** Bindings
+**** Bindings
 
 #+begin_src emacs-lisp
 
@@ -2227,8 +1747,8 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-** Templates
-*** Default
+**** Templates
+***** Default
 
 #+begin_src emacs-lisp
 
@@ -2240,7 +1760,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-** Timestamps
+**** Timestamps
 
 #+begin_src emacs-lisp
 
@@ -2273,7 +1793,25 @@ if it was previously enabled."
 
 #+end_src
 
-* org-agenda
+** Export
+*** ox-rst
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-ox-rst.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; ox-rst
+(straight-use-package 'ox-rst)
+(require 'ox-rst)
+
+#+end_src
+
+** Agenda
+*** org-agenda
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-agenda.el
+:END:
 
 #+begin_src emacs-lisp
 
@@ -2282,7 +1820,7 @@ if it was previously enabled."
 
 #+end_src
 
-** TODO Files
+**** TODO Files
 
 - recursive search
    - (directory-files-recursively "/home/" "\\.org$")
@@ -2296,8 +1834,8 @@ if it was previously enabled."
 
 #+end_src
 
-** Display
-*** Tag alignment
+**** Display
+***** Tag alignment
 
 #+begin_src emacs-lisp
 
@@ -2306,8 +1844,8 @@ if it was previously enabled."
 
 #+end_src
 
-** Agenda
-*** Editing
+**** Agenda
+***** Editing
 
 #+begin_src emacs-lisp
 
@@ -2320,8 +1858,8 @@ if it was previously enabled."
 
 #+end_src
 
-*** Display
-**** Views
+***** Display
+****** Views
 
 #+begin_src emacs-lisp
 
@@ -2374,7 +1912,7 @@ if it was previously enabled."
 
 #+end_src
 
-**** log-mode
+****** log-mode
 :LOGBOOK:
 - State "DONE"       from "BACKLOG"    [2022-05-12 Thu 22:00]
 - State "DONE"       from "NEXT"       [2022-05-12 Thu 21:59]
@@ -2393,8 +1931,8 @@ if it was previously enabled."
 
 #+end_src
 
-*** Navigation
-**** TODO Visit
+***** Navigation
+****** TODO Visit
 
 - org-recenter -> unfold -> move away -> fold back
    - arrows -> fold previous item
@@ -2418,8 +1956,8 @@ if it was previously enabled."
 
 #+end_src
 
-** Classification
-*** Tags
+**** Classification
+***** Tags
 
 #+begin_src emacs-lisp
 
@@ -2439,7 +1977,7 @@ if it was previously enabled."
 
 #+end_src
 
-*** Keywords
+***** Keywords
 
 #+begin_src emacs-lisp
 
@@ -2450,7 +1988,10 @@ if it was previously enabled."
 
 #+end_src
 
-* org-contacts
+*** org-contacts
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-contacts.el
+:END:
 
 #+begin_src emacs-lisp
 
@@ -2463,7 +2004,7 @@ if it was previously enabled."
 
 #+end_src
 
-** Template
+**** Template
 
 #+begin_src emacs-lisp
 
@@ -2482,8 +2023,11 @@ if it was previously enabled."
 
 #+end_src
 
-* org-calendar
-** calfw
+*** org-calendar
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-calendar.el
+:END:
+**** calfw
 
 #+begin_src emacs-lisp
 
@@ -2498,7 +2042,7 @@ if it was previously enabled."
 
 #+end_src
 
-** org-calendar
+**** org-calendar
 
 #+begin_src emacs-lisp
 
@@ -2510,6 +2054,224 @@ if it was previously enabled."
        (cfw:open-org-calendar)))
 
 (global-set-key (kbd "C-c c") 'custom/org-calendar)
+
+#+end_src
+
+** Templates
+*** org-tempo
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-tempo.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; required as of Org 9.2
+(require 'org-tempo)
+
+;; navigation
+(global-set-key (kbd "C-<tab>")         'tempo-forward-mark)
+(global-set-key (kbd "C-<iso-lefttab>") 'tempo-backward-mark)
+
+#+end_src
+
+**** LaTeX
+
+#+begin_src emacs-lisp
+
+;; equations
+(tempo-define-template "latex-equation"
+		          '("#+NAME: eq:" p n
+			    "\\begin{equation}" n
+			    p n
+			    "\\end{equation}" >)
+			  "<eq"
+			  "LaTeX equation template")
+
+(tempo-define-template "latex-derivation"
+		          '("#+NAME: eq:" p n
+			    "\\begin{equation}" n
+			    "\\arraycolsep=3pt\\def\\arraystretch{2.25}" n
+			    "\\begin{array}{lll}" n
+			    p n
+			    "\\end{array}" n
+			    "\\end{equation}" >)
+			  "<de"
+			  "LaTeX derivation template")
+
+#+end_src
+
+**** Figures
+
+#+begin_src emacs-lisp
+
+;; figures
+(tempo-define-template "figure"
+		          '("#+NAME: fig:" p n
+			    "#+CAPTION: " p n
+			    "#+ATTR_ORG: :width 450" n
+			    "[[./" p "]]" >)
+			  "<f"
+			  "Org Mode figure template")
+
+#+end_src
+
+**** Code blocks
+
+#+begin_src emacs-lisp
+
+(defun custom/tempo-code-block (key language)
+  (tempo-define-template language
+		         `("#+begin_src " ,language n
+			   n
+			   p n
+			   n
+			   "#+end_src" >)
+			 key
+			 language))
+
+(dolist (pair '(("<sh"   "shell")
+		   ("<el"   "emacs-lisp")
+		   ("<py"   "python")
+		   ("<bash" "bash")))
+  (apply 'custom/tempo-code-block pair))
+
+#+end_src
+
+*** org-capture
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-capture.el
+:END:
+
+#+begin_src emacs-lisp
+
+(require 'org-capture)
+
+#+end_src
+
+**** TODO Templates
+
+- lecture
+   - specify directory
+   - template
+
+** Programming
+*** org-babel
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ../modules/shapes-org-babel.el
+:END:
+**** Languages
+
+#+begin_src emacs-lisp
+
+;; Language packages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)
+   (shell      . t)))
+
+#+end_src
+
+***** bash
+
+#+begin_src emacs-lisp
+
+(defun org-babel-bash-initiate-session (&optional session _params)
+  "Initiate a bash/sh session named SESSION according to PARAMS."
+  (org-babel-sh-initiate-session session _params))
+
+#+end_src
+
+**** Auto-tangle
+
+#+begin_src emacs-lisp
+
+(defun custom/org-babel-autotangle()
+  "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
+     (if (string-match (concat (getenv "HOME") "/.emacs.d/.*.org$") (expand-file-name buffer-file-name))
+     (let ((org-confirm-babel-evaluate nil))
+       (org-babel-tangle))))
+
+(add-hook 'after-save-hook #'custom/org-babel-autotangle)
+
+#+end_src
+
+**** Code block bleeding
+
+#+begin_src emacs-lisp
+
+(defun custom/org-fix-bleed-end-line-block (from to flag spec)
+  "Toggle fontification of last char of block end lines when cycling.
+
+This avoids the bleeding of `org-block-end-line' when block is
+folded."
+  (when (and (eq spec 'org-hide-block)
+             (/= (point-max) to))
+    (save-excursion
+      (if flag
+          (font-lock-unfontify-region to (1+ to))
+        (font-lock-flush to (1+ to))))))
+
+(advice-add 'org-flag-region :after #'custom/org-fix-bleed-end-line-block)
+
+(defun custom/org-fix-bleed-end-line-cycle (state)
+  "Toggle fontification of last char of block lines when cycling.
+
+This avoids the bleeding of `org-block-end-line' when outline is
+folded."
+  (save-excursion
+    (when org-fontify-whole-block-delimiter-line
+      (let ((case-fold-search t)
+            beg end)
+        (cond ((memq state '(overview contents all))
+               (setq beg (point-min)
+                     end (point-max)))
+              ((memq state '(children folded subtree))
+               (setq beg (point)
+                     end (org-end-of-subtree t t))))
+        (when beg           ; should always be true, but haven't tested enough
+          (goto-char beg)
+          (while (search-forward "#+end" end t)
+            (end-of-line)
+            (unless (= (point) (point-max))
+              (if (org-invisible-p (1- (point)))
+                  (font-lock-unfontify-region (point) (1+ (point)))
+                (font-lock-flush (point) (1+ (point)))))))))))
+
+(add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
+
+#+end_src
+**** Code block execution
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-x C-x") 'org-babel-execute-src-block)
+
+#+end_src
+**** Code block indentation
+
+#+begin_src emacs-lisp
+
+;; Set indentation of code blocks to 0
+(setq org-edit-src-content-indentation 0)
+
+;; Indent code blocks appropriately when inside headers
+(setq org-src-preserve-indentation     nil)
+
+;; Make code indentation reasonable
+(setq org-src-tab-acts-natively        t)
+
+#+end_src
+
+**** Code-block execution confirmation
+
+#+begin_src emacs-lisp
+
+;; Suppress security confirmation when evaluating code
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (member lang '("emacs-lisp" "python" "shell" "bash"))))
+
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 #+end_src
 

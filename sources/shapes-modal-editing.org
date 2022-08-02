@@ -13,7 +13,7 @@
 
 * evil
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ../modules/evil.el
+:header-args: emacs-lisp :tangle ../modules/shapes-evil.el
 :END:
 
 #+begin_src emacs-lisp
@@ -60,33 +60,9 @@
 - https://github.com/Somelauw/evil-org-mode 
 
   
-* god-mode
-:PROPERTIES:
-:header-args: emacs-lisp :tangle ../modules/god-mode.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'god-mode)
-(require 'god-mode)
-
-;; god
-(global-set-key (kbd "<escape>") #'god-mode-all)
-
-;; local
-(define-key god-local-mode-map (kbd "i") #'god-local-mode)
-
-;; bindings
-(define-key god-local-mode-map (kbd ".") #'repeat)
-(define-key god-local-mode-map (kbd "]") #'forward-paragraph)
-(define-key god-local-mode-map (kbd "[") #'backward-paragraph)
-
-#+end_src
-
-
 * meow
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ../modules/meow.el
+:header-args: emacs-lisp :tangle ../modules/shapes-meow.el
 :END:
 
 #+begin_src emacs-lisp
@@ -194,6 +170,30 @@
 
 (meow-setup)
 (meow-global-mode 1)
+
+#+end_src
+
+
+* god-mode
+:PROPERTIES:
+:header-args: emacs-lisp :tangle ../modules/shapes-god-mode.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'god-mode)
+(require 'god-mode)
+
+;; god
+(global-set-key (kbd "<escape>") #'god-mode-all)
+
+;; local
+(define-key god-local-mode-map (kbd "i") #'god-local-mode)
+
+;; bindings
+(define-key god-local-mode-map (kbd ".") #'repeat)
+(define-key god-local-mode-map (kbd "]") #'forward-paragraph)
+(define-key god-local-mode-map (kbd "[") #'backward-paragraph)
 
 #+end_src
 
