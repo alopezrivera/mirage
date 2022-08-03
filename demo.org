@@ -3,16 +3,29 @@
 
 
 
+
 #+title:Org Mode Demo
 STARTUP: overview
 #+CREATED: <2022-04-20 Wed 00:58>
 
 
-- Lists
-   1. Simple
-   2. Ordered or unordered
 
-* TODO Headings                                                     :tag:
+* Input
+
+Plain paragraphs as usual.
+
+** Lists
+
+1. Simple
+2. Ordered or unordered
+
+Plain text separates lists. Furthermore, lists support
+
+- [ ] Checkboxes
+- Indented paragraphs with ~org-paragraph~.
+  Which can be indented and de-indented as usual.
+
+** TODO Headings                                                     :tag:
 <2022-08-16 Di>
 
 Headings create sections in the document and are feature-rich, with support for
