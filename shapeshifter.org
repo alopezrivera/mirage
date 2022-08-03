@@ -315,11 +315,18 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 #+begin_src emacs-lisp
 
 (shapes-module "org-modern")
-(shapes-module "org-appear")
 
 #+end_src
 
 **** Text
+***** Hidden
+
+#+begin_src emacs-lisp
+
+(shapes-module "org-appear")
+
+#+end_src
+
 ***** Typefaces
 ****** Title
 
