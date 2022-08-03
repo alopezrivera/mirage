@@ -10,6 +10,29 @@
 
 
 * plan
+** finish
+
+- light, dark theme advice
+   - unevaluated list
+      - execute
+- creds
+   - group
+   - vars
+   - insert cred
+      - list creds
+- dependencies
+   - mod org
+      - ext general
+      - mod el-patch
+   - ext org
+      - ext editing
+   - ext editing
+      - mod multiple-cursors
+
+- bindings
+   - https://emacs.stackexchange.com/questions/14943/difference-between-the-physical-ret-key-and-the-command-newline-in-the-minibu
+
+** now
 
 - org-download
 
