@@ -21,15 +21,19 @@
    - insert cred
       - list creds
 - dependencies
-   - mod org
-      - ext general
-      - mod el-patch
-   - ext org
-      - ext editing
-   - ext editing
-      - mod multiple-cursors
+   1) extensions -> require
+   2) reduce
+   3) document
+       - mod org
+          - ext general
+          - mod el-patch
+       - ext org
+          - ext editing
+       - ext editing
+          - mod multiple-cursors
 
 - bindings
+   - general
    - https://emacs.stackexchange.com/questions/14943/difference-between-the-physical-ret-key-and-the-command-newline-in-the-minibu
 
 ** now
