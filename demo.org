@@ -109,6 +109,14 @@ Org Mode has support for tables, including formulas.
 | Star Tracker   | 0.405 |        0.6 |      3 |      1.215 |              1.8 |
 #+TBLFM: $5=@$2*@$4::$6=$3*$4
 
+* Figures
+
+Org Mode supports figures, which may be captioned and labeled for referencing, such as [[fig:unicorn]]. ~org-download~ makes it possible to drag and drop images into Org Mode buffers.
+
+#+CAPTION: Org Mode unicorn
+#+NAME: fig:unicorn
+[[file:figures/Figures/2022-08-03_14-06-14_org-mode-unicorn.svg]]
+
 * Markup
 
 | *Bold*      | * |
