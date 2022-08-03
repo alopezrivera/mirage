@@ -9,7 +9,6 @@
             (concat home "backlog.org")
 	    (concat home "studio/professional/work/DFKI/repos/hopping_leg/backlog.org")))
 
-
 ;; org-agenda
 (setq org-agenda-files (list (concat home "studio/contacts.org")
 			     (concat home "studio/professional/work/DFKI/repos/hopping_leg/backlog.org")))
