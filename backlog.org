@@ -12,6 +12,9 @@
 * plan
 ** finish
 
+- home buffer
+   - https://gitlab.com/public-repositories/emacs-groundup
+
 - light, dark theme advice
    - unevaluated list
       - execute
@@ -34,30 +37,63 @@
 
 - bindings
    - general
+      - https://github.com/noctuid/general.el#about
    - https://emacs.stackexchange.com/questions/14943/difference-between-the-physical-ret-key-and-the-command-newline-in-the-minibu
 
-** now
+- async auto tangle
+   - https://elblogdelazaro.org/posts/2019-12-16-org-mode-mi-fichero-de-configuracion/#acabando
 
-- org-download
+** bib
 
-- home buffer
-   - https://gitlab.com/public-repositories/emacs-groundup
+- references
+   - setup
+      - https://www.reddit.com/r/emacs/comments/vxxyb8/comment/ig4hcer/
+      - http://cachestocaches.com/2020/3/org-mode-annotated-bibliography/
+   - workflow
+      - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
 
-- academic
-   - guides
-      - workflow
-         - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
-      - tooling
-         - https://www.reddit.com/r/emacs/comments/vxxyb8/comment/ig4hcer/
-   - packages
-      - zotero
-         - https://github.com/emacsmirror/zotxt
-      - input
-         - citar
-            - https://github.com/emacs-citar/citar
-      - database management
-         - ebib
-            - http://joostkremers.github.io/ebib/
+- cite
+   - org-ref
+      - https://github.com/jkitchin/org-ref
+   - org-cite
+      - https://irreal.org/blog/?p=9895
+      - org-ref-cite
+         - https://github.com/jkitchin/org-ref-cite
+   - citar
+      - https://github.com/emacs-citar/citar
+
+- record
+   - zortra
+      - https://github.com/mpedramfar/zotra
+
+- manage
+   - ebib
+      - http://joostkremers.github.io/ebib/
+   - org-roam-bibtex
+      - https://github.com/org-roam/org-roam-bibtex
+   - helm-bibtex
+      - https://github.com/tmalsburg/helm-bibtex
+
+- integration
+   - Zotero
+      - https://github.com/emacsmirror/zotxt
+
+-----
+
+- create entry
+   - org-noter
+      - headings from section titles
+   - biblatex entry
+      - title
+      - author
+      - date
+      - modifiable
+   - sync biblatex entry
+      - #+title
+      - #+author
+      - #+date
+
+** next
 
 - workflow
    - org-clock-report
@@ -70,26 +106,6 @@
    - https://github.com/Silex/docker.el
 
 ** other
-
------
-bindings
-
-- general
-   - https://github.com/noctuid/general.el#about
-
------
-tangling
-
-- tangle block to all files
-   - noweb block references
-      - https://www.reddit.com/r/emacs/comments/5r9s4l/comment/dd6an2n/?utm_source=share&utm_medium=web2x&context=3
-   - property -> :tangle all
-      1. get list of tangle destinations in org file
-      2. block with :tangle all
-          - tangle to all files in list
-
-- async auto tangle
-   - https://elblogdelazaro.org/posts/2019-12-16-org-mode-mi-fichero-de-configuracion/#acabando
 
 -----
 guides
@@ -134,20 +150,6 @@ packages
    - transient-mark-mode active -> mouse-3 = kill-ring-save
    - smart-comment-region
    - org-indent-region
-
-
-* Evil
-
-- practice
-   - https://www.vimified.com/
-
-- god-mode
-   - https://github.com/emacsorphanage/god-mode#usage-with-evil
-
-- guides
-   - https://github.com/noctuid/evil-guide#advice
-   - https://www.youtube.com/watch?v=Uz_0i27wYbg
-   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 
 
 * References
@@ -445,42 +447,6 @@ CLOSED: [2022-05-06 Fri 17:11]
 - crop margin
    - pdf-view-auto-slice-minor-mode
 
-* bibliography
-
-- references
-   - http://cachestocaches.com/2020/3/org-mode-annotated-bibliography/
-
------
-managers
-
-- org-roam-bibtex
-   - https://github.com/org-roam/org-roam-bibtex
-   - https://github.com/tmalsburg/helm-bibtex
-- org-ref
-   - https://github.com/jkitchin/org-ref
-
------
-biblatex entry generation
-
-- zotra
-   - https://github.com/mpedramfar/zotra
-
------
-workflow
-
-- create entry
-   - org-noter
-      - headings from section titles
-   - biblatex entry
-      - title
-      - author
-      - date
-      - modifiable
-   - sync biblatex entry
-      - #+title
-      - #+author
-      - #+date
-
 
 * org
 
@@ -565,7 +531,7 @@ workflow
 - UI
    - deactivate when reloading org mode
      
-* org export
+* org-export
 ** site
 
 - references
@@ -591,6 +557,16 @@ workflow
       - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
 - ioslide
    - https://github.com/coldnew/org-ioslide
+
+* org-babel
+
+- tangle block to all files
+   - noweb block references
+      - https://www.reddit.com/r/emacs/comments/5r9s4l/comment/dd6an2n/?utm_source=share&utm_medium=web2x&context=3
+   - property -> :tangle all
+      1. get list of tangle destinations in org file
+      2. block with :tangle all
+          - tangle to all files in list
 
 * markdown
 
@@ -688,6 +664,19 @@ workflow
 
 - C++
    - https://github.com/Andersbakken/rtags
+
+* evil
+
+- practice
+   - https://www.vimified.com/
+
+- god-mode
+   - https://github.com/emacsorphanage/god-mode#usage-with-evil
+
+- guides
+   - https://github.com/noctuid/evil-guide#advice
+   - https://www.youtube.com/watch?v=Uz_0i27wYbg
+   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 
 * writing
 
