@@ -1,4 +1,5 @@
 (shapes-module "org-modern")
+
 (shapes-module "org-appear")
 
 ;; title face
@@ -83,3 +84,6 @@
 
 ;; no actual width
 (setq org-image-actual-width nil)
+
+;; drag and drop
+(shapes-module "org-download")

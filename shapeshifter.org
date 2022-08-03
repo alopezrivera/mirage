@@ -480,6 +480,9 @@ Candidates:
 ;; no actual width
 (setq org-image-actual-width nil)
 
+;; drag and drop
+(shapes-module "org-download")
+
 #+end_src
 
 *** TODO org-latex-preview
@@ -2266,6 +2269,16 @@ beginning lies on an Org Mode heading,
 (dolist (mode '(org-mode-hook
 		     dired-mode-hook))
   (add-hook mode 'org-download-enable))
+
+;; download directory
+(setq-default org-download-image-dir "./figures")
+
+;; customize #+DOWNLOADED attribute
+(defun custom/org-download-annotate (link)
+  "Create a captioned and labeled figure."
+  (concat "#+CAPTION:\n"
+          "#+NAME: fig:\n"))
+(setq org-download-annotate-function #'custom/org-download-annotate)
 
 #+end_src
 
