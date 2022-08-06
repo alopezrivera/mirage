@@ -6,7 +6,7 @@
 
 
 
-#+title:Shapeshifter
+#+title:Shapes
 #+PROPERTY: header-args:emacs-lisp :results none :mkdirp yes
 
 
@@ -153,6 +153,7 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 (shapes-module "doom-themes")
 (shapes-module "modus-themes")
 (shapes-module "sweet-theme")
+(shapes-module "graphite-theme")
 (shapes-module "chocolate-theme")
 
 ;; extensions
@@ -243,7 +244,6 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 (shapes-extend "file-management")
 
 #+end_src
-
 
 
 ** IDE
@@ -1128,6 +1128,19 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 #+end_src
 
+***** Graphite
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-graphite-theme.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package '(graphite-theme :type git :host github :repo "codemicmaves/graphite-theme"))
+(require 'graphite-light-theme)
+(require 'graphite-dark-theme)
+
+#+end_src
+
 ***** Chocolate
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./modules/shapes-chocolate-theme.el
@@ -1156,10 +1169,11 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 (straight-use-package 'circadian)
 (setq circadian-themes `((:sunrise . ,light)  
-			    (:sunset  . ,dark)))
+			      (:sunset  . ,dark)))
 (circadian-setup)
 
 #+end_src
+
 ** Mode line
 *** Nano
 :PROPERTIES:
