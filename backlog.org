@@ -95,6 +95,12 @@
 
 ** next
 
+- org-diary
+   - treemacs style window
+   - if window was resized, store previous size and restore window when exiting
+
+- invert mode line functions
+
 - workflow
    - org-clock-report
       - https://orgmode.org/manual/The-clock-table.html
@@ -106,6 +112,7 @@
    - https://github.com/Silex/docker.el
 
 ** other
+*** random
 
 -----
 guides
@@ -118,7 +125,7 @@ guides
 -----
 stow
 
-- data safety
+- session
    - https://github.com/alphapapa/salv.el
 
 -----
@@ -150,6 +157,40 @@ packages
    - transient-mark-mode active -> mouse-3 = kill-ring-save
    - smart-comment-region
    - org-indent-region
+
+*** regions
+
+- insert char -> delete region
+- org mode
+   - insert markup delimiter
+      - wrap region in delimiter
+- if region empty and <backspace>
+   - exit region
+        
+**** kill-region
+
+- if region is active and beg is at beginning-of-line-text or indent
+   - delete empty line after cut
+
+**** yank-region
+
+- mouse 3 in region -> yank
+
+*** typefaces
+
+- https://ctrlcctrlv.github.io/TT2020/docs/
+
+- symbols
+   - unicode-fonts
+      - https://emacs.stackexchange.com/questions/251/line-height-with-unicode-characters
+
+*** org-subtree-empty
+
+- lazy
+   - current line empty -> go to next line -> ... ->
+      - next header: t
+      - line not empty: nil
+        
 
 
 * References
@@ -224,10 +265,6 @@ packages
 
 * Refactoring
 ** bindings
-*** rewrite
-
-- https://github.com/noctuid/general.el
-
 *** minor modes with key bindings
 
 - Org Mode
@@ -242,126 +279,6 @@ packages
 ** config-directory
 
 -> user-emacs-directory
-
-* Improvements
-** regions
-
-- insert char -> delete region
-- org mode
-   - insert markup delimiter
-      - wrap region in delimiter
-- if region empty and <backspace>
-   - exit region
-        
-*** kill-region
-
-- if region is active and beg is at beginning-of-line-text or indent
-   - delete empty line after cut
-
-*** yank-region
-
-- mouse 3 in region -> yank
-
-** typefaces
-
-- symbols
-   - unicode-fonts
-      - https://emacs.stackexchange.com/questions/251/line-height-with-unicode-characters
-
-** org-subtree-empty
-
-- lazy
-   - current line empty -> go to next line -> ... ->
-      - next header: t
-      - line not empty: nil
-        
-** DONE org-delete
-CLOSED: [2022-05-06 Fri 17:09]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:09]
-:END:
-
-- if at beginning of empty heading and a heading lies below
-   - bring next heading to level of current one
-      - delete newline + stars of the next heading
-- delete empty heading
-   - go to previous line
-   - delete newline
-      - maybe cycle previous
-
-** DONE org-outline
-CLOSED: [2022-05-06 Fri 17:09]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:09]
-:END:
-
-- deprecated cl warning
-   - find dependency
-     
-** DONE lists
-CLOSED: [2022-05-06 Fri 17:09]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:09]
-:END:
-
-- readability
-   - larger bullets
-   - larger line spacing
-- backward delete
-   - unindent list
-
-#+begin_src emacs-lisp
-
-;; readability
-(add-text-properties (point-min) (point-max)
-                     '(line-spacing 0.25 line-height 1.25))
-
-#+end_src
-
-** DONE org-return
-CLOSED: [2022-05-06 Fri 17:09]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:09]
-:END:
-
-- reference
-   - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
-
-** DONE org-meta-return
-CLOSED: [2022-05-06 Fri 17:09]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:09]
-:END:
-
-- list paragraphs
-   - custom/org-toggle-paragraph
-      - keep cursor in place
-
-- bugs
-   - if at empty heading or heading separated by more than 1 empty line from next
-      - star is inserted in line of next heading
-         - "* " is inserted in line of next heading
-   - cycle previous heading to remove spurious separation line
-
-- if list not empty -> move contents to new item
-- if after list
-   - create list item from current line
-- if before list
-   - create list item at top of list
-
-- if at indented paragraph in list
-   - turn paragraph into list item
-- if at non-empty line, turn entire non-empty line into either header or list item
-- if at middle of word inside list
-   - new indented list item, break word and place second part in new item
-  
-** DONE smart-comment
-CLOSED: [2022-05-06 Fri 17:11]
-:LOGBOOK:
-- State "DONE"       from "NEXT"       [2022-05-06 Fri 17:11]
-:END:
-
-- if last arrow command was up or left, move up, if last arrow command was right or down, move down
 
   
 * portability
