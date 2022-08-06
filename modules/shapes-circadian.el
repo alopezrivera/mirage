@@ -6,5 +6,5 @@
 
 (straight-use-package 'circadian)
 (setq circadian-themes `((:sunrise . ,light)  
-			    (:sunset  . ,dark)))
+			      (:sunset  . ,dark)))
 (circadian-setup)
