@@ -8,6 +8,7 @@
 (shapes-module "doom-themes")
 (shapes-module "modus-themes")
 (shapes-module "sweet-theme")
+(shapes-module "graphite-theme")
 (shapes-module "chocolate-theme")
 
 ;; extensions
