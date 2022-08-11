@@ -11,3 +11,6 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+(provide 'shapes-straight)
+;;; shapes-straight.el ends here

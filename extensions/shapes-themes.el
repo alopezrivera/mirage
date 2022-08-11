@@ -81,3 +81,6 @@ preserve modeline status through theme changes."
 
 ;; enable-theme
 (advice-add 'load-theme :around #'custom/theme-specific-advice)
+
+(provide 'shapes-themes)
+;;; shapes-themes.el ends here

@@ -8,3 +8,6 @@
 (setq circadian-themes `((:sunrise . ,light)  
 			      (:sunset  . ,dark)))
 (circadian-setup)
+
+(provide 'shapes-circadian)
+;;; shapes-circadian.el ends here

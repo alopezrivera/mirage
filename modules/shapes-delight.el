@@ -12,3 +12,6 @@
 	      (eldoc-mode              nil "eldoc")
 	      ;; Major modes
 	      (emacs-lisp-mode "EL" :major)))
+
+(provide 'shapes-delight)
+;;; shapes-delight.el ends here

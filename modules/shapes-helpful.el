@@ -8,3 +8,6 @@
 (global-set-key [remap describe-command]  #'helpful-command)
 (global-set-key [remap describe-variable] #'helpful-variable)
 (global-set-key [remap describe-key]      #'helpful-key)
+
+(provide 'shapes-helpful)
+;;; shapes-helpful.el ends here

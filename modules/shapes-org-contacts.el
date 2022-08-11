@@ -17,3 +17,6 @@
    `(("c" "contact" entry
       (file ,(nth 0 org-contacts-files))
       ,custom/org-capture-contacts)))
+
+(provide 'shapes-org-contacts)
+;;; shapes-org-contacts.el ends here

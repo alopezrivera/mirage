@@ -49,3 +49,6 @@
 		   ("<py"   "python")
 		   ("<bash" "bash")))
   (apply 'custom/tempo-code-block pair))
+
+(provide 'shapes-org-tempo)
+;;; shapes-org-tempo.el ends here

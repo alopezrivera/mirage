@@ -18,3 +18,6 @@
 ;; subscripts and superscripts
 (setq org-appear-autosubmarkers t)
 (setq org-appear-inside-latex t)
+
+(provide 'shapes-org-appear)
+;;; shapes-org-appear.el ends here

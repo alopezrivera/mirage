@@ -24,3 +24,6 @@
 
 ;; extensions
 (shapes-extend "org")
+
+(provide 'shapes-org)
+;;; shapes-org.el ends here

@@ -6,7 +6,7 @@
 
 (defun custom/org-typeface-title ()
   (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :font typeface-title :height 300 :weight 'regular :foreground 'unspecified)))
+    (set-face-attribute 'org-document-title nil :font typeface-title :height 600 :weight 'regular :foreground 'unspecified)))
 
 (add-hook 'org-mode-hook #'custom/org-typeface-title)
 
@@ -87,3 +87,6 @@
 
 ;; drag and drop
 (shapes-module "org-download")
+
+(provide 'shapes-org-ui)
+;;; shapes-org-ui.el ends here

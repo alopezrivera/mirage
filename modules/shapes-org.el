@@ -82,3 +82,6 @@ match the indentation of the parent heading."
 		    nil 'face 'org-indent)))))
 
 (advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
+
+(provide 'shapes-org)
+;;; shapes-org.el ends here

@@ -19,3 +19,6 @@ the user for confirmation."
 	   (revert-buffer t nil)))))
 
 (global-set-key (kbd "C-c r") #'custom/reload-from-disk)
+
+(provide 'shapes-file-management)
+;;; shapes-file-management.el ends here

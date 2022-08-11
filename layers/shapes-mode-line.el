@@ -8,3 +8,6 @@
 
 ;; mode line initialization hook
 (add-hook 'after-init-hook modeline)
+
+(provide 'shapes-mode-line)
+;;; shapes-mode-line.el ends here

@@ -766,3 +766,34 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 	    (custom/org-goto-heading-parent)
       ;; else, attempt going to last subheading of previous same-level heading
       (custom/org-goto-child-last))))
+
+(defun custom/org-babel-tangle-async (org-file &optional quiet)
+  "Asynchronously tangle an org file."
+  (let ((init-tangle-start-time (current-time))
+	     (file (buffer-file-name))
+	     (async-quiet-switch "-q"))
+    (async-start
+     `(lambda ()
+	           (require 'org)
+	           (org-babel-tangle-file ,org-file))
+     (unless quiet
+       `(lambda (result)
+	             (if result
+	                 (message "SUCCESS: %s successfully tangled (%.2fs)."
+		                  ,org-file
+		                  (float-time (time-subtract (current-time)
+						             ',init-tangle-start-time)))
+	               (message "ERROR: %s tangling failed." ,org-file)))))))
+
+;; override org-babel-tangle
+(setq old--org-babel-tangle (symbol-function 'org-babel-tangle))
+
+(defun custom/org-babel-tangle (orig-fun &rest args)
+  (if args
+      (old--org-babel-tangle args)
+    (custom/org-babel-tangle-async (buffer-file-name))))
+
+(advice-add 'org-babel-tangle :override #'custom/org-babel-tangle)
+
+(provide 'shapes-org)
+;;; shapes-org.el ends here

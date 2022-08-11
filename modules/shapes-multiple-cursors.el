@@ -18,3 +18,6 @@
 (define-key mc/keymap (kbd "<escape>")       #'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<mouse-1>")      #'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<down-mouse-1>")   nil) ; necessary
+
+(provide 'shapes-multiple-cursors)
+;;; shapes-multiple-cursors.el ends here

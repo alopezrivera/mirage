@@ -5,3 +5,6 @@
 (setq which-key-idle-delay 1.0)
 
 (which-key-mode)
+
+(provide 'shapes-which-key)
+;;; shapes-which-key.el ends here

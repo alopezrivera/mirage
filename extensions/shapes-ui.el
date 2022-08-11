@@ -90,3 +90,6 @@ that of `a' to nil in all buffers"
       (custom/variable-replace h m))))
 
 (global-set-key (kbd "M-t") #'custom/mode-line-invert)
+
+(provide 'shapes-ui)
+;;; shapes-ui.el ends here

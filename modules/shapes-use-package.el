@@ -12,3 +12,6 @@
 
 ;; ensure
 (setq use-package-always-ensure t)
+
+(provide 'shapes-use-package)
+;;; shapes-use-package.el ends here

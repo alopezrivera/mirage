@@ -2,3 +2,6 @@
 (require 'magit)
 
 (global-set-key (kbd "C-x g") #'magit-status)
+
+(provide 'shapes-magit)
+;;; shapes-magit.el ends here

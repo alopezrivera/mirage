@@ -125,3 +125,6 @@ to the query at execution."
 
 (defun <> (a b c)
   (and (> b a) (> c b)))
+
+(provide 'shapes-general)
+;;; shapes-general.el ends here

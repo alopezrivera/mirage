@@ -10,3 +10,6 @@
 
 ;; extensions
 (shapes-extend "file-management")
+
+(provide 'shapes-file-management)
+;;; shapes-file-management.el ends here

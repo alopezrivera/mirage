@@ -133,3 +133,6 @@ before the execution of any command.")
 		     (setq custom/window-previous current)))))
 
 (global-set-key (kbd "C-c p") #'custom/goto-window-previous)
+
+(provide 'shapes-navigation)
+;;; shapes-navigation.el ends here

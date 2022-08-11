@@ -85,3 +85,6 @@
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)")
 	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+
+(provide 'shapes-org-agenda)
+;;; shapes-org-agenda.el ends here

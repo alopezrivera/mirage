@@ -7,3 +7,6 @@
 
 ;; extensions
 (shapes-extend "navigation")
+
+(provide 'shapes-navigation)
+;;; shapes-navigation.el ends here

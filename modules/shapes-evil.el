@@ -25,3 +25,6 @@
       evil-visual-state-cursor '("green" hollow)
       evil-normal-state-cursor '("green" box)
       evil-insert-state-cursor '("pink" (bar . 2))
+
+(provide 'shapes-evil)
+;;; shapes-evil.el ends here

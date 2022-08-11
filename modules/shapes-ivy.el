@@ -26,3 +26,6 @@
   (cl-loop for binding in '(("C-k"   . ivy-previous-line)
 			        ("C-d"   . ivy-reverse-i-search-kill))
             collect (define-key map (kbd (car binding)) (cdr binding))))
+
+(provide 'shapes-ivy)
+;;; shapes-ivy.el ends here

@@ -151,3 +151,6 @@ not empty. In any case, advance to next line."
 ;; Exit rectangular-region-mode
 (define-key rectangular-region-mode-map (kbd "<escape>") #'rrm/keyboard-quit)
 (define-key rectangular-region-mode-map (kbd "<mouse-1>") #'rrm/keyboard-quit)
+
+(provide 'shapes-editing)
+;;; shapes-editing.el ends here

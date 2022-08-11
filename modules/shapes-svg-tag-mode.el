@@ -76,3 +76,6 @@
          (,(format "\\[%s \\(%s\\]\\)" date-re day-time-re) .
           ((lambda (tag)
              (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))))
+
+(provide 'shapes-svg-tag-mode)
+;;; shapes-svg-tag-mode.el ends here

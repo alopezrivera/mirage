@@ -12,3 +12,6 @@
 (shapes-module "rainbow-delimiters")
 ;; python
 (shapes-module "elpy")
+
+(provide 'shapes-ide)
+;;; shapes-ide.el ends here

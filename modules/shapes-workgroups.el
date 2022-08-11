@@ -11,3 +11,6 @@
 (setq wg-morph-on nil)
 
 (workgroups-mode 1)
+
+(provide 'shapes-workgroups)
+;;; shapes-workgroups.el ends here

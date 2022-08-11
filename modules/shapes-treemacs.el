@@ -94,3 +94,6 @@
 (straight-use-package 'treemacs-tab-bar)
 
 (straight-use-package 'treemacs-magit)
+
+(provide 'shapes-treemacs)
+;;; shapes-treemacs.el ends here

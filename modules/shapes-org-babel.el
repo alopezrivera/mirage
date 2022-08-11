@@ -11,14 +11,6 @@
 
 (setq org-babel-python-command "python3")
 
-(defun custom/org-babel-autotangle()
-  "Call org-babel-tangle when the Org  file in the current buffer is located in the config directory"
-     (if (string-match (concat (getenv "HOME") "/.emacs.d/.*.org$") (expand-file-name buffer-file-name))
-     (let ((org-confirm-babel-evaluate nil))
-       (org-babel-tangle))))
-
-(add-hook 'after-save-hook #'custom/org-babel-autotangle)
-
 (defun custom/org-fix-bleed-end-line-block (from to flag spec)
   "Toggle fontification of last char of block end lines when cycling.
 
@@ -75,3 +67,6 @@ folded."
   (not (member lang '("emacs-lisp" "python" "shell" "bash"))))
 
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+(provide 'shapes-org-babel)
+;;; shapes-org-babel.el ends here

@@ -47,3 +47,6 @@ matches the current theme."
 		(org-latex-preview '(16)))))
 
 (add-hook 'org-mode-hook #'custom/latex-preview-reload)
+
+(provide 'shapes-org-latex-preview)
+;;; shapes-org-latex-preview.el ends here
