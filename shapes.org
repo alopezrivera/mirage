@@ -770,6 +770,19 @@ matches the current theme."
 #+end_src
 
 *** Config management
+**** Async
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./modules/shapes-async.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; async
+(straight-use-package 'async)
+(require 'async)
+
+#+end_src
+
 **** Littering
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./modules/shapes-no-littering.el
