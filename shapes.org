@@ -1169,9 +1169,6 @@ the local machine:
 (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
 (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
 
-;; global god-mode
-(god-mode-all)
-
 #+end_src
 
 ** Themes
