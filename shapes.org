@@ -10,6 +10,51 @@
 #+PROPERTY: header-args:emacs-lisp :results none :mkdirp yes
 
 
+* Core
+** Load
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./core/shapes-load.el
+:END:
+
+#+begin_src emacs-lisp
+
+(defun shapes-load (dir src)
+  "Load a shapeshifter configuration file located inside DIR within
+ `config-directory', by name"
+  (require (intern (concat "shapes-" src)) (concat config-directory dir "/shapes-" src ".el")))
+
+;; shapeshifter modules
+(defun shapes-module (module)
+  "Load a shapeshifter MODULE by name"
+  (shapes-load "modules" module))
+
+;; shapeshifter layers
+(defun shapes-layer (layer)
+  "Load a shapeshifter LAYER by name"
+  (shapes-load "layers" layer))
+
+;; shapeshifter extensions
+(defun shapes-extend (extension)
+  "Load a shapeshifter EXTENSION by name"
+  (shapes-load "extensions" extension))
+
+#+end_src
+
+** Modules
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./core/shapes-modules.el
+:END:
+
+#+begin_src emacs-lisp
+
+  ;; package manager
+  (shapes-module "straight")
+
+  ;; other modules
+  (shapes-module "async")
+
+#+end_src
+
 * Layers
 ** UI
 :PROPERTIES:
