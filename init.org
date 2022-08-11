@@ -66,6 +66,9 @@
       (load-file local)
     (write-region ";; local emacs config" nil local)))
 
+;; config directory
+(setq config-directory (string-replace "~" (getenv "HOME") config-directory))
+
 #+end_src
 
 ** Config
