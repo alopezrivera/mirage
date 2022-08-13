@@ -71,16 +71,24 @@
 
 #+end_src
 
-** Config
+** Core
 
 #+begin_src emacs-lisp
 
 ;; shapes core
-(let ((components (file-expand-wildcards (concat config-directory "core/*.el"))))
-  (cl-loop for component in components
-           collect (require (intern ) components)))
+(add-to-list 'load-path (concat config-directory "core/"))
+(let ((components (mapcar
+                   (lambda (component) (intern (file-name-sans-extension (file-name-nondirectory component))))
+                   (file-expand-wildcards (concat config-directory "core/*.el")))))
+  (mapc 'require components)
+  (message "Shapes: core loaded"))
 
-;; load config
+#+end_src
+
+** Config
+
+#+begin_src emacs-lisp
+
 (load-file (concat config-directory "configs/" (concat config ".el")))
 
 #+end_src
