@@ -4,27 +4,17 @@
       (load-file local)
     (write-region ";; local emacs config" nil local)))
 
-(defun shapes-load (dir src)
-  "Load a shapeshifter configuration file located inside DIR within
- `config-directory', by name"
-  (load-file (concat config-directory dir "/shapes-" src ".el")))
+;; config directory
+(setq config-directory (string-replace "~" (getenv "HOME") config-directory))
 
-;; shapeshifter modules
-(defun shapes-module (module)
-  "Load a shapeshifter MODULE by name"
-  (shapes-load "modules" module))
+;; shapes core
+(add-to-list 'load-path (concat config-directory "core/"))
+(let ((components (mapcar
+                   (lambda (component) (intern (file-name-sans-extension (file-name-nondirectory component))))
+                   (file-expand-wildcards (concat config-directory "core/*.el")))))
+  (mapc 'require components)
+  (message "Shapes: core loaded"))
 
-;; shapeshifter layers
-(defun shapes-layer (layer)
-  "Load a shapeshifter LAYER by name"
-  (shapes-load "layers" layer))
-
-;; shapeshifter extensions
-(defun shapes-extend (extension)
-  "Load a shapeshifter EXTENSION by name"
-  (shapes-load "extensions" extension))
-
-;; load config
 (load-file (concat config-directory "configs/" (concat config ".el")))
 
 ;; inhibit startup message

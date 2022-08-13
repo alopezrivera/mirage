@@ -788,7 +788,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 ;; override org-babel-tangle
 (setq old--org-babel-tangle (symbol-function 'org-babel-tangle))
 
-(defun custom/org-babel-tangle (orig-fun &rest args)
+(defun custom/org-babel-tangle (&rest args)
   (if args
       (old--org-babel-tangle args)
     (custom/org-babel-tangle-async (buffer-file-name))))
