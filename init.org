@@ -77,10 +77,13 @@
 
 ;; shapes core
 (add-to-list 'load-path (concat config-directory "core/"))
+
 (let ((components (mapcar
-                   (lambda (component) (intern (file-name-sans-extension (file-name-nondirectory component))))
-                   (file-expand-wildcards (concat config-directory "core/*.el")))))
-  (mapc 'require components)
+		   (lambda (source)
+		     (string-match "\\(^.*/shapes-\\)\\(.*\\)\\(.el\\)" source)
+		     (match-string 2 source))
+		   (file-expand-wildcards (concat config-directory "core/*.el")))))
+  (mapc (lambda (component) (require (intern (concat "shapes-core-" component)) (concat "shapes-" component))) components)
   (message "Shapes: core loaded"))
 
 #+end_src
