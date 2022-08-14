@@ -21,5 +21,5 @@
 ;; Priorities
 (setq org-modern-priority nil)
 
-(provide 'shapes-org-modern)
+(provide 'shapes-modules-org-modern)
 ;;; shapes-org-modern.el ends here

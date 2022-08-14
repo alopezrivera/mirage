@@ -2,5 +2,5 @@
 (straight-use-package 'company)
 (require 'company)
 
-(provide 'shapes-company)
+(provide 'shapes-modules-company)
 ;;; shapes-company.el ends here

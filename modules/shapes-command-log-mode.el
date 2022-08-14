@@ -3,5 +3,5 @@
 
 (global-command-log-mode)
 
-(provide 'shapes-command-log-mode)
+(provide 'shapes-modules-command-log-mode)
 ;;; shapes-command-log-mode.el ends here

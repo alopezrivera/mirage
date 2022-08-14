@@ -14,5 +14,5 @@
           "#+NAME: fig:\n"))
 (setq org-download-annotate-function #'custom/org-download-annotate)
 
-(provide 'shapes-org-download)
+(provide 'shapes-modules-org-download)
 ;;; shapes-org-download.el ends here

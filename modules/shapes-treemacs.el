@@ -95,5 +95,5 @@
 
 (straight-use-package 'treemacs-magit)
 
-(provide 'shapes-treemacs)
+(provide 'shapes-modules-treemacs)
 ;;; shapes-treemacs.el ends here

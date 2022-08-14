@@ -4,5 +4,5 @@
 ;; bar
 (setq-default doom-modeline-bar-width 0.01)
 
-(provide 'shapes-doom-modeline)
+(provide 'shapes-modules-doom-modeline)
 ;;; shapes-doom-modeline.el ends here

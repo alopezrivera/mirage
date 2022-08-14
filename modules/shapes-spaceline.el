@@ -1,5 +1,5 @@
 (straight-use-package 'spaceline)
 (require 'spaceline-config)
 
-(provide 'shapes-spaceline)
+(provide 'shapes-modules-spaceline)
 ;;; shapes-spaceline.el ends here

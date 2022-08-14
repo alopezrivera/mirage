@@ -5,5 +5,5 @@
 ;; enable rainbow delimiters on all programming modes
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
-(provide 'shapes-rainbow-delimiters)
+(provide 'shapes-modules-rainbow-delimiters)
 ;;; shapes-rainbow-delimiters.el ends here

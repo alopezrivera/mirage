@@ -2,5 +2,5 @@
 (require 'graphite-light-theme)
 (require 'graphite-dark-theme)
 
-(provide 'shapes-graphite-theme)
+(provide 'shapes-modules-graphite-theme)
 ;;; shapes-graphite-theme.el ends here

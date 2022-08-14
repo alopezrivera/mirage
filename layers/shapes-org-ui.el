@@ -88,5 +88,5 @@
 ;; drag and drop
 (shapes-module "org-download")
 
-(provide 'shapes-org-ui)
+(provide 'shapes-layers-org-ui)
 ;;; shapes-org-ui.el ends here

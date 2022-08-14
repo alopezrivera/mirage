@@ -4,5 +4,5 @@
 
 (add-hook 'prog-mode-hook #'flycheck-mode)
 
-(provide 'shapes-flycheck)
+(provide 'shapes-modules-flycheck)
 ;;; shapes-flycheck.el ends here

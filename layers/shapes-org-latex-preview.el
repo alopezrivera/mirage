@@ -48,5 +48,5 @@ matches the current theme."
 
 (add-hook 'org-mode-hook #'custom/latex-preview-reload)
 
-(provide 'shapes-org-latex-preview)
+(provide 'shapes-layers-org-latex-preview)
 ;;; shapes-org-latex-preview.el ends here

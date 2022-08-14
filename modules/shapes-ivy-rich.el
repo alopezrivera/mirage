@@ -3,5 +3,5 @@
 
 (ivy-rich-mode 1)
 
-(provide 'shapes-ivy-rich)
+(provide 'shapes-modules-ivy-rich)
 ;;; shapes-ivy-rich.el ends here

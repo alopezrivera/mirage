@@ -11,5 +11,5 @@
 ;; extensions
 (shapes-extend "file-management")
 
-(provide 'shapes-file-management)
+(provide 'shapes-layers-file-management)
 ;;; shapes-file-management.el ends here

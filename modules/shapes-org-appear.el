@@ -19,5 +19,5 @@
 (setq org-appear-autosubmarkers t)
 (setq org-appear-inside-latex t)
 
-(provide 'shapes-org-appear)
+(provide 'shapes-modules-org-appear)
 ;;; shapes-org-appear.el ends here

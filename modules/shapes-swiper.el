@@ -54,5 +54,5 @@ buffer is already narrowed, widen buffer."
 ;; M-RET: multiple-cursors-mode
 (define-key swiper-map (kbd "M-<return>") #'custom/swiper-multiple-cursors)
 
-(provide 'shapes-swiper)
+(provide 'shapes-modules-swiper)
 ;;; shapes-swiper.el ends here

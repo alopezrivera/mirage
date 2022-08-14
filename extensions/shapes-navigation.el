@@ -134,5 +134,5 @@ before the execution of any command.")
 
 (global-set-key (kbd "C-c p") #'custom/goto-window-previous)
 
-(provide 'shapes-navigation)
+(provide 'shapes-extensions-navigation)
 ;;; shapes-navigation.el ends here

@@ -91,5 +91,5 @@ that of `a' to nil in all buffers"
 
 (global-set-key (kbd "M-t") #'custom/mode-line-invert)
 
-(provide 'shapes-ui)
+(provide 'shapes-extensions-ui)
 ;;; shapes-ui.el ends here

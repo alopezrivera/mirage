@@ -8,5 +8,5 @@
 ;; extensions
 (shapes-extend "navigation")
 
-(provide 'shapes-navigation)
+(provide 'shapes-layers-navigation)
 ;;; shapes-navigation.el ends here

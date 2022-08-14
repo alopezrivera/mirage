@@ -4,5 +4,5 @@
 ;; override dired
 (dirvish-override-dired-mode)
 
-(provide 'shapes-dirvish)
+(provide 'shapes-modules-dirvish)
 ;;; shapes-dirvish.el ends here

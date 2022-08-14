@@ -83,5 +83,5 @@ match the indentation of the parent heading."
 
 (advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
 
-(provide 'shapes-org)
+(provide 'shapes-modules-org)
 ;;; shapes-org.el ends here

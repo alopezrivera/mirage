@@ -25,5 +25,5 @@
 ;; extensions
 (shapes-extend "org")
 
-(provide 'shapes-org)
+(provide 'shapes-layers-org)
 ;;; shapes-org.el ends here

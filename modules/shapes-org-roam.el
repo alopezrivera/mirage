@@ -68,5 +68,5 @@ if it was previously enabled."
       (org-roam-timestamps-mode)))
 (add-hook 'org-capture-after-finalize-hook #'custom/org-roam-timestamps-mode-back)
 
-(provide 'shapes-org-roam)
+(provide 'shapes-modules-org-roam)
 ;;; shapes-org-roam.el ends here

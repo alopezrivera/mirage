@@ -4,5 +4,5 @@
 ;; extensions
 (shapes-extend "editing")
 
-(provide 'shapes-editing)
+(provide 'shapes-layers-editing)
 ;;; shapes-editing.el ends here

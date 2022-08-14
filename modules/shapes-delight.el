@@ -13,5 +13,5 @@
 	      ;; Major modes
 	      (emacs-lisp-mode "EL" :major)))
 
-(provide 'shapes-delight)
+(provide 'shapes-modules-delight)
 ;;; shapes-delight.el ends here

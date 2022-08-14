@@ -7,5 +7,5 @@
 ;; command map prefix
 (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
 
-(provide 'shapes-projectile)
+(provide 'shapes-modules-projectile)
 ;;; shapes-projectile.el ends here

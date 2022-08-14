@@ -13,5 +13,5 @@
 ;; Programming modes
 (add-hook 'prog-mode-hook 'olivetti-mode)
 
-(provide 'shapes-olivetti)
+(provide 'shapes-modules-olivetti)
 ;;; shapes-olivetti.el ends here

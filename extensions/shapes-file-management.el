@@ -20,5 +20,5 @@ the user for confirmation."
 
 (global-set-key (kbd "C-c r") #'custom/reload-from-disk)
 
-(provide 'shapes-file-management)
+(provide 'shapes-extensions-file-management)
 ;;; shapes-file-management.el ends here
