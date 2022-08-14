@@ -18,25 +18,24 @@
 
 #+begin_src emacs-lisp
 
-(defun shapes-load (dir src)
-  "Load a shapeshifter configuration file located inside DIR within
- `config-directory', by name"
-  (require (intern (concat "shapes-" src)) (concat config-directory dir "/shapes-" src ".el")))
+(defun shapes-load (type component)
+  "Load a shapeshifter COMPONENT of the given TYPE"
+  (require (intern (concat "shapes-" type "-" component)) (concat config-directory type "s" "/shapes-" component ".el")))
 
 ;; shapeshifter modules
 (defun shapes-module (module)
   "Load a shapeshifter MODULE by name"
-  (shapes-load "modules" module))
+  (shapes-load "module" module))
 
 ;; shapeshifter layers
 (defun shapes-layer (layer)
   "Load a shapeshifter LAYER by name"
-  (shapes-load "layers" layer))
+  (shapes-load "layer" layer))
 
 ;; shapeshifter extensions
 (defun shapes-extend (extension)
   "Load a shapeshifter EXTENSION by name"
-  (shapes-load "extensions" extension))
+  (shapes-load "extension" extension))
 
 #+end_src
 
