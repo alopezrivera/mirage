@@ -71,12 +71,14 @@
 	      (require 'org)
 	      (add-hook 'org-babel-post-tangle-hook
 			(lambda ()
-				(let ((component (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))
+				(string-match "\\(^.*/\\)\\(.*\\)\\(s?/shapes-\\)\\(.*\\)\\(.el\\)" (buffer-file-name))
+				(let ((component (match-string 4 (buffer-file-name)))
+				      (comp-type (match-string 2 (buffer-file-name))))
 				     (end-of-buffer)
 				     (insert (concat
 					      "\n"
-					      "(provide '" component ")\n"
-					      ";;; " component ".el ends here"))
+					      "(provide 'shapes-" comp-type "-" component ")\n"
+					      ";;; shapes-" component ".el ends here"))
 				     (save-buffer))))
 		   (org-babel-tangle-file ,org-file))
      (unless quiet
