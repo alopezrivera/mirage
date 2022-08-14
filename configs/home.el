@@ -39,7 +39,7 @@
   "Italic typeface")
 
 ;; titles
-(setq typeface-title "Ringbearer")
+(setq typeface-title "Pump Triline")
 
 ;; headings
 (setq typeface-heading "Century Gothic")
