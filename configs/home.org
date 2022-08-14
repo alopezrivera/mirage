@@ -244,7 +244,7 @@ We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/d
   "Italic typeface")
 
 ;; titles
-(setq typeface-title "Ringbearer")
+(setq typeface-title "Pump Triline")
 
 ;; headings
 (setq typeface-heading "Century Gothic")

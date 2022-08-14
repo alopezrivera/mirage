@@ -432,7 +432,7 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 
 (defun custom/org-typeface-title ()
   (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :font typeface-title :height 300 :weight 'regular :foreground 'unspecified)))
+    (set-face-attribute 'org-document-title nil :font typeface-title :height 600 :weight 'regular :foreground 'unspecified)))
 
 (add-hook 'org-mode-hook #'custom/org-typeface-title)
 
