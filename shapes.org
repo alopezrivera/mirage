@@ -92,9 +92,9 @@
 (defun custom/shapes-tangle-auto ()
   "Automatically tangle Org Mode files in the Emacs config directory"
   (let* ((file   (expand-file-name buffer-file-name))
-	 (source (string-match (concat config-directory ".*.org$") file))
-	 (shapes (string-match (concat config-directory "shapes.org$") buffer-file-name))
-	 (org-confirm-babel-evaluate nil))
+	    (source (string-match (concat config-directory ".*.org$") file))
+	    (shapes (string-match (concat config-directory "shapes.org$") buffer-file-name))
+	    (org-confirm-babel-evaluate nil))
     (if source
 	(if shapes
 	    (custom/shapes-tangle file)
@@ -4885,7 +4885,7 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-****** TODO [#A] C-return
+****** TODO C-return
 
 - at ellipsis -> doesn't work
 
@@ -4941,7 +4941,7 @@ ellipsis in the first line under the heading."
 
 #+end_src
 
-****** TODO [#A] S-return
+****** TODO S-return
 
 - heading with keywords
    - skip keywords
