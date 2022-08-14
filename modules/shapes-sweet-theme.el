@@ -1,5 +1,5 @@
 (straight-use-package 'sweet-theme)
 (require 'sweet-theme)
 
-(provide 'shapes-modules-sweet-theme)
+(provide 'shapes-module-sweet-theme)
 ;;; shapes-sweet-theme.el ends here

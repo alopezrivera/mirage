@@ -6,5 +6,5 @@
 
 (which-key-mode)
 
-(provide 'shapes-modules-which-key)
+(provide 'shapes-module-which-key)
 ;;; shapes-which-key.el ends here

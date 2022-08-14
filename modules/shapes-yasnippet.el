@@ -19,5 +19,5 @@
 ;; yasnippet-snippets
 (straight-use-package 'yasnippet-snippets)
 
-(provide 'shapes-modules-yasnippet)
+(provide 'shapes-module-yasnippet)
 ;;; shapes-yasnippet.el ends here

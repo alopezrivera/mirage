@@ -16,5 +16,5 @@
 
 (advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
 
-(provide 'shapes-modules-undo-tree)
+(provide 'shapes-module-undo-tree)
 ;;; shapes-undo-tree.el ends here

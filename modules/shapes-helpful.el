@@ -9,5 +9,5 @@
 (global-set-key [remap describe-variable] #'helpful-variable)
 (global-set-key [remap describe-key]      #'helpful-key)
 
-(provide 'shapes-modules-helpful)
+(provide 'shapes-module-helpful)
 ;;; shapes-helpful.el ends here

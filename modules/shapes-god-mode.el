@@ -12,5 +12,5 @@
 (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
 (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
 
-(provide 'shapes-modules-god-mode)
+(provide 'shapes-module-god-mode)
 ;;; shapes-god-mode.el ends here

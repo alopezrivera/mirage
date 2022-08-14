@@ -18,5 +18,5 @@
       (file ,(nth 0 org-contacts-files))
       ,custom/org-capture-contacts)))
 
-(provide 'shapes-modules-org-contacts)
+(provide 'shapes-module-org-contacts)
 ;;; shapes-org-contacts.el ends here

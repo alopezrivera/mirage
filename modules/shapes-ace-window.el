@@ -4,5 +4,5 @@
 
 (global-set-key (kbd "C-x o") 'ace-window)
 
-(provide 'shapes-modules-ace-window)
+(provide 'shapes-module-ace-window)
 ;;; shapes-ace-window.el ends here

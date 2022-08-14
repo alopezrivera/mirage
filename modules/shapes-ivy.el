@@ -27,5 +27,5 @@
 			        ("C-d"   . ivy-reverse-i-search-kill))
             collect (define-key map (kbd (car binding)) (cdr binding))))
 
-(provide 'shapes-modules-ivy)
+(provide 'shapes-module-ivy)
 ;;; shapes-ivy.el ends here

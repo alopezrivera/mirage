@@ -1,4 +1,4 @@
 (winner-mode)
 
-(provide 'shapes-modules-winner)
+(provide 'shapes-module-winner)
 ;;; shapes-winner.el ends here

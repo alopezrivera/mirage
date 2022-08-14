@@ -3,5 +3,5 @@
 
 (global-set-key (kbd "<menu>") #'counsel-M-x)
 
-(provide 'shapes-modules-counsel)
+(provide 'shapes-module-counsel)
 ;;; shapes-counsel.el ends here

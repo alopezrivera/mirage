@@ -13,5 +13,5 @@
 ;; python
 (shapes-module "elpy")
 
-(provide 'shapes-layers-ide)
+(provide 'shapes-layer-ide)
 ;;; shapes-ide.el ends here

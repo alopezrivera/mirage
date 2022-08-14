@@ -50,5 +50,5 @@
 		   ("<bash" "bash")))
   (apply 'custom/tempo-code-block pair))
 
-(provide 'shapes-modules-org-tempo)
+(provide 'shapes-module-org-tempo)
 ;;; shapes-org-tempo.el ends here

@@ -9,5 +9,5 @@
 			      (:sunset  . ,dark)))
 (circadian-setup)
 
-(provide 'shapes-modules-circadian)
+(provide 'shapes-module-circadian)
 ;;; shapes-circadian.el ends here

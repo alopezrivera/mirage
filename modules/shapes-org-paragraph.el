@@ -24,5 +24,5 @@ beginning lies on an Org Mode heading,
 (advice-add 'org-metaup   :around #'custom/org-meta-arrows-v)
 (advice-add 'org-metadown :around #'custom/org-meta-arrows-v)
 
-(provide 'shapes-modules-org-paragraph)
+(provide 'shapes-module-org-paragraph)
 ;;; shapes-org-paragraph.el ends here

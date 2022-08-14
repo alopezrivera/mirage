@@ -38,5 +38,5 @@
 
 (define-key hs-minor-mode-map (kbd "C-\\") #'custom/hs-cycle)
 
-(provide 'shapes-modules-hideshow)
+(provide 'shapes-module-hideshow)
 ;;; shapes-hideshow.el ends here

@@ -12,5 +12,5 @@
 
 (workgroups-mode 1)
 
-(provide 'shapes-modules-workgroups)
+(provide 'shapes-module-workgroups)
 ;;; shapes-workgroups.el ends here

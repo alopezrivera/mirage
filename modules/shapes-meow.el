@@ -90,5 +90,5 @@
 (meow-setup)
 (meow-global-mode 1)
 
-(provide 'shapes-modules-meow)
+(provide 'shapes-module-meow)
 ;;; shapes-meow.el ends here

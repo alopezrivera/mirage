@@ -3,5 +3,5 @@
 
 (global-set-key (kbd "C-v") #'vundo)
 
-(provide 'shapes-modules-vundo)
+(provide 'shapes-module-vundo)
 ;;; shapes-vundo.el ends here

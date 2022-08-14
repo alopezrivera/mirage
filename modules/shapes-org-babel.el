@@ -68,5 +68,5 @@ folded."
 
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
-(provide 'shapes-modules-org-babel)
+(provide 'shapes-module-org-babel)
 ;;; shapes-org-babel.el ends here

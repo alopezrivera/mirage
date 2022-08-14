@@ -3,5 +3,5 @@
 
 (global-set-key (kbd "C-x g") #'magit-status)
 
-(provide 'shapes-modules-magit)
+(provide 'shapes-module-magit)
 ;;; shapes-magit.el ends here

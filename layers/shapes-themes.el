@@ -17,5 +17,5 @@
 ;; scheduling
 (shapes-module "circadian")
 
-(provide 'shapes-layers-themes)
+(provide 'shapes-layer-themes)
 ;;; shapes-themes.el ends here

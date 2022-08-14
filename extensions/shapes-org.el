@@ -767,5 +767,5 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
       ;; else, attempt going to last subheading of previous same-level heading
       (custom/org-goto-child-last))))
 
-(provide 'shapes-extensions-org)
+(provide 'shapes-extension-org)
 ;;; shapes-org.el ends here

@@ -9,5 +9,5 @@
 ;; mode line initialization hook
 (add-hook 'after-init-hook modeline)
 
-(provide 'shapes-layers-mode-line)
+(provide 'shapes-layer-mode-line)
 ;;; shapes-mode-line.el ends here

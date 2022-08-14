@@ -53,5 +53,5 @@
 ;; extensions
 (shapes-extend "ui")
 
-(provide 'shapes-layers-ui)
+(provide 'shapes-layer-ui)
 ;;; shapes-ui.el ends here

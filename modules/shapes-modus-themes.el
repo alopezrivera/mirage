@@ -4,5 +4,5 @@
 (setq modus-themes-headings
       '((0 . (monochrome))))
 
-(provide 'shapes-modules-modus-themes)
+(provide 'shapes-module-modus-themes)
 ;;; shapes-modus-themes.el ends here

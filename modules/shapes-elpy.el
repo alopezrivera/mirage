@@ -11,5 +11,5 @@
 (define-key elpy-mode-map (kbd "C-M-n") 'elpy-nav-forward-block)
 (define-key elpy-mode-map (kbd "C-M-p") 'elpy-nav-backward-block)
 
-(provide 'shapes-modules-elpy)
+(provide 'shapes-module-elpy)
 ;;; shapes-elpy.el ends here

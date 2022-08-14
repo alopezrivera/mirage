@@ -16,5 +16,5 @@
 
 (global-set-key (kbd "C-c c") 'custom/org-calendar)
 
-(provide 'shapes-modules-org-calendar)
+(provide 'shapes-module-org-calendar)
 ;;; shapes-org-calendar.el ends here
