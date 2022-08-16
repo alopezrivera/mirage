@@ -13,7 +13,7 @@
 * Core
 ** Load
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./core/shapes-load.el
+:header-args:emacs-lisp+: :tangle ./core/shapes-load.el
 :END:
 
 #+begin_src emacs-lisp
@@ -41,7 +41,7 @@
 
 ** Modules
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./core/shapes-modules.el
+:header-args:emacs-lisp+: :tangle ./core/shapes-modules.el
 :END:
 
 #+begin_src emacs-lisp
@@ -56,7 +56,7 @@
 
 ** Tangling
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./core/shapes-tangling.el
+:header-args:emacs-lisp+: :tangle ./core/shapes-tangling.el
 :END:
 
 #+begin_src emacs-lisp
@@ -109,7 +109,7 @@
 * Layers
 ** UI
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-ui.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-ui.el
 :END:
 *** Text
 **** Typefaces
@@ -217,7 +217,7 @@
 
 ** Input
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-input.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-input.el
 :END:
 
 #+begin_src emacs-lisp
@@ -232,7 +232,7 @@
 
 ** Themes
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-themes.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-themes.el
 :END:
 
 Shapeshifter themes layer. It requires three variables to be defined: the light and dark themes (~light~ and ~dark~ respectively), and the mode line of choice (~modeline~).
@@ -262,7 +262,7 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 
 ** Mode line
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-mode-line.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-mode-line.el
 :END:
 
 #+begin_src emacs-lisp
@@ -283,7 +283,7 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 
 ** Editing
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-editing.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-editing.el
 :END:
 
 #+begin_src emacs-lisp
@@ -299,7 +299,7 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 
 ** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-navigation.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-navigation.el
 :END:
 
 #+begin_src emacs-lisp
@@ -319,7 +319,7 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 
 ** File management
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-file-management.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-file-management.el
 :END:
 
 ~backup-directory-alist~, which determines where backups are saved, is set by ~no-littering~.
@@ -344,7 +344,7 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 
 ** IDE
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-ide.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-ide.el
 :END:
 
 #+begin_src emacs-lisp
@@ -369,7 +369,7 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 ** Org Mode
 *** org
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-org.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-org.el
 :END:
 
 #+begin_src emacs-lisp
@@ -405,7 +405,7 @@ Shapeshifter themes layer. It requires three variables to be defined: the light 
 
 *** org-ui
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-org-ui.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-org-ui.el
 :END:
 
 #+begin_src emacs-lisp
@@ -583,7 +583,7 @@ Candidates:
 
 *** TODO org-latex-preview
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./layers/shapes-org-latex-preview.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-org-latex-preview.el
 :END:
 
 - org LaTeX equations
@@ -718,7 +718,7 @@ matches the current theme."
 *** Package manager
 **** straight
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-straight.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-straight.el
 :END:
 
 #+begin_src emacs-lisp
@@ -741,7 +741,7 @@ matches the current theme."
 
 **** use-package                                                      :arch:
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-use-package.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-use-package.el
 :END:
 
 #+begin_src emacs-lisp
@@ -773,7 +773,7 @@ matches the current theme."
 *** Config management
 **** Async
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-async.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-async.el
 :END:
 
 #+begin_src emacs-lisp
@@ -786,7 +786,7 @@ matches the current theme."
 
 **** Littering
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-no-littering.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-no-littering.el
 :END:
 
 #+begin_src emacs-lisp
@@ -799,7 +799,7 @@ matches the current theme."
 
 **** Patching
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-el-patch.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-el-patch.el
 :END:
 
 #+begin_src emacs-lisp
@@ -815,7 +815,7 @@ matches the current theme."
 *** Buffer
 **** olivetti
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-olivetti.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-olivetti.el
 :END:
 
 #+begin_src emacs-lisp
@@ -840,7 +840,7 @@ matches the current theme."
 *** Mode line
 **** delight
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-delight.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-delight.el
 :END:
 
 #+begin_src emacs-lisp
@@ -865,7 +865,7 @@ matches the current theme."
 *** Typefaces
 **** all-the-icons
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-all-the-icons.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-all-the-icons.el
 :END:
 
 #+begin_src emacs-lisp
@@ -887,7 +887,7 @@ the local machine:
 *** Highlights
 **** svg-tag-mode
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-svg-tag-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-svg-tag-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -975,7 +975,7 @@ the local machine:
 
 **** rainbow-mode
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-rainbow-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-rainbow-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1176,7 +1176,7 @@ the local machine:
 *** Themes
 **** Nano
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-nano-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-nano-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1188,7 +1188,7 @@ the local machine:
 
 **** Doom
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-doom-themes.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-doom-themes.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1200,7 +1200,7 @@ the local machine:
 
 **** Modus
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-modus-themes.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-modus-themes.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1224,7 +1224,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 **** Standalone
 ***** Sweet
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-sweet-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-sweet-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1236,7 +1236,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 ***** Graphite
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-graphite-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-graphite-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1249,7 +1249,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 ***** Chocolate
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-chocolate-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-chocolate-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1262,7 +1262,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 *** Scheduling
 **** circadian
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-circadian.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-circadian.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1283,7 +1283,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 ** Mode line
 *** Nano
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-nano-modeline.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-nano-modeline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1295,7 +1295,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 *** Doom
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-doom-modeline.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-doom-modeline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1310,7 +1310,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 *** Spaceline
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-spaceline.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-spaceline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1325,7 +1325,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 *** Undo
 **** TODO vundo
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-vundo.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-vundo.el
 :END:
 
 - undo-fu
@@ -1348,7 +1348,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 **** undo-tree                                                        :arch:
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-undo-tree.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-undo-tree.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1382,7 +1382,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 *** Multiline
 **** multiple-cursors
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-multiple-cursors.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-multiple-cursors.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1412,7 +1412,7 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 ** Search
 *** swiper
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-swiper.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-swiper.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1497,7 +1497,7 @@ buffer is already narrowed, widen buffer."
 
 *** ripgrep
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-rg.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-rg.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1509,7 +1509,7 @@ buffer is already narrowed, widen buffer."
 ** Templates
 *** yasnippet
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-yasnippet.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-yasnippet.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1552,7 +1552,7 @@ buffer is already narrowed, widen buffer."
 ** Completion
 *** ivy
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-ivy.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-ivy.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1590,7 +1590,7 @@ buffer is already narrowed, widen buffer."
 
 *** ivy-rich                                                          :arch:
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-ivy-rich.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-ivy-rich.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1607,7 +1607,7 @@ buffer is already narrowed, widen buffer."
 *** Session
 **** desktop
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-desktop.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-desktop.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1618,7 +1618,7 @@ buffer is already narrowed, widen buffer."
 
 **** TODO workgroups
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-workgroups.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-workgroups.el
 :END:
 
 - workgroups
@@ -1645,7 +1645,7 @@ buffer is already narrowed, widen buffer."
 *** Project interaction
 **** TODO projectile
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-projectile.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-projectile.el
 :END:
 
 - project dashboard
@@ -1683,7 +1683,7 @@ buffer is already narrowed, widen buffer."
 
 **** treemacs
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-treemacs.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-treemacs.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1814,7 +1814,7 @@ buffer is already narrowed, widen buffer."
 ** Guidance
 *** counsel
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-counsel.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-counsel.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1828,7 +1828,7 @@ buffer is already narrowed, widen buffer."
 
 *** helpful
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-helpful.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-helpful.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1848,7 +1848,7 @@ buffer is already narrowed, widen buffer."
 
 *** which-key
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-which-key.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-which-key.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1865,7 +1865,7 @@ buffer is already narrowed, widen buffer."
 
 *** command-log-mode                                                  :arch:
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-command-log-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-command-log-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1880,7 +1880,7 @@ buffer is already narrowed, widen buffer."
 ** Navigation
 *** winner
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-winner.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-winner.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1891,7 +1891,7 @@ buffer is already narrowed, widen buffer."
 
 *** ace-window
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-ace-window.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-ace-window.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1906,7 +1906,7 @@ buffer is already narrowed, widen buffer."
 
 *** TODO pixel-scroll-precision
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-pixel-scroll-precision.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-pixel-scroll-precision.el
 :END:
 
 - pixel-scroll-precision-mode
@@ -1930,7 +1930,7 @@ buffer is already narrowed, widen buffer."
 ** Version control
 *** magit
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-magit.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-magit.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1945,7 +1945,7 @@ buffer is already narrowed, widen buffer."
 ** File management
 *** dirvish
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-dirvish.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-dirvish.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1963,7 +1963,7 @@ buffer is already narrowed, widen buffer."
 *** General
 **** hideshow
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-hideshow.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-hideshow.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2020,7 +2020,7 @@ buffer is already narrowed, widen buffer."
 
 **** company
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-company.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-company.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2033,7 +2033,7 @@ buffer is already narrowed, widen buffer."
 
 **** flycheck
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-flycheck.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-flycheck.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2050,7 +2050,7 @@ buffer is already narrowed, widen buffer."
 **** Lisp
 ***** Syntax highlighting
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-rainbow-delimiters.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-rainbow-delimiters.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2067,7 +2067,7 @@ buffer is already narrowed, widen buffer."
 **** Python
 ***** elpy
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-elpy.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-elpy.el
 :END:
 
 #+begin_src bash :tangle no
@@ -2107,7 +2107,7 @@ sudo apt-get install python3-venv
 
 ** Org Mode
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2217,7 +2217,7 @@ match the indentation of the parent heading."
 *** UI
 **** org-modern
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-modern.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-modern.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2274,7 +2274,7 @@ match the indentation of the parent heading."
 
 **** org-appear
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-appear.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-appear.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2304,7 +2304,7 @@ match the indentation of the parent heading."
 
 **** org-fragtog
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-fragtog.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-fragtog.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2320,7 +2320,7 @@ match the indentation of the parent heading."
 *** Editing
 **** org-paragraph
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-paragraph.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-paragraph.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2379,7 +2379,7 @@ beginning lies on an Org Mode heading,
 
 **** org-download
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-download.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-download.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2405,7 +2405,7 @@ beginning lies on an Org Mode heading,
 *** Notes
 **** org-diary
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-diary.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-diary.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2416,7 +2416,7 @@ beginning lies on an Org Mode heading,
 
 **** org-roam
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-roam.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-roam.el
 :END:
 
 Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-available-aborting-error-when-installing-org-roam-v2-on-mac/2178/6][a C compiler (eg: gcc or clang) must be installed for ~emacsql-sqlite~ to install correctly]].
@@ -2566,7 +2566,7 @@ if it was previously enabled."
 *** Export
 **** ox-rst
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-ox-rst.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-ox-rst.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2580,7 +2580,7 @@ if it was previously enabled."
 *** Agenda
 **** org-agenda
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-agenda.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-agenda.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2760,7 +2760,7 @@ if it was previously enabled."
 
 **** org-contacts
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-contacts.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-contacts.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2795,7 +2795,7 @@ if it was previously enabled."
 
 **** org-calendar
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-calendar.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-calendar.el
 :END:
 ***** calfw
 
@@ -2830,7 +2830,7 @@ if it was previously enabled."
 *** Templates
 **** org-tempo
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-tempo.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-tempo.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2909,7 +2909,7 @@ if it was previously enabled."
 
 **** org-capture
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-capture.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-capture.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2927,7 +2927,7 @@ if it was previously enabled."
 *** Programming
 **** org-babel
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./modules/shapes-org-babel.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-babel.el
 :END:
 ***** Languages
 
@@ -3043,7 +3043,7 @@ folded."
 * Extensions
 ** General purpose
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./extensions/shapes-general.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-general.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3338,7 +3338,7 @@ to the query at execution."
 
 ** UI
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./extensions/shapes-ui.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-ui.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3484,7 +3484,7 @@ that of `a' to nil in all buffers"
 
 ** Themes
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./extensions/shapes-themes.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-themes.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3627,7 +3627,7 @@ preserve modeline status through theme changes."
 
 ** Editing
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./extensions/shapes-editing.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-editing.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3895,7 +3895,7 @@ not empty. In any case, advance to next line."
 
 ** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./extensions/shapes-navigation.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-navigation.el
 :END:
 
 #+begin_src emacs-lisp
@@ -4091,7 +4091,7 @@ before the execution of any command.")
 
 ** File management
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./extensions/shapes-file-management.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-file-management.el
 :END:
 
 #+begin_src emacs-lisp
@@ -4133,7 +4133,7 @@ the user for confirmation."
 
 ** Org Mode
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./extensions/shapes-org.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org.el
 :END:
 
 #+begin_src emacs-lisp
