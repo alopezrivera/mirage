@@ -11,7 +11,61 @@
 
 
 * plan
-** finish
+** shapes
+*** dependencies
+
+- extensions
+   1) general
+       - split
+       - merge emacs and org
+- dependencies
+   1) require
+       - modules
+       - layers
+       - extensions
+
+- document
+   - mod org
+      - ext general
+      - mod el-patch
+   - ext org
+      - ext editing
+   - ext editing
+      - mod multiple-cursors
+
+*** bindings
+
+- general
+   - https://github.com/noctuid/general.el#about
+- https://emacs.stackexchange.com/questions/14943/difference-between-the-physical-ret-key-and-the-command-newline-in-the-minibu
+
+*** light and dark theme advice
+
+- unevaluated list
+   - execute
+  
+*** creds
+
+- group
+- vars
+- insert cred
+   - list creds
+- https://www.gnu.org/software/emacs/manual/html_mono/auth.html
+
+*** fonts
+
+- new
+   - https://ctrlcctrlv.github.io/TT2020/docs/
+- define-font
+   - Century Gothic
+   - LOTR
+   - Pump Triline
+- typeface groups
+   - body
+   - titles
+   - headings
+
+*** home buffer
 
 - home buffer
    - https://gitlab.com/public-repositories/emacs-groundup
@@ -34,47 +88,6 @@
          - https://github.com/bbatsov/projectile/issues/967
       - SpaceMacs
          - https://github.com/syl20bnr/spacemacs/blob/master/core/core-spacemacs-buffer.el#L550
-
------
-
-- fonts
-   - new
-      - https://ctrlcctrlv.github.io/TT2020/docs/
-   - define-font
-      - Century Gothic
-      - LOTR
-      - Pump Triline
-   - typeface groups
-      - body
-      - titles
-      - headings
-- light, dark theme advice
-   - unevaluated list
-      - execute
-
-- creds
-   - group
-   - vars
-   - insert cred
-      - list creds
-   - https://www.gnu.org/software/emacs/manual/html_mono/auth.html
-
-- dependencies
-   1) extensions -> require
-   2) reduce
-   3) document
-       - mod org
-          - ext general
-          - mod el-patch
-       - ext org
-          - ext editing
-       - ext editing
-          - mod multiple-cursors
-
-- bindings
-   - general
-      - https://github.com/noctuid/general.el#about
-   - https://emacs.stackexchange.com/questions/14943/difference-between-the-physical-ret-key-and-the-command-newline-in-the-minibu
 
 ** bib
 
@@ -145,6 +158,9 @@
 
 - docker
    - https://github.com/Silex/docker.el
+
+- markdown
+   - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
 
 ** other
 *** random
@@ -459,12 +475,15 @@ packages
 
 - C-c more than once -> agenda files lost
 
-- Google Calendar sync
-   - https://github.com/myuhe/org-gcal.el
-   - https://github.com/kiwanami/emacs-calfw#for-ical-google-calendar-users
+- Calendar sync
+   - org-caldav
+      - https://github.com/dengste/org-caldav
+   - org-gcal
+      - https://github.com/kidd/org-gcal.el
+         - https://github.com/kidd/org-gcal.el/issues/191
+   - calfw ical
+      - https://github.com/kiwanami/emacs-calfw#for-ical-google-calendar-users
 
-- sync
-   - https://www.youtube.com/watch?v=vO_RF2dK7M0
 - hyperscheduler
    - https://github.com/dmitrym0/org-hyperscheduler/
 
