@@ -1643,30 +1643,10 @@ buffer is already narrowed, widen buffer."
 #+end_src
 
 *** Project interaction
-**** TODO projectile
+**** projectile
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-projectile.el
 :END:
-
-- project dashboard
-   - flow
-      1. tabulated-list-mode
-          - display known projects
-      2. Either
-          - Choose project
-             1. workgroups.el
-                 1. If no .workspace, create .workspace
-                 2. Load .workspace
-          - Create new project
-             1. Template
-             2. workgroups.el
-                 1. New .workspace file
-                 2. Load .workspace
-   - references
-      - Issue
-         - https://github.com/bbatsov/projectile/issues/967
-      - SpaceMacs
-         - https://github.com/syl20bnr/spacemacs/blob/master/core/core-spacemacs-buffer.el#L550
 
 #+begin_src emacs-lisp
 
