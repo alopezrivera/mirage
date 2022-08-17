@@ -4900,7 +4900,7 @@ ellipsis in the first line under the heading."
 ***** Return
 ****** return
 
-- reference
+- References
    - https://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
 
 #+begin_src emacs-lisp
