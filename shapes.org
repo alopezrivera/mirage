@@ -85,7 +85,7 @@
        `(lambda (result)
 		     (if result
 			 (message "SUCCESS: %s successfully tangled (%.2fs)."
-				  ,org-file
+				  ,(file-name-nondirectory org-file)
 				  (float-time (time-subtract (current-time)
 							     ',init-tangle-start-time)))
 		       (message "ERROR: %s tangling failed." ,org-file)))))))
@@ -1714,12 +1714,12 @@ buffer is already narrowed, widen buffer."
 #+begin_src emacs-lisp
 
 (cl-loop for binding in '(("M-0"       . treemacs-select-window)
-			      ("C-x t 1"   . treemacs-delete-other-windows)
-			      ("C-x t t"   . treemacs)
-			      ("C-x t d"   . treemacs-select-directory)
-			      ("C-x t B"   . treemacs-bookmark)
-			      ("C-x t C-t" . treemacs-find-file)
-			      ("C-x t M-t" . treemacs-find-tag))
+			        ("C-x t 1"   . treemacs-delete-other-windows)
+			        ("C-x t t"   . treemacs)
+			        ("C-x t d"   . treemacs-select-directory)
+			        ("C-x t B"   . treemacs-bookmark)
+			        ("C-x t C-t" . treemacs-find-file)
+			        ("C-x t M-t" . treemacs-find-tag))
 	 collect (global-set-key (kbd (car binding)) (cdr binding)))
 
 #+end_src
