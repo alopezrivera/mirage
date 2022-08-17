@@ -20,7 +20,7 @@
 (setq org-roam-directory (concat home "home/scribbles/roam"))
 
 ;; org-diary directory
-(setq custom/org-diary-directory (concat home "home/scribbles/journal/diary/"))
+(setq org-diary-directory (concat home "home/scribbles/journal/diary/"))
 
 ;; projectile
 (setq projectile-project-search-path (list (concat home "studio/")
