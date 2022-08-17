@@ -3222,6 +3222,27 @@ to the query at execution."
 
 #+end_src
 
+**** keymap
+***** list-keymaps
+
+#+begin_src emacs-lisp
+
+(defvar custom/keymap-list '()
+  "List containing the symbols of all keymaps in the `obarray'.")
+
+(defun custom/list-keymaps ()
+  "Return a list containing the symbols of all keymaps in the `obarray'."
+  (mapatoms (lambda (m) (if (condition-case nil
+                                (or (keymapp (symbol-value m))
+                                    (keymapp m))
+                              (error nil))
+                            (add-to-list 'custom/keymap-list m))
+          obarray))
+  (when (called-interactively-p 'interactive)
+        (message "Keymap list updated, %s keymaps found" (length custom/keymap-list)))
+  custom/keymap-list)
+
+#+end_src
 **** in-mode
 
 #+begin_src emacs-lisp
