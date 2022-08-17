@@ -3223,6 +3223,27 @@ to the query at execution."
   custom/keymap-list)
 
 #+end_src
+
+***** keymap-symbol
+
+#+begin_src emacs-lisp
+
+(defun custom/keymap-symbol (keymap)
+  "Return the symbol to which KEYMAP is bound, or nil if no such symbol exists."
+  (catch 'gotit
+    (mapatoms (lambda (sym)
+                (and (boundp sym)
+                     (eq (symbol-value sym) keymap)
+                     (not (eq sym 'keymap))
+                     (throw 'gotit sym))))))
+
+#+end_src
+
+-----
+References:
+
+- [[https://stackoverflow.com/a/14490054][user4815162342, Answer to "Emacs name of current local keymap?", StackOverflow]]
+
 **** in-mode
 
 #+begin_src emacs-lisp
