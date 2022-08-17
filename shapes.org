@@ -3400,6 +3400,22 @@ through as a theme loads."
 #+end_src
 
 *** Window
+**** Quit
+
+#+begin_src emacs-lisp
+
+(defun custom/quit-window ()
+  (interactive)
+  (if current-prefix-arg
+      (quit-window)
+    (quit-window 1)))
+
+(cl-loop for map in '(help-mode-map
+                      helpful-mode-map)
+         collect (define-key (symbol-value map) [remap quit-window] #'custom/quit-window))
+
+#+end_src
+
 **** Resize
 ***** window-resize
 
