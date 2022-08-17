@@ -76,6 +76,30 @@ to the query at execution."
     (beginning-of-visual-line)
     (count-screen-lines (region-beginning) (region-end))))
 
+(defvar custom/keymap-list '()
+  "List containing the symbols of all keymaps in the `obarray'.")
+
+(defun custom/list-keymaps ()
+  "Return a list containing the symbols of all keymaps in the `obarray'."
+  (mapatoms (lambda (m) (if (condition-case nil
+                                (or (keymapp (symbol-value m))
+                                    (keymapp m))
+                              (error nil))
+                            (add-to-list 'custom/keymap-list m))
+          obarray))
+  (when (called-interactively-p 'interactive)
+        (message "Keymap list updated, %s keymaps found" (length custom/keymap-list)))
+  custom/keymap-list)
+
+(defun custom/keymap-symbol (keymap)
+  "Return the symbol to which KEYMAP is bound, or nil if no such symbol exists."
+  (catch 'gotit
+    (mapatoms (lambda (sym)
+                (and (boundp sym)
+                     (eq (symbol-value sym) keymap)
+                     (not (eq sym 'keymap))
+                     (throw 'gotit sym))))))
+
 (defun custom/in-mode (mode)
   "Return t if mode is currently active."
   (string-equal major-mode mode))

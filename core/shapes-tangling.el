@@ -22,7 +22,7 @@
        `(lambda (result)
 		     (if result
 			 (message "SUCCESS: %s successfully tangled (%.2fs)."
-				  ,org-file
+				  ,(file-name-nondirectory org-file)
 				  (float-time (time-subtract (current-time)
 							     ',init-tangle-start-time)))
 		       (message "ERROR: %s tangling failed." ,org-file)))))))

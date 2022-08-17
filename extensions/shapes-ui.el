@@ -25,6 +25,16 @@ through as a theme loads."
 
 (advice-add 'load-theme :around #'custom/theme-accents)
 
+(defun custom/quit-window ()
+  (interactive)
+  (if current-prefix-arg
+      (quit-window)
+    (quit-window 1)))
+
+(cl-loop for map in '(help-mode-map
+                      helpful-mode-map)
+         collect (define-key (symbol-value map) [remap quit-window] #'custom/quit-window))
+
 (defun custom/window-resize (width)
   (window-resize nil (- width (window-width)) t))
 
