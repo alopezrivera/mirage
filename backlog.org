@@ -1,3 +1,4 @@
+
 #+STARTUP: overview
 #+FILETAGS: :emacs:
 
@@ -34,15 +35,30 @@
       - SpaceMacs
          - https://github.com/syl20bnr/spacemacs/blob/master/core/core-spacemacs-buffer.el#L550
 
+-----
 
+- fonts
+   - new
+      - https://ctrlcctrlv.github.io/TT2020/docs/
+   - define-font
+      - Century Gothic
+      - LOTR
+      - Pump Triline
+   - typeface groups
+      - body
+      - titles
+      - headings
 - light, dark theme advice
    - unevaluated list
       - execute
+
 - creds
    - group
    - vars
    - insert cred
       - list creds
+   - https://www.gnu.org/software/emacs/manual/html_mono/auth.html
+
 - dependencies
    1) extensions -> require
    2) reduce
@@ -59,9 +75,6 @@
    - general
       - https://github.com/noctuid/general.el#about
    - https://emacs.stackexchange.com/questions/14943/difference-between-the-physical-ret-key-and-the-command-newline-in-the-minibu
-
-- async auto tangle
-   - https://elblogdelazaro.org/posts/2019-12-16-org-mode-mi-fichero-de-configuracion/#acabando
 
 ** bib
 
@@ -81,6 +94,8 @@
          - https://github.com/jkitchin/org-ref-cite
    - citar
       - https://github.com/emacs-citar/citar
+      - citar-org-roam
+         - https://www.reddit.com/r/emacs/comments/wk4dur/citar_10_citarorgroam_doom_biblio_update/
 
 - record
    - zortra
@@ -146,7 +161,10 @@ guides
 stow
 
 - session
-   - https://github.com/alphapapa/salv.el
+   - salv
+      - https://github.com/alphapapa/salv.el
+   - dogears
+      - https://github.com/alphapapa/dogears.el/tree/c05b69e504a538c9e00fbb0ea86934fafe191d0c
 
 -----
 hotfixes
@@ -157,6 +175,10 @@ hotfixes
       - integrate in org-paragraph
 - desktop
    - https://superuser.com/questions/859761/prevent-emacs-desktop-save-from-holding-onto-theme-elements
+- symbol line height
+   - https://emacs.stackexchange.com/questions/251/line-height-with-unicode-characters
+   - unicode-fonts
+      - https://github.com/rolandwalker/unicode-fonts
 
 -----
 modes
@@ -195,14 +217,6 @@ packages
 **** yank-region
 
 - mouse 3 in region -> yank
-
-*** typefaces
-
-- https://ctrlcctrlv.github.io/TT2020/docs/
-
-- symbols
-   - unicode-fonts
-      - https://emacs.stackexchange.com/questions/251/line-height-with-unicode-characters
 
 *** org-subtree-empty
 
@@ -281,6 +295,7 @@ packages
 ** Miscellaneous
 
 - https://github.com/alphapapa/unpackaged.el
+- https://www.emacswiki.org/emacs/download/misc-cmds.el
 
 
 * Refactoring
@@ -617,6 +632,8 @@ packages
 
 * writing
 
+- writeroom mode
+   - https://github.com/joostkremers/writeroom-mode
 - Power Thesaurus
    - https://github.com/SavchenkoValeriy/emacs-powerthesaurus
 - Screenwriting
@@ -624,6 +641,8 @@ packages
       - https://github.com/rnkn/fountain-mode/
          - https://www.youtube.com/watch?v=Be1hE_pQL4w
 - Spell checking
+   - Refereces
+      - https://elblogdelazaro.org/posts/2019-12-16-org-mode-mi-fichero-de-configuracion/#acabando
    - Flyspell
       - https://www.emacswiki.org/emacs/FlySpell
          - https://www.tenderisthebyte.com/blog/2019/06/09/spell-checking-emacs/
@@ -763,7 +782,14 @@ packages
 
 * async
 
-- https://github.com/jwiegley/emacs-async
+- References
+   - https://github.com/skeeto/emacs-aio/issues/1
+
+- async
+   - https://github.com/jwiegley/emacs-async
+- aio
+   - https://nullprogram.com/blog/2019/03/10/
+
 - shells
    - https://emacs.stackexchange.com/questions/299/how-can-i-run-an-async-process-in-the-background-without-popping-up-a-buffer
       - https://github.com/ilya-babanov/emacs-bpr
