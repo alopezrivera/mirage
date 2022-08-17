@@ -2790,12 +2790,6 @@ if it was previously enabled."
   (require 'calfw-org)
   (require 'calfw-ical))
 
-#+end_src
-
-***** org-calendar
-
-#+begin_src emacs-lisp
-
 (defun custom/org-calendar ()
   "Open `calfw' Org Agenda calendar."
   (interactive)
