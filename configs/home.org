@@ -9,32 +9,31 @@
 
 
 
-A single program to jot down notes and write documents and prose.
+A single program,
 
-To write code and do version control.
+To jot down notes and write documents and prose.
+- [X] diary
+- [X] scratchpad
+- [X] zettelkasten
 
-To keep track and plan tasks and projects, to save contacts.
+To write code and version control.
+- [X] IDE
+- [X] git
 
 To manage the configuration of your machine.
+- [X] dotfiles
 
-To publish to the web, in document form, to manage email.
+To plan and keep track of tasks and projects.
+- [ ] agenda
+- [X] calendar
 
+To remember contacts and manage email.
+- [X] contact book
+- [ ] email client
 
------
-
-- diary
-- notebook
-- zettelkasten
-- agenda
-- calendar
-- contact book
-- git client
-- IDE
-
------
-
-- blog
-- LaTeX
+To publish to the web and in document form.
+- [ ] blog
+- [ ] LaTeX
 
 * Infrastructure
 ** General purpose
@@ -144,6 +143,11 @@ We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/d
 :beta
 
 #+end_src
+
+-----
+References:
+
+- [[https://www.lucacambiaghi.com/vanilla-emacs/readme.html][Luca Ambiaghi, Luca's literate Emacs config]]
 
 ** Configuration management
 *** Littering
