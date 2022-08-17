@@ -3237,7 +3237,7 @@ to the query at execution."
 References:
 
 - [[https://stackoverflow.com/a/14490054][user4815162342, Answer to "Emacs name of current local keymap?", StackOverflow]]
-
+  
 **** in-mode
 
 #+begin_src emacs-lisp
