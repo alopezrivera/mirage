@@ -18,11 +18,17 @@
 
 #+begin_src emacs-lisp
 
-(defun shapes-load (type component)
-  "Load a shapeshifter COMPONENT of the given TYPE"
-  (require (intern (concat "shapes-" type "-" component)) (concat config-directory type "s" "/shapes-" component ".el")))
+(defcustom shapes-debug-on-error nil
+  "Whether to enter the debugger and stop loading of the
+Shapes configuration when an error is found")
 
-;; shapeshifter modules
+(defun shapes-load (type component)
+  "Load a shapes COMPONENT of the given TYPE"
+  (condition-case err
+      (require (intern (concat "shapes-" type "-" component)) (concat config-directory type "s" "/shapes-" component ".el"))
+    (error (progn (message "ERROR: shapes-%s %s load failed" component type)
+		     (if shapes-debug-on-error
+		         (debug err))))))
 (defun shapes-module (module)
   "Load a shapeshifter MODULE by name"
   (shapes-load "module" module))
