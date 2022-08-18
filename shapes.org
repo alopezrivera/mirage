@@ -29,18 +29,20 @@ Shapes configuration when an error is found")
     (error (progn (message "ERROR: shapes-%s %s load failed" component type)
 		     (if shapes-debug-on-error
 		         (debug err))))))
+
+;; shapes modules
 (defun shapes-module (module)
-  "Load a shapeshifter MODULE by name"
+  "Load a shapes MODULE by name"
   (shapes-load "module" module))
 
-;; shapeshifter layers
+;; shapes layers
 (defun shapes-layer (layer)
-  "Load a shapeshifter LAYER by name"
+  "Load a shapes LAYER by name"
   (shapes-load "layer" layer))
 
-;; shapeshifter extensions
+;; shapes extensions
 (defun shapes-extend (extension)
-  "Load a shapeshifter EXTENSION by name"
+  "Load a shapes EXTENSION by name"
   (shapes-load "extension" extension))
 
 #+end_src
@@ -241,7 +243,7 @@ Shapes configuration when an error is found")
 :header-args:emacs-lisp+: :tangle ./layers/shapes-themes.el
 :END:
 
-Shapeshifter themes layer. It requires three variables to be defined: the light and dark themes (~light~ and ~dark~ respectively), and the mode line of choice (~modeline~).
+Shapes themes layer. It requires three variables to be defined: the light and dark themes (~light~ and ~dark~ respectively), and the mode line of choice (~modeline~).
 
 #+begin_src emacs-lisp
 
