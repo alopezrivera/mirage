@@ -407,6 +407,8 @@ packages
 * pdf
 
 - pdf-tools
+- qpdf
+   - https://github.com/orgtre/qpdf.el
 - org-noter
    - https://github.com/weirdNox/org-noter
    - https://www.youtube.com/watch?v=lCc3UoQku-E
