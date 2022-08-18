@@ -31,9 +31,10 @@ through as a theme loads."
       (quit-window)
     (quit-window 1)))
 
-(cl-loop for map in '(help-mode-map
-                      helpful-mode-map)
-         collect (define-key (symbol-value map) [remap quit-window] #'custom/quit-window))
+(with-eval-after-load 'helpful
+  (cl-loop for map in '(help-mode-map
+                        helpful-mode-map)
+           collect (define-key (symbol-value map) [remap quit-window] #'custom/quit-window)))
 
 (defun custom/window-resize (width)
   (window-resize nil (- width (window-width)) t))

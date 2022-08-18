@@ -1,20 +1,28 @@
-(defun shapes-load (type component)
-  "Load a shapeshifter COMPONENT of the given TYPE"
-  (require (intern (concat "shapes-" type "-" component)) (concat config-directory type "s" "/shapes-" component ".el")))
+(defcustom shapes-debug-on-error nil
+  "Whether to enter the debugger and stop loading of the
+Shapes configuration when an error is found")
 
-;; shapeshifter modules
+(defun shapes-load (type component)
+  "Load a shapes COMPONENT of the given TYPE"
+  (condition-case err
+      (require (intern (concat "shapes-" type "-" component)) (concat config-directory type "s" "/shapes-" component ".el"))
+    (error (progn (message "ERROR: shapes-%s %s load failed" component type)
+		     (if shapes-debug-on-error
+		         (debug err))))))
+
+;; shapes modules
 (defun shapes-module (module)
-  "Load a shapeshifter MODULE by name"
+  "Load a shapes MODULE by name"
   (shapes-load "module" module))
 
-;; shapeshifter layers
+;; shapes layers
 (defun shapes-layer (layer)
-  "Load a shapeshifter LAYER by name"
+  "Load a shapes LAYER by name"
   (shapes-load "layer" layer))
 
-;; shapeshifter extensions
+;; shapes extensions
 (defun shapes-extend (extension)
-  "Load a shapeshifter EXTENSION by name"
+  "Load a shapes EXTENSION by name"
   (shapes-load "extension" extension))
 
 (provide 'shapes-core-load)
