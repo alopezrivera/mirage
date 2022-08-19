@@ -3468,12 +3468,7 @@ key binding input with C-g."
 #+end_src
 
 *** Mode line
-**** TODO Hide
-
-- Hidden mode line mode
-   - https://github.com/hlissner/emacs-hide-mode-line
-   - https://webonastick.com/emacs-lisp/hide-mode-line.el
-   - https://github.com/manateelazycat/awesome-tray
+**** Hide
 
 #+begin_src emacs-lisp
 

@@ -788,6 +788,10 @@ packages
 - bespoke
    - https://github.com/mclear-tools/bespoke-modeline
 
+- Hidden mode line mode
+   - https://github.com/hlissner/emacs-hide-mode-line
+   - https://webonastick.com/emacs-lisp/hide-mode-line.el
+   - https://github.com/manateelazycat/awesome-tray
 
 
 * package management
