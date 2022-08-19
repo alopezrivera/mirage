@@ -1,4 +1,7 @@
-(shapes-extend "general")
+(shapes-extend "get")
+(shapes-extend "queries")
+(shapes-extend "execution")
+(shapes-extend "operators")
 
 (shapes-module "straight")
 

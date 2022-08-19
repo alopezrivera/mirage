@@ -23,7 +23,12 @@
 (shapes-module "org-babel")
 
 ;; extensions
-(shapes-extend "org")
+(shapes-extend "org-get")
+(shapes-extend "org-queries")
+(shapes-extend "org-editing")
+(shapes-extend "org-display")
+(shapes-extend "org-outline")
+(shapes-extend "org-navigation")
 
 (provide 'shapes-layer-org)
 ;;; shapes-org.el ends here

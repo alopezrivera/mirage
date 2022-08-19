@@ -11,13 +11,13 @@
 
 ;; reload Org Mode
 (defun custom/org-theme-reload ()
-  (if (custom/in-mode "org-mode")
+  (if (string-equal major-mode "org-mode")
       (org-mode)
     (progn
       (setq window (get-buffer-window (current-buffer)))
-      (cl-loop for buffer in (custom/visible-buffers)
+      (cl-loop for buffer in (custom/get-visible-buffers)
 	             collect (select-window (get-buffer-window buffer))
-	 	     if (custom/in-mode "org-mode")
+	 	     if (string-equal major-mode "org-mode")
 		        collect (org-mode))
       (select-window window))))
 
@@ -39,17 +39,17 @@ using `enable-theme'"
 (defun custom/modeline-color (bg bg-in face face-in)
   "Set the color of the mode and header lines and blend the 
 `doom-modeline-bar' with the background."
-  (set-face-attribute 'mode-line          nil :foreground face    :background bg    :box nil)
-  (set-face-attribute 'mode-line-inactive nil :foreground face-in :background bg-in :box nil)
+  (set-face-attribute 'mode-line            nil :foreground face    :background bg    :box nil)
+  (set-face-attribute 'mode-line-inactive   nil :foreground face-in :background bg-in :box nil)
   ;; header line
-  (set-face-attribute 'header-line        nil :foreground face    :background bg    :box nil))
+  (set-face-attribute 'header-line          nil :foreground face-in :background bg-in :box nil))
 
 (defun custom/dark-modeline ()
-  "Mode line for light themes."
+  "Mode line for dark themes."
   (custom/modeline-color "#3d3d3d" "#000000" "#cfcfcf" "#cfcfcf"))
 
 (defun custom/light-modeline ()
-  "Mode line for dark themes."
+  "Mode line for light themes."
   (custom/modeline-color "#fff0ff" "#ededed" "#616161" "#878787"))
 
 (defun custom/dark-line-numbers ()

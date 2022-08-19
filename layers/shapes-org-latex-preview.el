@@ -35,13 +35,13 @@
   "Set `org-preview-latex-image-directory' to the SVG
 LaTeX preview directory of the current theme"
   (setq org-preview-latex-image-directory
-   (concat "/tmp/ltximg/" (custom/current-theme) "/")))
+   (concat "/tmp/ltximg/" (custom/get-active-theme) "/")))
 
 (defun custom/latex-preview-reload ()
   "Reload all LaTeX previews in buffer,
 ensuring the LaTeX preview directory
 matches the current theme."
-  (if (custom/in-mode "org-mode")
+  (if (string-equal major-mode "org-mode")
       (progn (org-latex-preview '(64))
 	        (custom/latex-preview-directory)
 		(org-latex-preview '(16)))))

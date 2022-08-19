@@ -85,20 +85,13 @@ key binding input with C-g."
 
 (global-set-key (kbd "M-m") #'custom/hide-mode-line)
 
-(defun custom/variable-replace (a b)
-  "Set the value of `b' to that of `a', and
-that of `a' to nil in all buffers"
-  (let ((line (symbol-value a)))
-    (custom/@buffers (progn (set b line)
-                            (set a nil)))))
-
 (defun custom/mode-line-invert ()
   (interactive)
-  (let ((m 'mode-line-format)
-        (h 'header-line-format))
-    (if mode-line-format
-        (custom/variable-replace m h)
-      (custom/variable-replace h m))))
+  (if mode-line-format
+      (custom/@buffers (progn (set 'header-line-format mode-line-format)
+                              (set 'mode-line-format nil)))
+    (custom/@buffers (progn (set 'mode-line-format header-line-format)
+                            (set 'header-line-format nil)))))
 
 (global-set-key (kbd "M-t") #'custom/mode-line-invert)
 

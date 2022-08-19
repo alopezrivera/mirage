@@ -1,7 +1,7 @@
 ;; package manager
 (shapes-module "straight")
 
-;; other packages
+;; other modules
 (shapes-module "async")
 
 (provide 'shapes-core-modules)
