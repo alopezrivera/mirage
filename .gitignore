@@ -5,6 +5,7 @@
 # littering
 var/*
 transient/*
+.org-generic-id-locations
 
 # directories
 tmp/*
