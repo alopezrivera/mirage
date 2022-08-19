@@ -4843,11 +4843,12 @@ the previous heading is folded:
 1. Unfold the heading
 2. Create the new heading after its subtree
 3. Fold it back"
-  (let ((margin-post        (custom/regex-match-count "\n" (custom/org-heading-margin-post)))
-	      (prev-same-level    (custom/get-point 'beginning-of-visual-line))
-	      (prev-lower-level   (custom/get-point 'custom/org-goto-child-last))
-	      (folded-same-level  (custom/org-relative-line-heading-folded))
-	      (folded-lower-level (save-excursion (custom/org-goto-child-last) (custom/org-relative-line-heading-folded))))
+  (let ((margin-post        (custom/count-substrings "\n" (custom/org-heading-margin-post)))
+	(prev-same-level    (custom/get-point 'beginning-of-visual-line))
+	(prev-lower-level   (custom/get-point 'custom/org-goto-child-last))
+	(folded-same-level  (custom/org-relative-line-heading-folded))
+	(folded-lower-level (save-excursion (custom/org-goto-child-last)
+                                            (custom/org-relative-line-heading-folded))))
 
     ;; Go to current heading
     (custom/org-goto-heading-current)
