@@ -407,7 +407,12 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "org-babel")
 
 ;; extensions
-(shapes-extend "org")
+(shapes-extend "org-get")
+(shapes-extend "org-queries")
+(shapes-extend "org-editing")
+(shapes-extend "org-display")
+(shapes-extend "org-outline")
+(shapes-extend "org-navigation")
 
 #+end_src
 
@@ -3563,13 +3568,13 @@ key binding input with C-g."
 
 ;; reload Org Mode
 (defun custom/org-theme-reload ()
-  (if (custom/in-mode "org-mode")
+  (if (string-equal major-mode "org-mode")
       (org-mode)
     (progn
       (setq window (get-buffer-window (current-buffer)))
-      (cl-loop for buffer in (custom/visible-buffers)
+      (cl-loop for buffer in (custom/get-visible-buffers)
 	             collect (select-window (get-buffer-window buffer))
-	 	     if (custom/in-mode "org-mode")
+	 	     if (string-equal major-mode "org-mode")
 		        collect (org-mode))
       (select-window window))))
 
@@ -4388,7 +4393,7 @@ is on a folded heading."
   "Return t if the current subtree consists of
 a `custom/region-blank'."
   (interactive)
-  (apply #'custom/region-blank (custom/org-subtree-region)))
+  (apply #'custom/region-blank (custom/org-get-subtree-region)))
 
 #+end_src
 
@@ -4398,7 +4403,7 @@ a `custom/region-blank'."
 
 (defun custom/org-subtree-empty ()
   (interactive)
-  (string-equal "" (custom/org-subtree-content)))
+  (string-equal "" (custom/org-get-subtree-content)))
 
 #+end_src
 
@@ -4729,7 +4734,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
   "Delete newline after new headings created by
 `respect-content' heading commands."
   (if (custom/org-subtree-blank)
-      (apply 'delete-region (custom/org-subtree-region))))
+      (apply 'delete-region (custom/org-get-subtree-region))))
 
 #+end_src
 
