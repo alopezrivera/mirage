@@ -3023,21 +3023,59 @@ folded."
 
 
 * Extensions
-** General purpose
+** Utilities
+*** Get
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-general.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-get.el
 :END:
 
 #+begin_src emacs-lisp
 ;;; -*- lexical-binding: t; -*-
 #+end_src
 
-*** Queries
-**** regex-match-count
+**** UI
+***** get-active-theme
 
 #+begin_src emacs-lisp
 
-(defun custom/regex-match-count (regexp str)
+;; Retrieve current theme
+(defun custom/get-active-theme ()
+  (substring (format "%s" (nth 0 custom-enabled-themes))))
+
+#+end_src
+
+**** Text
+***** get-point
+
+#+begin_src emacs-lisp
+
+(defun custom/get-point (command &rest args)
+  (interactive)
+  (save-excursion
+    (apply command args)
+    (point)))
+
+#+end_src
+
+***** get-last-change
+
+#+begin_src emacs-lisp
+
+(defun custom/get-last-change ()
+  "Retrieve last change in current buffer."
+  (setq last-change (nth 1 buffer-undo-list))
+  (let ((beg (car last-change))
+        (end (cdr last-change)))
+    (buffer-substring-no-properties beg end)))
+
+#+end_src
+
+***** count-substrings
+
+#+begin_src emacs-lisp
+
+(defun custom/count-substrings (regexp str)
+  "Return the number of substrings of STR matching REGEXP"
   (loop with start = 0
         for count from 0
         while (string-match regexp str start)
@@ -3046,7 +3084,105 @@ folded."
 
 #+end_src
 
-**** at
+**** Data
+***** get-keyword-key-value
+
+#+begin_src emacs-lisp
+
+(defun custom/get-keyword-key-value (kwd)
+   (let ((data (cadr kwd)))
+     (list (plist-get data :key)
+           (plist-get data :value))))
+
+#+end_src
+
+**** Buffer
+***** get-visible-buffers
+
+#+begin_src emacs-lisp
+
+(defun custom/get-visible-buffers ()
+  (cl-delete-duplicates (mapcar #'window-buffer (window-list))))
+
+#+end_src
+
+***** get-buffer-by-file-name
+
+#+begin_src emacs-lisp
+
+(defun custom/get-buffer-by-file-name (file)
+  (cl-loop for buffer in (buffer-list)
+	        if (string-equal (buffer-name buffer) (file-name-nondirectory file))
+	           return buffer
+		finally return nil))
+
+#+end_src
+
+**** Window
+***** get-active-window-number
+
+#+begin_src emacs-lisp
+
+(defun custom/get-active-window-number ()
+  "Retrieve the current window's number."
+  (setq window (prin1-to-string (get-buffer-window (current-buffer))))
+  (string-match "^[^0-9]*\\([0-9]+\\).*$" window)
+  (match-string 1 window))
+
+#+end_src
+
+**** Keymap
+***** get-keymaps
+
+#+begin_src emacs-lisp
+
+(defvar custom/keymap-list '()
+  "List containing the symbols of all keymaps in the `obarray'.")
+
+(defun custom/get-keymaps ()
+  "Return a list containing the symbols of all keymaps in the `obarray'."
+  (mapatoms (lambda (m) (if (condition-case nil
+                                (or (keymapp (symbol-value m))
+                                    (keymapp m))
+                              (error nil))
+                            (add-to-list 'custom/keymap-list m))
+          obarray))
+  (when (called-interactively-p 'interactive)
+        (message "Keymap list updated, %s keymaps found" (length custom/keymap-list)))
+  custom/keymap-list)
+
+#+end_src
+
+***** get-keymap-symbol
+
+#+begin_src emacs-lisp
+
+(defun custom/get-keymap-symbol (keymap)
+  "Return the symbol to which KEYMAP is bound, or nil if no such symbol exists."
+  (catch 'gotit
+    (mapatoms (lambda (sym)
+                (and (boundp sym)
+                     (eq (symbol-value sym) keymap)
+                     (not (eq sym 'keymap))
+                     (throw 'gotit sym))))))
+
+#+end_src
+
+-----
+References:
+
+- [[https://stackoverflow.com/a/14490054][user4815162342, Answer to "Emacs name of current local keymap?", StackOverflow]]
+
+*** Queries
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-queries.el
+:END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
+**** At
 ***** eolp
 
 #+begin_src emacs-lisp
@@ -3080,7 +3216,7 @@ folded."
 
 #+end_src
 
-**** line
+**** Line
 ***** relative-line
 
 #+begin_src emacs-lisp
@@ -3168,7 +3304,7 @@ to the query at execution."
 
 #+end_src
 
-**** region
+**** Region
 ***** region-blank
 
 #+begin_src emacs-lisp
@@ -3204,139 +3340,15 @@ to the query at execution."
 
 #+end_src
 
-**** keymap
-***** list-keymaps
-
-#+begin_src emacs-lisp
-
-(defvar custom/keymap-list '()
-  "List containing the symbols of all keymaps in the `obarray'.")
-
-(defun custom/list-keymaps ()
-  "Return a list containing the symbols of all keymaps in the `obarray'."
-  (mapatoms (lambda (m) (if (condition-case nil
-                                (or (keymapp (symbol-value m))
-                                    (keymapp m))
-                              (error nil))
-                            (add-to-list 'custom/keymap-list m))
-          obarray))
-  (when (called-interactively-p 'interactive)
-        (message "Keymap list updated, %s keymaps found" (length custom/keymap-list)))
-  custom/keymap-list)
-
-#+end_src
-
-***** keymap-symbol
-
-#+begin_src emacs-lisp
-
-(defun custom/keymap-symbol (keymap)
-  "Return the symbol to which KEYMAP is bound, or nil if no such symbol exists."
-  (catch 'gotit
-    (mapatoms (lambda (sym)
-                (and (boundp sym)
-                     (eq (symbol-value sym) keymap)
-                     (not (eq sym 'keymap))
-                     (throw 'gotit sym))))))
-
-#+end_src
-
------
-References:
-
-- [[https://stackoverflow.com/a/14490054][user4815162342, Answer to "Emacs name of current local keymap?", StackOverflow]]
-  
-**** in-mode
-
-#+begin_src emacs-lisp
-
-(defun custom/in-mode (mode)
-  "Return t if mode is currently active."
-  (string-equal major-mode mode))
-
-#+end_src
-
-**** current-theme
-
-#+begin_src emacs-lisp
-
-;; Retrieve current theme
-(defun custom/current-theme ()
-  (substring (format "%s" (nth 0 custom-enabled-themes))))
-
-#+end_src
-
-**** current-window-number
-
-#+begin_src emacs-lisp
-
-(defun custom/current-window-number ()
-  "Retrieve the current window's number."
-  (setq window (prin1-to-string (get-buffer-window (current-buffer))))
-  (string-match "^[^0-9]*\\([0-9]+\\).*$" window)
-  (match-string 1 window))
-
-#+end_src
-
-**** find-buffer-by-file-name
-
-#+begin_src emacs-lisp
-
-(defun custom/find-buffer-by-file-name (file)
-  (cl-loop for buffer in (buffer-list)
-	        if (string-equal (buffer-name buffer) (file-name-nondirectory file))
-	           return buffer
-		finally return nil))
-
-#+end_src
-
-*** Retrieval
-**** get-point
-
-#+begin_src emacs-lisp
-
-(defun custom/get-point (command &rest args)
-  (interactive)
-  (save-excursion
-    (apply command args)
-    (point)))
-
-#+end_src
-
-**** last-change
-
-#+begin_src emacs-lisp
-
-(defun custom/last-change ()
-  "Retrieve last change in current buffer."
-  (setq last-change (nth 1 buffer-undo-list))
-  (let ((beg (car last-change))
-        (end (cdr last-change)))
-    (buffer-substring-no-properties beg end)))
-
-#+end_src
-
-**** visible-buffers
-
-#+begin_src emacs-lisp
-
-(defun custom/visible-buffers ()
-  (cl-delete-duplicates (mapcar #'window-buffer (window-list))))
-
-#+end_src
-
-**** get-keyword-key-value
-
-#+begin_src emacs-lisp
-
-(defun custom/get-keyword-key-value (kwd)
-   (let ((data (cadr kwd)))
-     (list (plist-get data :key)
-           (plist-get data :value))))
-
-#+end_src
-
 *** Execution
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-execution.el
+:END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 **** @buffers
 
 #+begin_src emacs-lisp
@@ -3351,6 +3363,14 @@ References:
 #+end_src
 
 *** Operators
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-operators.el
+:END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 **** <>
 
 #+begin_src emacs-lisp
