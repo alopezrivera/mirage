@@ -4187,16 +4187,83 @@ the user for confirmation."
 
 
 ** Org Mode
+*** Utilities
+**** Get
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-get.el
 :END:
 
 #+begin_src emacs-lisp
 ;;; -*- lexical-binding: t; -*-
 #+end_src
 
-*** General purpose
+***** org-get-title
+
+#+begin_src emacs-lisp
+
+(defun custom/org-get-title (&optional buffer)
+  (let ((buffer (or buffer (current-buffer))))
+    (with-current-buffer buffer
+      (nth 1
+	   (assoc "TITLE"
+		  (org-element-map (org-element-parse-buffer 'greater-element)
+		      '(keyword)
+		    #'custom/get-keyword-key-value))))))
+
+#+end_src
+
+***** org-get-file-title
+
+#+begin_src emacs-lisp
+
+(defun custom/org-get-file-title (file)
+  (with-current-buffer (find-file-noselect file)
+       (custom/org-get-title)))
+
+#+end_src
+
+***** org-get-subtree-region
+
+#+begin_src emacs-lisp
+
+(defun custom/org-get-subtree-region (&optional element)
+  "Retrieve the beginning and end of the current subtree."
+  (if (org-element--cache-active-p)
+      (let* ((heading (org-element-lineage
+                       (or element (org-element-at-point))
+                       '(headline) t))
+	     (head (org-element-property :begin heading))
+	     (next (org-element-property :end   heading)))
+	  (if (and heading next)
+	      (progn (save-excursion (goto-char head)
+				     (beginning-of-line 2)
+				     (setq beg (point)))
+		     (save-excursion (goto-char next)
+				     (beginning-of-line)
+				     (setq end (max beg (point))))
+		     (list beg end))))))
+
+#+end_src
+
+***** org-get-subtree-content
+
+#+begin_src emacs-lisp
+
+(defun custom/org-get-subtree-content ()
+  "Retrieve the content of the current subtree."
+  (setq content (apply #'buffer-substring-no-properties (custom/org-get-subtree-region))))
+
+#+end_src
+
 **** Queries
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-queries.el
+:END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 ***** in
 ****** org-in-src-block-p
 
@@ -4463,203 +4530,15 @@ a `custom/region-blank'."
   (save-excursion (org-goto-first-child)))
 
 #+end_src
-
-**** Retrieval
-***** org-subtree-region
-
-#+begin_src emacs-lisp
-
-(defun custom/org-subtree-region (&optional element)
-  "Retrieve the beginning and end of the current subtree."
-  (if (org-element--cache-active-p)
-      (let* ((heading (org-element-lineage
-                       (or element (org-element-at-point))
-                       '(headline) t))
-	     (head (org-element-property :begin heading))
-	     (next (org-element-property :end   heading)))
-	  (if (and heading next)
-	      (progn (save-excursion (goto-char head)
-				     (beginning-of-line 2)
-				     (setq beg (point)))
-		     (save-excursion (goto-char next)
-				     (beginning-of-line)
-				     (setq end (max beg (point))))
-		     (list beg end))))))
-
-#+end_src
-
-***** org-subtree-content
-
-#+begin_src emacs-lisp
-
-(defun custom/org-subtree-content ()
-  "Retrieve the content of the current subtree."
-  (setq content (apply #'buffer-substring-no-properties (custom/org-subtree-region))))
-
-#+end_src
-
-***** org-get-title-file
-
-#+begin_src emacs-lisp
-
-(defun custom/org-get-title-file (file)
-  (with-current-buffer (find-file-noselect file)
-       (custom/org-get-title-buffer)))
-
-#+end_src
-
-***** org-get-title-buffer
-
-#+begin_src emacs-lisp
-
-(defun custom/org-get-title-buffer (&optional buffer)
-  (let ((buffer (or buffer (current-buffer))))
-    (with-current-buffer buffer
-      (nth 1
-	   (assoc "TITLE"
-		  (org-element-map (org-element-parse-buffer 'greater-element)
-		      '(keyword)
-		    #'custom/get-keyword-key-value))))))
-
-#+end_src
-
-**** TODO Outline
-
-- deprecated cl warning
-   - find dependency
-
-***** Set
-****** set-outline-overlay-data
-
-#+begin_src emacs-lisp
-
-(defvar-local custom/org-outline-state nil
-  "Place for saving org outline state before reverting the buffer.")
-
-(put 'custom/org-outline-state 'permanent-local t)
-
-(defun custom/org-set-outline-overlay-data (data)
-  "Create visibility overlays for all positions in DATA.
-DATA should have been made by `org-outline-overlay-data'."
-  (org-with-wide-buffer
-   (org-show-all)
-   (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
-
-#+end_src
-
-****** restore-outline-state
-
-#+begin_src emacs-lisp
-
-(defun custom/org-restore-outline-state ()
-  "Save org outline state in `custom/org-outline-state'.
-It can be recovered afterwards with `custom/org-recover-outline-state'."
-  (when custom/org-outline-state
-    (custom/org-set-outline-overlay-data custom/org-outline-state)
-    (setq custom/org-outline-state nil)))
-
-#+end_src
-
-***** Get
-****** outline-overlay-data
-
-#+begin_src emacs-lisp
-
-(defun custom/org-outline-overlay-data (&optional use-markers)
-  "Return a list of the locations of all outline overlays.
-These are overlays with the `invisible' property value `outline'.
-The return value is a list of cons cells, with start and stop
-positions for each overlay.
-If USE-MARKERS is set, return the positions as markers."
-  (let (beg end)
-    (org-with-wide-buffer
-     (delq nil
-       (mapcar (lambda (o)
-             (when (eq (overlay-get o 'invisible) 'outline)
-               (setq beg (overlay-start o)
-                     end (overlay-end o))
-               (and beg end (> end beg)
-                (if use-markers
-                (cons (copy-marker beg)
-                      (copy-marker end t))
-                  (cons beg end)))))
-           (overlays-in (point-min) (point-max)))))))
-
-#+end_src
-
-****** save-outline-state
-
-#+begin_src emacs-lisp
-
-(defun custom/org-save-outline-state ()
-  "Save org outline state in `custom/org-outline-state'.
-It can be recovered afterwards with `custom/org-recover-outline-state'."
-  (setq custom/org-outline-state (custom/org-outline-overlay-data t)))
-
-(defun custom/org-install-save-outline-state ()
-  "Configure org to preserve the outline state at revert-buffer."
-  (add-hook 'before-revert-hook #'custom/org-save-outline-state nil t)
-  (add-hook 'after-revert-hook #'custom/org-restore-outline-state nil t))
-
-(add-hook 'org-mode-hook #'custom/org-install-save-outline-state)
-
-#+end_src
-
-***** Hide
-****** org-hide-previous-subtree
-
-#+begin_src emacs-lisp
-
-(defun custom/org-hide-previous-subtree ()
-  "Cycle previous Org Mode heading."
-  (save-excursion (custom/org-goto-heading-previous)
-		        (outline-hide-subtree)))
-
-#+end_src
-
-***** Show
-****** org-show
-
-#+begin_src emacs-lisp
-
-(defun custom/org-show (orig-fun &rest args)
-  (if (custom/org-at-ellipsis)
-      (progn (custom/org-goto-heading-bol) (apply orig-fun args))
-    (apply orig-fun args)))
-
-#+end_src
-
-****** org-show-subtree
-
-#+begin_src emacs-lisp
-
-(advice-add 'org-show-subtree :around #'custom/org-show)
-
-#+end_src
-
-****** org-show-children
-
-#+begin_src emacs-lisp
-
-(advice-add 'org-show-children :around #'custom/org-show)
-
-#+end_src
-
-****** org-show-minimum
-
-#+begin_src emacs-lisp
-
-(defun custom/org-show-minimum ()
-  (if (or (custom/org-relative-line-list-folded)
-	        (custom/org-relative-line-heading-folded))
-      (progn (if (custom/org-at-ellipsis)
-		       (progn (beginning-of-visual-line) (end-of-line)))
-	           (org-show-entry)
-	           (if (custom/org-heading-has-children) (org-show-children)))))
-
-#+end_src
-
 *** Editing
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-editing.el
+:END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 **** Text
 ***** Undo
 
@@ -5222,56 +5101,12 @@ function that sets `deactivate-mark' to t."
 #+end_src
 
 *** Display
-**** Outline
-***** TODO Cycle
-
-- bug
-   - https://lists.gnu.org/archive/html/emacs-orgmode/2022-05/msg00150.html
-   - https://www.reddit.com/r/emacs/comments/ulpdhu/org_mode_command_doesnt_update_a_buffer_if_i_use/
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-display.el
+:END:
 
 #+begin_src emacs-lisp
-
-(defun custom/org-cycle (orig-fun &rest args)
-  "Conditional `org-cycle'.
-
-Default: `org-cycle'
-
-If cursor lies at `end-of-visual-line' of folded heading or list,
-move cursor to `end-of-line' of the current visual line and then
-call `org-cycle'.
-
-If cursor lies at a paragraph directly under a list item and not
-indented at the level of the previous list item, indent the paragraph."
-  (interactive)
-  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
-      (if (= (point) (custom/get-point 'end-of-visual-line))
-	  (progn (beginning-of-visual-line)
-		 (end-of-line)
-		 (apply orig-fun args))
-	(apply orig-fun args))
-    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
-	      (org-indent-line)
-      (apply orig-fun args))))
-
-(advice-add 'org-cycle :around #'custom/org-cycle)
-
-#+end_src
-
-***** TODO Advice
-
-- not working
-
-#+begin_src emacs-lisp
-
-(defun custom/org-mode (orig-fun &rest args)
-  (if (custom/in-mode "org-mode")
-      (progn (custom/org-save-outline-state)
-	         (apply orig-fun args)
-		 (custom/org-restore-outline-state))
-    (apply orig-fun args)))
-
-(advice-add 'org-mode :around #'custom/org-mode)
-
+;;; -*- lexical-binding: t; -*-
 #+end_src
 
 **** Variable pitch
@@ -5344,7 +5179,200 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
+*** TODO Outline
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-outline.el
+:END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
+- deprecated cl warning
+   - find dependency
+**** Hide
+***** org-hide-previous-subtree
+
+#+begin_src emacs-lisp
+
+(defun custom/org-hide-previous-subtree ()
+  "Cycle previous Org Mode heading."
+  (save-excursion (custom/org-goto-heading-previous)
+		        (outline-hide-subtree)))
+
+#+end_src
+
+**** Show
+***** org-show
+
+#+begin_src emacs-lisp
+
+(defun custom/org-show (orig-fun &rest args)
+  (if (custom/org-at-ellipsis)
+      (progn (custom/org-goto-heading-bol) (apply orig-fun args))
+    (apply orig-fun args)))
+
+#+end_src
+
+***** org-show-subtree
+
+#+begin_src emacs-lisp
+
+(advice-add 'org-show-subtree :around #'custom/org-show)
+
+#+end_src
+
+***** org-show-children
+
+#+begin_src emacs-lisp
+
+(advice-add 'org-show-children :around #'custom/org-show)
+
+#+end_src
+
+***** org-show-minimum
+
+#+begin_src emacs-lisp
+
+(defun custom/org-show-minimum ()
+  (if (or (custom/org-relative-line-list-folded)
+	        (custom/org-relative-line-heading-folded))
+      (progn (if (custom/org-at-ellipsis)
+		       (progn (beginning-of-visual-line) (end-of-line)))
+	           (org-show-entry)
+	           (if (custom/org-heading-has-children) (org-show-children)))))
+
+#+end_src
+
+**** TODO Cycle
+
+- bug
+   - https://lists.gnu.org/archive/html/emacs-orgmode/2022-05/msg00150.html
+   - https://www.reddit.com/r/emacs/comments/ulpdhu/org_mode_command_doesnt_update_a_buffer_if_i_use/
+
+#+begin_src emacs-lisp
+
+(defun custom/org-cycle (orig-fun &rest args)
+  "Conditional `org-cycle'.
+
+Default: `org-cycle'
+
+If cursor lies at `end-of-visual-line' of folded heading or list,
+move cursor to `end-of-line' of the current visual line and then
+call `org-cycle'.
+
+If cursor lies at a paragraph directly under a list item and not
+indented at the level of the previous list item, indent the paragraph."
+  (interactive)
+  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
+      (if (= (point) (custom/get-point 'end-of-visual-line))
+	  (progn (beginning-of-visual-line)
+		 (end-of-line)
+		 (apply orig-fun args))
+	(apply orig-fun args))
+    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
+	      (org-indent-line)
+      (apply orig-fun args))))
+
+(advice-add 'org-cycle :around #'custom/org-cycle)
+
+#+end_src
+
+**** Restore
+***** get-outline-state
+
+#+begin_src emacs-lisp
+
+(defun custom/org-get-outline-state (&optional use-markers)
+  "Return a list of the locations of all outline overlays.
+These are overlays with the `invisible' property value `outline'.
+The return value is a list of cons cells, with start and stop
+positions for each overlay.
+If USE-MARKERS is set, return the positions as markers."
+  (let (beg end)
+    (org-with-wide-buffer
+     (delq nil
+       (mapcar (lambda (o)
+             (when (eq (overlay-get o 'invisible) 'outline)
+               (setq beg (overlay-start o)
+                     end (overlay-end o))
+               (and beg end (> end beg)
+                (if use-markers
+                (cons (copy-marker beg)
+                      (copy-marker end t))
+                  (cons beg end)))))
+           (overlays-in (point-min) (point-max)))))))
+
+#+end_src
+
+***** save-outline-state
+
+#+begin_src emacs-lisp
+
+(defun custom/org-save-outline-state ()
+  "Save org outline state in `custom/org-outline-state'.
+It can be recovered afterwards with `custom/org-recover-outline-state'."
+  (setq custom/org-outline-state (custom/org-get-outline-state t)))
+
+#+end_src
+
+***** set-outline-state
+
+#+begin_src emacs-lisp
+
+(defvar-local custom/org-outline-state nil
+  "Place for saving org outline state before reverting the buffer.")
+
+(put 'custom/org-outline-state 'permanent-local t)
+
+(defun custom/org-set-outline-state (data)
+  "Create visibility overlays for all positions in DATA.
+DATA should have been made by `org-get-stateay-data'."
+  (org-with-wide-buffer
+   (org-show-all)
+   (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
+
+#+end_src
+
+***** restore-outline-state
+
+#+begin_src emacs-lisp
+
+(defun custom/org-restore-outline-state ()
+  "Save org outline state in `custom/org-outline-state'.
+It can be recovered afterwards with `custom/org-recover-outline-state'."
+  (when custom/org-outline-state
+    (custom/org-set-outline-state custom/org-outline-state)
+    (setq custom/org-outline-state nil)))
+
+#+end_src
+
+***** TODO Reload advice
+
+- not working
+
+#+begin_src emacs-lisp
+
+(defun custom/org-mode (orig-fun &rest args)
+  (if (string-equal major-mode "org-mode")
+      (progn (custom/org-save-outline-state)
+	           (apply orig-fun args)
+		   (custom/org-restore-outline-state))
+    (apply orig-fun args)))
+
+(advice-add 'org-mode :around #'custom/org-mode)
+
+#+end_src
+
 *** Navigation
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-navigation.el
+:END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
 **** Line
 ***** org-end
 
