@@ -12,32 +12,25 @@
 
 * plan
 ** shapes
-*** dependencies
-
-- extensions
-   1) general
-       - split
-       - merge emacs and org
-- dependencies
-   1) require
-       - modules
-       - layers
-       - extensions
-
-- document
-   - mod org
-      - ext general
-      - mod el-patch
-   - ext org
-      - ext editing
-   - ext editing
-      - mod multiple-cursors
-
 *** bindings
 
 - general
    - https://github.com/noctuid/general.el#about
 - https://emacs.stackexchange.com/questions/14943/difference-between-the-physical-ret-key-and-the-command-newline-in-the-minibu
+
+*** typefaces
+
+typefaces restored after theme changes
+- default
+- mono
+- italic
+- titles
+- headings
+
+theme advice
+- store typefaces
+- change theme
+- restore typefaces
 
 *** light and dark theme advice
 
@@ -69,6 +62,10 @@
 
 - home buffer
    - https://gitlab.com/public-repositories/emacs-groundup
+      - https://gitlab.com/public-repositories/emacs-groundup/-/blob/main/config/src/defaults/settings.org
+   - magit-list-repositories
+      - https://emacs.stackexchange.com/questions/32696/how-to-use-magit-list-repositories
+
 - project dashboard
    - flow
       1. tabulated-list-mode
@@ -88,6 +85,12 @@
          - https://github.com/bbatsov/projectile/issues/967
       - SpaceMacs
          - https://github.com/syl20bnr/spacemacs/blob/master/core/core-spacemacs-buffer.el#L550
+
+*** layers
+**** writer
+
+- doom-zen-writer
+- https://yannesposito.com/posts/0021-ia-writer-clone-within-doom-emacs/index.html
 
 ** bib
 
@@ -142,25 +145,28 @@
       - #+date
 
 ** next
+*** org-diary
 
-- org-diary
-   - treemacs style window
-   - if window was resized, store previous size and restore window when exiting
+- treemacs style window
+- if window was resized, store previous size and restore window when exiting
 
-- invert mode line functions
+*** workflow
 
-- workflow
-   - org-clock-report
-      - https://orgmode.org/manual/The-clock-table.html
-   - notifications
-      - https://github.com/marcinkoziej/org-pomodoro
-      - https://github.com/akhramov/org-wild-notifier.el
+- https://orgmode.org/worg/org-gtd-etc.html
 
-- docker
-   - https://github.com/Silex/docker.el
+- org-clock-report
+   - https://orgmode.org/manual/The-clock-table.html
+- notifications
+   - https://github.com/marcinkoziej/org-pomodoro
+   - https://github.com/akhramov/org-wild-notifier.el
 
-- markdown
-   - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
+*** docker
+
+- https://github.com/Silex/docker.el
+
+*** markdown
+
+- https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
 
 ** other
 *** random
@@ -298,6 +304,7 @@ packages
 
 - https://orgmode.org/worg/org-hacks.html
 - http://doc.norang.ca/org-mode.html
+- https://orgmode.org/worg/
 
 *** Emacs Lisp
 
@@ -379,6 +386,10 @@ packages
 - process
    - https://github.com/haji-ali/procress
 
+* advice
+
+- https://scripter.co/emacs-lisp-advice-combinators/
+
 
 * latex
 
@@ -416,6 +427,16 @@ packages
 
 - crop margin
    - pdf-view-auto-slice-minor-mode
+
+* markdown
+
+- markdown-mode
+   - https://jblevins.org/projects/markdown-mode/
+- live preview
+   - in-buffer
+      - https://stackoverflow.com/questions/3409484/render-markdown-in-emacs-buffer/11628141#11628141
+   - other
+      - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
 
 
 * org
@@ -541,15 +562,13 @@ packages
       2. block with :tangle all
           - tangle to all files in list
 
-* markdown
+- two-way tangle
+   - https://github.com/phillord/lentic
 
-- markdown-mode
-   - https://jblevins.org/projects/markdown-mode/
-- live preview
-   - in-buffer
-      - https://stackoverflow.com/questions/3409484/render-markdown-in-emacs-buffer/11628141#11628141
-   - other
-      - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
+* org-queries
+
+- metarosetta
+   - https://github.com/73D1/metarosetta
 
 
 * runtime
@@ -577,13 +596,8 @@ packages
 - embark
    - https://github.com/oantolin/embark
 
-
 * highlights
 
-- solaire
-   - https://github.com/hlissner/emacs-solaire-mode
-- Highlight current line only
-   - https://yannesposito.com/posts/0021-ia-writer-clone-within-doom-emacs/index.html
 - bionic reading
    - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
 
@@ -695,10 +709,9 @@ packages
 - Org refile
    - https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
-* exploration
+* accounting
 
-- metarosetta
-   - https://github.com/73D1/metarosetta
+- https://github.com/narendraj9/hledger-mode
 
 
 * rss
@@ -854,7 +867,10 @@ packages
 - load to memory
    - http://blog.binchen.org/posts/emacs-speed-up-1000.html
 
-     
+* font rendering
+
+- https://github.com/snowie2000/MacType
+
 
 * upgrade
 
