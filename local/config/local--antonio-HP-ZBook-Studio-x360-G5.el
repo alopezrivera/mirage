@@ -1,6 +1,6 @@
 ;; local emacs config
 
-(setq config "termux")
+(setq config "home")
 
 (setq home "/media/antonio/T7/")
 
