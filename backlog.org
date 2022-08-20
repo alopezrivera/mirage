@@ -89,6 +89,8 @@ theme advice
 *** layers
 **** writer
 
+possibly mode
+
 - doom-zen-writer
 - https://yannesposito.com/posts/0021-ia-writer-clone-within-doom-emacs/index.html
 
