@@ -47,11 +47,38 @@ Shapes configuration when an error is found")
 
 #+end_src
 
-** Tangling
+** Extensions
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/shapes-tangling.el
+:header-args:emacs-lisp+: :tangle ./core/shapes-extensions.el
 :END:
 
+#+begin_src emacs-lisp
+
+(shapes-extend "get")
+(shapes-extend "queries")
+(shapes-extend "execution")
+(shapes-extend "operators")
+
+#+end_src
+
+** Package manager
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./core/shapes-package-manager.el
+:END:
+*** straight
+
+#+begin_src emacs-lisp
+
+(shapes-module "straight")
+
+#+end_src
+
+** Config management
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./core/shapes-config-management.el
+:END:
+*** Tangling
+(remove-hook 'org-babel-post-tangle-hook #'custom/shapes-provide)
 #+begin_src emacs-lisp
 
 (defun custom/shapes-tangle (org-file &optional quiet)
@@ -98,36 +125,6 @@ Shapes configuration when an error is found")
 
 #+end_src
 
-** Extensions
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/shapes-extensions.el
-:END:
-
-#+begin_src emacs-lisp
-
-(shapes-extend "get")
-(shapes-extend "queries")
-(shapes-extend "execution")
-(shapes-extend "operators")
-
-#+end_src
-
-** Package manager
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/shapes-package-manager.el
-:END:
-*** straight
-
-#+begin_src emacs-lisp
-
-(shapes-module "straight")
-
-#+end_src
-
-** Config management
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/shapes-config-management.el
-:END:
 *** Littering
 
 #+begin_src emacs-lisp

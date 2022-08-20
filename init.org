@@ -79,7 +79,6 @@
 (add-to-list 'load-path (concat config-directory "core/"))
 
 (defvar shapes-core-components '("load"
-                                 "tangling"
                                  "extensions"
                                  "package-manager"
                                  "config-management"))
