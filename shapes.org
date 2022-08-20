@@ -2439,7 +2439,7 @@ match the indentation of the parent heading."
 
 #+begin_src emacs-lisp
 
-(require 'org-paragraph (concat config-directory "packages/org-paragraph.el"))
+(require 'org-paragraph (concat config-directory "local/packages/org-paragraph.el"))
 
 #+end_src
 
@@ -2524,7 +2524,7 @@ beginning lies on an Org Mode heading,
 
 #+begin_src emacs-lisp
 
-(require 'org-diary (concat config-directory "packages/org-diary.el"))
+(require 'org-diary (concat config-directory "local/packages/org-diary.el"))
 
 #+end_src
 
