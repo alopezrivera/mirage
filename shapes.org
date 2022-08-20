@@ -900,7 +900,6 @@ matches the current theme."
 
 ;; normal modes
 (dolist (mode '(org-mode-hook
-		    magit-mode-hook
 		    shell-mode-hook
 		    markdown-mode-hook))
   (add-hook mode 'olivetti-mode))
