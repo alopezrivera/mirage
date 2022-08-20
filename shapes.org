@@ -1375,6 +1375,17 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 #+end_src
 
+***** Doom Zen Writer
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-doom-zen-writer-theme.el
+:END:
+
+#+begin_src emacs-lisp
+
+(load-file (concat config-directory "local/themes/doom-zen-writer-theme.el"))
+
+#+end_src
+
 *** Scheduling
 **** circadian
 :PROPERTIES:
