@@ -438,6 +438,10 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+begin_src emacs-lisp
 
+;; dependencies
+(shapes-layer  "editing")
+
+;; org
 (shapes-module "org")
 
 ;; editing
