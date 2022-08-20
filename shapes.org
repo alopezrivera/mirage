@@ -1278,6 +1278,18 @@ the local machine:
 
 ** Themes
 *** Themes
+**** Ef
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-ef-themes.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package '(ef-themes :type git :host nil :repo "https://git.sr.ht/~protesilaos/ef-themes"))
+(require 'ef-themes)
+
+#+end_src
+
 **** Nano
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-nano-theme.el
