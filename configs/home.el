@@ -1,20 +1,3 @@
-(shapes-extend "get")
-(shapes-extend "queries")
-(shapes-extend "execution")
-(shapes-extend "operators")
-
-(shapes-module "straight")
-
-(shapes-module "no-littering")
-
-(shapes-module "el-patch")
-
-(global-set-key (kbd "C-x e") 'eval-buffer)
-
-(global-set-key (kbd "C-c SPC") #'whitespace-mode)
-
-(setq debug-on-error t)
-
 (shapes-layer "ui")
 
 (shapes-layer "input")
