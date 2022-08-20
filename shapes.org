@@ -929,6 +929,18 @@ a fraction of the window width."
 
 #+end_src
 
+**** solaire-mode
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-solaire-mode.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'solaire-mode)
+(require 'solaire-mode)
+
+#+end_src
+
 *** Mode line
 **** delight
 :PROPERTIES:
