@@ -3667,6 +3667,17 @@ key binding input with C-g."
 #+end_src
 
 *** Switch
+**** Load
+
+#+begin_src emacs-lisp
+
+(defun custom/enable-or-load-theme (theme)
+  (condition-case nil
+      (enable-theme theme)
+    (error (load-theme theme))))
+
+#+end_src
+
 **** Hook
 
 #+begin_src emacs-lisp
@@ -3712,9 +3723,9 @@ using `enable-theme'"
   (interactive)
   (let ((theme (nth 0 custom-enabled-themes)))
     (cond ((string-equal theme light) (progn (disable-theme light)
-					        (load-theme    dark)))
-	     (t                          (progn (disable-theme theme)
-						(load-theme    light))))))
+					          (custom/enable-or-load-theme    dark)))
+	       (t                          (progn (disable-theme theme)
+					          (custom/enable-or-load-theme    light))))))
 
 (global-set-key (kbd "C-t") 'custom/theme-toggle)
 
