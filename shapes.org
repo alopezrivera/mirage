@@ -47,21 +47,6 @@ Shapes configuration when an error is found")
 
 #+end_src
 
-** Modules
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/shapes-modules.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; package manager
-(shapes-module "straight")
-
-;; other modules
-(shapes-module "async")
-
-#+end_src
-
 ** Tangling
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./core/shapes-tangling.el
@@ -112,6 +97,77 @@ Shapes configuration when an error is found")
 (add-hook 'after-save-hook #'custom/shapes-tangle-auto)
 
 #+end_src
+
+** Extensions
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./core/shapes-extensions.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-extend "get")
+(shapes-extend "queries")
+(shapes-extend "execution")
+(shapes-extend "operators")
+
+#+end_src
+
+** Package manager
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./core/shapes-package-manager.el
+:END:
+*** straight
+
+#+begin_src emacs-lisp
+
+(shapes-module "straight")
+
+#+end_src
+
+** Config management
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./core/shapes-config-management.el
+:END:
+*** Littering
+
+#+begin_src emacs-lisp
+
+(shapes-module "no-littering")
+
+#+end_src
+
+*** Patching
+
+#+begin_src emacs-lisp
+
+(shapes-module "el-patch")
+
+#+end_src
+
+*** Execution
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-x e") 'eval-buffer)
+
+#+end_src
+
+*** Inspection
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-c SPC") #'whitespace-mode)
+
+#+end_src
+
+*** Debugging
+
+#+begin_src emacs-lisp
+
+(setq debug-on-error t)
+
+#+end_src
+
 
 
 * Layers
