@@ -56,7 +56,49 @@ To publish to the web and in document form.
 
 #+end_src
 
-*** lockfile
+** Configuration management
+*** Littering
+
+#+begin_src emacs-lisp
+
+(shapes-module "no-littering")
+
+#+end_src
+
+*** Patching
+
+#+begin_src emacs-lisp
+
+(shapes-module "el-patch")
+
+#+end_src
+
+*** Execution
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-x e") 'eval-buffer)
+
+#+end_src
+
+*** Inspection
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-c SPC") #'whitespace-mode)
+
+#+end_src
+
+*** Debugging
+
+#+begin_src emacs-lisp
+
+(setq debug-on-error t)
+
+#+end_src
+
+
+* Lockfile
 
 As explained by [[https://www.lucacambiaghi.com/vanilla-emacs/readme.html#3.2.straight_lockfile][Luca Ambiaghi]],
 
@@ -151,47 +193,6 @@ We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/d
 References:
 
 - [[https://www.lucacambiaghi.com/vanilla-emacs/readme.html][Luca Ambiaghi, Luca's literate Emacs config]]
-
-** Configuration management
-*** Littering
-
-#+begin_src emacs-lisp
-
-(shapes-module "no-littering")
-
-#+end_src
-
-*** Patching
-
-#+begin_src emacs-lisp
-
-(shapes-module "el-patch")
-
-#+end_src
-
-*** Execution
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-x e") 'eval-buffer)
-
-#+end_src
-
-*** Inspection
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-c SPC") #'whitespace-mode)
-
-#+end_src
-
-*** Debugging
-
-#+begin_src emacs-lisp
-
-(setq debug-on-error t)
-
-#+end_src
 
 
 * UI
