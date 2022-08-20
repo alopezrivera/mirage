@@ -1,6 +1,5 @@
 ;; org-contacts
-(straight-use-package
- '(org-contacts :type git :host nil :repo "https://repo.or.cz/org-contacts.git"))
+(straight-use-package '(org-contacts :type git :host nil :repo "https://repo.or.cz/org-contacts.git"))
 (require 'org-contacts)
 
 (global-set-key (kbd "C-x c") 'org-capture)

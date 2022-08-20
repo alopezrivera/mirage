@@ -1,3 +1,7 @@
+;; dependencies
+(shapes-layer  "editing")
+
+;; org
 (shapes-module "org")
 
 ;; editing

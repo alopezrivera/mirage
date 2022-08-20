@@ -1,4 +1,4 @@
-(require 'org-paragraph (concat config-directory "packages/org-paragraph.el"))
+(require 'org-paragraph (concat config-directory "local/packages/org-paragraph.el"))
 
 (defun custom/org-meta-arrows-h (orig-fun &rest args)
   "Paragraph indentation with `org-meta<arrows>'.

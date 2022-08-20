@@ -1,5 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
 
+(defun custom/enable-or-load-theme (theme)
+  (condition-case nil
+      (enable-theme theme)
+    (error (load-theme theme))))
+
 (defvar custom/load-theme-hook nil
    "`load-theme' hook.")
 
@@ -29,9 +34,9 @@ using `enable-theme'"
   (interactive)
   (let ((theme (nth 0 custom-enabled-themes)))
     (cond ((string-equal theme light) (progn (disable-theme light)
-					        (load-theme    dark)))
-	     (t                          (progn (disable-theme theme)
-						(load-theme    light))))))
+					          (custom/enable-or-load-theme    dark)))
+	       (t                          (progn (disable-theme theme)
+					          (custom/enable-or-load-theme    light))))))
 
 (global-set-key (kbd "C-t") 'custom/theme-toggle)
 
