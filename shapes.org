@@ -2226,6 +2226,13 @@ sudo apt-get install python3-venv
 #+end_src
 
 *** Patches
+
+#+begin_src emacs-lisp
+
+(shapes-module "el-patch")
+
+#+end_src
+
 **** org-self-insert-command
 
 #+begin_src emacs-lisp
