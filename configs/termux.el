@@ -15,10 +15,6 @@
 (shapes-module "magit")
 (global-set-key (kbd "C-p") (lambda () (interactive) (insert "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")))
 
-(shapes-module "el-patch")
-(shapes-extend "general")
-(shapes-module "multiple-cursors")
-(shapes-extend "editing")
 (shapes-layer "org")
 (shapes-layer "org-ui")
 
