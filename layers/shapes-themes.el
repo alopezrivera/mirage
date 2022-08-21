@@ -4,6 +4,7 @@
   "Dark theme")
 
 ;; themes
+(shapes-module "ef-themes")
 (shapes-module "nano-theme")
 (shapes-module "doom-themes")
 (shapes-module "modus-themes")
