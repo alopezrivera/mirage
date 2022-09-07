@@ -3,10 +3,9 @@
 (shapes-module "org-appear")
 
 ;; title face
-
 (defun custom/org-typeface-title ()
   (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title nil :font typeface-title :height 600 :weight 'regular :foreground 'unspecified)))
+    (set-face-attribute 'org-document-title nil :font typeface-title :weight 'regular :height 250 :foreground 'unspecified)))
 
 (add-hook 'org-mode-hook #'custom/org-typeface-title)
 
@@ -53,14 +52,14 @@
   (with-eval-after-load 'org-faces
 
     ;; heading font sizes
-    (dolist (face '((org-level-1 . 1.225)
-                    (org-level-2 . 1.225)
-                    (org-level-3 . 1.225)
-                    (org-level-4 . 1.225)
-                    (org-level-5 . 1.225)
-                    (org-level-6 . 1.225)
-                    (org-level-7 . 1.225)
-                    (org-level-8 . 1.225)))
+    (dolist (face '((org-level-1 . 1.175)
+                    (org-level-2 . 1.175)
+                    (org-level-3 . 1.175)
+                    (org-level-4 . 1.175)
+                    (org-level-5 . 1.175)
+                    (org-level-6 . 1.175)
+                    (org-level-7 . 1.175)
+                    (org-level-8 . 1.175)))
          (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
 
 (add-hook 'org-mode-hook #'custom/org-header-setup)
@@ -87,6 +86,9 @@
 
 ;; drag and drop
 (shapes-module "org-download")
+
+;; do not consider empty lines content
+(setq org-cycle-separator-lines 2)
 
 (provide 'shapes-layer-org-ui)
 ;;; shapes-org-ui.el ends here

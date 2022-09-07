@@ -25,7 +25,7 @@
   "Italic typeface")
 
 ;; titles
-(setq typeface-title "Pump Triline")
+(setq typeface-title "Latin Modern Roman")
 
 ;; headings
 (setq typeface-heading "Century Gothic")
