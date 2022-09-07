@@ -45,6 +45,7 @@
         org-cycle
         org-delete-char
         org-end-of-line
+        org-force-self-insert
         org-forward-sentence
         org-insert-heading-respect-content
         org-meta-return
