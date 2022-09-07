@@ -2,7 +2,7 @@
 
 (setq org-format-latex-options
         (list :foreground 'default
-              :scale      1.2))
+              :scale      0.75))
 
 ;; Justify equation labels - [fleqn]
 ;; Preview page width      - 10.5cm
@@ -13,7 +13,7 @@
 			"\\usepackage{bm}"
 			
 			"\\pagestyle{empty}"
-			"\\setlength{\\textwidth}{10.5cm}"
+			"\\setlength{\\textwidth}{14.5cm}"
 			"\\addtolength{\\textwidth}{-3cm}"
 			"\\setlength{\\oddsidemargin}{1.5cm}"
 			"\\addtolength{\\oddsidemargin}{-2.54cm}"

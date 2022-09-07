@@ -5,14 +5,15 @@
       (enable-theme theme)
     (error (load-theme theme))))
 
-(defvar custom/load-theme-hook nil
+(defvar custom/enable-or-load-theme-hook nil
    "`load-theme' hook.")
 
-(defun custom/load-theme-hook (&rest _args)
+(defun custom/enable-or-load-theme-hook (&rest _args)
    "Run `load-theme-hook'."
-   (run-hooks 'custom/load-theme-hook))
+   (run-hooks 'custom/enable-or-load-theme-hook))
 
-(advice-add 'load-theme :after #'custom/load-theme-hook)
+(advice-add 'enable-theme :after #'custom/enable-or-load-theme-hook)
+(advice-add 'load-theme   :after #'custom/enable-or-load-theme-hook)
 
 ;; reload Org Mode
 (defun custom/org-theme-reload ()
@@ -26,7 +27,7 @@
 		        collect (org-mode))
       (select-window window))))
 
-(add-hook 'custom/load-theme-hook #'custom/org-theme-reload)
+(add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
 
 (defun custom/theme-toggle ()
   "Toggle between `dark' and `light' themes
@@ -84,8 +85,9 @@ preserve modeline status through theme changes."
  		 ((string-equal theme dark)  (custom/dark-advice)))))
   (setq mode-line-format modeline-status))
 
-;; enable-theme
-(advice-add 'load-theme :around #'custom/theme-specific-advice)
+;; add
+(advice-add 'enable-theme :around #'custom/theme-specific-advice)
+(advice-add 'load-theme   :around #'custom/theme-specific-advice)
 
 (provide 'shapes-extension-themes)
 ;;; shapes-themes.el ends here

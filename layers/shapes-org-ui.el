@@ -53,14 +53,14 @@
   (with-eval-after-load 'org-faces
 
     ;; heading font sizes
-    (dolist (face '((org-level-1 . 1.6)
-                    (org-level-2 . 1.4)
-                    (org-level-3 . 1.3)
-                    (org-level-4 . 1.2)
-                    (org-level-5 . 1.15)
-                    (org-level-6 . 1.10)
-                    (org-level-7 . 1.05)
-                    (org-level-8 . 1.00)))
+    (dolist (face '((org-level-1 . 1.225)
+                    (org-level-2 . 1.225)
+                    (org-level-3 . 1.225)
+                    (org-level-4 . 1.225)
+                    (org-level-5 . 1.225)
+                    (org-level-6 . 1.225)
+                    (org-level-7 . 1.225)
+                    (org-level-8 . 1.225)))
          (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
 
 (add-hook 'org-mode-hook #'custom/org-header-setup)
