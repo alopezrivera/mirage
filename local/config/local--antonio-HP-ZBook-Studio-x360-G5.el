@@ -4,14 +4,11 @@
 
 (setq home "/media/antonio/T7/")
 
-(setq startup-buffers
-      (list (concat config-directory "backlog.org")
-            (concat home "backlog.org")
-	    (concat home "studio/professional/work/DFKI/repos/hopping_leg/backlog.org")))
+(setq startup-buffers (list (concat config-directory "backlog.org")
+                            (concat home "backlog.org")))
 
 ;; org-agenda
-(setq org-agenda-files (list (concat home "studio/contacts.org")
-			     (concat home "studio/professional/work/DFKI/repos/hopping_leg/backlog.org")))
+(setq org-agenda-files (list (concat home "studio/contacts.org")))
 
 ;; org-contacts
 (setq org-contacts-files (list (concat home "studio/contacts.org")))
