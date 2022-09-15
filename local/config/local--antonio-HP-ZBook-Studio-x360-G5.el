@@ -23,5 +23,6 @@
 (setq org-diary-directory (concat home "home/scribbles/journal/diary/"))
 
 ;; projectile
-(setq projectile-project-search-path (list (concat home "studio/")
-				           (concat home "home/")))
+(setq projectile-project-search-path (list `(,(concat home "home/")   . 100)
+                                           `(,(concat home "studio/") . 100)
+                                           `(,(concat home "system/") . 100)))
