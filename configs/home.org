@@ -26,6 +26,7 @@ To manage the configuration of your machine.
 To plan and keep track of tasks and projects.
 - [ ] agenda
 - [X] calendar
+- [ ] time tracking
 
 To remember contacts and manage email.
 - [X] contact book
