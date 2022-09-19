@@ -201,6 +201,9 @@ possibly mode
 ** other
 *** random
 
+wrap around arrow color -> barely visible
+- https://emacs.stackexchange.com/questions/32027/change-the-color-of-the-wrap-around-arrow
+
 -----
 guides
 
