@@ -671,7 +671,6 @@ Candidates:
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-org-agenda.el
 :END:
-
 **** Tags
 
 #+begin_src emacs-lisp
@@ -748,7 +747,6 @@ Candidates:
 	     (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
 #+end_src
-
 
 *** TODO org-latex-preview
 :PROPERTIES:
