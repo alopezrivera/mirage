@@ -10,10 +10,41 @@ STARTUP: overview
 
 
 * plan
+** agenda
+*** setup
+
+- keywords
+   - GTD keywords
+- tags
+   - :<project name>
+   - :projects
+- views
+   - include
+      - emacs
+      - projects only
+   - exclude
+      - no projects
+      - no emacs
+      - https://emacs.stackexchange.com/questions/20130/exclude-tag-from-default-agenda-view
+
+*** workflow
+
+- https://orgmode.org/worg/org-gtd-etc.html
+
+- org-agenda-log-mode
+- org-clock-report
+   - https://orgmode.org/manual/The-clock-table.html
+- notifications
+   - https://github.com/marcinkoziej/org-pomodoro
+   - https://github.com/akhramov/org-wild-notifier.el
+
 ** shapes
 *** home buffer
 
 - https://github.com/emacs-dashboard/emacs-dashboard
+   - further customization
+      - recent files
+      - agenda
 
 - home buffer
    - https://gitlab.com/public-repositories/emacs-groundup
@@ -47,7 +78,7 @@ STARTUP: overview
    - https://github.com/noctuid/general.el#about
 - https://emacs.stackexchange.com/questions/14943/difference-between-the-physical-ret-key-and-the-command-newline-in-the-minibu
 
-*** typefaces
+*** fonts
 
 typefaces restored after theme changes
 - default
@@ -57,9 +88,24 @@ typefaces restored after theme changes
 - headings
 
 theme advice
-- store typefaces
+- store fonts
 - change theme
-- restore typefaces
+- restore fonts
+
+*** typefaces
+
+- new
+   - https://ctrlcctrlv.github.io/TT2020/docs/
+- define-font
+   - Century Gothic
+   - LOTR
+   - Pump Triline
+- typeface groups
+   - body
+   - titles
+   - headings
+
+- https://www.reddit.com/r/emacs/comments/shzif1/n%CE%BBno_font_stack/
 
 *** light and dark theme advice
 
@@ -73,19 +119,6 @@ theme advice
 - insert cred
    - list creds
 - https://www.gnu.org/software/emacs/manual/html_mono/auth.html
-
-*** fonts
-
-- new
-   - https://ctrlcctrlv.github.io/TT2020/docs/
-- define-font
-   - Century Gothic
-   - LOTR
-   - Pump Triline
-- typeface groups
-   - body
-   - titles
-   - headings
 
 *** layers
 **** writer
@@ -155,16 +188,6 @@ possibly mode
 
 - treemacs style window
 - if window was resized, store previous size and restore window when exiting
-
-*** workflow
-
-- https://orgmode.org/worg/org-gtd-etc.html
-
-- org-clock-report
-   - https://orgmode.org/manual/The-clock-table.html
-- notifications
-   - https://github.com/marcinkoziej/org-pomodoro
-   - https://github.com/akhramov/org-wild-notifier.el
 
 *** docker
 
@@ -331,9 +354,10 @@ packages
 
 - Note-taking
    - https://codethrasher.com/post/2022-09-09-evolving-my-note-taking-processes/
-     
+
 ** Miscellaneous
 
+- https://github.com/bbatsov/crux
 - https://github.com/alphapapa/unpackaged.el
 - https://www.emacswiki.org/emacs/download/misc-cmds.el
 
@@ -591,6 +615,10 @@ packages
 
 - https://www.reddit.com/r/emacs/comments/x8gxw1/webbased_org_viewer_that_is_perhaps_a_seedling/
 
+* org note browsing
+
+- https://www.reddit.com/r/emacs/comments/xg0hwm/i_wrote_a_command_for_recursively_viewing_the/
+
 
 * runtime
 
@@ -677,19 +705,6 @@ packages
 - C++
    - https://github.com/Andersbakken/rtags
 
-* evil
-
-- practice
-   - https://www.vimified.com/
-
-- god-mode
-   - https://github.com/emacsorphanage/god-mode#usage-with-evil
-
-- guides
-   - https://github.com/noctuid/evil-guide#advice
-   - https://www.youtube.com/watch?v=Uz_0i27wYbg
-   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
-
 * writing
 
 - writeroom mode
@@ -727,6 +742,23 @@ packages
 - text object editing
    - https://github.com/clemera/objed
 
+* modal editing
+
+- https://www.reddit.com/r/emacs/comments/xex6dk/modal_editing_evil_boon_or_meow/
+
+** evil
+
+- practice
+   - https://www.vimified.com/
+
+- god-mode
+   - https://github.com/emacsorphanage/god-mode#usage-with-evil
+
+- guides
+   - https://github.com/noctuid/evil-guide#advice
+   - https://www.youtube.com/watch?v=Uz_0i27wYbg
+   - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
+
 * completionawe
 
 - https://www.reddit.com/r/emacs/comments/x8gxw1/webbased_org_viewer_that_is_perhaps_a_seedling/
@@ -745,6 +777,7 @@ packages
 
 * datetime
 
+- https://github.com/alphapapa/ts.el
 - https://github.com/rougier/relative-date
 
 * planning
@@ -756,6 +789,8 @@ packages
 
 - elfeed
    - https://github.com/skeeto/elfeed
+   - podcast transcripts
+      - https://sqrtminusone.xyz/posts/2022-09-16-vosk/
 
 - sources
    - Management
@@ -774,6 +809,7 @@ packages
 - mu4e
    - Nano
       - https://www.reddit.com/r/emacs/comments/mzgsm0/mu4e_look_and_feel/
+
 
 
 * hyperbole
@@ -908,6 +944,10 @@ packages
 * font rendering
 
 - https://github.com/snowie2000/MacType
+
+* system recycling bin
+
+- https://xenodium.com/rm-important-txt-oh-sht/
 
 
 * upgrade
