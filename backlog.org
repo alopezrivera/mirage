@@ -1,5 +1,4 @@
-
-#+STARTUP: overview
+STARTUP: overview
 #+FILETAGS: :emacs:
 
 
@@ -12,6 +11,36 @@
 
 * plan
 ** shapes
+*** home buffer
+
+- https://github.com/emacs-dashboard/emacs-dashboard
+
+- home buffer
+   - https://gitlab.com/public-repositories/emacs-groundup
+      - https://gitlab.com/public-repositories/emacs-groundup/-/blob/main/config/src/defaults/settings.org
+   - magit-list-repositories
+      - https://emacs.stackexchange.com/questions/32696/how-to-use-magit-list-repositories
+
+- project dashboard
+   - flow
+      1. tabulated-list-mode
+          - display known projects
+      2. Either
+          - Choose project
+             1. workgroups.el
+                 1. If no .workspace, create .workspace
+                 2. Load .workspace
+          - Create new project
+             1. Template
+             2. workgroups.el
+                 1. New .workspace file
+                 2. Load .workspace
+   - references
+      - Issue
+         - https://github.com/bbatsov/projectile/issues/967
+      - SpaceMacs
+         - https://github.com/syl20bnr/spacemacs/blob/master/core/core-spacemacs-buffer.el#L550
+
 *** bindings
 
 - general
@@ -58,34 +87,6 @@ theme advice
    - titles
    - headings
 
-*** home buffer
-
-- home buffer
-   - https://gitlab.com/public-repositories/emacs-groundup
-      - https://gitlab.com/public-repositories/emacs-groundup/-/blob/main/config/src/defaults/settings.org
-   - magit-list-repositories
-      - https://emacs.stackexchange.com/questions/32696/how-to-use-magit-list-repositories
-
-- project dashboard
-   - flow
-      1. tabulated-list-mode
-          - display known projects
-      2. Either
-          - Choose project
-             1. workgroups.el
-                 1. If no .workspace, create .workspace
-                 2. Load .workspace
-          - Create new project
-             1. Template
-             2. workgroups.el
-                 1. New .workspace file
-                 2. Load .workspace
-   - references
-      - Issue
-         - https://github.com/bbatsov/projectile/issues/967
-      - SpaceMacs
-         - https://github.com/syl20bnr/spacemacs/blob/master/core/core-spacemacs-buffer.el#L550
-
 *** layers
 **** writer
 
@@ -100,6 +101,7 @@ possibly mode
    - setup
       - https://www.reddit.com/r/emacs/comments/vxxyb8/comment/ig4hcer/
       - http://cachestocaches.com/2020/3/org-mode-annotated-bibliography/
+      - https://www.reddit.com/r/emacs/comments/x6dvse/orgcite_citar_and_latex_in_orgmode_problems/
    - workflow
       - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
 
@@ -118,6 +120,8 @@ possibly mode
 - record
    - zortra
       - https://github.com/mpedramfar/zotra
+   - org-bib-mode
+      - https://github.com/rougier/org-bib-mode
 
 - manage
    - ebib
@@ -169,6 +173,7 @@ possibly mode
 *** markdown
 
 - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
+- https://dev.to/rushankhan1/write-effective-markdown-in-emacs-with-live-preview-41p9
 
 ** other
 *** random
@@ -278,20 +283,14 @@ packages
 - https://github.com/Lambda-Emacs/lambda-emacs
 
 ** General
+
+- https://github.com/emacs-tw/awesome-emacs
+
 *** Features
 
 - completion at point
    - https://with-emacs.com/
 
-*** Workflows
-
-- Rougier
-   - https://www.labri.fr/perso/nrougier/GTD/index.html
-
-- Mathematics
-   - https://tony-zorman.com/posts/phd-workflow/2022-05-01-my-phd-workflow.html
-   - https://castel.dev/post/research-workflow/
-     
 *** Aesthetics
 
 - https://www.reddit.com/r/emacs/comments/vcbnht/most_visually_impressive_emacs_packages/
@@ -317,6 +316,22 @@ packages
 - editing
    - https://github.com/bbatsov/crux
 
+** Packages
+
+- https://protesilaos.com/emacs/
+
+** Workflows
+
+- Rougier
+   - https://www.labri.fr/perso/nrougier/GTD/index.html
+
+- Mathematics
+   - https://tony-zorman.com/posts/phd-workflow/2022-05-01-my-phd-workflow.html
+   - https://castel.dev/post/research-workflow/
+
+- Note-taking
+   - https://codethrasher.com/post/2022-09-09-evolving-my-note-taking-processes/
+     
 ** Miscellaneous
 
 - https://github.com/alphapapa/unpackaged.el
@@ -572,6 +587,10 @@ packages
 - metarosetta
    - https://github.com/73D1/metarosetta
 
+* org collaboration
+
+- https://www.reddit.com/r/emacs/comments/x8gxw1/webbased_org_viewer_that_is_perhaps_a_seedling/
+
 
 * runtime
 
@@ -611,6 +630,10 @@ packages
 - lisp
    - https://github.com/joaotavora/sly
    - https://github.com/abo-abo/lispy
+- common lisp
+   - https://gitlab.com/sasanidas/clede
+- bash
+   - https://www.youtube.com/watch?app=desktop&v=LTC6SP7R1hA&feature=emb_title
 
 -----
 
@@ -704,6 +727,10 @@ packages
 - text object editing
    - https://github.com/clemera/objed
 
+* completionawe
+
+- https://www.reddit.com/r/emacs/comments/x8gxw1/webbased_org_viewer_that_is_perhaps_a_seedling/
+
 * file management
 
 - dired
@@ -711,9 +738,18 @@ packages
 - Org refile
    - https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
+
 * accounting
 
 - https://github.com/narendraj9/hledger-mode
+
+* datetime
+
+- https://github.com/rougier/relative-date
+
+* planning
+
+- https://stackoverflow.com/questions/23566000/how-to-count-days-excluding-weekends-and-holidays-in-emacs-calendar
 
 
 * rss
