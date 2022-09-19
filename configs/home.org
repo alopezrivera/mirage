@@ -300,6 +300,14 @@ References:
 
 #+end_src
 
+* LaTeX
+
+#+begin_src emacs-lisp
+
+(shapes-layer "latex")
+
+#+end_src
+
 * Org Mode
 
 #+begin_src emacs-lisp

@@ -62,6 +62,8 @@
 
 (shapes-layer "ide")
 
+(shapes-layer "latex")
+
 (shapes-layer "org")
 (shapes-layer "org-ui")
 (shapes-layer "org-agenda")

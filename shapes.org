@@ -435,6 +435,17 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+end_src
 
+** LaTeX
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-latex.el
+:END:
+
+#+begin_src emacs-lisp
+
+(add-hook 'latex-mode-hook (lambda () (visual-line-mode nil)))
+
+#+end_src
+
 ** Org Mode
 *** org
 :PROPERTIES:
