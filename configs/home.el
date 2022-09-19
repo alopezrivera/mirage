@@ -64,4 +64,5 @@
 
 (shapes-layer "org")
 (shapes-layer "org-ui")
+(shapes-layer "org-agenda")
 (shapes-layer "org-latex-preview")
