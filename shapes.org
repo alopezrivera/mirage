@@ -2845,7 +2845,7 @@ if it was previously enabled."
 
 #+end_src
 
-***** Display
+***** Entries
 ****** Tag alignment
 
 #+begin_src emacs-lisp
@@ -2929,11 +2929,11 @@ if it was previously enabled."
 
 #+end_src
 
+*** Calendar
 **** org-calendar
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-calendar.el
 :END:
-***** calfw
 
 #+begin_src emacs-lisp
 
@@ -2954,6 +2954,21 @@ if it was previously enabled."
        (cfw:open-org-calendar)))
 
 (global-set-key (kbd "C-c c") 'custom/org-calendar)
+
+#+end_src
+
+*** Time-tracking
+**** org-agenda-log-mode
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-agenda-log-mode.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; Org Agenda log mode
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
 
 #+end_src
 
