@@ -50,6 +50,9 @@
 ;; mode display
 (shapes-module "delight")
 
+;; dashboard
+(shapes-module "emacs-dashboard")
+
 ;; extensions
 (shapes-extend "ui")
 

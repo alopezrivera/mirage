@@ -265,6 +265,15 @@ Shapes configuration when an error is found")
 
 #+end_src
 
+*** Dashboard
+
+#+begin_src emacs-lisp
+
+;; dashboard
+(shapes-module "emacs-dashboard")
+
+#+end_src
+
 *** Extensions
 
 #+begin_src emacs-lisp
@@ -889,6 +898,25 @@ matches the current theme."
 
 
 ** UI
+*** Dashboard
+**** emacs-dashboard
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-emacs-dashboard.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "page-break-lines")
+(shapes-module "projectile")
+(shapes-module "all-the-icons")
+
+(straight-use-package 'dashboard)
+(require 'dashboard)
+
+(dashboard-setup-startup-hook)
+
+#+end_src
+
 *** Buffer
 **** olivetti
 :PROPERTIES:
@@ -942,6 +970,18 @@ a fraction of the window width."
 
 (straight-use-package 'solaire-mode)
 (require 'solaire-mode)
+
+#+end_src
+
+**** page-break-lines
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-page-break-lines.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'page-break-lines)
+(require 'page-break-lines)
 
 #+end_src
 
