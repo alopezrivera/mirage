@@ -5,8 +5,9 @@
 
 ;; normal modes
 (dolist (mode '(org-mode-hook
-		    shell-mode-hook
-		    markdown-mode-hook))
+		     shell-mode-hook
+		     markdown-mode-hook
+                latex-mode-hook))
   (add-hook mode 'olivetti-mode))
 
 ;; Programming modes
