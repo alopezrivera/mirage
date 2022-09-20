@@ -3,7 +3,8 @@
  'org-babel-load-languages
  '((emacs-lisp . t)
    (python     . t)
-   (shell      . t)))
+   (shell      . t)
+   (latex      . t)))
 
 (defun org-babel-bash-initiate-session (&optional session _params)
   "Initiate a bash/sh session named SESSION according to PARAMS."

@@ -45,9 +45,10 @@
 			 language))
 
 (dolist (pair '(("<sh"   "shell")
-		   ("<el"   "emacs-lisp")
-		   ("<py"   "python")
-		   ("<bash" "bash")))
+		      ("<el"   "emacs-lisp")
+		      ("<py"   "python")
+		      ("<bash" "bash")
+                ("<tx"   "latex")))
   (apply 'custom/tempo-code-block pair))
 
 (provide 'shapes-module-org-tempo)
