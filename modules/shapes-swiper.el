@@ -15,37 +15,6 @@
 
 (define-key global-map (kbd "C-s") #'swiper-isearch)
 
-(defun custom/narrow-and-search (beg end)
-  "Narrow to region and trigger swiper search."
-  (narrow-to-region beg end)
-  (deactivate-mark)
-  (swiper-isearch))
-
-(defun custom/search-in-region (beg end)
-  "Narrow and search active region. If the current
-buffer is already narrowed, widen buffer."
-  (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end))
-                 (list nil nil)))
-  (if (not (buffer-narrowed-p))
-      (if (and beg end)
-	  (progn (custom/narrow-and-search beg end)))
-    (progn (widen)
-	   (if (bound-and-true-p multiple-cursors-mode)
-	       (mc/disable-multiple-cursors-mode)))))
-
-(defun custom/swiper-exit-narrow-search ()
-  (interactive)
-  (minibuffer-keyboard-quit)
-  (if (buffer-narrowed-p)
-      (widen)))
-
-;; Narrow search
-(define-key global-map (kbd "C-r") #'custom/search-in-region)
-
-;; Exit narrow search from swiper
-(define-key swiper-map (kbd "C-e") #'custom/swiper-exit-narrow-search)
-
 (defun custom/swiper-multiple-cursors ()
   (interactive)
   (swiper-mc)
