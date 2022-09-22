@@ -1,12 +1,9 @@
-STARTUP: overview
+#+STARTUP: overview
 #+FILETAGS: :emacs:
 
 
 
-
 #+title:Backlog
-
-
 
 
 * plan
