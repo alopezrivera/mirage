@@ -330,6 +330,10 @@ packages
 - http://doc.norang.ca/org-mode.html
 - https://orgmode.org/worg/
 
+*** Org Roam
+
+- https://github.com/nobiot/unofficial-user-manual-org-roam
+
 *** Emacs Lisp
 
 - interactive
