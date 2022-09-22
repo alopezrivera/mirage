@@ -38,7 +38,7 @@
 (let ((credential-file (concat config-directory "creds.el.gpg")))
   (if (file-exists-p credential-file)
       (condition-case nil
-          (load-file )
+          (load-file credential-file)
         (error nil))))
 
 (provide 'init)
