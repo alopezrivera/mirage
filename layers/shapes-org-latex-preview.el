@@ -2,29 +2,30 @@
 
 (setq org-format-latex-options
         (list :foreground 'default
-              :scale      0.75))
+              :scale      1.35))
 
-;; Justify equation labels - [fleqn]
-;; Preview page width      - 10.5cm
+(setq custom/org-latex-preview-class-args "fleqn")
+(setq custom/org-latex-preview-width      "16.5cm")
+
 (setq org-format-latex-header
-      (string-join '("\\documentclass[fleqn]{article}"
-		        "\\usepackage[usenames]{color}"
+      (string-join `("\\documentclass[" ,custom/org-latex-preview-class-args "]{article}"
+		         "\\usepackage[usenames]{color}"
 			
-			"\\usepackage{bm}"
+			 "\\usepackage{bm}"
 			
-			"\\pagestyle{empty}"
-			"\\setlength{\\textwidth}{14.5cm}"
-			"\\addtolength{\\textwidth}{-3cm}"
-			"\\setlength{\\oddsidemargin}{1.5cm}"
-			"\\addtolength{\\oddsidemargin}{-2.54cm}"
-			"\\setlength{\\evensidemargin}{\\oddsidemargin}"
-			"\\setlength{\\textheight}{\\paperheight}"
-			"\\addtolength{\\textheight}{-\\headheight}"
-			"\\addtolength{\\textheight}{-\\headsep}"
-			"\\addtolength{\\textheight}{-\\footskip}"
-			"\\addtolength{\\textheight}{-3cm}"
-			"\\setlength{\\topmargin}{1.5cm}"
-			"\\addtolength{\\topmargin}{-2.54cm}")
+			 "\\pagestyle{empty}"
+			 "\\setlength{\\textwidth}{" ,custom/org-latex-preview-width "}"
+			 "\\addtolength{\\textwidth}{-3cm}"
+			 "\\setlength{\\oddsidemargin}{1.5cm}"
+			 "\\addtolength{\\oddsidemargin}{-2.54cm}"
+			 "\\setlength{\\evensidemargin}{\\oddsidemargin}"
+			 "\\setlength{\\textheight}{\\paperheight}"
+			 "\\addtolength{\\textheight}{-\\headheight}"
+			 "\\addtolength{\\textheight}{-\\headsep}"
+			 "\\addtolength{\\textheight}{-\\footskip}"
+			 "\\addtolength{\\textheight}{-3cm}"
+			 "\\setlength{\\topmargin}{1.5cm}"
+			 "\\addtolength{\\topmargin}{-2.54cm}")
 		   "\n"))
 
 ;; SVG LaTeX equation preview
