@@ -14,7 +14,7 @@
 (setq org-contacts-files (list (concat home "studio/contacts.org")))
 
 ;; org-roam directory
-(setq org-roam-directory (concat home "home/scribbles/roam"))
+(setq org-roam-directory (concat home "home/library/zettelkasten"))
 
 ;; org-diary directory
 (setq org-diary-directory (concat home "home/scribbles/journal/diary/"))
