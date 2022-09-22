@@ -35,8 +35,10 @@
     (add-hook 'after-init-hook #'custom/spawn-startup-buffers))
 
 ;; credentials
-(condition-case nil
-    (load-file (concat config-directory "creds.el.gpg"))
-  (error nil))
+(let ((credential-file (concat config-directory "creds.el.gpg")))
+  (if (file-exists-p credential-file)
+      (condition-case nil
+          (load-file )
+        (error nil))))
 
 (provide 'init)
