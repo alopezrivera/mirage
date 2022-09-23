@@ -2729,10 +2729,14 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 #+begin_src emacs-lisp
 
 (setq org-roam-capture-templates
-      '(("d" "default" plain "%?"
-	    :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-			       "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
-	    :unnarrowed t)))
+      '(("m" "mathematics" plain "%?"
+         :target (file+head "mathematics/%<%Y%m%d%H%M%S>-${slug}.org"
+			           "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
+         :unnarrowed t)
+        ("c" "control" plain "%?"
+         :target (file+head "control/%<%Y%m%d%H%M%S>-${slug}.org"
+			           "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
+         :unnarrowed t)))
 
 #+end_src
 
