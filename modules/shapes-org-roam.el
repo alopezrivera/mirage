@@ -1,19 +1,19 @@
 ;; org-roam
 (straight-use-package 'org-roam)
 
-;; Org Roam UI
+;; org-roam-ui
 (straight-use-package 'org-roam-ui)
 
 (setq org-roam-ui-follow t)
 
-;; Sync theme and UI
+;; sync theme and ui
 (setq org-roam-ui-sync-theme nil)
 
 (setq org-roam-ui-open-on-start nil)
 
 (setq org-roam-ui-update-on-save t)
 
-;; Node visit hook
+;; node visit hook
 (defvar custom/org-roam-node-visit-hook nil
    "Hook ran after `org-roam-node-visit'.")
 
@@ -27,19 +27,27 @@
 (if (and (boundp 'org-roam-directory) (file-directory-p org-roam-directory))
     (org-roam-db-autosync-mode))
 
-(add-hook 'org-roam-find-file-hook #'variable-pitch-mode)
+(setq custom/org-roam-map (make-keymap))
+(global-set-key (kbd "C-r") custom/org-roam-map)
+
+;; Capture
+(define-key custom/org-roam-map (kbd "c") 'org-roam-capture)
 
 ;; Find node
-(global-set-key (kbd "C-c n") 'org-roam-node-find)
+(define-key custom/org-roam-map (kbd "n") 'org-roam-node-find)
 
 ;; Insert reference
-(global-set-key (kbd "C-c i") 'org-roam-node-insert)
+(define-key custom/org-roam-map (kbd "i") 'org-roam-node-insert)
 
 (setq org-roam-capture-templates
-      '(("d" "default" plain "%?"
-	    :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-			       "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
-	    :unnarrowed t)))
+      '(("m" "mathematics" plain "%?"
+         :target (file+head "mathematics/%<%Y%m%d%H%M%S>-${slug}.org"
+			           "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
+         :unnarrowed t)
+        ("c" "control" plain "%?"
+         :target (file+head "control/%<%Y%m%d%H%M%S>-${slug}.org"
+			           "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
+         :unnarrowed t)))
 
 ;; org-roam-timestamps
 (straight-use-package 'org-roam-timestamps)
