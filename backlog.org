@@ -615,6 +615,10 @@ packages
 - metarosetta
    - https://github.com/73D1/metarosetta
 
+* org-remark
+
+- https://github.com/nobiot/org-remark
+
 * org collaboration
 
 - https://www.reddit.com/r/emacs/comments/x8gxw1/webbased_org_viewer_that_is_perhaps_a_seedling/
