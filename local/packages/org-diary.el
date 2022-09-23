@@ -356,20 +356,25 @@ it does not exist"
   (setq org-diary-last-visited (org-diary-entry-time (current-buffer)))
   (org-diary-mode 0))
 
+(defvar org-diary-register ""
+  "Org Diary window configuration register")
+
 (defun org-diary ()
   "Org Diary entry and exit point. If preceded by `C-u', prompt
 for a date to visit using the Emacs calendar."
   (interactive)
   (if (equal current-prefix-arg '(4))
       (let ((time (org-read-date nil 'to-time nil "")))
+           (window-configuration-to-register org-diary-register)
            (org-diary-visit time nil org-diary-directory))
     (if (org-diary-entry)
         (progn (org-diary-exit)
 	         (bury-buffer)
-	         (ignore-errors (delete-window)))
+               (jump-to-register org-diary-register))
       (progn (if (org-diary-window)
 	           (select-window (org-diary-window))
-	         (let ((time (if (org-diary-revisit) org-diary-last-visited (current-time))))
+	       (let ((time (if (org-diary-revisit) org-diary-last-visited (current-time))))
+                  (window-configuration-to-register org-diary-register)
                   (org-diary-visit time nil org-diary-directory))
 	       (org-diary-mode 1))))))
 
