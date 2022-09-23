@@ -9,7 +9,7 @@
 
 
 Org Diary is a minor mode designed for keeping a diary using Org Mode. With a diary, I mean a simple daily note consisting of bullet points in which to
-write the worthy occurrences of the day, scattered thoughts, et cétera.
+write the worthy occurrences of the day, scattered thoughts, etc.
 
 Entries live their short lives in a thin strip to the right of your frame. You can enter and exit Org Diary with ~C-c d~, and within you can press
 

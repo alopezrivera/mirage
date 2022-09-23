@@ -813,7 +813,7 @@ the issue is resolved.
 
 (setq org-format-latex-options
         (list :foreground 'default
-              :scale      1.35))
+              :scale      0.75))
 
 #+end_src
 
