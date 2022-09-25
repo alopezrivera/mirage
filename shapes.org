@@ -375,6 +375,35 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 #+end_src
 
 
+** Workflow
+*** Session
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-session.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; built-ins
+(desktop-save-mode 1)
+
+;; modules
+(shapes-module "workgroups")
+
+#+end_src 
+
+*** Project interaction
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-project-interaction.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; modules
+(shapes-module "projectile")
+(shapes-module "treemacs")
+
+#+end_src
+
 ** Navigation
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-navigation.el
