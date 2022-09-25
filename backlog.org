@@ -358,6 +358,7 @@ packages
 
 - Note-taking
    - https://codethrasher.com/post/2022-09-09-evolving-my-note-taking-processes/
+   - https://takeonrules.com/2022/02/07/org-roam-emacs-and-ever-refining-the-note-taking-process/
 
 ** Miscellaneous
 
@@ -571,6 +572,9 @@ packages
    - deactivate when reloading org mode
      
 * org-export
+
+- early-init not loaded when async exporting
+
 ** site
 
 - references
@@ -626,6 +630,12 @@ packages
 * org note browsing
 
 - https://www.reddit.com/r/emacs/comments/xg0hwm/i_wrote_a_command_for_recursively_viewing_the/
+
+* org protocols
+
+- https://orgmode.org/manual/Protocols.html#Protocols
+- Reference and alternative solution
+   - https://takeonrules.com/2022/02/07/org-roam-emacs-and-ever-refining-the-note-taking-process/
 
 
 * runtime
@@ -817,6 +827,10 @@ packages
 - mu4e
    - Nano
       - https://www.reddit.com/r/emacs/comments/mzgsm0/mu4e_look_and_feel/
+   - undo send, schedule send
+      - https://github.com/bennyandresen/mu4e-send-delay
+   - MS Outlook 2FA
+      - https://www.macs.hw.ac.uk/~rs46/posts/2022-01-11-mu4e-oauth.html
 
 
 
