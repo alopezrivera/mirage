@@ -1,3 +1,7 @@
+;; built-ins
+(global-so-long-mode 1)
+
+;; modules
 (shapes-module "vundo")
 (shapes-module "multiple-cursors")
 

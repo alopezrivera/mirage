@@ -44,11 +44,9 @@
 ;; completion
 (shapes-module "ivy")
 
-(shapes-module "desktop")
-(shapes-module "workgroups")
+(shapes-layer "session")
 
-(shapes-module "projectile")
-(shapes-module "treemacs")
+(shapes-layer "project-interaction")
 
 (shapes-module "counsel")
 (shapes-module "helpful")

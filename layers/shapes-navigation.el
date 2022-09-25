@@ -1,7 +1,7 @@
-;; frame
+;; bindings
 (global-set-key (kbd "C-S-n") #'make-frame-command)
 
-;; window
+;; modules
 (shapes-module "winner")
 (shapes-module "ace-window")
 
