@@ -366,6 +366,10 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+begin_src emacs-lisp
 
+;; built-ins
+(global-so-long-mode 1)
+
+;; modules
 (shapes-module "vundo")
 (shapes-module "multiple-cursors")
 
@@ -1867,17 +1871,6 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 ** Workflow
 *** Session
-**** desktop
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-desktop.el
-:END:
-
-#+begin_src emacs-lisp
-
-(desktop-save-mode 1)
-
-#+end_src
-
 **** TODO workgroups
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-workgroups.el
