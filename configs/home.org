@@ -242,8 +242,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-module "desktop")
-(shapes-module "workgroups")
+(shapes-layer "session")
 
 #+end_src
 
@@ -251,8 +250,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-module "projectile")
-(shapes-module "treemacs")
+(shapes-layer "project-interaction")
 
 #+end_src
 
