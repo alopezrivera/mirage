@@ -165,6 +165,13 @@ Shapes configuration when an error is found")
 
 
 * Layers
+
+Content of a layer:
+- Bindings
+- Built-ins
+- Modules
+- Extensions
+
 ** UI
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-ui.el
@@ -888,6 +895,11 @@ matches the current theme."
 
 
 * Modules
+
+Content of a module:
+- Package installation
+- Package setup
+
 ** Infrastructure
 *** Package manager
 **** straight
@@ -3157,6 +3169,12 @@ folded."
 
 
 * Extensions
+
+Content of an extension:
+- Functions
+   - If interactive, function bindings
+- Macros
+
 ** Utilities
 *** Get
 :PROPERTIES:
