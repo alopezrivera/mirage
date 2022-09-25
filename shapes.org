@@ -296,14 +296,14 @@ Content of a layer:
 
 #+begin_src emacs-lisp
 
-;; commands
-(shapes-module "god-mode")
-
 ;; confirmation
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 
 ;; advanced commands
 (put 'narrow-to-region 'disabled nil)
+
+;; modules
+(shapes-module "god-mode")
 
 #+end_src
 
@@ -415,10 +415,10 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+begin_src emacs-lisp
 
-;; frame
+;; bindings
 (global-set-key (kbd "C-S-n") #'make-frame-command)
 
-;; window
+;; modules
 (shapes-module "winner")
 (shapes-module "ace-window")
 
