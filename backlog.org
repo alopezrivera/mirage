@@ -359,6 +359,7 @@ packages
 - Note-taking
    - https://codethrasher.com/post/2022-09-09-evolving-my-note-taking-processes/
    - https://takeonrules.com/2022/02/07/org-roam-emacs-and-ever-refining-the-note-taking-process/
+   - https://beepb00p.xyz/annotating.html#pdfs
 
 ** Miscellaneous
 
@@ -852,6 +853,8 @@ packages
    - https://github.com/junegunn/fzf
 - ripgrep
    - https://github.com/dajva/rg.el
+- snails
+   - https://github.com/manateelazycat/snails
 
 * navigation
 
@@ -909,7 +912,10 @@ packages
    - https://github.com/dimitri/el-get
 
 
-* shell
+* terminal
+
+- libvterm
+   - https://github.com/akermu/emacs-libvterm
 
 - fix missing environment variables
    - https://github.com/purcell/exec-path-from-shell
