@@ -3890,6 +3890,23 @@ preserve modeline status through theme changes."
 
 #+end_src
 
+**** Word
+
+#+begin_src emacs-lisp
+
+(defun custom/delete-word-forward (&optional arg)
+  (interactive)
+  (delete-region (point) (progn (forward-word arg) (point))))
+
+(defun custom/delete-word-backward (&optional arg)
+  (interactive)
+  (delete-region (point) (progn (backward-word arg) (point))))
+
+(global-set-key (kbd "C-<deletechar>") #'custom/delete-word-forward)
+(global-set-key (kbd "C-<backspace>")  #'custom/delete-word-backward)
+
+#+end_src
+
 **** Hungry
 
 #+begin_src emacs-lisp
