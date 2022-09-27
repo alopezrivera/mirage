@@ -31,13 +31,13 @@
 (global-set-key (kbd "C-r") custom/org-roam-map)
 
 ;; Capture
-(define-key custom/org-roam-map (kbd "c") 'org-roam-capture)
+(define-key custom/org-roam-map (kbd "c") #'org-roam-capture)
 
 ;; Find node
-(define-key custom/org-roam-map (kbd "n") 'org-roam-node-find)
+(define-key custom/org-roam-map (kbd "n") #'org-roam-node-find)
 
 ;; Insert reference
-(define-key custom/org-roam-map (kbd "i") 'org-roam-node-insert)
+(define-key custom/org-roam-map (kbd "i") #'org-roam-node-insert)
 
 (setq org-roam-capture-templates
       '(("m" "mathematics" plain "%?"
