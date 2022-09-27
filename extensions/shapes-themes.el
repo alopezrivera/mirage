@@ -39,7 +39,7 @@ using `enable-theme'"
 	       (t                          (progn (disable-theme theme)
 					          (custom/enable-or-load-theme    light))))))
 
-(global-set-key (kbd "C-t") 'custom/theme-toggle)
+(global-set-key (kbd "C-t") #'custom/theme-toggle)
 
 ;; color
 (defun custom/modeline-color (bg bg-in face face-in)

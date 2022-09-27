@@ -6,6 +6,17 @@
 (defun custom/delete-line ()
   (delete-region (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line)))
 
+(defun custom/delete-word-forward (&optional arg)
+  (interactive)
+  (delete-region (point) (progn (forward-word arg) (point))))
+
+(defun custom/delete-word-backward (&optional arg)
+  (interactive)
+  (delete-region (point) (progn (backward-word arg) (point))))
+
+(global-set-key (kbd "C-<deletechar>") #'custom/delete-word-forward)
+(global-set-key (kbd "C-<backspace>")  #'custom/delete-word-backward)
+
 (defun custom/@delete-hungry (query)
   "Conditional region deletion.
 
@@ -44,7 +55,7 @@ next line plus one character."
 	    ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
 	    (t                                              (delete-forward-char 1))))
 
-(global-set-key (kbd "<deletechar>") 'custom/nimble-delete-forward)
+(global-set-key (kbd "<deletechar>") #'custom/nimble-delete-forward)
 
 (defun custom/nimble-delete-backward ()
   "Conditional forward deletion.
@@ -60,11 +71,11 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
       (cond ((and (region-active-p) (not (custom/region-blank))) (custom/delete-hungry))
-	        ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-		(t                                                   (delete-backward-char 1)))
+	         ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
+		 (t                                                   (delete-backward-char 1)))
     (delete-backward-char 1)))
 
-(global-set-key (kbd "<backspace>") 'custom/nimble-delete-backward)
+(global-set-key (kbd "<backspace>") #'custom/nimble-delete-backward)
 
 ;; Increase kill ring size
 (setq kill-ring-max 200)
@@ -78,8 +89,8 @@ kill ring."
       (kill-ring-save (region-beginning) (region-end))
     (yank)))
 
-(global-set-key (kbd "<mouse-3>")        'custom/kill-ring-mouse)
-(global-set-key (kbd "<down-mouse-3>")    nil)
+(global-set-key   (kbd "<mouse-3>") #'custom/kill-ring-mouse)
+(global-unset-key (kbd "<down-mouse-3>"))
 
 ;; Unset secondary overlay key bindings
 (global-unset-key [M-mouse-1])

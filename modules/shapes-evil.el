@@ -8,9 +8,9 @@
 (straight-use-package 'evil-god-state)
 (require 'evil-god-state)
 
-(evil-define-key 'normal global-map (kbd ",") 'evil-execute-in-god-state)
+(evil-define-key 'normal global-map (kbd ",") #'evil-execute-in-god-state)
 
-(evil-define-key 'god    global-map (kbd "<escape>") 'evil-god-state-bail)
+(evil-define-key 'god    global-map (kbd "<escape>") #'evil-god-state-bail)
 
 ;; mode indicators
 (setq evil-normal-state-tag   (propertize " COMMAND " 'face '((:background "dark khaki"     :foreground "black")))

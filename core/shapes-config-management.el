@@ -44,7 +44,7 @@
 
 (shapes-module "el-patch")
 
-(global-set-key (kbd "C-x e") 'eval-buffer)
+(global-set-key (kbd "C-x e") #'eval-buffer)
 
 (global-set-key (kbd "C-c SPC") #'whitespace-mode)
 

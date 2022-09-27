@@ -52,7 +52,7 @@ folded."
 
 (add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
 
-(global-set-key (kbd "C-x C-x") 'org-babel-execute-src-block)
+(global-set-key (kbd "C-x C-x") #'org-babel-execute-src-block)
 
 ;; Set indentation of code blocks to 0
 (setq org-edit-src-content-indentation 0)

@@ -1,5 +1,5 @@
 ;; org-agenda
-(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c a") #'org-agenda)
 
 ;; org-agenda-files
 (setq org-agenda-files (append org-agenda-files

@@ -14,7 +14,7 @@
   (let ((inhibit-message t))
        (cfw:open-org-calendar)))
 
-(global-set-key (kbd "C-c c") 'custom/org-calendar)
+(global-set-key (kbd "C-c c") #'custom/org-calendar)
 
 (provide 'shapes-module-org-calendar)
 ;;; shapes-org-calendar.el ends here
