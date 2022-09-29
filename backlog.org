@@ -27,6 +27,7 @@
 *** workflow
 
 - https://orgmode.org/worg/org-gtd-etc.html
+- https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
 
 - org-agenda-log-mode
 - org-clock-report
@@ -34,6 +35,8 @@
 - notifications
    - https://github.com/marcinkoziej/org-pomodoro
    - https://github.com/akhramov/org-wild-notifier.el
+- progress
+   - https://github.com/gsingh93/org-custom-cookies
 
 ** shapes
 *** home buffer
@@ -485,6 +488,11 @@ packages
    - other
       - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
 
+* presentations
+
+- references
+   - https://www.reddit.com/r/emacs/comments/pgw0tq/classy_slideshows_from_emacs_org_mode_orgreveal/
+
 
 * org
 
@@ -572,6 +580,24 @@ packages
 - UI
    - deactivate when reloading org mode
      
+* org-babel
+
+- tangle block to all files
+   - noweb block references
+      - https://www.reddit.com/r/emacs/comments/5r9s4l/comment/dd6an2n/?utm_source=share&utm_medium=web2x&context=3
+   - property -> :tangle all
+      1. get list of tangle destinations in org file
+      2. block with :tangle all
+          - tangle to all files in list
+
+- two-way tangle
+   - https://github.com/phillord/lentic
+
+* org-queries
+
+- metarosetta
+   - https://github.com/73D1/metarosetta
+
 * org-export
 
 - early-init not loaded when async exporting
@@ -594,31 +620,19 @@ packages
 - https://yiufung.net/post/anki-org/
 
 ** presentations
+*** org-reveal
 
-- revealJS
-   - https://www.youtube.com/watch?v=avtiR0AUVlo
-   - Nice code block transitions
-      - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
-- ioslide
-   - https://github.com/coldnew/org-ioslide
+- https://www.youtube.com/watch?v=avtiR0AUVlo
+- Nice code block transitions
+   - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
 
-* org-babel
+*** emacs-reveal
 
-- tangle block to all files
-   - noweb block references
-      - https://www.reddit.com/r/emacs/comments/5r9s4l/comment/dd6an2n/?utm_source=share&utm_medium=web2x&context=3
-   - property -> :tangle all
-      1. get list of tangle destinations in org file
-      2. block with :tangle all
-          - tangle to all files in list
+- https://gitlab.com/oer/emacs-reveal/
 
-- two-way tangle
-   - https://github.com/phillord/lentic
+*** org-ioslide
 
-* org-queries
-
-- metarosetta
-   - https://github.com/73D1/metarosetta
+- https://github.com/coldnew/org-ioslide
 
 * org-remark
 
