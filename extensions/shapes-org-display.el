@@ -1,16 +1,16 @@
 ;;; -*- lexical-binding: t; -*-
 
 (defface custom/variable-pitch-marker
-  '((nil :inherit 'fixed-pitch))
+  '((nil :inherit fixed-pitch))
   "List marker typeface.")
 
 (defface custom/variable-pitch-indent
-  '((nil :inherit 'fixed-pitch :invisible t))
+  '((nil :inherit fixed-pitch :invisible t))
   "Indent typeface.")
 
 (defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
-					     ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
-					     ("^[[:blank:]]+"                                      0 'custom/variable-pitch-indent))
+					      ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
+					      ("^[[:blank:]]+"                                  0 'custom/variable-pitch-indent))
   "Variable pitch font-lock keywords.")
 
 (font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)

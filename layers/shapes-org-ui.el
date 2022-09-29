@@ -13,21 +13,21 @@
   (with-eval-after-load 'org-faces
 
     ;; Code
-    (set-face-attribute 'org-block                 nil :foreground nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code                  nil                 :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim              nil                 :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-block                 nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code                  nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim              nil :inherit '(shadow fixed-pitch))
 
     ;; Tables
-    (set-face-attribute 'org-table                 nil                 :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table                 nil :inherit '(shadow fixed-pitch))
 
     ;; Lists
-    (set-face-attribute 'org-checkbox              nil                 :inherit 'fixed-pitch)
+    (set-face-attribute 'org-checkbox              nil :inherit 'fixed-pitch)
 
     ;; Meta
-    (set-face-attribute 'org-meta-line             nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-document-info         nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-document-info-keyword nil                 :inherit 'fixed-pitch)
-    (set-face-attribute 'org-special-keyword       nil                 :inherit 'fixed-pitch)))
+    (set-face-attribute 'org-meta-line             nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-document-info         nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-document-info-keyword nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-special-keyword       nil :inherit 'fixed-pitch)))
 
 (add-hook 'org-mode-hook #'custom/org-typefaces-body)
 

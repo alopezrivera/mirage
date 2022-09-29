@@ -11,9 +11,6 @@
 (shapes-module "org-tempo")
 (shapes-module "org-capture")
 
-;; export
-(shapes-module "ox-rst")
-
 ;; notes
 (shapes-module "org-diary")
 (shapes-module "org-roam")
@@ -22,6 +19,9 @@
 (shapes-module "org-agenda")
 (shapes-module "org-contacts")
 (shapes-module "org-calendar")
+
+;; presentations
+(shapes-module "org-reveal")
 
 ;; programming
 (shapes-module "org-babel")

@@ -27,8 +27,8 @@ of each case which has been defined for a given function")
   (gethash function custom/cases))
 
 (defun case-remove (function &optional n)
-  "Remove all cases of FUNCTION, that is, remove their advice on FUNCTION and
-their name from the `custom/cases' hash table entry of FUNCTION.
+  "Remove all cases of FUNCTION, that is, remove their advice on FUNCTION
+and their name from the `custom/cases' hash table entry of FUNCTION.
 If N is provided, remove the Nth case of FUNCTION in the same fashion"
   (setq-local case-list (case-get function))
   (setq-local element   (if n (nth n case-list) nil))

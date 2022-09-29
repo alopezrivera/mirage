@@ -8,6 +8,7 @@
         beginning-of-visual-line
         comment-line
         custom/del-backward
+        custom/delete-word-backward
         custom/double-end
         custom/double-home
         custom/kill-ring-mouse
