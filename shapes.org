@@ -2813,6 +2813,7 @@ if it was previously enabled."
 #+begin_src emacs-lisp
 
 ;; org-agenda
+(require 'org-agenda)
 (global-set-key (kbd "C-c a") #'org-agenda)
 
 #+end_src
