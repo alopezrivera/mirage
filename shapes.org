@@ -1870,6 +1870,18 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 
 
 ** Workflow
+*** Export
+**** htmlize
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-htmlize.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'htmlize)
+
+#+end_src
+
 *** Session
 **** TODO workgroups
 :PROPERTIES:
