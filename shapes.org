@@ -509,9 +509,6 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "org-tempo")
 (shapes-module "org-capture")
 
-;; export
-(shapes-module "ox-rst")
-
 ;; notes
 (shapes-module "org-diary")
 (shapes-module "org-roam")
@@ -2804,20 +2801,6 @@ if it was previously enabled."
   (if custom/org-roam-timestamps-mode-active-before-capture
       (org-roam-timestamps-mode)))
 (add-hook 'org-capture-after-finalize-hook #'custom/org-roam-timestamps-mode-back)
-
-#+end_src
-
-*** Export
-**** ox-rst
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-ox-rst.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; ox-rst
-(straight-use-package 'ox-rst)
-(require 'ox-rst)
 
 #+end_src
 
