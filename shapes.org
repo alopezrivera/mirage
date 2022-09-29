@@ -518,6 +518,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "org-contacts")
 (shapes-module "org-calendar")
 
+;; presentations
+(shapes-module "org-reveal")
+
 ;; programming
 (shapes-module "org-babel")
 
@@ -3056,6 +3059,22 @@ if it was previously enabled."
 - lecture
    - specify directory
    - template
+
+*** Presentations
+**** org-reveal
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-reveal.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'org-reveal)
+(require 'ox-reveal)
+(load-library "ox-reveal")
+
+(setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
+
+#+end_src
 
 *** Programming
 **** org-babel
