@@ -65,7 +65,7 @@
 (add-hook 'org-mode-hook #'custom/org-header-setup)
 
 ;; org-indent-mode
-(add-hook 'org-mode-hook #'org-indent-mode)
+(setq org-startup-indented t)
 
 ;; list indentation
 (setq-default org-list-indent-offset 1)

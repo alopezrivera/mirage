@@ -664,7 +664,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 #+begin_src emacs-lisp
 
 ;; org-indent-mode
-(add-hook 'org-mode-hook #'org-indent-mode)
+(setq org-startup-indented t)
 
 ;; list indentation
 (setq-default org-list-indent-offset 1)
