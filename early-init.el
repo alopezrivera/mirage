@@ -4,9 +4,6 @@
 (defcustom config-directory "~/.emacs.d/"
   "Emacs configuration directory")
 
-(defcustom initial-buffer-choice ""
-  "Buffer displayed at startup")
-
 (defcustom startup-buffers '()
   "Buffers opened at startup")
 
