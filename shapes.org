@@ -1048,6 +1048,8 @@ Content of a module:
 
 (dashboard-setup-startup-hook)
 
+(setq dashboard-center-content t)
+
 #+end_src
 
 *** Buffer

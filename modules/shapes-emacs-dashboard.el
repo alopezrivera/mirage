@@ -7,5 +7,7 @@
 
 (dashboard-setup-startup-hook)
 
+(setq dashboard-center-content t)
+
 (provide 'shapes-module-emacs-dashboard)
 ;;; shapes-emacs-dashboard.el ends here
