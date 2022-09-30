@@ -213,8 +213,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-module "swiper")
-(shapes-module "rg")
+(shapes-layer "search")
 
 #+end_src
 

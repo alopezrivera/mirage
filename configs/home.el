@@ -35,8 +35,7 @@
 
 (shapes-layer "editing")
 
-(shapes-module "swiper")
-(shapes-module "rg")
+(shapes-layer "search")
 
 ;; templates
 (shapes-module "yasnippet")
