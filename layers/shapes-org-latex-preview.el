@@ -5,7 +5,7 @@
               :scale      1.50))
 
 (setq custom/org-latex-preview-class-args "fleqn")
-(setq custom/org-latex-preview-width      "16.5cm")
+(setq custom/org-latex-preview-width      "18cm")
 
 (setq org-format-latex-header
       (string-join `("\\documentclass[" ,custom/org-latex-preview-class-args "]{article}"
