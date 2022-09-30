@@ -16,8 +16,8 @@
 ;; org-roam directory
 (setq org-roam-directory (concat home "home/library/zettelkasten"))
 
-;; org-diary directory
-(setq org-diary-directory (concat home "home/scribbles/journal/diary/"))
+;; bitacora directory
+(setq bitacora-directory (concat home "home/scribbles/journal/diary/"))
 
 ;; projectile
 (setq projectile-project-search-path (list `(,(concat home "home/")   . 1)

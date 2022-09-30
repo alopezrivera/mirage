@@ -12,7 +12,7 @@
 (shapes-module "org-capture")
 
 ;; notes
-(shapes-module "org-diary")
+(shapes-module "bitacora")
 (shapes-module "org-roam")
 
 ;; agenda

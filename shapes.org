@@ -510,7 +510,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "org-capture")
 
 ;; notes
-(shapes-module "org-diary")
+(shapes-module "bitacora")
 (shapes-module "org-roam")
 
 ;; agenda
@@ -2666,14 +2666,14 @@ beginning lies on an Org Mode heading,
 #+end_src
 
 *** Notes
-**** org-diary
+**** bitacora
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-diary.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-bitacora.el
 :END:
 
 #+begin_src emacs-lisp
 
-(require 'org-diary (concat config-directory "local/packages/org-diary.el"))
+(require 'bitacora (concat config-directory "local/packages/bitacora.el"))
 
 #+end_src
 
