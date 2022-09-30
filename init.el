@@ -32,7 +32,7 @@
 	      collect (find-file-noselect buffer)))
 
 (if spawn-startup-buffers
-    (add-hook 'after-init-hook #'custom/spawn-startup-buffers))
+    (add-hook 'emacs-startup-hook #'custom/spawn-startup-buffers))
 
 ;; credentials
 (let ((credential-file (concat config-directory "creds.el.gpg")))

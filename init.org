@@ -105,7 +105,7 @@
 	      collect (find-file-noselect buffer)))
 
 (if spawn-startup-buffers
-    (add-hook 'after-init-hook #'custom/spawn-startup-buffers))
+    (add-hook 'emacs-startup-hook #'custom/spawn-startup-buffers))
 
 #+end_src
 
