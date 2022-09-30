@@ -3,7 +3,7 @@
 ;; `org-in-src-block-p' gives false positives as of Org Mode 9.5.3. For
 ;; this reason, determine if cursor in src block with the more reliable
 ;; `org-babel-where-is-src-block-head'
-(advice-add 'org-in-src-block-p :override 'org-babel-where-is-src-block-head)
+(advice-add 'org-in-src-block-p :override #'org-babel-where-is-src-block-head)
 
 (defun custom/org-at-ellipsis (&optional position)
   (or (custom/org-at-ellipsis-h position) (custom/org-at-ellipsis-l position)))

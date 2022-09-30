@@ -1,8 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 
-;; no tabs
-(setq-default indent-tabs-mode nil)
-
 (defun custom/delete-line ()
   (delete-region (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line)))
 
