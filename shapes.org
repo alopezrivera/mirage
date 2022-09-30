@@ -381,6 +381,21 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+end_src
 
+** Search
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-editing.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; modules
+(shapes-module "swiper")
+(shapes-module "rg")
+
+;; extensions
+(shapes-extend "search")
+
+#+end_src
 
 ** Workflow
 *** Session
