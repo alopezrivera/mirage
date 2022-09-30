@@ -4178,6 +4178,24 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
+** Search
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-search.el
+:END:
+*** Search and replace
+
+#+begin_src emacs-lisp
+
+(defun custom/query-replace-regexp ()
+  (interactive)
+  (save-excursion
+    (beginning-of-buffer)
+    (call-interactively 'query-replace-regexp)))
+
+(global-set-key (kbd "M-/") #'custom/query-replace-regexp)
+
+#+end_src
+
 
 ** Navigation
 :PROPERTIES:
