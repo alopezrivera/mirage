@@ -369,6 +369,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; built-ins
 (global-so-long-mode 1)
 
+;; settings
+(setq-default indent-tabs-mode nil)
+
 ;; modules
 (shapes-module "vundo")
 (shapes-module "multiple-cursors")
@@ -3892,15 +3895,6 @@ preserve modeline status through theme changes."
 
 #+begin_src emacs-lisp
 ;;; -*- lexical-binding: t; -*-
-#+end_src
-
-*** Tabs
-
-#+begin_src emacs-lisp
-
-;; no tabs
-(setq-default indent-tabs-mode nil)
-
 #+end_src
 
 *** Delete
