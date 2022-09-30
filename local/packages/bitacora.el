@@ -1,59 +1,3 @@
-#+STARTUP: overview
-#+FILETAGS: :emacs:
-
-
-
-
-#+title:Bitácora
-#+PROPERTY: header-args:emacs-lisp :results none :tangle ./bitacora.el :mkdirp yes
-
-
-Bitácora is a minor mode designed for keeping a diary using Org Mode. With a diary, I mean a
-simple daily note consisting of bullet points in which to write the worthy occurrences of the
-day, scattered thoughts, etc.
-
-Entries live their short lives in a thin strip to the right of your frame. You can enter and
-exit Bitácora with ~C-c d~, and within you can press
-
-   ~C-d~ to insert a timestamp with the current hour and minute
-   
-   ~C-<left arrow>~ to visit the previous entry
-   
-   ~C-<right arrow>~ to visit the next entry
-   
-   ~C-c t~ to go back to today's entry
-   
-   ~C-x w~ to resize the Bitácora window to its righteous size
-
-~bitacora~, the function you call with ~C-c d~, will open Bitácora at either the entry for today,
-or that of the last day you visited. If you wish to choose a specific entry to open, you can call
-~bitacora~ with the ~C-u~ prefix. This will raise a calendar prompt in which to choose a day the
-entry of which you want to read.
-
-
-* TODO Backlog
-
-- thoughts
-   - two buffers
-      - journal buffer list
-      - long form content
-         - separators
-            - -----
-         - lazy load
-   - show buffer list
-   - get long-form content form buffer if desired
-      - filter journal entry content
-- functions
-   - Exports
-      - select thoughts for export
-      - org-capture selected thoughts
-
-
-* Setup
-** Mode
-
-#+begin_src emacs-lisp
-
 ;;; org-paragraph.el --- Paragraphs passing as items -*- lexical-binding: t -*-
 
 ;; Copyright (C) Antonio López Rivera
@@ -106,13 +50,6 @@ entry of which you want to read.
       (bitacora-undo-typesetting))))
 
 (define-globalized-minor-mode bitacora-global-minor-mode bitacora-mode bitacora-mode :group 'bitacora-mode-group)
-
-#+end_src
-
-** Variables
-*** Custom
-
-#+begin_src emacs-lisp
 
 (defcustom bitacora-directory         "/home/diary/"
   "Bitácora directory"
@@ -172,23 +109,10 @@ notes in `bitacora' format"
   :group 'bitacora-mode-group
   :type 'boolean)
 
-#+end_src
-
-*** Auxiliary
-
-#+begin_src emacs-lisp
-
 (defvar bitacora-last-visited nil
   "Time of the last Bitácora entry being edited before exiting Bitácora.
 Upon being called again, `bitacora' will open this entry so you can
 resume your writing where you left off")
-
-#+end_src
-
-** Functions
-*** org-get-title-buffer
-
-#+begin_src emacs-lisp
 
 (defun bitacora--org-get-title-buffer (&optional buffer)
   (let ((buffer (or buffer (current-buffer))))
@@ -199,34 +123,16 @@ resume your writing where you left off")
 		      '(keyword)
 		    #'bitacora--get-keyword-key-value))))))
 
-#+end_src
-
-*** window-resize-fraction
-
-#+begin_src emacs-lisp
-
 (defun bitacora--window-resize-fraction (fr &optional min)
   "Resize window to a fraction of the frame width."
   (interactive)
   (let ((width (max (if min min 0) (truncate (* fr (frame-width))))))
     (window-resize nil (- width (window-width)) t)))
 
-#+end_src
-
-*** get-keyword-key-value
-
-#+begin_src emacs-lisp
-
 (defun bitacora--get-keyword-key-value (kwd)
    (let ((data (cadr kwd)))
      (list (plist-get data :key)
            (plist-get data :value))))
-
-#+end_src
-
-*** find-buffer-by-file-name
-
-#+begin_src emacs-lisp
 
 (defun bitacora--find-buffer-by-file-name (file)
   (cl-loop for buffer in (buffer-list)
@@ -234,26 +140,10 @@ resume your writing where you left off")
 	           return buffer
 		finally return nil))
 
-#+end_src
-
-* Display
-** Window
-*** bitacora-window-width
-
-#+begin_src emacs-lisp
-
 (defun bitacora-window-width ()
   "Width of an Bitácora window in the current frame"
   (max (* (frame-width) bitacora-new-window-fraction)
        bitacora-min-window-width))
-
-#+end_src
-
-*** TODO bitacora-new-window
-
-- new window always on right of frame
-
-#+begin_src emacs-lisp
 
 (defun bitacora-new-window ()
   "Create a window for an Bitácora entry or use the current one
@@ -264,21 +154,9 @@ if it is too narrow to split, and resize it."
   (if (not (ignore-errors (bitacora-resize-window)))
       (delete-other-windows)))
 
-#+end_src
-
-*** bitacora-resize-window
-
-#+begin_src emacs-lisp
-
 (defun bitacora-resize-window ()
   (interactive)
   (bitacora--window-resize-fraction bitacora-new-window-fraction bitacora-min-window-width))
-
-#+end_src
-
-** Typeset
-
-#+begin_src emacs-lisp
 
 (defun bitacora-typeset ()
   "Typeset `bitacora' buffers"
@@ -297,14 +175,6 @@ if it is too narrow to split, and resize it."
   (if bitacora-variable-pitch
       (variable-pitch-mode 0)))
 
-#+end_src
-
-** Typefaces
-*** font-lock
-**** hh:mm
-
-#+begin_src emacs-lisp
-
 (defface bitacora-typeface-hhmm
   '((nil :foreground "#eb07b6" :inherit 'fixed-pitch))
   "Bitácora typeface for hh:mm time stamps"
@@ -314,70 +184,16 @@ if it is too narrow to split, and resize it."
   "Bitácora hh:mm typeface keyword"
   :group 'bitacora-mode-group)
 
-#+end_src
-
-**** keywords
-
-#+begin_src emacs-lisp
-
 (defcustom bitacora-keywords (list bitacora-keyword-hhmm)
   "Bitácora font-lock keywords")
-
-#+end_src
-
-**** font-lock-add
-
-#+begin_src emacs-lisp
 
 (defun bitacora-font-lock-add ()
   (font-lock-add-keywords nil bitacora-keywords)
   (font-lock-fontify-buffer))
 
-#+end_src
-
-**** font-lock-remove
-
-#+begin_src emacs-lisp
-
 (defun bitacora-font-lock-remove ()
   (font-lock-remove-keywords nil bitacora-keywords)
   (font-lock-fontify-buffer))
-
-#+end_src
-
-** TODO Line padding
-
-- mouse click bug -> cursor about 2 lines below mouse
-
-#+begin_src emacs-lisp :tangle no
-
-(defcustom bitacora-line-padding 1.25
-  "Bitácora line padding factor"
-  :group 'bitacora-mode-group)
-
-(defun bitacora-line-padding ()
-  "Set padding between Bitácora entry lines"
-  ;; remove padding overlays if they already exist
-  (let ((overlays (overlays-at (point-min))))
-    (while overlays
-      (let ((overlay (car overlays)))
-        (if (overlay-get overlay 'is-padding-overlay)
-            (delete-overlay overlay)))
-      (setq overlays (cdr overlays))))
-  ;; add a new padding overlay
-  (let ((padding-overlay (make-overlay (point-min) (point-max))))
-    (overlay-put padding-overlay 'is-padding-overlay t)
-    (overlay-put padding-overlay 'line-spacing (* .1 bitacora-line-padding))
-    (overlay-put padding-overlay 'line-height (+ 1 (* .1 bitacora-line-padding))))
-  (setq mark-active nil))
-
-#+end_src
-
-* Internal
-** Files
-*** bitacora-file-format
-
-#+begin_src emacs-lisp
 
 (defun bitacora-file-format (&optional dir)
   "Bitácora file name format"
@@ -388,47 +204,6 @@ if it is too narrow to split, and resize it."
 	   (file bitacora-time-format-file))
     (concat dir file ".org")))
 
-#+end_src
-
-** Time
-*** TODO bitacora-parse-time
-
-org-read-date
-
------
-
-1. find separator indices in time string
-    - <any code><separator>% -> regex match group
-    - assoc list ((code . pos in time list))
-2. split string at each separator -> list of values
-3. parallel lists -> ("<code 1>" ...) ("<value 1>" ...)
-4. transform assoc list -> ("<code 1>" . decode-method-1)
-5. decode string chunks to time values
-     
-   for i in range <parallel lists>
-       time-value-list[i] = (apply (assoc tr-assoc-list code-list[i]) value-list[i])
-         
-6. sort codes to match time list order -> apply sort to value list
-
------
-
-- auxiliary variables: year, month, day, hour, minute, second
-   - assoc list ((code . auxiliary-variable))
-   - if auxiliary variable written -> do not overwrite (in case of redundant codes such as %u (numeric day of the week) and %a (abbreviated name of the day of the week)
-
-for code in codes
-   if regex-match %code
-      sep = regex-match %code<sep>% else(eol) ""
-      value = regex-match %code<value><sep>
-      time-value = (apply (assoc tr-assoc-list code-list[i]) value-list[i])
-      (setq (assoc code-auxv-dict code) time-value)
-aux variables -> time list
-
------
-#+title:Draft (rough)
-
-#+begin_src emacs-lisp
-
 (defun bitacora-parse-time (string)
   "Parse time string. Currently hardcoded to parse time
 strings in the format `%d/%m/%Y'"
@@ -436,30 +211,11 @@ strings in the format `%d/%m/%Y'"
 		            collect (string-to-number n))))
     (encode-time (list 0 0 0 (nth 0 dmy) (nth 1 dmy) (nth 2 dmy) nil nil nil))))
 
-#+end_src
-
-*** bitacora-time-string-file
-
-#+begin_src emacs-lisp
-
 (defun bitacora-time-string-file (time &optional dir)
   (format-time-string (bitacora-file-format dir) time))
 
-#+end_src
-
-*** bitacora-time-string-title
-
-#+begin_src emacs-lisp
-
 (defun bitacora-time-string-title (time)
   (format-time-string bitacora-time-format-title time))
-
-#+end_src
-
-** Entry
-*** bitacora-entry
-
-#+begin_src emacs-lisp
 
 (defun bitacora-entry (&optional buffer)
   "Return t if BUFFER is an Bitácora entry"
@@ -467,32 +223,14 @@ strings in the format `%d/%m/%Y'"
     (if bfname
 	    (string-match-p bitacora-entry-regex (file-name-nondirectory bfname)))))
 
-#+end_src
-
-*** bitacora-entry-file
-
-#+begin_src emacs-lisp
-
 (defun bitacora-entry-file (&optional buffer)
   "Retrieve the file name of an Bitácora entry"
   (bitacora-time-string-file (bitacora-entry-time buffer)))
-
-#+end_src
-
-*** bitacora-entry-time
-
-#+begin_src emacs-lisp
 
 (defun bitacora-entry-time (&optional buffer)
   "Retrieve the time of an Bitácora entry"
   (let ((title (bitacora--org-get-title-buffer buffer)))
       (bitacora-parse-time title)))
-
-#+end_src
-
-*** bitacora-entry-unsaved-buffer
-
-#+begin_src emacs-lisp
 
 (defun bitacora-entry-unsaved-buffer (time)
   "Return t if the Bitácora entry for TIME exists
@@ -504,25 +242,11 @@ in an unsaved buffer"
 		    return t
              finally return nil)))
 
-#+end_src
-
-** Window
-*** bitacora-window
-
-#+begin_src emacs-lisp
-
 (defun bitacora-window ()
   (cl-loop for buffer in (buffer-list)
 	       if (bitacora-entry buffer)
 	          return (get-buffer-window buffer)
            finally return nil))
-
-#+end_src
-
-* Editing
-** Initialization
-
-#+begin_src emacs-lisp
 
 (defun bitacora-init (time)
   "Set up Bitácora entry"
@@ -532,33 +256,14 @@ in an unsaved buffer"
   (org-time-stamp-inactive '(16))
   (insert "\n\n\n\n- "))
 
-#+end_src
-
-** Insert time
-
-#+begin_src emacs-lisp
-
 (defun bitacora-insert-time (format)
   "Insert current time using the given FORMAT"
   (insert (format-time-string format (current-time))))
-
-#+end_src
-
-*** insert-hhmm
-
-#+begin_src emacs-lisp
 
 (defun bitacora-insert-time-hhmm ()
   "Insert current time in HH:MM format"
   (interactive)
   (bitacora-insert-time "%H:%M"))
-
-#+end_src
-
-* Exploration
-** TODO bitacora-browse
-
-#+begin_src emacs-lisp
 
 (defun bitacora-browse ()
   "Org Agenda-like list of diary entries.
@@ -568,30 +273,6 @@ Options:
 - quit -> quit and return to previous window config, buffer and visibility
   - org-agenda -> save current window config, visibility"
   (interactive))
-
-#+end_src
-
-** TODO bitacora-thoughts
-
-- Two buffers
-   - Diary buffer list
-   - Long form content
-      - Separators
-         - -----
-      - Lazy load
-         1. show buffer list
-         2. get long-form content from buffer if desired
-             1. Save as aux
-             2. Delete when closing
-- Functions
-   - Exports
-      - select thoughts for export
-      - org-capture selected thoughts
-
-* Navigation
-** bitacora-open
-
-#+begin_src emacs-lisp
 
 (defun bitacora-open (entry &optional noselect new-window)
   "Open an Bitácora diary.
@@ -610,12 +291,6 @@ switch to that window; otherwise, switch to that buffer.
 	   ((and entry-buffer new-window) (progn (bitacora-new-window) (switch-to-buffer entry-buffer)))
 	   (new-window                    (progn (bitacora-new-window) (find-file        entry)))
 	   (t                             (find-file entry))))
-
-#+end_src
-
-** bitacora-visit
-
-#+begin_src emacs-lisp
 
 (defun bitacora-visit (time &optional arg dir)
   "Open the Bitácora entry corresponding to the specified time, and initialize it if necessary.
@@ -651,23 +326,11 @@ DIR is the directory in which to look for the bitacora entry corresponding to TI
        ;; Go to end of buffer
        (end-of-buffer)))
 
-#+end_src
-
-** bitacora-today
-
-#+begin_src emacs-lisp
-
 (defun bitacora-today ()
   "Open the Bitácora entry for today, creating it if
 it does not exist"
   (interactive)
   (bitacora-visit (current-time) current-prefix-arg bitacora-directory))
-
-#+end_src
-
-** bitacora-jump
-
-#+begin_src emacs-lisp
 
 (defun bitacora-jump (number)
   (interactive)
@@ -675,30 +338,13 @@ it does not exist"
 	   (time-jump (time-add (bitacora-entry-time) (days-to-time number))))
     (bitacora-visit time-jump '(4))))
 
-#+end_src
-
-** bitacora-prior
-
-#+begin_src emacs-lisp
-
 (defun bitacora-prior ()
   (interactive)
   (bitacora-jump -1))
 
-#+end_src
-
-** bitacora-next
-
-#+begin_src emacs-lisp
 (defun bitacora-next ()
   (interactive)
   (bitacora-jump 1))
-
-#+end_src
-
-** bitacora-revisit
-
-#+begin_src emacs-lisp
 
 (defun bitacora-revisit ()
   "Determine whether to revisit the `bitacora-last-visited' entry"
@@ -706,26 +352,9 @@ it does not exist"
       (let ((entry (bitacora-time-string-file bitacora-last-visited bitacora-directory)))
 	   (bitacora--find-buffer-by-file-name entry))))
 
-#+end_src
-
-* TODO Exit
-
-- exit
-   - save/generate autosave file
-- window deletion
-   - save/generate autosave file
-
-#+begin_src emacs-lisp
-
 (defun bitacora-exit ()
   (setq bitacora-last-visited (bitacora-entry-time (current-buffer)))
   (bitacora-mode 0))
-
-#+end_src
-
-* Diary
-
-#+begin_src emacs-lisp
 
 (defvar bitacora-register ""
   "Bitácora window configuration register")
@@ -749,19 +378,7 @@ for a date to visit using the Emacs calendar."
                   (bitacora-visit time nil bitacora-directory))
 	       (bitacora-mode 1))))))
 
-#+end_src
-
-* Startup
-
-#+begin_src emacs-lisp
-
 (add-hook 'org-mode-hook (lambda () (if (bitacora-entry) (bitacora-mode))))
-
-#+end_src
-
-* Bindings
-
-#+begin_src emacs-lisp
 
 (global-set-key (kbd "C-c d") 'bitacora)
 
@@ -777,13 +394,5 @@ for a date to visit using the Emacs calendar."
                        (c (cdr binding)))
                    (define-key bitacora-mode-map (kbd k) c)))
 
-#+end_src
-
-* Declare
-
-#+begin_src emacs-lisp
-
 (provide 'bitacora)
 ;;; org-modern.el ends here
-
-#+end_src
