@@ -2421,8 +2421,14 @@ sudo apt-get install python3-venv
 ;; automatically annotate highlights
 (setq pdf-annot-activate-created-annotations t)
 
-;; center
+;; [c]enter
 (define-key pdf-view-mode-map (kbd "c") #'pdf-view-center-in-window)
+;; [l]abel
+(define-key pdf-history-minor-mode-map (kbd "l") nil)
+(define-key pdf-view-mode-map (kbd "l") #'pdf-view-goto-label)
+;; [h]istory
+(define-key pdf-view-mode-map (kbd "h") #'pdf-history-backward)
+
 ;; themed view
 (define-key pdf-view-mode-map (kbd "C-c C-r t") #'pdf-view-themed-minor-mode)
 
