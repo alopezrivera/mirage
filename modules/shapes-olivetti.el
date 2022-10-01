@@ -13,6 +13,8 @@
 ;; Programming modes
 (add-hook 'prog-mode-hook 'olivetti-mode)
 
+(shapes-module "el-patch")
+
 (el-patch-feature olivetti)
 (el-patch-defun olivetti-set-width (width)
   "Set text body width to WIDTH with relative margins.

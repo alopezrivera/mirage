@@ -1057,9 +1057,9 @@ Content of a module:
 
 #+begin_src emacs-lisp
 
-(shapes-module "page-break-lines")
 (shapes-module "projectile")
 (shapes-module "all-the-icons")
+(shapes-module "page-break-lines")
 
 (straight-use-package 'dashboard)
 (require 'dashboard)
@@ -1103,6 +1103,13 @@ Content of a module:
 
 ***** Patches
 
+#+begin_src emacs-lisp
+
+(shapes-module "el-patch")
+
+#+end_src
+
+****** olivetti-set-width
 #+begin_src emacs-lisp
 
 (el-patch-feature olivetti)
@@ -2082,7 +2089,6 @@ by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-head
 (straight-use-package 'treemacs-magit)
 
 #+end_src
-
 
 ** Guidance
 *** counsel

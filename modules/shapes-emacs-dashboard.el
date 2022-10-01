@@ -1,6 +1,6 @@
-(shapes-module "page-break-lines")
 (shapes-module "projectile")
 (shapes-module "all-the-icons")
+(shapes-module "page-break-lines")
 
 (straight-use-package 'dashboard)
 (require 'dashboard)
