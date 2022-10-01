@@ -383,7 +383,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ** Search
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-editing.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-search.el
 :END:
 
 #+begin_src emacs-lisp

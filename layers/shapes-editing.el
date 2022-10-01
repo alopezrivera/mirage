@@ -11,12 +11,5 @@
 ;; extensions
 (shapes-extend "editing")
 
-;; modules
-(shapes-module "swiper")
-(shapes-module "rg")
-
-;; extensions
-(shapes-extend "search")
-
 (provide 'shapes-layer-editing)
 ;;; shapes-editing.el ends here
