@@ -467,12 +467,11 @@ packages
 
 * pdf
 
-- pdf-tools
+- smooth scrolling
+   - https://github.com/dalanicolai/image-roll.el
+
 - qpdf
    - https://github.com/orgtre/qpdf.el
-- org-noter
-   - https://github.com/weirdNox/org-noter
-   - https://www.youtube.com/watch?v=lCc3UoQku-E
 - follow-mode
 
 - crop margin
@@ -514,7 +513,12 @@ packages
       - Ringbearer
          - *
    - [[https://github.com/fontforge/fontforge]]
-  
+
+* org-noter
+
+- https://github.com/weirdNox/org-noter
+- https://www.youtube.com/watch?v=lCc3UoQku-E
+
 * org-agenda
 
 - workflows
@@ -637,6 +641,10 @@ packages
 * org-remark
 
 - https://github.com/nobiot/org-remark
+
+* org-capture
+
+- https://github.com/abo-abo/orca
 
 * org collaboration
 
