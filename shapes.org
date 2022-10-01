@@ -2384,6 +2384,44 @@ sudo apt-get install python3-venv
 
 #+end_src
 
+** PDF
+*** pdf-tools
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-pdf-tools.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "tablist")
+
+(straight-use-package 'pdf-tools)
+(pdf-tools-install)
+(pdf-loader-install)
+
+;; page display size
+(setq-default pdf-view-display-size 'fit-page)
+;; automatically annotate highlights
+(setq pdf-annot-activate-created-annotations t)
+
+;; replace swiper
+(define-key pdf-view-mode-map (kbd "C-s") #'isearch-forward)
+;; themed view
+(define-key pdf-view-mode-map (kbd "C-c C-r t") #'pdf-view-themed-minor-mode)
+
+#+end_src
+
+** Tabulated
+*** tablist
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-tablist.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'tablist)
+
+#+end_src
+
 ** Org Mode
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org.el
