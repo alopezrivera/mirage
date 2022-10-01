@@ -297,6 +297,14 @@ References:
 
 #+end_src
 
+* PDF
+
+#+begin_src emacs-lisp
+
+(shapes-layer "pdf")
+
+#+end_src
+
 * LaTeX
 
 #+begin_src emacs-lisp

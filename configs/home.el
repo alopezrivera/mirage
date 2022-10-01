@@ -59,6 +59,8 @@
 
 (shapes-layer "ide")
 
+(shapes-layer "pdf")
+
 (shapes-layer "latex")
 
 (shapes-layer "org")
