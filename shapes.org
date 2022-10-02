@@ -1549,19 +1549,11 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(straight-use-package 'modus-themes)
-(modus-themes-load-themes)
-
-#+end_src
-
-Commit 64c8009 of July the 8th 2022 dresses Org Mode titles with a ghastly cyan
-in ~modus-operandi~, and a strident turquoise in ~modus-vivendi~. This can be undone
-by passing the ~monochrome~ attribute to 0th level heading in ~modus-themes-headings~.
-
-#+begin_src emacs-lisp
-
 (setq modus-themes-headings
       '((0 . (monochrome))))
+
+(straight-use-package 'modus-themes)
+(modus-themes-load-themes)
 
 #+end_src
 
