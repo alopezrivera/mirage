@@ -300,7 +300,7 @@ if it is too narrow to split, and resize it."
 #+end_src
 
 ** Typefaces
-*** font-lock
+*** Font-lock
 **** hh:mm
 
 #+begin_src emacs-lisp
