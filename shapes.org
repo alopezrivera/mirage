@@ -889,7 +889,7 @@ the issue is resolved.
 
 (setq org-format-latex-options
         (list :foreground 'default
-              :scale      0.80))
+              :scale      1.50))
 
 #+end_src
 
