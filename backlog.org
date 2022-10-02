@@ -153,6 +153,8 @@ possibly mode
 - record
    - zortra
       - https://github.com/mpedramfar/zotra
+   - zotxt
+      - https://github.com/emacsmirror/zotxt 
    - org-bib-mode
       - https://github.com/rougier/org-bib-mode
 
@@ -164,13 +166,9 @@ possibly mode
    - helm-bibtex
       - https://github.com/tmalsburg/helm-bibtex
 
-- integration
-   - Zotero
-      - https://github.com/emacsmirror/zotxt
-
------
-
-- create entry
+- create
+   - doi
+      - https://github.com/rougier/pdf-drop-mode
    - org-noter
       - headings from section titles
    - biblatex entry
@@ -282,13 +280,7 @@ packages
         
 
 
-* References
-** Docs
-
-- org
-   - header args
-      - https://orgmode.org/manual/Using-Header-Arguments.html
-
+* references
 ** Blogs
 
 - https://karthinks.com/
@@ -308,43 +300,16 @@ packages
 - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
 - https://github.com/Lambda-Emacs/lambda-emacs
 
-** General
-
-- https://github.com/emacs-tw/awesome-emacs
-
-*** Features
-
-- completion at point
-   - https://with-emacs.com/
-
-*** Aesthetics
+** Design
 
 - https://www.reddit.com/r/emacs/comments/vcbnht/most_visually_impressive_emacs_packages/
 
-*** Performance
+- https://github.com/rougier/book-mode
+- https://github.com/rougier/nano-emacs/blob/master/nano-writer.el
 
-- WSL
-   - https://shelper.github.io/posts/setup-emacs-in-wsl2/
+** General
 
-** Specific
-*** Org Mode
-
-- https://orgmode.org/worg/org-hacks.html
-- http://doc.norang.ca/org-mode.html
-- https://orgmode.org/worg/
-
-*** Org Roam
-
-- https://github.com/nobiot/unofficial-user-manual-org-roam
-
-*** Emacs Lisp
-
-- interactive
-   - http://xahlee.info/emacs/emacs_manual/elisp/Interactive-Codes.html
-- performance
-   - https://nullprogram.com/blog/2017/01/30/
-- editing
-   - https://github.com/bbatsov/crux
+- https://github.com/emacs-tw/awesome-emacs
 
 ** Packages
 
@@ -364,6 +329,10 @@ packages
    - https://takeonrules.com/2022/02/07/org-roam-emacs-and-ever-refining-the-note-taking-process/
    - https://beepb00p.xyz/annotating.html#pdfs
 
+** Performance
+
+- https://nullprogram.com/blog/2017/01/30/
+
 ** Miscellaneous
 
 - https://github.com/bbatsov/crux
@@ -371,7 +340,7 @@ packages
 - https://www.emacswiki.org/emacs/download/misc-cmds.el
 
 
-* Refactoring
+* refactoring
 ** bindings
 *** minor modes with key bindings
 
@@ -467,13 +436,12 @@ packages
 
 * pdf
 
-- smooth scrolling
-   - https://github.com/dalanicolai/image-roll.el
+- pdf-tools
+   - https://pragmaticemacs.wordpress.com/2017/11/08/more-pdf-tools-tweaks/
 
 - qpdf
    - https://github.com/orgtre/qpdf.el
 - follow-mode
-
 - crop margin
    - pdf-view-auto-slice-minor-mode
 
@@ -495,16 +463,21 @@ packages
 
 * org
 
+- references
+   - https://orgmode.org/worg/org-hacks.html
+   - http://doc.norang.ca/org-mode.html
+
 - transclusion
    - https://nobiot.github.io/org-transclusion/
 
-- Jump to heading with completion
+- jump to heading with completion
    - https://github.com/abo-abo/worf
 
-- Table of contents
+- table of contents
    - https://github.com/snosov1/toc-org
    - imenu-list
       - https://github.com/rougier/dotemacs/blob/master/dotemacs.org#sidebar
+
 - tag formatting
 
 - marker typeface
@@ -513,6 +486,11 @@ packages
       - Ringbearer
          - *
    - [[https://github.com/fontforge/fontforge]]
+
+* org ui
+
+- sidebar
+   - https://github.com/alphapapa/org-sidebar
 
 * org-noter
 
@@ -593,6 +571,9 @@ packages
       1. get list of tangle destinations in org file
       2. block with :tangle all
           - tangle to all files in list
+
+- notebook mode
+   - https://github.com/rougier/notebook-mode
 
 - two-way tangle
    - https://github.com/phillord/lentic
@@ -778,6 +759,7 @@ packages
 * text editing
 
 - completion at point
+   - https://with-emacs.com/
    - https://github.com/minad/corfu
 
 - text object editing
@@ -800,9 +782,10 @@ packages
    - https://www.youtube.com/watch?v=Uz_0i27wYbg
    - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 
-* completionawe
+* collaboration
 
 - https://www.reddit.com/r/emacs/comments/x8gxw1/webbased_org_viewer_that_is_perhaps_a_seedling/
+   - https://proto.formation.tools/
 
 * file management
 
@@ -824,7 +807,6 @@ packages
 * planning
 
 - https://stackoverflow.com/questions/23566000/how-to-count-days-excluding-weekends-and-holidays-in-emacs-calendar
-
 
 * rss
 
@@ -848,6 +830,10 @@ packages
 * email
 
 - mu4e
+   - dashboard
+      - https://github.com/rougier/mu4e-dashboard
+   - thread folding
+      - https://github.com/rougier/mu4e-thread-folding
    - Nano
       - https://www.reddit.com/r/emacs/comments/mzgsm0/mu4e_look_and_feel/
    - undo send, schedule send
@@ -899,8 +885,6 @@ packages
 - https://stackoverflow.com/questions/6666862/org-mode-go-back-from-sparse-tree-to-previous-visibility
 - Frame dividers
    - https://github.com/minad/org-modern
-- nano-writer
-   - https://github.com/rougier/nano-emacs/blob/master/nano-writer.el
 - nano extensions
    - https://github.com/rougier/nano-emacs
 
