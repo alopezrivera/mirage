@@ -11,6 +11,12 @@
 (define-key pdf-view-mode-map (kbd "<wheel-down>") #'custom/pdf-view-next-line)
 (define-key pdf-view-mode-map (kbd "<wheel-up>")   #'custom/pdf-view-previous-line)
 
+(defun custom/pdf-refresh-themed-view ()
+  (pdf-view-themed-minor-mode -1)
+  (pdf-view-themed-minor-mode))
+
+(add-hook 'custom/enable-or-load-theme-hook #'custom/pdf-refresh-themed-view)
+
 (defun custom/pdf-view-restore-zoom ()
   (interactive)
   (setq pdf-view-display-size 'fit-page)

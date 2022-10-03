@@ -4527,6 +4527,18 @@ the user for confirmation."
 
 #+end_src
 
+*** Theme change
+
+#+begin_src emacs-lisp
+
+(defun custom/pdf-refresh-themed-view ()
+  (pdf-view-themed-minor-mode -1)
+  (pdf-view-themed-minor-mode))
+
+(add-hook 'custom/enable-or-load-theme-hook #'custom/pdf-refresh-themed-view)
+
+#+end_src
+
 *** Restore zoom
 
 #+begin_src emacs-lisp
