@@ -3188,39 +3188,8 @@ if it was previously enabled."
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-babel.el
 :END:
-***** Languages
-
-#+begin_src emacs-lisp
-
-;; Language packages
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python     . t)
-   (shell      . t)
-   (latex      . t)))
-
-#+end_src
-
-****** Bash
-
-#+begin_src emacs-lisp
-
-(defun org-babel-bash-initiate-session (&optional session _params)
-  "Initiate a bash/sh session named SESSION according to PARAMS."
-  (org-babel-sh-initiate-session session _params))
-
-#+end_src
-
-****** Python
-
-#+begin_src emacs-lisp
-
-(setq org-babel-python-command "python3")
-
-#+end_src
-
-***** Code block bleeding
+***** Typesetting
+****** Bleeding
 
 #+begin_src emacs-lisp
 
@@ -3265,14 +3234,7 @@ folded."
 (add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
 
 #+end_src
-***** Code block execution
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-x C-x") #'org-babel-execute-src-block)
-
-#+end_src
-***** Code block indentation
+****** Indentation
 
 #+begin_src emacs-lisp
 
@@ -3287,15 +3249,49 @@ folded."
 
 #+end_src
 
-***** Code block execution confirmation
+***** Languages
 
 #+begin_src emacs-lisp
 
-;; Suppress security confirmation when evaluating code
-(defun my-org-confirm-babel-evaluate (lang body)
-  (not (member lang '("emacs-lisp" "python" "shell" "bash"))))
+;; Language packages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)
+   (shell      . t)
+   (latex      . t)))
 
-(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+#+end_src
+
+****** Bash
+
+#+begin_src emacs-lisp
+
+(defun org-babel-bash-initiate-session (&optional session _params)
+  "Initiate a bash/sh session named SESSION according to PARAMS."
+  (org-babel-sh-initiate-session session _params))
+
+#+end_src
+
+****** Python
+
+#+begin_src emacs-lisp
+
+(setq org-babel-python-command "python3")
+
+#+end_src
+
+***** Execution
+
+#+begin_src emacs-lisp
+
+;; suppress security confirmation when evaluating code
+(defun custom/org-confirm-babel-evaluate (lang body)
+  (not (member lang '("emacs-lisp" "python" "shell" "bash" "latex"))))
+
+(setq org-confirm-babel-evaluate 'custom/org-confirm-babel-evaluate)
+
+#+end_src
 
 #+end_src
 

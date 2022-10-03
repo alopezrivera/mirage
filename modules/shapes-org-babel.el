@@ -1,17 +1,3 @@
-;; Language packages
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python     . t)
-   (shell      . t)
-   (latex      . t)))
-
-(defun org-babel-bash-initiate-session (&optional session _params)
-  "Initiate a bash/sh session named SESSION according to PARAMS."
-  (org-babel-sh-initiate-session session _params))
-
-(setq org-babel-python-command "python3")
-
 (defun custom/org-fix-bleed-end-line-block (from to flag spec)
   "Toggle fontification of last char of block end lines when cycling.
 
@@ -52,8 +38,6 @@ folded."
 
 (add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
 
-(global-set-key (kbd "C-x C-x") #'org-babel-execute-src-block)
-
 ;; Set indentation of code blocks to 0
 (setq org-edit-src-content-indentation 0)
 
@@ -63,11 +47,25 @@ folded."
 ;; Make code indentation reasonable
 (setq org-src-tab-acts-natively        t)
 
-;; Suppress security confirmation when evaluating code
-(defun my-org-confirm-babel-evaluate (lang body)
-  (not (member lang '("emacs-lisp" "python" "shell" "bash"))))
+;; Language packages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)
+   (shell      . t)
+   (latex      . t)))
 
-(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+(defun org-babel-bash-initiate-session (&optional session _params)
+  "Initiate a bash/sh session named SESSION according to PARAMS."
+  (org-babel-sh-initiate-session session _params))
+
+(setq org-babel-python-command "python3")
+
+;; suppress security confirmation when evaluating code
+(defun custom/org-confirm-babel-evaluate (lang body)
+  (not (member lang '("emacs-lisp" "python" "shell" "bash" "latex"))))
+
+(setq org-confirm-babel-evaluate 'custom/org-confirm-babel-evaluate)
 
 (provide 'shapes-module-org-babel)
 ;;; shapes-org-babel.el ends here
