@@ -3293,6 +3293,16 @@ folded."
 
 #+end_src
 
+**** ob-async
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-ob-async.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'ob-async)
+(require 'ob-async)
+
 #+end_src
 
 
