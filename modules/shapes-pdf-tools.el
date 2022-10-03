@@ -1,6 +1,6 @@
 (shapes-module "tablist")
 
-(straight-use-package '(pdf-tools :type git :host github :repo "alopezrivera/pdf-tools"))
+(straight-use-package 'pdf-tools)
 (pdf-tools-install)
 (pdf-loader-install)
 (require 'pdf-tools)
