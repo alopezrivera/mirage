@@ -12,8 +12,9 @@
 (define-key pdf-view-mode-map (kbd "<wheel-up>")   #'custom/pdf-view-previous-line)
 
 (defun custom/pdf-refresh-themed-view ()
-  (pdf-view-themed-minor-mode -1)
-  (pdf-view-themed-minor-mode))
+  (if pdf-view-themed-minor-mode
+      (progn (pdf-view-themed-minor-mode -1)
+             (pdf-view-themed-minor-mode))))
 
 (add-hook 'custom/enable-or-load-theme-hook #'custom/pdf-refresh-themed-view)
 

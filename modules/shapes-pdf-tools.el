@@ -25,7 +25,6 @@
 (define-key pdf-view-mode-map (kbd "d") #'pdf-annot-delete)
 
 ;; themed view
-(add-hook 'pdf-view-mode-hook (lambda () (pdf-view-themed-minor-mode)))
 (define-key pdf-view-mode-map (kbd "C-c C-r t") #'pdf-view-themed-minor-mode)
 ;; fine-grained zooming
 (setq pdf-view-resize-factor 1.1)
