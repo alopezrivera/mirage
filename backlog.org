@@ -38,6 +38,11 @@
 - progress
    - https://github.com/gsingh93/org-custom-cookies
 
+*** displays
+
+- https://www.reddit.com/r/emacs/comments/hnf3cw/my_orgmode_agenda_much_better_now_with_category/
+   - https://github.com/psamim/dotfiles/blob/master/doom/config.el#L73
+
 ** shapes
 *** home buffer
 
@@ -281,11 +286,11 @@ packages
 
 
 * references
-** Blogs
+** blogs
 
 - https://karthinks.com/
 
-** Configs
+** configs
 
 - https://github.com/radian-software/radian
 - https://github.com/SystemCrafters/rational-emacs
@@ -300,22 +305,22 @@ packages
 - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
 - https://github.com/Lambda-Emacs/lambda-emacs
 
-** Design
+** design
 
 - https://www.reddit.com/r/emacs/comments/vcbnht/most_visually_impressive_emacs_packages/
 
 - https://github.com/rougier/book-mode
 - https://github.com/rougier/nano-emacs/blob/master/nano-writer.el
 
-** General
+** general
 
 - https://github.com/emacs-tw/awesome-emacs
 
-** Packages
+** packages
 
 - https://protesilaos.com/emacs/
 
-** Workflows
+** workflows
 
 - Rougier
    - https://www.labri.fr/perso/nrougier/GTD/index.html
@@ -329,11 +334,15 @@ packages
    - https://takeonrules.com/2022/02/07/org-roam-emacs-and-ever-refining-the-note-taking-process/
    - https://beepb00p.xyz/annotating.html#pdfs
 
-** Performance
+** debugging
+
+- https://whatacold.io/blog/2022-07-17-emacs-elisp-debug/
+
+** performance
 
 - https://nullprogram.com/blog/2017/01/30/
 
-** Miscellaneous
+** miscellaneous
 
 - https://github.com/bbatsov/crux
 - https://github.com/alphapapa/unpackaged.el
@@ -729,6 +738,9 @@ packages
 
 * writing
 
+- spell checking and dictionary
+   - https://www.masteringemacs.org/article/wordsmithing-in-emacs
+   - https://github.com/tecosaur/lexic
 - writeroom mode
    - https://github.com/joostkremers/writeroom-mode
 - Power Thesaurus
@@ -841,6 +853,9 @@ packages
    - MS Outlook 2FA
       - https://www.macs.hw.ac.uk/~rs46/posts/2022-01-11-mu4e-oauth.html
 
+* hypermedia
+
+- https://github.com/aviaviavi/link-preview.el
 
 
 * hyperbole
