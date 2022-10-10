@@ -75,6 +75,7 @@
         custom/swiper-multiple-cursors
         dabbrev-expand
         dired-do-flagged-delete
+        elpy-shell-send-region-or-buffer
         end-of-buffer
         list-buffers
         magit-status

@@ -167,10 +167,11 @@ Shapes configuration when an error is found")
 * Layers
 
 Content of a layer:
-- Bindings
-- Built-ins
+- Settings
+- Built-in modes
 - Modules
 - Extensions
+- Bindings
 
 ** UI
 :PROPERTIES:
@@ -298,7 +299,6 @@ Content of a layer:
 
 ;; confirmation
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
-
 ;; advanced commands
 (put 'narrow-to-region 'disabled nil)
 
@@ -366,11 +366,11 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+begin_src emacs-lisp
 
-;; built-ins
-(global-so-long-mode 1)
-
 ;; settings
 (setq-default indent-tabs-mode nil)
+
+;; built-ins
+(global-so-long-mode 1)
 
 ;; modules
 (shapes-module "vundo")
@@ -442,6 +442,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ;; extensions
 (shapes-extend "navigation")
+
+;; bindings
+(global-set-key (kbd "C-S-n") #'make-frame-command)
 
 #+end_src
 
@@ -2210,8 +2213,11 @@ the local machine:
 #+begin_src emacs-lisp
 
 (setq scroll-step 1)
-(setq scroll-conservatively 101)
-(setq scroll-preserve-screen-position 1)
+(setq scroll-conservatively 10000)
+(setq auto-window-vscroll nil)
+
+(setq mouse-wheel-scroll-amount '(2 ((shift) . 10) ((control) . nil)))
+(setq mouse-wheel-progressive-speed nil)
 
 #+end_src
 

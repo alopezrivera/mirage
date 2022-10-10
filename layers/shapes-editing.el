@@ -1,8 +1,8 @@
-;; built-ins
-(global-so-long-mode 1)
-
 ;; settings
 (setq-default indent-tabs-mode nil)
+
+;; built-ins
+(global-so-long-mode 1)
 
 ;; modules
 (shapes-module "vundo")
