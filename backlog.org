@@ -140,6 +140,7 @@ possibly mode
       - https://www.reddit.com/r/emacs/comments/vxxyb8/comment/ig4hcer/
       - http://cachestocaches.com/2020/3/org-mode-annotated-bibliography/
       - https://www.reddit.com/r/emacs/comments/x6dvse/orgcite_citar_and_latex_in_orgmode_problems/
+      - https://juanjose.garciaripoll.com/blog/ebib-biblio-interface/index.html
    - workflow
       - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
 
@@ -587,6 +588,9 @@ packages
 - two-way tangle
    - https://github.com/phillord/lentic
 
+- vterm
+   - https://www.reddit.com/r/emacs/comments/xyo2fo/orgmode_vterm_tmux/
+
 * org-queries
 
 - metarosetta
@@ -627,10 +631,6 @@ packages
 *** org-ioslide
 
 - https://github.com/coldnew/org-ioslide
-
-* org-remark
-
-- https://github.com/nobiot/org-remark
 
 * org-capture
 
@@ -680,6 +680,10 @@ packages
 
 - bionic reading
    - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
+
+* completion
+
+- https://www.scss.tcd.ie/~sulimanm/posts/default-emacs-completion.html
 
 
 * IDE
@@ -743,6 +747,8 @@ packages
    - https://github.com/tecosaur/lexic
 - writeroom mode
    - https://github.com/joostkremers/writeroom-mode
+- writegood mode
+   - https://github.com/bnbeckwith/writegood-mode
 - Power Thesaurus
    - https://github.com/SavchenkoValeriy/emacs-powerthesaurus
 - Screenwriting
@@ -767,6 +773,11 @@ packages
 - autotyping
    - https://www.gnu.org/software/emacs/manual/html_mono/autotype.html
    - https://sachachua.com/blog/2015/01/developing-emacs-micro-habits-text-automation/
+
+* annotating
+
+- https://github.com/nobiot/org-remark
+- https://github.com/milkypostman/hl-sentence
 
 * text editing
 
@@ -896,6 +907,11 @@ packages
 
 * theme
 
+-----
+- https://github.com/konrad1977/emacs/tree/main/themes
+- https://github.com/catppuccin/emacs
+-----
+
 - restoring org visibility after theme change
 - https://stackoverflow.com/questions/6666862/org-mode-go-back-from-sparse-tree-to-previous-visibility
 - Frame dividers
@@ -940,6 +956,8 @@ packages
 
 - fix missing environment variables
    - https://github.com/purcell/exec-path-from-shell
+
+- https://github.com/xenodium/dwim-shell-command
 
 * async
 
