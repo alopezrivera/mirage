@@ -426,15 +426,29 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+end_src
 
-** Navigation
+** TODO Navigation
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-navigation.el
 :END:
 
+- pixel-scroll-precision-mode
+   - sudden jumps
+
+- scrolling without moving mark
+
+- sources
+   - https://www.reddit.com/r/emacs/comments/6osik2/random_scroll_jumps_in_emacs/
+   - https://www.emacswiki.org/emacs/SmoothScrolling
+
 #+begin_src emacs-lisp
 
-;; bindings
-(global-set-key (kbd "C-S-n") #'make-frame-command)
+;; scrolling
+(setq scroll-step 1)
+(setq scroll-conservatively 10000)
+(setq auto-window-vscroll nil)
+
+(setq mouse-wheel-scroll-amount '(2 ((shift) . 10) ((control) . nil)))
+(setq mouse-wheel-progressive-speed nil)
 
 ;; modules
 (shapes-module "winner")
@@ -2193,31 +2207,6 @@ the local machine:
 (require 'ace-window)
 
 (global-set-key (kbd "C-x o") #'ace-window)
-
-#+end_src
-
-*** TODO pixel-scroll-precision
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-pixel-scroll-precision.el
-:END:
-
-- pixel-scroll-precision-mode
-   - sudden jumps
-
-- scrolling without moving mark
-
-- sources
-   - https://www.reddit.com/r/emacs/comments/6osik2/random_scroll_jumps_in_emacs/
-   - https://www.emacswiki.org/emacs/SmoothScrolling
-
-#+begin_src emacs-lisp
-
-(setq scroll-step 1)
-(setq scroll-conservatively 10000)
-(setq auto-window-vscroll nil)
-
-(setq mouse-wheel-scroll-amount '(2 ((shift) . 10) ((control) . nil)))
-(setq mouse-wheel-progressive-speed nil)
 
 #+end_src
 
