@@ -338,6 +338,10 @@ packages
 ** debugging
 
 - https://whatacold.io/blog/2022-07-17-emacs-elisp-debug/
+- dap-mode
+   - https://www.youtube.com/watch?v=0bilcQVSlbM
+   - https://github.com/emacs-lsp/dap-mode
+   - https://www.reddit.com/r/emacs/comments/fr35f2/debugger_suggestion_for_python/
 
 ** performance
 
@@ -446,6 +450,8 @@ packages
 
 * pdf
 
+- org-noter
+   - https://www.reddit.com/r/orgmode/comments/y0hend/share_your_workflows_for_highlighting_books_roam/
 - pdf-tools
    - https://pragmaticemacs.wordpress.com/2017/11/08/more-pdf-tools-tweaks/
 
@@ -558,6 +564,8 @@ packages
    - https://github.com/dmitrym0/org-hyperscheduler/
 
 * org-contacts
+
+- https://github.com/jd/google-contacts.el
 
 - queries and more
    - https://karl-voit.at/2015/02/01/muttfilter/
