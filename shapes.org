@@ -219,13 +219,13 @@ Content of a layer:
 ;; tabs
 (tab-bar-mode 1)
 
-;; no visible scroll bar
-(scroll-bar-mode -1)
-;; no toolbar
+;; scroll bar
+(scroll-bar-mode 1)
+;; toolbar
 (tool-bar-mode -1)
-;; no tooltips
+;; tooltips
 (tooltip-mode -1)
-;; no menu bar
+;; menu bar
 (menu-bar-mode -1)
 
 ;; title
@@ -443,12 +443,8 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 #+begin_src emacs-lisp
 
 ;; scrolling
-(setq scroll-step 1)
-(setq scroll-conservatively 10000)
+(pixel-scroll-precision-mode)
 (setq auto-window-vscroll nil)
-
-(setq mouse-wheel-scroll-amount '(2 ((shift) . 10) ((control) . nil)))
-(setq mouse-wheel-progressive-speed nil)
 
 ;; modules
 (shapes-module "winner")
@@ -589,15 +585,8 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 *** org-ui
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-org-ui.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-org-ui-minimal.el
 :END:
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-modern")
-
-#+end_src
-
 **** Text
 ***** Hidden
 
@@ -615,37 +604,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; title face
 (defun custom/org-typeface-title ()
   (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title        nil :font typeface-title   :weight 'regular :height 250 :foreground 'unspecified)))
+    (set-face-attribute 'org-document-title        nil :font typeface-title   :weight 'regular :height 125 :foreground 'unspecified)))
 
 (add-hook 'org-mode-hook #'custom/org-typeface-title)
-
-#+end_src
-
-****** Body
-
-#+begin_src emacs-lisp
-
-(defun custom/org-typefaces-body ()
-  (with-eval-after-load 'org-faces
-
-    ;; Code
-    (set-face-attribute 'org-block                 nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code                  nil :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim              nil :inherit '(shadow fixed-pitch))
-
-    ;; Tables
-    (set-face-attribute 'org-table                 nil :inherit '(shadow fixed-pitch))
-
-    ;; Lists
-    (set-face-attribute 'org-checkbox              nil :inherit 'fixed-pitch)
-
-    ;; Meta
-    (set-face-attribute 'org-meta-line             nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-document-info         nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-document-info-keyword nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-special-keyword       nil :inherit 'fixed-pitch)))
-
-(add-hook 'org-mode-hook #'custom/org-typefaces-body)
 
 #+end_src
 
@@ -662,90 +623,15 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+end_src
 
-****** Headings
-
-#+begin_src emacs-lisp
-
-;; use levels 1 through 8
-(setq org-n-level-faces 8)
-
-;; do not cycle header style after 8th level
-(setq org-cycle-level-faces nil)
-
-;; hide leading stars
-(setq org-hide-leading-starts t)
-
-;; font sizes
-(defun custom/org-header-setup () 
-  (with-eval-after-load 'org-faces
-
-    ;; heading font sizes
-    (dolist (face '((org-level-1 . 1.175)
-                    (org-level-2 . 1.175)
-                    (org-level-3 . 1.175)
-                    (org-level-4 . 1.175)
-                    (org-level-5 . 1.175)
-                    (org-level-6 . 1.175)
-                    (org-level-7 . 1.175)
-                    (org-level-8 . 1.175)))
-         (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
-
-(add-hook 'org-mode-hook #'custom/org-header-setup)
-
-#+end_src
-
 ***** Indentation
 
 #+begin_src emacs-lisp
 
 ;; org-indent-mode
-(setq org-startup-indented t)
+(setq org-startup-indented nil)
 
 ;; list indentation
 (setq-default org-list-indent-offset 1)
-
-#+end_src
-
-***** Line-wrapping
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
-#+end_src
-
-***** Pretty entities
-
-#+begin_src emacs-lisp
-
-;; symbols, super- and subscripts
-(setq org-pretty-entities nil)
-
-#+end_src
-
-**** Icons
-***** Ellipses
-
-Candidates:
-- triangles
-  ▼
-  ▾
-  ▿
-- rhomboids
-  ⬙
-  ⟡
-  ⬥
-  ♦
-  ♢
-- non-compliant
-  ⧨
-  
------
-
-#+begin_src emacs-lisp
-
-;; Change ellipsis ("...") to remove clutter
-(setq org-ellipsis " ♢")
 
 #+end_src
 
@@ -851,6 +737,120 @@ Candidates:
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)")
 	     (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+
+#+end_src
+
+*** org-typesetting
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-org-typesetting.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "org-modern")
+
+#+end_src
+
+**** Text
+***** Typefaces
+****** Body
+
+#+begin_src emacs-lisp
+
+(defun custom/org-typefaces-body ()
+  (with-eval-after-load 'org-faces
+
+    ;; Code
+    (set-face-attribute 'org-block                 nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code                  nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim              nil :inherit '(shadow fixed-pitch))
+
+    ;; Tables
+    (set-face-attribute 'org-table                 nil :inherit '(shadow fixed-pitch))
+
+    ;; Lists
+    (set-face-attribute 'org-checkbox              nil :inherit 'fixed-pitch)
+
+    ;; Meta
+    (set-face-attribute 'org-meta-line             nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-document-info         nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-document-info-keyword nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-special-keyword       nil :inherit 'fixed-pitch)))
+
+(add-hook 'org-mode-hook #'custom/org-typefaces-body)
+
+#+end_src
+
+****** Heading
+
+#+begin_src emacs-lisp
+
+;; use levels 1 through 8
+(setq org-n-level-faces 8)
+
+;; do not cycle header style after 8th level
+(setq org-cycle-level-faces nil)
+
+;; hide leading stars
+(setq org-hide-leading-starts t)
+
+;; font sizes
+(defun custom/org-heading-typefaces () 
+  (with-eval-after-load 'org-faces
+    (dolist (face '((org-level-1 . 1.175)
+                    (org-level-2 . 1.175)
+                    (org-level-3 . 1.175)
+                    (org-level-4 . 1.175)
+                    (org-level-5 . 1.175)
+                    (org-level-6 . 1.175)
+                    (org-level-7 . 1.175)
+                    (org-level-8 . 1.175)))
+         (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
+
+(add-hook 'org-mode-hook #'custom/org-heading-typefaces)
+
+#+end_src
+
+***** Line-wrapping
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+#+end_src
+
+***** Pretty entities
+
+#+begin_src emacs-lisp
+
+;; symbols, super- and subscripts
+(setq org-pretty-entities nil)
+
+#+end_src
+
+**** Icons
+***** Ellipses
+
+Candidates:
+- triangles
+  ▼
+  ▾
+  ▿
+- rhomboids
+  ⬙
+  ⟡
+  ⬥
+  ♦
+  ♢
+- non-compliant
+  ⧨
+  
+-----
+
+#+begin_src emacs-lisp
+
+;; Change ellipsis ("...") to remove clutter
+(setq org-ellipsis " ♢")
 
 #+end_src
 
@@ -1201,14 +1201,14 @@ a fraction of the window width."
 
 ;; Remove default modes from mode line
 (delight '((global-command-log-mode nil "")
-	        (olivetti-mode           nil "")
-	        (which-key-mode          nil "")
-	        (visual-line-mode        nil "simple")
-	        (buffer-face-mode        nil "simple")
-	        (org-indent-mode         nil "org")
-	        (eldoc-mode              nil "eldoc")
-	        ;; Major modes
-	        (emacs-lisp-mode "EL" :major)))
+	   (olivetti-mode           nil "")
+	   (which-key-mode          nil "")
+	   (visual-line-mode        nil "simple")
+	   (buffer-face-mode        nil "simple")
+	   (org-indent-mode         nil "org")
+	   (eldoc-mode              nil "eldoc")
+	   ;; Major modes
+	   (emacs-lisp-mode "EL" :major)))
 
 #+end_src
 
