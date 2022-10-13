@@ -3228,6 +3228,7 @@ folded."
 (add-hook 'org-cycle-hook #'custom/org-fix-bleed-end-line-cycle)
 
 #+end_src
+
 ****** Indentation
 
 #+begin_src emacs-lisp
@@ -3280,10 +3281,7 @@ folded."
 #+begin_src emacs-lisp
 
 ;; suppress security confirmation when evaluating code
-(defun custom/org-confirm-babel-evaluate (lang body)
-  (not (member lang '("emacs-lisp" "python" "shell" "bash" "latex"))))
-
-(setq org-confirm-babel-evaluate 'custom/org-confirm-babel-evaluate)
+(setq org-confirm-babel-evaluate nil)
 
 #+end_src
 

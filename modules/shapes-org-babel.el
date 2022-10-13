@@ -62,10 +62,7 @@ folded."
 (setq org-babel-python-command "python3")
 
 ;; suppress security confirmation when evaluating code
-(defun custom/org-confirm-babel-evaluate (lang body)
-  (not (member lang '("emacs-lisp" "python" "shell" "bash" "latex"))))
-
-(setq org-confirm-babel-evaluate 'custom/org-confirm-babel-evaluate)
+(setq org-confirm-babel-evaluate nil)
 
 (provide 'shapes-module-org-babel)
 ;;; shapes-org-babel.el ends here
