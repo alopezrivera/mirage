@@ -1,10 +1,6 @@
 ;; scrolling
-(setq scroll-step 1)
-(setq scroll-conservatively 10000)
+(pixel-scroll-precision-mode)
 (setq auto-window-vscroll nil)
-
-(setq mouse-wheel-scroll-amount '(2 ((shift) . 10) ((control) . nil)))
-(setq mouse-wheel-progressive-speed nil)
 
 ;; modules
 (shapes-module "winner")
