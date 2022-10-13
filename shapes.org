@@ -220,7 +220,7 @@ Content of a layer:
 (tab-bar-mode 1)
 
 ;; scroll bar
-(scroll-bar-mode 1)
+(scroll-bar-mode -1)
 ;; toolbar
 (tool-bar-mode -1)
 ;; tooltips
@@ -747,6 +747,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 (shapes-module "org-modern")
 
+(setq org-modern-table        nil)
+(setq org-modern-block-fringe nil)
+
 #+end_src
 
 **** Text
@@ -809,14 +812,6 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+end_src
 
-***** Line-wrapping
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
-#+end_src
-
 ***** Pretty entities
 
 #+begin_src emacs-lisp
@@ -849,6 +844,14 @@ Candidates:
 
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
+
+#+end_src
+
+**** Line-wrapping
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
 
 #+end_src
 

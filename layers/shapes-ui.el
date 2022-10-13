@@ -18,7 +18,7 @@
 (tab-bar-mode 1)
 
 ;; scroll bar
-(scroll-bar-mode 1)
+(scroll-bar-mode -1)
 ;; toolbar
 (tool-bar-mode -1)
 ;; tooltips

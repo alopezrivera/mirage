@@ -1,5 +1,8 @@
 (shapes-module "org-modern")
 
+(setq org-modern-table        nil)
+(setq org-modern-block-fringe nil)
+
 (defun custom/org-typefaces-body ()
   (with-eval-after-load 'org-faces
 
@@ -46,13 +49,13 @@
 
 (add-hook 'org-mode-hook #'custom/org-heading-typefaces)
 
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
 ;; symbols, super- and subscripts
 (setq org-pretty-entities nil)
 
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
 
 (provide 'shapes-layer-org-typesetting)
 ;;; shapes-org-typesetting.el ends here
