@@ -17,13 +17,13 @@
 ;; tabs
 (tab-bar-mode 1)
 
-;; no visible scroll bar
-(scroll-bar-mode -1)
-;; no toolbar
+;; scroll bar
+(scroll-bar-mode 1)
+;; toolbar
 (tool-bar-mode -1)
-;; no tooltips
+;; tooltips
 (tooltip-mode -1)
-;; no menu bar
+;; menu bar
 (menu-bar-mode -1)
 
 ;; title

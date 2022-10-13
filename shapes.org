@@ -553,6 +553,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ;; editing
 (shapes-module "org-paragraph")
+(shapes-module "org-download")
 
 ;; templates
 (shapes-module "org-tempo")
@@ -644,9 +645,6 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ;; no actual width
 (setq org-image-actual-width nil)
-
-;; drag and drop
-(shapes-module "org-download")
 
 #+end_src
 

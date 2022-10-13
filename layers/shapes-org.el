@@ -6,6 +6,7 @@
 
 ;; editing
 (shapes-module "org-paragraph")
+(shapes-module "org-download")
 
 ;; templates
 (shapes-module "org-tempo")
