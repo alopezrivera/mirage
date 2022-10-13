@@ -3,7 +3,7 @@
 ;; title face
 (defun custom/org-typeface-title ()
   (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title        nil :font typeface-title   :weight 'regular :height 125 :foreground 'unspecified)))
+    (set-face-attribute 'org-document-title        nil :font typeface-title   :weight 'regular :height 200 :foreground 'unspecified)))
 
 (add-hook 'org-mode-hook #'custom/org-typeface-title)
 

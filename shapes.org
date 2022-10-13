@@ -605,7 +605,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; title face
 (defun custom/org-typeface-title ()
   (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title        nil :font typeface-title   :weight 'regular :height 125 :foreground 'unspecified)))
+    (set-face-attribute 'org-document-title        nil :font typeface-title   :weight 'regular :height 200 :foreground 'unspecified)))
 
 (add-hook 'org-mode-hook #'custom/org-typeface-title)
 
@@ -5786,7 +5786,7 @@ Default: `custom/end'
 If `org-at-table-p', go to `org-table-end-of-field'."
   (cond ((and (region-active-p) (custom/org-relative-line-heading-folded)) (end-of-line))
         ((org-at-table-p)                                                  (org-table-end-of-field 1))
-	   (t                                                                 (end-of-visual-line))))
+	(t                                                                 (end-of-visual-line))))
 
 (defvar custom/org-double-end-timeout 0.4)
 

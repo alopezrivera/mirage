@@ -8,7 +8,7 @@ Default: `custom/end'
 If `org-at-table-p', go to `org-table-end-of-field'."
   (cond ((and (region-active-p) (custom/org-relative-line-heading-folded)) (end-of-line))
         ((org-at-table-p)                                                  (org-table-end-of-field 1))
-	   (t                                                                 (end-of-visual-line))))
+	(t                                                                 (end-of-visual-line))))
 
 (defvar custom/org-double-end-timeout 0.4)
 
