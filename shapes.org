@@ -586,7 +586,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 *** org-ui
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-org-ui-minimal.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-org-ui.el
 :END:
 **** Text
 ***** Hidden

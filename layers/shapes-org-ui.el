@@ -3,7 +3,7 @@
 ;; title face
 (defun custom/org-typeface-title ()
   (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title        nil :font typeface-title   :weight 'regular :height 250 :foreground 'unspecified)))
+    (set-face-attribute 'org-document-title        nil :font typeface-title   :weight 'regular :height 125 :foreground 'unspecified)))
 
 (add-hook 'org-mode-hook #'custom/org-typeface-title)
 
@@ -14,6 +14,9 @@
 
 (add-hook 'org-mode-hook #'custom/org-typeface-indent)
 
+;; org-indent-mode
+(setq org-startup-indented nil)
+
 ;; list indentation
 (setq-default org-list-indent-offset 1)
 
@@ -22,9 +25,6 @@
 
 ;; no actual width
 (setq org-image-actual-width nil)
-
-;; drag and drop
-(shapes-module "org-download")
 
 ;; do not consider empty lines content
 (setq org-cycle-separator-lines 2)
