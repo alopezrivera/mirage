@@ -299,7 +299,6 @@ packages
 - https://github.com/jkitchin/scimax
 - https://github.com/alhassy/emacs.d
 - https://yannesposito.com/
-- https://github.com/rougier/notebook-mode
 - https://github.com/ThomasFKJorna/doom-emacs-config
 - https://github.com/rougier/dotemacs
    - https://www.reddit.com/r/unixporn/comments/s2extx/yabai_emacs_and_my_favorite_emacs_bootloader/
@@ -334,6 +333,8 @@ packages
    - https://codethrasher.com/post/2022-09-09-evolving-my-note-taking-processes/
    - https://takeonrules.com/2022/02/07/org-roam-emacs-and-ever-refining-the-note-taking-process/
    - https://beepb00p.xyz/annotating.html#pdfs
+- Literate programming
+   - http://howardism.org/Technical/Emacs/literate-programming-tutorial.html
 
 ** debugging
 
@@ -691,7 +692,11 @@ packages
 
 * completion
 
-- https://www.scss.tcd.ie/~sulimanm/posts/default-emacs-completion.html
+- composition of various tools
+   - https://www.youtube.com/watch?app=desktop&v=43Dg5zYPHTU
+
+- vanilla emacs
+   - https://www.scss.tcd.ie/~sulimanm/posts/default-emacs-completion.html
 
 
 * IDE
@@ -876,6 +881,14 @@ packages
 
 - https://github.com/aviaviavi/link-preview.el
 
+* slack
+
+- https://github.com/yuya373/emacs-slack
+
+* redacting
+
+- https://github.com/bkaestner/redacted.el
+
 
 * hyperbole
 
@@ -905,6 +918,10 @@ packages
 
 - repeat-mode
    - https://karthinks.com/software/it-bears-repeating/
+
+* side frame
+
+- https://github.com/rougier/sideframe
 
 * window manager
 
