@@ -1,6 +1,7 @@
 ;; scrolling
 (pixel-scroll-precision-mode)
 (setq auto-window-vscroll nil)
+(setq mouse-wheel-progressive-speed nil)
 
 ;; modules
 (shapes-module "winner")

@@ -445,6 +445,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; scrolling
 (pixel-scroll-precision-mode)
 (setq auto-window-vscroll nil)
+(setq mouse-wheel-progressive-speed nil)
 
 ;; modules
 (shapes-module "winner")
