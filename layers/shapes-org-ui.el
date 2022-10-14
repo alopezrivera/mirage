@@ -29,5 +29,7 @@
 ;; do not consider empty lines content
 (setq org-cycle-separator-lines 2)
 
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
 (provide 'shapes-layer-org-ui)
 ;;; shapes-org-ui.el ends here

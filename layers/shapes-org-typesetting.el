@@ -55,7 +55,5 @@
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
 
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
-
 (provide 'shapes-layer-org-typesetting)
 ;;; shapes-org-typesetting.el ends here

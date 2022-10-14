@@ -657,6 +657,14 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+end_src
 
+**** Line-wrapping
+
+#+begin_src emacs-lisp
+
+(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+#+end_src
+
 *** org-agenda
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-org-agenda.el
@@ -844,14 +852,6 @@ Candidates:
 
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
-
-#+end_src
-
-**** Line-wrapping
-
-#+begin_src emacs-lisp
-
-(add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
 
 #+end_src
 
