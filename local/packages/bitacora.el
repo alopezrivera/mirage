@@ -163,6 +163,8 @@ if it is too narrow to split, and resize it."
   ;; variable pitch
   (if bitacora-variable-pitch
       (variable-pitch-mode))
+  ;; indentation
+  (org-indent-mode)
   ;; font overlays
   (bitacora-font-lock-add)
   ;; pretty entities
@@ -171,9 +173,13 @@ if it is too narrow to split, and resize it."
 
 (defun bitacora-undo-typesetting ()
   "Undo `bitacora' typesetting"
-  (bitacora-font-lock-remove)
+  ;; variable pitch
   (if bitacora-variable-pitch
-      (variable-pitch-mode 0)))
+      (variable-pitch-mode 0))
+  ;; indentation
+  (org-indent-mode -1)
+  ;; font overlays
+  (bitacora-font-lock-remove))
 
 (defface bitacora-typeface-hhmm
   '((nil :foreground "#eb07b6" :inherit 'fixed-pitch))
@@ -395,4 +401,4 @@ for a date to visit using the Emacs calendar."
                    (define-key bitacora-mode-map (kbd k) c)))
 
 (provide 'bitacora)
-;;; org-modern.el ends here
+;;; bitacora.el ends here
