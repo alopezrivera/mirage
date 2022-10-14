@@ -143,6 +143,7 @@ possibly mode
       - https://juanjose.garciaripoll.com/blog/ebib-biblio-interface/index.html
    - workflow
       - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
+      - https://koustuvsinha.com/post/emacs_org_protocol_arxiv/
 
 - cite
    - org-ref
