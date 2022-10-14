@@ -1,9 +1,9 @@
 (setq org-tag-alist
       '((:startgroup)
-	     ;; Put mutually exclusive tags here
-	     (:endgroup)
-	     ("home"     . ?h)
-	     ("work"     . ?w)))
+	;; Put mutually exclusive tags here
+	(:endgroup)
+	("home"     . ?h)
+	("work"     . ?w)))
 
 ;; Configure custom agenda views
 (setq org-agenda-custom-commands
