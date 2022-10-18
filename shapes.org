@@ -934,7 +934,7 @@ the issue is resolved.
 
 (setq org-format-latex-options
         (list :foreground 'default
-              :scale      1.50))
+              :scale      1.70))
 
 #+end_src
 
@@ -1173,6 +1173,7 @@ Content of a module:
 #+end_src
 
 ****** olivetti-set-width
+
 #+begin_src emacs-lisp
 
 (el-patch-feature olivetti)
@@ -2298,6 +2299,7 @@ the local machine:
 (global-set-key (kbd "C-x o") #'ace-window)
 
 #+end_src
+
 
 
 ** Version control
@@ -5972,7 +5974,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 (defun custom/org-goto-child-last ()
   (if (org-current-level)
       (progn (custom/org-goto-subtree-end)
-	         (custom/org-goto-heading-current))))
+	     (custom/org-goto-heading-current))))
 
 #+end_src
 
