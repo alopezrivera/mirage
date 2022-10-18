@@ -408,6 +408,21 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "ivy")
 
 #+end_src
+
+*** vertico
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-completion-vertico.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "vertico")
+(shapes-module "orderless")
+
+(shapes-module "all-the-icons-completion")
+
+#+end_src
+
 ** Workflow
 *** Session
 :PROPERTIES:
@@ -1347,6 +1362,23 @@ the local machine:
 
 #+end_src
 
+*** Completion
+**** all-the-icons-completion
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-all-the-icons-completion.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "all-the-icons")
+
+(straight-use-package '(all-the-icons-completion :type git :host github :repo "MintSoup/all-the-icons-completion"))
+
+(all-the-icons-completion-mode)
+
+#+end_src
+
+
 ** Input
 *** Editing
 **** evil
@@ -1940,6 +1972,50 @@ the local machine:
 
 #+end_src
 
+*** vertico
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-vertico.el
+:END:
+
+#+begin_src emacs-lisp
+
+(require 'savehist)
+(savehist-mode)
+
+(straight-use-package 'vertico)
+(vertico-mode)
+
+(defun crm-indicator (args)
+  (cons (format "[CRM%s] %s"
+                (replace-regexp-in-string
+                 "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                 crm-separator)
+                (car args))
+        (cdr args)))
+(advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+(setq enable-recursive-minibuffers t)
+
+#+end_src
+
+*** orderless
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-orderless.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'orderless)
+
+(setq completion-styles '(orderless basic))
+(setq completion-category-defaults nil)
+(setq completion-category-overrides '((file (styles partial-completion))))
+
+#+end_src
 
 ** Workflow
 *** Export
