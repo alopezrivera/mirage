@@ -77,12 +77,10 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 (define-key org-mode-map (kbd "<home>") 'custom/org-double-home)
 
-(define-key org-mode-map (kbd "<up>") (lambda () (interactive) (custom/previous-line (org-in-src-block-p))))
-
 (defun custom/org-goto-child-last ()
   (if (org-current-level)
       (progn (custom/org-goto-subtree-end)
-	         (custom/org-goto-heading-current))))
+	     (custom/org-goto-heading-current))))
 
 (defun custom/org-goto-subtree-end ()
   (custom/org-goto-heading-current)

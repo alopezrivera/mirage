@@ -58,18 +58,16 @@ If the current line is a wrapped visual line, home to
 
 (global-set-key (kbd "<home>") #'custom/double-home)
 
-(defun custom/previous-line (cond)
-  "If a region is active and the current mode is derived 
-from `prog-mode', arrow-up to `end-of-visual-line' of
-`previous-line'."
-  (interactive)
-  (if (and (region-active-p) cond)
-      (progn (previous-line)
-	           (point-to-register 'region-up-register)
-	           (end-of-visual-line))
-    (previous-line)))
+(defun custom/previous-line (orig-fun &rest args)
+  "If a region is active and either the current mode is derived from
+`prog-mode' or the cursor lies in an `org-babel' source code block,
+arrow-up to `end-of-visual-line' of `previous-line'."
+  (apply orig-fun args)
+  (if (and (region-active-p) (or (derived-mode-p 'prog-mode) (org-in-src-block-p)))
+      (progn (point-to-register 'region-up-register)
+             (end-of-visual-line))))
 
-(global-set-key (kbd "<up>") (lambda () (interactive) (custom/previous-line (derived-mode-p 'prog-mode))))
+(advice-add 'previous-line :around #'custom/previous-line)
 
 (defun custom/region-up-register ()
   "Move cursor to `region-up-register', defined in
