@@ -230,8 +230,7 @@ References:
 
 #+begin_src emacs-lisp
 
-;; completion
-(shapes-module "ivy")
+(shapes-layer "completion-vertico")
 
 #+end_src
 

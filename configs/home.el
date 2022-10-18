@@ -40,8 +40,7 @@
 ;; templates
 (shapes-module "yasnippet")
 
-;; completion
-(shapes-module "ivy")
+(shapes-layer "completion-vertico")
 
 (shapes-layer "session")
 
