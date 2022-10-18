@@ -397,6 +397,17 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+end_src
 
+** Completion
+*** ivy
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-completion-ivy.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "ivy")
+
+#+end_src
 ** Workflow
 *** Session
 :PROPERTIES:
