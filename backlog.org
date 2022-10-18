@@ -305,6 +305,7 @@ packages
    - https://www.reddit.com/r/unixporn/comments/s2extx/yabai_emacs_and_my_favorite_emacs_bootloader/
 - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
 - https://github.com/Lambda-Emacs/lambda-emacs
+- https://github.com/Gavinok/emacs.d
 
 ** design
 
@@ -463,6 +464,9 @@ packages
 - crop margin
    - pdf-view-auto-slice-minor-mode
 
+- doc-tools
+   - https://github.com/dalanicolai/doc-tools
+
 * markdown
 
 - markdown-mode
@@ -576,6 +580,9 @@ packages
    - https://github.com/flexibeast/org-vcard
 
 * org-roam
+
+- https://github.com/d12frosted/vulpea
+- https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html
 
 - increase horizontal split threshold for org-roam-node-visit
 
@@ -694,10 +701,22 @@ packages
 * completion
 
 - composition of various tools
+   - https://www.youtube.com/watch?v=Vx0bSKF4y78
    - https://www.youtube.com/watch?app=desktop&v=43Dg5zYPHTU
+   - corfu
+      - https://github.com/minad/corfu
 
 - vanilla emacs
    - https://www.scss.tcd.ie/~sulimanm/posts/default-emacs-completion.html
+
+* alerts
+
+- alert
+   - https://github.com/jwiegley/alert
+- notification
+   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Notifications.html
+- org-mode
+   - https://github.com/spegoraro/org-alert
 
 
 * IDE
@@ -797,7 +816,6 @@ packages
 
 - completion at point
    - https://with-emacs.com/
-   - https://github.com/minad/corfu
 
 - text object editing
    - https://github.com/clemera/objed
