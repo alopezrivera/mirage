@@ -114,11 +114,19 @@
 #+begin_src emacs-lisp
 
 ;; credentials
-(let ((credential-file (concat config-directory "creds.el.gpg")))
-  (if (file-exists-p credential-file)
-      (condition-case nil
-          (load-file credential-file)
-        (error nil))))
+(defvar shapes-credentials-map (make-keymap))
+
+(defun shapes-load-credentials ()
+  (interactive)
+  (let ((credential-file (concat config-directory "creds.el.gpg")))
+    (if (file-exists-p credential-file)
+        (condition-case nil
+            (load-file credential-file)
+          (error nil))
+      (message "~/creds.el.gpg does not exist")))
+  (global-set-key (kbd "C-M-p") shapes-credentials-map))
+
+(global-set-key (kbd "C-M-p") #'shapes-load-credentials)
 
 #+end_src
 
