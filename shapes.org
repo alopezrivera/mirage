@@ -533,6 +533,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; python
 (shapes-module "elpy")
 
+;; extensions
+(shapes-extend "ide")
+
 #+end_src
 
 ** PDF
@@ -4591,6 +4594,23 @@ the user for confirmation."
 
 #+end_src
 
+
+** IDE
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-ide.el
+:END:
+
+*** Codium
+#+begin_src emacs-lisp
+
+(defun custom/codium ()
+  (interactive)
+  (let ((root (projectile-root-bottom-up (file-name-directory buffer-file-name))))
+    (call-process-shell-command (concat "codium " root "&") nil 0)))
+
+(define-key projectile-command-map (kbd "o") #'custom/codium)
+
+#+end_src
 
 ** PDF
 :PROPERTIES:
