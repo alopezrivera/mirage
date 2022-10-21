@@ -16,7 +16,7 @@
 ;; [c]enter
 (define-key pdf-view-mode-map (kbd "c") #'pdf-view-center-in-window)
 ;; [j]ump 
-(define-key pdf-view-mode-map (kbd "d") #'pdf-view-goto-label)
+(define-key pdf-view-mode-map (kbd "j") #'pdf-view-goto-label)
 ;; [h]highlight
 (define-key pdf-view-mode-map (kbd "h") #'pdf-annot-add-highlight-markup-annotation)
 ;; [t]ext annotation
