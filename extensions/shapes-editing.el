@@ -95,8 +95,6 @@ kill ring."
 (global-unset-key [M-mouse-3])
 (global-unset-key [M-mouse-2])
 
-(global-set-key (kbd "C-a") 'mark-whole-buffer)
-
 (defun custom/smart-comment ()
   "If a region is active, comment out all lines in the
 region. Otherwise, comment out current line if it is

@@ -4230,14 +4230,6 @@ kill ring."
 
 #+end_src
 
-**** Whole buffer
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-a") 'mark-whole-buffer)
-
-#+end_src
-
 *** TODO Comments
 
 - if region is active and cursor is in empty line, region is not commented
