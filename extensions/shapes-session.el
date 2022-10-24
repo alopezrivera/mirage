@@ -1,8 +1,11 @@
-(defun custom/desktop-change-dir ()
+(defun custom/load-session ()
   (interactive)
-  (desktop-change-dir (read-file-name "Select session: " "~/sessions/")))
+  (let ((session (read-file-name "Select session: " "~/sessions/")))
+    (desktop-change-dir session)
+    (wg-load (concat session ".wg"))
+    (call-interactively 'wg-switch-to-workgroup)))
 
-(global-set-key (kbd "C-x s") #'custom/desktop-change-dir)
+(global-set-key (kbd "C-x s") #'custom/load-session)
 
 (provide 'shapes-extension-session)
 ;;; shapes-session.el ends here
