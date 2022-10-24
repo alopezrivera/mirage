@@ -2763,7 +2763,7 @@ match the indentation of the parent heading."
 
 #+begin_src emacs-lisp
 
-(require 'org-paragraph (concat config-directory "local/packages/org-paragraph.el"))
+(require 'org-paragraph (concat config-directory "elisp/packages/org-paragraph.el"))
 
 #+end_src
 
@@ -2947,7 +2947,7 @@ beginning lies on an Org Mode heading,
 
 #+begin_src emacs-lisp
 
-(require 'bitacora (concat config-directory "local/packages/bitacora.el"))
+(require 'bitacora (concat config-directory "elisp/packages/bitacora.el"))
 
 #+end_src
 

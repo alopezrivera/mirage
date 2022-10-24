@@ -1,5 +1,5 @@
 ;; local settings
-(let ((local (concat config-directory "local/config/local--" (system-name) ".el")))
+(let ((local (concat config-directory "local/local--" (system-name) ".el")))
   (if (file-exists-p local)
       (load-file local)
     (write-region ";; local emacs config" nil local)))
