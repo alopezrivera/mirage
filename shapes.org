@@ -4630,6 +4630,23 @@ the user for confirmation."
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./extensions/shapes-pdf.el
 :END:
+*** Jump
+
+#+begin_src emacs-lisp
+
+(defun custom/pdf-view-jump-to-top ()
+  (interactive)
+  (image-previous-line 9999))
+
+(defun custom/pdf-view-jump-to-bottom ()
+  (interactive)
+  (image-next-line 9999))
+
+(define-key pdf-view-mode-map (kbd "<home>") #'custom/pdf-view-jump-to-top)
+(define-key pdf-view-mode-map (kbd "<end>")  #'custom/pdf-view-jump-to-bottom)
+
+#+end_src
+
 *** Scroll
 
 #+begin_src emacs-lisp
@@ -4648,23 +4665,6 @@ the user for confirmation."
 (define-key pdf-view-mode-map (kbd "<wheel-up>")   #'custom/pdf-view-previous-line)
 (define-key pdf-view-mode-map (kbd "C-<wheel-down>") (lambda () (interactive) (custom/pdf-view-next-line 10)))
 (define-key pdf-view-mode-map (kbd "C-<wheel-up>")   (lambda () (interactive) (custom/pdf-view-previous-line 10)))
-
-#+end_src
-
-*** Jump
-
-#+begin_src emacs-lisp
-
-(defun custom/pdf-view-jump-to-top ()
-  (interactive)
-  (image-previous-line 9999))
-
-(defun custom/pdf-view-jump-to-bottom ()
-  (interactive)
-  (image-next-line 9999))
-
-(define-key pdf-view-mode-map (kbd "<home>") #'custom/pdf-view-jump-to-top)
-(define-key pdf-view-mode-map (kbd "<end>")  #'custom/pdf-view-jump-to-bottom)
 
 #+end_src
 

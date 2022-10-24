@@ -1,3 +1,14 @@
+(defun custom/pdf-view-jump-to-top ()
+  (interactive)
+  (image-previous-line 9999))
+
+(defun custom/pdf-view-jump-to-bottom ()
+  (interactive)
+  (image-next-line 9999))
+
+(define-key pdf-view-mode-map (kbd "<home>") #'custom/pdf-view-jump-to-top)
+(define-key pdf-view-mode-map (kbd "<end>")  #'custom/pdf-view-jump-to-bottom)
+
 (defun custom/pdf-view-next-line (&optional arg)
   "Scroll upward by ARG lines. Stay in page."
   (interactive "P")
@@ -12,17 +23,6 @@
 (define-key pdf-view-mode-map (kbd "<wheel-up>")   #'custom/pdf-view-previous-line)
 (define-key pdf-view-mode-map (kbd "C-<wheel-down>") (lambda () (interactive) (custom/pdf-view-next-line 10)))
 (define-key pdf-view-mode-map (kbd "C-<wheel-up>")   (lambda () (interactive) (custom/pdf-view-previous-line 10)))
-
-(defun custom/pdf-view-jump-to-top ()
-  (interactive)
-  (image-previous-line 9999))
-
-(defun custom/pdf-view-jump-to-bottom ()
-  (interactive)
-  (image-next-line 9999))
-
-(define-key pdf-view-mode-map (kbd "<home>") #'custom/pdf-view-jump-to-top)
-(define-key pdf-view-mode-map (kbd "<end>")  #'custom/pdf-view-jump-to-bottom)
 
 (defun custom/pdf-view-fit-height ()
   (interactive)
