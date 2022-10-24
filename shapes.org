@@ -159,7 +159,7 @@ Shapes configuration when an error is found")
 
 #+begin_src emacs-lisp
 
-(setq debug-on-error t)
+(setq debug-on-error nil)
 
 #+end_src
 

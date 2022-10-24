@@ -48,7 +48,7 @@
 
 (global-set-key (kbd "C-c SPC") #'whitespace-mode)
 
-(setq debug-on-error t)
+(setq debug-on-error nil)
 
 (provide 'shapes-core-config-management)
 ;;; shapes-config-management.el ends here
