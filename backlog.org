@@ -467,6 +467,9 @@ packages
 - doc-tools
    - https://github.com/dalanicolai/doc-tools
 
+- preserve locations, zoom across sessions
+   - https://github.com/politza/pdf-tools/issues/18
+
 * markdown
 
 - markdown-mode
