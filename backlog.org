@@ -44,7 +44,7 @@
    - https://github.com/psamim/dotfiles/blob/master/doom/config.el#L73
 
 ** shapes
-*** home buffer
+*** homhttps://github.com/pashinin/workgroups2/issues/108#issuecomment-1001104900e buffer
 
 - https://github.com/emacs-dashboard/emacs-dashboard
    - further customization
@@ -947,6 +947,10 @@ packages
 - WXEM
 - herbstluftwm
    - https://herbstluftwm.org/
+
+* workgroups2
+
+- https://github.com/pashinin/workgroups2/issues/108#issuecomment-1001104900
 
 
 * theme
