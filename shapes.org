@@ -437,6 +437,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; modules
 (shapes-module "workgroups")
 
+;; extensions
+(shapes-extend "session")
+
 #+end_src 
 
 *** Project interaction
@@ -4347,6 +4350,22 @@ not empty. In any case, advance to next line."
     (call-interactively 'query-replace-regexp)))
 
 (global-set-key (kbd "M-/") #'custom/query-replace-regexp)
+
+#+end_src
+
+** Workflow
+*** Session
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-session.el
+:END:
+
+#+begin_src emacs-lisp
+
+(defun custom/desktop-change-dir ()
+  (interactive)
+  (desktop-change-dir (read-file-name "Select session: " "~/sessions/")))
+
+(global-set-key (kbd "C-x s") #'custom/desktop-change-dir)
 
 #+end_src
 
