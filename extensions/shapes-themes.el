@@ -22,9 +22,9 @@
     (progn
       (setq window (get-buffer-window (current-buffer)))
       (cl-loop for buffer in (custom/get-visible-buffers)
-	             collect (select-window (get-buffer-window buffer))
+	             do (select-window (get-buffer-window buffer))
 	 	     if (string-equal major-mode "org-mode")
-		        collect (org-mode))
+		        do (org-mode))
       (select-window window))))
 
 (add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)

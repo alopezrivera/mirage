@@ -98,7 +98,10 @@ Shapes configuration when an error is found")
 				     (end-of-buffer)
 				     (insert (concat
 					      "\n"
-					      "(provide 'shapes-" (if (string-match-p "^.*s" comp-type) (substring comp-type 0 -1) comp-type) "-" component ")\n"
+					      "(provide 'shapes-" (if (string-match-p "^.*s" comp-type)
+                                                                      (substring comp-type 0 -1)
+                                                                    comp-type)
+                                              "-" component ")\n"
 					      ";;; shapes-" component ".el ends here"))
 				     (save-buffer))))
 		   (org-babel-tangle-file ,org-file))
@@ -114,9 +117,9 @@ Shapes configuration when an error is found")
 (defun custom/shapes-tangle-auto ()
   "Automatically tangle Org Mode files in the Emacs config directory"
   (let* ((file   (expand-file-name buffer-file-name))
-	    (source (string-match (concat config-directory ".*.org$") file))
-	    (shapes (string-match (concat config-directory "shapes.org$") buffer-file-name))
-	    (org-confirm-babel-evaluate nil))
+	 (source (string-match (concat config-directory ".*.org$") file))
+	 (shapes (string-match (concat config-directory "shapes.org$") buffer-file-name))
+	 (org-confirm-babel-evaluate nil))
     (if source
 	(if shapes
 	    (custom/shapes-tangle file)
@@ -1949,25 +1952,25 @@ the local machine:
 ;; minibuffer bindings
 (let ((map ivy-minibuffer-map))
   (cl-loop for binding in '(("<tab>"       . ivy-alt-done)
-			        ("<up>"        . ivy-previous-line-or-history)
-			        ("C-l"         . ivy-alt-done)
-			        ("C-j"         . ivy-next-line)
-			        ("C-k"         . ivy-previous-line)
-			        ("<backspace>" . ivy-backward-delete-char))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
+			    ("<up>"        . ivy-previous-line-or-history)
+			    ("C-l"         . ivy-alt-done)
+			    ("C-j"         . ivy-next-line)
+			    ("C-k"         . ivy-previous-line)
+			    ("<backspace>" . ivy-backward-delete-char))
+            do (define-key map (kbd (car binding)) (cdr binding))))
 
 ;; switch-buffer bindings
 (let ((map ivy-switch-buffer-map))
   (cl-loop for binding in '(("C-k"   . ivy-previous-line)
  			        ("C-l"   . ivy-done)
 			        ("C-d"   . ivy-switch-buffer-kill))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
+            do (define-key map (kbd (car binding)) (cdr binding))))
 
 ;; reverse-i-search bindings
 (let ((map ivy-reverse-i-search-map))
   (cl-loop for binding in '(("C-k"   . ivy-previous-line)
 			        ("C-d"   . ivy-reverse-i-search-kill))
-            collect (define-key map (kbd (car binding)) (cdr binding))))
+            do (define-key map (kbd (car binding)) (cdr binding))))
 
 #+end_src
 
@@ -2128,7 +2131,7 @@ the local machine:
 			        ("C-x t B"   . treemacs-bookmark)
 			        ("C-x t C-t" . treemacs-find-file)
 			        ("C-x t M-t" . treemacs-find-tag))
-	 collect (global-set-key (kbd (car binding)) (cdr binding)))
+	 do (global-set-key (kbd (car binding)) (cdr binding)))
 
 #+end_src
 
@@ -2300,7 +2303,6 @@ the local machine:
 (global-set-key (kbd "C-x o") #'ace-window)
 
 #+end_src
-
 
 
 ** Version control
@@ -2836,7 +2838,7 @@ beginning lies on an Org Mode heading,
 (straight-use-package 'org-download)
 
 (dolist (mode '(org-mode-hook
-		     dired-mode-hook))
+		dired-mode-hook))
   (add-hook mode 'org-download-enable))
 
 ;; download directory
@@ -3744,7 +3746,7 @@ to the query at execution."
 (defmacro custom/@buffers (command &optional buffers)
   (let ((buffers (or buffers (buffer-list))))
     `(cl-loop for buffer in ',buffers
-              collect (if (buffer-live-p buffer)
+              do (if (buffer-live-p buffer)
                           (save-window-excursion (switch-to-buffer buffer)
                                                  ,command)))))
 
@@ -3803,7 +3805,7 @@ through as a theme loads."
   (apply orig-fun args)
   ;; restore accents
   (cl-loop for accent in custom/accents
-	   collect (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
+	   do (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
 		     (set-face-attribute face nil :inherit accent))))
 
 (advice-add 'load-theme :around #'custom/theme-accents)
@@ -3824,7 +3826,7 @@ through as a theme loads."
 (with-eval-after-load 'helpful
   (cl-loop for map in '(help-mode-map
                         helpful-mode-map)
-           collect (define-key (symbol-value map) [remap quit-window] #'custom/quit-window)))
+           do (define-key (symbol-value map) [remap quit-window] #'custom/quit-window)))
 
 #+end_src
 
@@ -3968,9 +3970,9 @@ key binding input with C-g."
     (progn
       (setq window (get-buffer-window (current-buffer)))
       (cl-loop for buffer in (custom/get-visible-buffers)
-	             collect (select-window (get-buffer-window buffer))
+	             do (select-window (get-buffer-window buffer))
 	 	     if (string-equal major-mode "org-mode")
-		        collect (org-mode))
+		        do (org-mode))
       (select-window window))))
 
 (add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
@@ -5677,7 +5679,7 @@ function that sets `deactivate-mark' to t."
                             (cons
                              (org-element-property :begin env)
                              (org-element-property :value env))))
-                        collect
+                        do
                         (cond
                          ((and (string-match "\\\\begin{equation}" env)
                                (not (string-match "\\\\tag{" env)))

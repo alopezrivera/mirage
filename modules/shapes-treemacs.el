@@ -18,7 +18,7 @@
 			        ("C-x t B"   . treemacs-bookmark)
 			        ("C-x t C-t" . treemacs-find-file)
 			        ("C-x t M-t" . treemacs-find-tag))
-	 collect (global-set-key (kbd (car binding)) (cdr binding)))
+	 do (global-set-key (kbd (car binding)) (cdr binding)))
 
 (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
       treemacs-deferred-git-apply-delay        0.5

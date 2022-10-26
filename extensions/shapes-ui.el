@@ -20,7 +20,7 @@ through as a theme loads."
   (apply orig-fun args)
   ;; restore accents
   (cl-loop for accent in custom/accents
-	   collect (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
+	   do (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
 		     (set-face-attribute face nil :inherit accent))))
 
 (advice-add 'load-theme :around #'custom/theme-accents)
@@ -34,7 +34,7 @@ through as a theme loads."
 (with-eval-after-load 'helpful
   (cl-loop for map in '(help-mode-map
                         helpful-mode-map)
-           collect (define-key (symbol-value map) [remap quit-window] #'custom/quit-window)))
+           do (define-key (symbol-value map) [remap quit-window] #'custom/quit-window)))
 
 (defun custom/window-resize (width)
   (window-resize nil (- width (window-width)) t))

@@ -3,7 +3,7 @@
 (defmacro custom/@buffers (command &optional buffers)
   (let ((buffers (or buffers (buffer-list))))
     `(cl-loop for buffer in ',buffers
-              collect (if (buffer-live-p buffer)
+              do (if (buffer-live-p buffer)
                           (save-window-excursion (switch-to-buffer buffer)
                                                  ,command)))))
 

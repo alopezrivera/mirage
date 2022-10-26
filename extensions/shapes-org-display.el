@@ -27,7 +27,7 @@
                             (cons
                              (org-element-property :begin env)
                              (org-element-property :value env))))
-                        collect
+                        do
                         (cond
                          ((and (string-match "\\\\begin{equation}" env)
                                (not (string-match "\\\\tag{" env)))
