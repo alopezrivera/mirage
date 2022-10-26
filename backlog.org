@@ -44,7 +44,9 @@
    - https://github.com/psamim/dotfiles/blob/master/doom/config.el#L73
 
 ** shapes
-*** homhttps://github.com/pashinin/workgroups2/issues/108#issuecomment-1001104900e buffer
+*** home buffer
+
+https://github.com/pashinin/workgroups2/issues/108#issuecomment-1001104900e
 
 - https://github.com/emacs-dashboard/emacs-dashboard
    - further customization
@@ -141,6 +143,7 @@ possibly mode
       - http://cachestocaches.com/2020/3/org-mode-annotated-bibliography/
       - https://www.reddit.com/r/emacs/comments/x6dvse/orgcite_citar_and_latex_in_orgmode_problems/
       - https://juanjose.garciaripoll.com/blog/ebib-biblio-interface/index.html
+      - https://weikaichen.gitee.io/en/post/emacs-academic-tools/
    - workflow
       - https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
       - https://koustuvsinha.com/post/emacs_org_protocol_arxiv/
@@ -204,30 +207,12 @@ possibly mode
 - https://dev.to/rushankhan1/write-effective-markdown-in-emacs-with-live-preview-41p9
 
 ** other
-*** random
+*** UI
 
 wrap around arrow color -> barely visible
 - https://emacs.stackexchange.com/questions/32027/change-the-color-of-the-wrap-around-arrow
 
------
-guides
-
-- org-entities to escape markup symbols
-   - https://emacs.stackexchange.com/a/16746
-- dired
-   - https://pragmaticemacs.wordpress.com/2015/05/07/dired-marking-copying-moving-and-deleting-files/
-
------
-stow
-
-- session
-   - salv
-      - https://github.com/alphapapa/salv.el
-   - dogears
-      - https://github.com/alphapapa/dogears.el/tree/c05b69e504a538c9e00fbb0ea86934fafe191d0c
-
------
-hotfixes
+*** hotfixes
 
 - org-paragraph
    - detection
@@ -240,8 +225,7 @@ hotfixes
    - unicode-fonts
       - https://github.com/rolandwalker/unicode-fonts
 
------
-modes
+*** modes
 
 - backlog editing mode
    - headings
@@ -252,8 +236,7 @@ modes
    - setup
       - tag alignment
 
------
-packages
+*** packages
 
 - region
    - transient-mark-mode active -> mouse-3 = kill-ring-save
@@ -278,14 +261,35 @@ packages
 
 - mouse 3 in region -> yank
 
-*** org-subtree-empty
+*** functions
+**** org-subtree-empty
 
 - lazy
    - current line empty -> go to next line -> ... ->
       - next header: t
       - line not empty: nil
-        
 
+*** editing
+
+- org-entities to escape markup symbols
+   - https://emacs.stackexchange.com/a/16746
+
+** refactoring
+*** bindings
+**** minor modes with key bindings
+
+- Org Mode
+
+*** relative-line
+
+- relative-line -> line
+- remove double commands
+   - home
+      - if at bol-text -> bol-visual
+
+*** config-directory
+
+-> user-emacs-directory
 
 * references
 ** blogs
@@ -357,26 +361,37 @@ packages
 - https://www.emacswiki.org/emacs/download/misc-cmds.el
 
 
-* refactoring
-** bindings
-*** minor modes with key bindings
+* shortlist
 
-- Org Mode
+- session
+   - workgroups2
+      - https://github.com/pashinin/workgroups2/issues/108#issuecomment-1001104900
+   - salv
+      - https://github.com/alphapapa/salv.el
+   - dogears
+      - https://github.com/alphapapa/dogears.el/tree/c05b69e504a538c9e00fbb0ea86934fafe191d0c
 
-** relative-line
+- typesetting
+   - fontaine
+      - https://github.com/protesilaos/fontaine
 
-- relative-line -> line
-- remove double commands
-   - home
-      - if at bol-text -> bol-visual
+- editing
+   - siege-mode
+      - https://github.com/tslilc/siege-mode
+   - drag-stuff
+      - https://github.com/rejeep/drag-stuff.el
 
-** config-directory
 
--> user-emacs-directory
+* immature
 
-  
+- sublimity
+   - https://github.com/zk-phi/sublimity
+
+
 * portability
 
+- org-web
+   - https://org-web.org/
 - organice
    - https://github.com/200ok-ch/organice
 - logseq
@@ -385,7 +400,7 @@ packages
 - mirrors
    - https://github.com/d12frosted/elpa-mirror
 
-* inspection
+* file browsing
 
 - deft
    - https://jblevins.org/projects/deft/
@@ -435,6 +450,7 @@ packages
    - auctex replacements
       - https://www.gnu.org/software/auctex/manual/auctex.html#Starting-a-Command
         https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
+- https://www.emacswiki.org/emacs/LaTeXPreviewPane
 
 ** org
 -----
@@ -469,6 +485,8 @@ packages
 
 - preserve locations, zoom across sessions
    - https://github.com/politza/pdf-tools/issues/18
+- bookmarking with bookmark names
+   - https://sachachua.com/blog/2021/02/guest-post-bookmarking-pdfs-in-emacs-with-pdf-tools-and-registers/
 
 * markdown
 
@@ -951,9 +969,6 @@ packages
 - herbstluftwm
    - https://herbstluftwm.org/
 
-* workgroups2
-
-- https://github.com/pashinin/workgroups2/issues/108#issuecomment-1001104900
 
 
 * theme
@@ -1083,5 +1098,6 @@ packages
    - http://howm.osdn.jp/index.html
 - emacs-wiki
 - org-brain
+
 
 
