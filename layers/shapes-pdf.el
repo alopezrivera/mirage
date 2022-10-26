@@ -3,6 +3,7 @@
 
 ;; modules
 (shapes-module "pdf-tools")
+(shapes-module "pdf-view-restore")
 
 ;; extensions
 (shapes-extend "pdf")

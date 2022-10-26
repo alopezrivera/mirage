@@ -553,6 +553,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ;; modules
 (shapes-module "pdf-tools")
+(shapes-module "pdf-view-restore")
 
 ;; extensions
 (shapes-extend "pdf")
@@ -2524,6 +2525,19 @@ sudo apt-get install python3-venv
 (define-key pdf-view-mode-map (kbd "C-c C-r t") #'pdf-view-themed-minor-mode)
 ;; fine-grained zooming
 (setq pdf-view-resize-factor 1.1)
+
+#+end_src
+
+*** pdf-view-restore
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-pdf-view-restore.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'pdf-view-restore)
+
+(add-hook 'pdf-view-mode-hook 'pdf-view-restore-mode)
 
 #+end_src
 
