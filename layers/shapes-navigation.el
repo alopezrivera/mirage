@@ -3,8 +3,10 @@
 (setq auto-window-vscroll nil)
 (setq mouse-wheel-progressive-speed nil)
 
+;; windows
+(winner-mode)
+
 ;; modules
-(shapes-module "winner")
 (shapes-module "ace-window")
 
 ;; extensions
