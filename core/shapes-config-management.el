@@ -5,9 +5,9 @@
 	(async-quiet-switch "-q"))
     (async-start
      `(lambda ()
-              (dolist (comp-dir (mapcar (lambda (dir) (concat ,config-directory dir)) '("core" "layers" "modules" "extensions")))
-                (dolist (file (directory-files comp-dir nil directory-files-no-dot-files-regexp))
-                  (delete-file (concat comp-dir "/" file))))
+              (dolist (comp-dir (mapcar (lambda (dir) (concat config-directory dir)) '("core" "layers" "modules" "extensions")))
+                (dolist (file (directory-files comp-dir t directory-files-no-dot-files-regexp))
+                  (delete-file file)))
 	      (require 'org)
 	      (add-hook 'org-babel-post-tangle-hook
 			(lambda ()
