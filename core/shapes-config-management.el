@@ -1,10 +1,13 @@
 (defun custom/shapes-tangle (org-file &optional quiet)
   "Asynchronously tangle an org file."
   (let ((init-tangle-start-time (current-time))
-	    (file (buffer-file-name))
-	    (async-quiet-switch "-q"))
+	(file (buffer-file-name))
+	(async-quiet-switch "-q"))
     (async-start
      `(lambda ()
+              (dolist (comp-dir (mapcar (lambda (dir) (concat ,config-directory dir)) '("core" "layers" "modules" "extensions")))
+                (dolist (file (directory-files comp-dir nil directory-files-no-dot-files-regexp))
+                  (delete-file (concat comp-dir "/" file))))
 	      (require 'org)
 	      (add-hook 'org-babel-post-tangle-hook
 			(lambda ()
@@ -14,7 +17,10 @@
 				     (end-of-buffer)
 				     (insert (concat
 					      "\n"
-					      "(provide 'shapes-" (if (string-match-p "^.*s" comp-type) (substring comp-type 0 -1) comp-type) "-" component ")\n"
+					      "(provide 'shapes-" (if (string-match-p "^.*s" comp-type)
+                                                                      (substring comp-type 0 -1)
+                                                                    comp-type)
+                                              "-" component ")\n"
 					      ";;; shapes-" component ".el ends here"))
 				     (save-buffer))))
 		   (org-babel-tangle-file ,org-file))
@@ -30,9 +36,9 @@
 (defun custom/shapes-tangle-auto ()
   "Automatically tangle Org Mode files in the Emacs config directory"
   (let* ((file   (expand-file-name buffer-file-name))
-	    (source (string-match (concat config-directory ".*.org$") file))
-	    (shapes (string-match (concat config-directory "shapes.org$") buffer-file-name))
-	    (org-confirm-babel-evaluate nil))
+	 (source (string-match (concat config-directory ".*.org$") file))
+	 (shapes (string-match (concat config-directory "shapes.org$") buffer-file-name))
+	 (org-confirm-babel-evaluate nil))
     (if source
 	(if shapes
 	    (custom/shapes-tangle file)

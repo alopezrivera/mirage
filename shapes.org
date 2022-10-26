@@ -82,10 +82,13 @@ Shapes configuration when an error is found")
 (defun custom/shapes-tangle (org-file &optional quiet)
   "Asynchronously tangle an org file."
   (let ((init-tangle-start-time (current-time))
-	    (file (buffer-file-name))
-	    (async-quiet-switch "-q"))
+	(file (buffer-file-name))
+	(async-quiet-switch "-q"))
     (async-start
      `(lambda ()
+              (dolist (comp-dir (mapcar (lambda (dir) (concat ,config-directory dir)) '("core" "layers" "modules" "extensions")))
+                (dolist (file (directory-files comp-dir nil directory-files-no-dot-files-regexp))
+                  (delete-file (concat comp-dir "/" file))))
 	      (require 'org)
 	      (add-hook 'org-babel-post-tangle-hook
 			(lambda ()
