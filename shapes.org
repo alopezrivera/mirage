@@ -86,7 +86,7 @@ Shapes configuration when an error is found")
 	(async-quiet-switch "-q"))
     (async-start
      `(lambda ()
-              (dolist (comp-dir (mapcar (lambda (dir) (concat config-directory dir)) '("core" "layers" "modules" "extensions")))
+              (dolist (comp-dir (mapcar (lambda (dir) (concat ,config-directory dir)) '("core" "layers" "modules" "extensions")))
                 (dolist (file (directory-files comp-dir t directory-files-no-dot-files-regexp))
                   (delete-file file)))
 	      (require 'org)
@@ -4590,18 +4590,8 @@ before the execution of any command.")
 ;;; -*- lexical-binding: t; -*-
 #+end_src
 
-*** DOS to UNIX
-
-#+begin_src emacs-lisp
-
-;; Transform all files in directory from DOS to Unix line breaks
-(defun custom/dos2unix (&optional dir)
-  (let ((default-directory (or dir (file-name-directory buffer-file-name))))
-    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
-
-#+end_src
-
-*** Reload from disk
+*** Buffer
+**** Reload from disk
 
 #+begin_src emacs-lisp
 
@@ -4619,6 +4609,18 @@ the user for confirmation."
 	   (revert-buffer t nil)))))
 
 (global-set-key (kbd "C-c r") #'custom/reload-from-disk)
+
+#+end_src
+
+*** Batch processing
+**** DOS to UNIX
+
+#+begin_src emacs-lisp
+
+;; Transform all files in directory from DOS to Unix line breaks
+(defun custom/dos2unix (&optional dir)
+  (let ((default-directory (or dir (file-name-directory buffer-file-name))))
+    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
 #+end_src
 

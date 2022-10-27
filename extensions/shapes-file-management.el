@@ -1,10 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 
-;; Transform all files in directory from DOS to Unix line breaks
-(defun custom/dos2unix (&optional dir)
-  (let ((default-directory (or dir (file-name-directory buffer-file-name))))
-    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
-
 (defun custom/reload-from-disk (&optional buffer)
   "Revert BUFFER contents to the contents of its
 file saved on disk, ignoring the auto-save file.
@@ -19,6 +14,11 @@ the user for confirmation."
 	   (revert-buffer t nil)))))
 
 (global-set-key (kbd "C-c r") #'custom/reload-from-disk)
+
+;; Transform all files in directory from DOS to Unix line breaks
+(defun custom/dos2unix (&optional dir)
+  (let ((default-directory (or dir (file-name-directory buffer-file-name))))
+    (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
 (provide 'shapes-extension-file-management)
 ;;; shapes-file-management.el ends here
