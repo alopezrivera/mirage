@@ -179,6 +179,24 @@ Content of a layer:
 - Extensions
 - Bindings
 
+** Input
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-input.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; confirmation
+(advice-add 'yes-or-no-p :override #'y-or-n-p)
+;; advanced commands
+(put 'narrow-to-region 'disabled nil)
+
+;; modules
+(shapes-module "god-mode")
+
+#+end_src
+
+
 ** UI
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-ui.el
@@ -293,23 +311,6 @@ Content of a layer:
 
 ;; extensions
 (shapes-extend "ui")
-
-#+end_src
-
-** Input
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-input.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; confirmation
-(advice-add 'yes-or-no-p :override #'y-or-n-p)
-;; advanced commands
-(put 'narrow-to-region 'disabled nil)
-
-;; modules
-(shapes-module "god-mode")
 
 #+end_src
 
@@ -2537,18 +2538,6 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-** Tabulated
-*** tablist
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-tablist.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'tablist)
-
-#+end_src
-
 ** Org Mode
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org.el
@@ -3402,6 +3391,18 @@ folded."
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
 (setq org-log-into-drawer t)
+
+#+end_src
+
+** Tabulated lists
+*** tablist
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-tablist.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'tablist)
 
 #+end_src
 
