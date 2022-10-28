@@ -54,6 +54,7 @@
         org-metaright
         org-self-insert-command
         org-shiftmetaleft
+        org-shiftmetaright
         org-shiftright
         org-yank
         rectangle-left-char
@@ -64,6 +65,7 @@
 
 (setq mc/cmds-to-run-once
       '(
+        beginning-of-buffer
         clm/toggle-command-log-buffer
         comint-interrupt-subjob
         comint-previous-input
