@@ -1055,7 +1055,7 @@ Content of a module:
 
 #+end_src
 
-**** use-package                                                      :arch:
+**** use-package                                                      :ARCHIVE:
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-use-package.el
 :END:
@@ -1772,7 +1772,7 @@ the local machine:
 
 #+end_src
 
-**** undo-tree                                                        :arch:
+**** undo-tree                                                        :ARCHIVE:
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-undo-tree.el
 :END:
@@ -1975,7 +1975,7 @@ the local machine:
 
 #+end_src
 
-*** ivy-rich                                                          :arch:
+*** ivy-rich                                                          :ARCHIVE:
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-ivy-rich.el
 :END:
@@ -2275,7 +2275,7 @@ the local machine:
 
 #+end_src
 
-*** command-log-mode                                                  :arch:
+*** command-log-mode                                                  :ARCHIVE:
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-command-log-mode.el
 :END:
