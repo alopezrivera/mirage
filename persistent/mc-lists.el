@@ -75,6 +75,7 @@
         custom/search-in-region
         custom/smart-search
         custom/swiper-multiple-cursors
+        custom/theme-toggle
         dabbrev-expand
         dired-do-flagged-delete
         elpy-shell-send-region-or-buffer
