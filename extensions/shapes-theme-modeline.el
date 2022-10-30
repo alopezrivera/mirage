@@ -8,7 +8,7 @@
   ;; header line
   (set-face-attribute 'header-line          nil :foreground fg-in :background bg-in :box nil))
 
-(defvar custom/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#570000" "#242424")
+(defvar custom/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#454545" "#242424")
   "Dark modeline HTML colors: FOREGROUND, FOREGROUND-INACTIVE, BACKGROUND, BACKGROUND-INACTIVE")
 
 (defvar custom/light-modeline-colors '("#616161" "#878787" "#c4c4c4" "#ededed")

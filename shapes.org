@@ -16,7 +16,7 @@
 
 #+begin_src emacs-lisp
 
-(defcustom shapes-debug-on-error t
+(defcustom shapes-debug-on-error nil
   "Whether to enter the debugger if a shapes module, layer or
 extension fails to load.")
 
@@ -4139,7 +4139,7 @@ displayed by `display-line-numbers-mode'."
   ;; header line
   (set-face-attribute 'header-line          nil :foreground fg-in :background bg-in :box nil))
 
-(defvar custom/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#570000" "#242424")
+(defvar custom/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#454545" "#242424")
   "Dark modeline HTML colors: FOREGROUND, FOREGROUND-INACTIVE, BACKGROUND, BACKGROUND-INACTIVE")
 
 (defvar custom/light-modeline-colors '("#616161" "#878787" "#c4c4c4" "#ededed")
