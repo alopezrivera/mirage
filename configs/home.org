@@ -163,7 +163,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "modeline-doom")
+(shapes-layer "modeline-moody")
 
 #+end_src
 

@@ -378,6 +378,31 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+end_src
 
+*** Moody
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-modeline-moody.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "moody")
+
+;; modeline height
+(setq moody-mode-line-height 22)
+
+;; adjust modeline elements to enable moody
+(let ((line (face-attribute 'mode-line :underline)))
+  (set-face-attribute 'mode-line          nil :overline   line)
+  (set-face-attribute 'mode-line-inactive nil :overline   line)
+  (set-face-attribute 'mode-line-inactive nil :underline  line)
+  (set-face-attribute 'mode-line          nil :box        nil)
+  (set-face-attribute 'mode-line-inactive nil :box        nil))
+
+;; extensions
+(shapes-extend "theme-modeline")
+
+#+end_src
+
 *** Spaceline
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-modeline-spaceline.el
@@ -1765,6 +1790,23 @@ the local machine:
 
 ;; mode line initialization hook
 (add-hook 'after-init-hook #'doom-modeline-mode)
+
+#+end_src
+
+*** Moody
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-moody.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'moody)
+
+;; configuration
+(setq x-underline-at-descent-line t)
+(moody-replace-mode-line-buffer-identification)
+(moody-replace-vc-mode)
+(moody-replace-eldoc-minibuffer-message-function)
 
 #+end_src
 
