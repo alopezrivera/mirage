@@ -538,6 +538,18 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 #+end_src
 
 
+** Version control
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-version-control.el
+:END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "magit")
+(shapes-module "forge")
+
+#+end_src
+
 ** File management
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-file-management.el
@@ -2395,6 +2407,17 @@ the local machine:
 (require 'magit)
 
 (global-set-key (kbd "C-x g") #'magit-status)
+
+#+end_src
+
+*** forge
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-forge.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'forge)
 
 #+end_src
 

@@ -273,7 +273,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-module "magit")
+(shapes-layer "version-control")
 
 #+end_src
 

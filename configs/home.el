@@ -50,7 +50,7 @@
 
 (shapes-layer "navigation")
 
-(shapes-module "magit")
+(shapes-layer "version-control")
 
 (shapes-layer "file-management")
 
