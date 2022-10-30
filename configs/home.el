@@ -6,9 +6,7 @@
 (setq dark    'modus-vivendi)
 (shapes-layer "themes")
 
-(setq modeline 'doom-modeline-mode)
-
-(shapes-layer "mode-line")
+(shapes-layer "modeline-doom")
 
 ;; default
 (set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
