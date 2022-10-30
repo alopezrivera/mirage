@@ -10,7 +10,7 @@
 ;; suppress animation
 (setq wg-morph-on nil)
 
-(workgroups-mode 1)
+(global-set-key (kbd "C-c w") #'workgroups-mode)
 
 (provide 'shapes-module-workgroups)
 ;;; shapes-workgroups.el ends here

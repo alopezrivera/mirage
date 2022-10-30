@@ -2148,7 +2148,7 @@ the local machine:
 ;; suppress animation
 (setq wg-morph-on nil)
 
-(workgroups-mode 1)
+(global-set-key (kbd "C-c w") #'workgroups-mode)
 
 #+end_src
 
