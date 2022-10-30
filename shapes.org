@@ -4139,10 +4139,10 @@ displayed by `display-line-numbers-mode'."
   ;; header line
   (set-face-attribute 'header-line          nil :foreground fg-in :background bg-in :box nil))
 
-(defvar custom/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#3d3d3d" "#000000")
+(defvar custom/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#570000" "#242424")
   "Dark modeline HTML colors: FOREGROUND, FOREGROUND-INACTIVE, BACKGROUND, BACKGROUND-INACTIVE")
 
-(defvar custom/light-modeline-colors '("#616161" "#878787" "#fff0ff" "#ededed")
+(defvar custom/light-modeline-colors '("#616161" "#878787" "#c4c4c4" "#ededed")
   "Light modeline HTML colors: FOREGROUND, FOREGROUND-INACTIVE, BACKGROUND, BACKGROUND-INACTIVE")
 
 (defun custom/set-dark-modeline-colors ()
