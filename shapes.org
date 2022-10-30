@@ -1169,7 +1169,7 @@ Content of a module:
 
 
 ** UI
-*** Dashboard
+*** Home
 **** emacs-dashboard
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-emacs-dashboard.el
