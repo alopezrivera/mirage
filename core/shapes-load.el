@@ -1,6 +1,6 @@
 (defcustom shapes-debug-on-error nil
-  "Whether to enter the debugger and stop loading of the
-Shapes configuration when an error is found")
+  "Whether to enter the debugger if a shapes module, layer or
+extension fails to load.")
 
 (defun shapes-load (type component)
   "Load a shapes COMPONENT of the given TYPE"
