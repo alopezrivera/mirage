@@ -13,7 +13,7 @@
 (shapes-module "chocolate-theme")
 
 ;; extensions
-(shapes-extend "themes")
+(shapes-extend "theme-switch")
 
 ;; scheduling
 (shapes-module "circadian")

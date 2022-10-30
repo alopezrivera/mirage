@@ -16,9 +16,9 @@
 
 #+begin_src emacs-lisp
 
-(defcustom shapes-debug-on-error nil
-  "Whether to enter the debugger and stop loading of the
-Shapes configuration when an error is found")
+(defcustom shapes-debug-on-error t
+  "Whether to enter the debugger if a shapes module, layer or
+extension fails to load.")
 
 (defun shapes-load (type component)
   "Load a shapes COMPONENT of the given TYPE"
@@ -179,24 +179,6 @@ Content of a layer:
 - Extensions
 - Bindings
 
-** Input
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-input.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; confirmation
-(advice-add 'yes-or-no-p :override #'y-or-n-p)
-;; advanced commands
-(put 'narrow-to-region 'disabled nil)
-
-;; modules
-(shapes-module "god-mode")
-
-#+end_src
-
-
 ** UI
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-ui.el
@@ -314,6 +296,24 @@ Content of a layer:
 
 #+end_src
 
+
+** Input
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-input.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; confirmation
+(advice-add 'yes-or-no-p :override #'y-or-n-p)
+;; advanced commands
+(put 'narrow-to-region 'disabled nil)
+
+;; modules
+(shapes-module "god-mode")
+
+#+end_src
+
 ** Themes
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-themes.el
@@ -338,7 +338,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "chocolate-theme")
 
 ;; extensions
-(shapes-extend "themes")
+(shapes-extend "theme-switch")
 
 ;; scheduling
 (shapes-module "circadian")
@@ -346,22 +346,45 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 #+end_src
 
 ** Mode line
+*** Doom
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-mode-line.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-modeline-doom.el
 :END:
 
 #+begin_src emacs-lisp
 
-(defcustom modeline 'doom-modeline-mode
-  "Mode line")
-
-;; mode lines
-(shapes-module "nano-modeline")
+;; modules
 (shapes-module "doom-modeline")
-(shapes-module "spaceline")
 
-;; mode line initialization hook
-(add-hook 'after-init-hook modeline)
+;; extensions
+(shapes-extend "theme-modeline")
+
+#+end_src
+
+*** Nano
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-modeline-nano.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; modules
+(shapes-module "nano-modeline")
+
+;; extensions
+(shapes-extend "theme-modeline")
+
+#+end_src
+
+*** Spaceline
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-modeline-spaceline.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; modules
+(shapes-module "spaceline")
 
 #+end_src
 
@@ -462,19 +485,10 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+end_src
 
-** TODO Navigation
+** Navigation
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-navigation.el
 :END:
-
-- pixel-scroll-precision-mode
-   - sudden jumps
-
-- scrolling without moving mark
-
-- sources
-   - https://www.reddit.com/r/emacs/comments/6osik2/random_scroll_jumps_in_emacs/
-   - https://www.emacswiki.org/emacs/SmoothScrolling
 
 #+begin_src emacs-lisp
 
@@ -1717,6 +1731,9 @@ the local machine:
 ;; nano-modeline
 (straight-use-package 'nano-modeline)
 
+;; mode line initialization hook
+(add-hook 'after-init-hook #'nano-modeline-mode)
+
 #+end_src
 
 *** Doom
@@ -1732,6 +1749,9 @@ the local machine:
 ;; bar
 (setq-default doom-modeline-bar-width 0.01)
 
+;; mode line initialization hook
+(add-hook 'after-init-hook #'doom-modeline-mode)
+
 #+end_src
 
 *** Spaceline
@@ -1741,8 +1761,12 @@ the local machine:
 
 #+begin_src emacs-lisp
 
+;; spaceline
 (straight-use-package 'spaceline)
 (require 'spaceline-config)
+
+;; mode line initialization hook
+(add-hook 'after-init-hook #'spaceline-emacs-theme)
 
 #+end_src
 
@@ -3924,15 +3948,15 @@ key binding input with C-g."
 #+end_src
 
 ** Themes
+*** Switch
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-themes.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-theme-switch.el
 :END:
 
 #+begin_src emacs-lisp
 ;;; -*- lexical-binding: t; -*-
 #+end_src
 
-*** Switch
 **** Load
 
 #+begin_src emacs-lisp
@@ -3960,26 +3984,6 @@ key binding input with C-g."
 
 #+end_src
 
-***** Org Mode
-
-#+begin_src emacs-lisp
-
-;; reload Org Mode
-(defun custom/org-theme-reload ()
-  (if (string-equal major-mode "org-mode")
-      (org-mode)
-    (progn
-      (setq window (get-buffer-window (current-buffer)))
-      (cl-loop for buffer in (custom/get-visible-buffers)
-	             do (select-window (get-buffer-window buffer))
-	 	     if (string-equal major-mode "org-mode")
-		        do (org-mode))
-      (select-window window))))
-
-(add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
-
-#+end_src
-
 **** Toggle
 
 #+begin_src emacs-lisp
@@ -3997,69 +4001,19 @@ using `enable-theme'"
 (global-set-key (kbd "C-t") #'custom/theme-toggle)
 
 #+end_src
-
-*** Customization
-**** Mode line
+**** Light and dark
 
 #+begin_src emacs-lisp
 
-;; color
-(defun custom/modeline-color (bg bg-in face face-in)
-  "Set the color of the mode and header lines and blend the 
-`doom-modeline-bar' with the background."
-  (set-face-attribute 'mode-line            nil :foreground face    :background bg    :box nil)
-  (set-face-attribute 'mode-line-inactive   nil :foreground face-in :background bg-in :box nil)
-  ;; header line
-  (set-face-attribute 'header-line          nil :foreground face-in :background bg-in :box nil))
+(defcustom custom/light-dark-themes '("modus"
+                                      "nano")
+  "Themes with light and dark versions.")
 
-(defun custom/dark-modeline ()
-  "Mode line for dark themes."
-  (custom/modeline-color "#3d3d3d" "#000000" "#cfcfcf" "#cfcfcf"))
+(defcustom custom/theme-advice-dark '()
+  "List of functions run when loading the `dark' theme, if it is included in `custom/light-dark-themes'.")
 
-(defun custom/light-modeline ()
-  "Mode line for light themes."
-  (custom/modeline-color "#fff0ff" "#ededed" "#616161" "#878787"))
-
-#+end_src
-
-**** Line numbers
-
-#+begin_src emacs-lisp
-
-(defun custom/dark-line-numbers ()
-  "Line numbers for light themes."
-  (set-face-attribute 'line-number nil :foreground "#cfcfcf" :background "#262626"))
-
-(defun custom/light-line-numbers ()
-  "Line numbers for dark themes."
-  (set-face-attribute 'line-number nil :foreground "#878787" :background "#ededed"))
-
-#+end_src
-
-**** Theme-specific advice
-***** Light
-
-#+begin_src emacs-lisp
-
-(defun custom/light-advice ()
-  (custom/light-modeline)
-  (custom/light-line-numbers))
-
-#+end_src
-
-***** Dark
-
-#+begin_src emacs-lisp
-
-(defun custom/dark-advice ()
-  (custom/dark-modeline)
-  (custom/dark-line-numbers))
-
-#+end_src
-
-***** Add
-
-#+begin_src emacs-lisp
+(defcustom custom/theme-advice-light '()
+  "List of functions run when loading the `light' theme, if it is included in `custom/light-dark-themes'.")
 
 (defun custom/theme-specific-advice (orig-fun &rest args)
   "Apply theme-specific advice when enabling themes, and
@@ -4067,14 +4021,87 @@ preserve modeline status through theme changes."
   (setq modeline-status mode-line-format)
   (apply orig-fun args)
   (let ((theme (nth 0 args)))
-    (if (string-match-p "modus\\|nano" (symbol-name theme))
-	   (cond ((string-equal theme light) (custom/light-advice))
- 		 ((string-equal theme dark)  (custom/dark-advice)))))
-  (setq mode-line-format modeline-status))
+    (if (string-match-p (string-join custom/light-dark-themes "\\|") (symbol-name theme))
+        (let ((advice-list (if (string-equal theme light)
+                               custom/theme-advice-light
+                             custom/theme-advice-dark)))
+          (dolist (advice advice-list)
+            (funcall advice))))
+  (setq mode-line-format modeline-status)))
 
 ;; add
 (advice-add 'enable-theme :around #'custom/theme-specific-advice)
 (advice-add 'load-theme   :around #'custom/theme-specific-advice)
+
+#+end_src
+
+***** Line numbers
+
+#+begin_src emacs-lisp
+
+(defvar custom/dark-line-number-colors '("#cfcfcf" "#262626")
+  "Line number HTML colors for dark themes: FOREGROUND, BACKGROUND")
+
+(defvar custom/light-line-number-colors '("#878787" "#ededed")
+  "Line number HTML colors for light themes: FOREGROUND, BACKGROUND")
+
+(defun custom/line-number-set-colors (fg bg)
+  "Set the foreground (FG) and background (BG) colors of the line numbers
+displayed by `display-line-numbers-mode'."
+  (set-face-attribute 'line-number nil :foreground fg :background bg))
+
+(defun custom/set-dark-line-number-colors ()
+  (apply 'custom/line-number-set-colors custom/dark-line-number-colors))
+
+(defun custom/set-light-line-number-colors ()
+  (apply 'custom/line-number-set-colors custom/dark-line-number-colors))
+
+(add-to-list 'custom/theme-advice-dark  #'custom/set-dark-line-number-colors)
+(add-to-list 'custom/theme-advice-light #'custom/set-light-line-number-colors)
+
+;; reload active theme
+(let ((active-theme (car custom-enabled-themes)))
+  (if active-theme (enable-theme active-theme)))
+
+#+end_src
+
+*** Mode line
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-theme-modeline.el
+:END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
+#+begin_src emacs-lisp
+
+(defun custom/modeline-set-colors (fg fg-in bg bg-in)
+  "Set the color of the mode and header lines and blend the 
+`doom-modeline-bar' with the background."
+  (set-face-attribute 'mode-line            nil :foreground fg    :background bg    :box nil)
+  (set-face-attribute 'mode-line-inactive   nil :foreground fg-in :background bg-in :box nil)
+  ;; header line
+  (set-face-attribute 'header-line          nil :foreground fg-in :background bg-in :box nil))
+
+(defvar custom/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#3d3d3d" "#000000")
+  "Dark modeline HTML colors: FOREGROUND, FOREGROUND-INACTIVE, BACKGROUND, BACKGROUND-INACTIVE")
+
+(defvar custom/light-modeline-colors '("#616161" "#878787" "#fff0ff" "#ededed")
+  "Light modeline HTML colors: FOREGROUND, FOREGROUND-INACTIVE, BACKGROUND, BACKGROUND-INACTIVE")
+
+(defun custom/set-dark-modeline-colors ()
+  (apply 'custom/modeline-set-colors custom/dark-modeline-colors))
+
+(defun custom/set-light-modeline-colors ()
+  (apply 'custom/modeline-set-colors custom/light-modeline-colors))
+
+(add-to-list 'custom/theme-advice-dark  #'custom/set-dark-modeline-colors)
+(add-to-list 'custom/theme-advice-light #'custom/set-light-modeline-colors)
+
+;; reload active theme
+(let ((active-theme (car custom-enabled-themes)))
+  (if active-theme (enable-theme active-theme)))
 
 #+end_src
 
@@ -5314,7 +5341,7 @@ the previous heading is folded:
 #+begin_src emacs-lisp
 
 (defvar custom/org-functions-at-ellipsis '(org-self-insert-command
-					        custom/kill-ring-mouse)
+					   custom/kill-ring-mouse)
   "Functions whose behavior at Org Mode ellipses
 will be advised by `custom/org-edit-at-ellipsis'")
 
@@ -5323,10 +5350,10 @@ will be advised by `custom/org-edit-at-ellipsis'")
 ellipsis in the first line under the heading."
   (if (custom/org-at-ellipsis-h)
       (progn (beginning-of-visual-line)
-	          (custom/org-show-minimum)
-		  (end-of-line)
-		  (org-return)
-		  (apply orig-fun args))
+	     (custom/org-show-minimum)
+	     (end-of-line)
+	     (org-return)
+	     (apply orig-fun args))
     (apply orig-fun args)))
 
 (dolist (function custom/org-functions-at-ellipsis)
@@ -5647,6 +5674,26 @@ function that sets `deactivate-mark' to t."
 
 #+begin_src emacs-lisp
 ;;; -*- lexical-binding: t; -*-
+#+end_src
+
+**** Theme
+
+#+begin_src emacs-lisp
+
+;; reload Org Mode
+(defun custom/org-theme-reload ()
+  (if (string-equal major-mode "org-mode")
+      (org-mode)
+    (progn
+      (setq window (get-buffer-window (current-buffer)))
+      (cl-loop for buffer in (custom/get-visible-buffers)
+	             do (select-window (get-buffer-window buffer))
+	 	     if (string-equal major-mode "org-mode")
+		        do (org-mode))
+      (select-window window))))
+
+(add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
+
 #+end_src
 
 **** Variable pitch

@@ -1,5 +1,19 @@
 ;;; -*- lexical-binding: t; -*-
 
+;; reload Org Mode
+(defun custom/org-theme-reload ()
+  (if (string-equal major-mode "org-mode")
+      (org-mode)
+    (progn
+      (setq window (get-buffer-window (current-buffer)))
+      (cl-loop for buffer in (custom/get-visible-buffers)
+	             do (select-window (get-buffer-window buffer))
+	 	     if (string-equal major-mode "org-mode")
+		        do (org-mode))
+      (select-window window))))
+
+(add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
+
 (defface custom/variable-pitch-marker
   '((nil :inherit fixed-pitch))
   "List marker typeface.")

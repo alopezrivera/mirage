@@ -161,7 +161,7 @@ the previous heading is folded:
 	         (org-do-demote))))
 
 (defvar custom/org-functions-at-ellipsis '(org-self-insert-command
-					        custom/kill-ring-mouse)
+					   custom/kill-ring-mouse)
   "Functions whose behavior at Org Mode ellipses
 will be advised by `custom/org-edit-at-ellipsis'")
 
@@ -170,10 +170,10 @@ will be advised by `custom/org-edit-at-ellipsis'")
 ellipsis in the first line under the heading."
   (if (custom/org-at-ellipsis-h)
       (progn (beginning-of-visual-line)
-	          (custom/org-show-minimum)
-		  (end-of-line)
-		  (org-return)
-		  (apply orig-fun args))
+	     (custom/org-show-minimum)
+	     (end-of-line)
+	     (org-return)
+	     (apply orig-fun args))
     (apply orig-fun args)))
 
 (dolist (function custom/org-functions-at-ellipsis)
