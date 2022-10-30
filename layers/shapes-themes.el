@@ -3,11 +3,13 @@
 (defcustom dark  'modus-vivendi
   "Dark theme")
 
-;; themes
+;; theme bundles
 (shapes-module "ef-themes")
 (shapes-module "nano-theme")
 (shapes-module "doom-themes")
 (shapes-module "modus-themes")
+(shapes-module "solarized-theme")
+;; standalone themes
 (shapes-module "sweet-theme")
 (shapes-module "graphite-theme")
 (shapes-module "chocolate-theme")

@@ -328,11 +328,13 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (defcustom dark  'modus-vivendi
   "Dark theme")
 
-;; themes
+;; theme bundles
 (shapes-module "ef-themes")
 (shapes-module "nano-theme")
 (shapes-module "doom-themes")
 (shapes-module "modus-themes")
+(shapes-module "solarized-theme")
+;; standalone themes
 (shapes-module "sweet-theme")
 (shapes-module "graphite-theme")
 (shapes-module "chocolate-theme")
@@ -1647,6 +1649,18 @@ the local machine:
 
 (straight-use-package 'modus-themes)
 (modus-themes-load-themes)
+
+#+end_src
+
+**** Solarized
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-solarized-theme.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'solarized-theme)
+(require 'solarized-theme)
 
 #+end_src
 
