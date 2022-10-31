@@ -80,6 +80,7 @@
         dired-do-flagged-delete
         elpy-shell-send-region-or-buffer
         end-of-buffer
+        find-file
         list-buffers
         magit-status
         mouse-drag-mode-line
