@@ -764,6 +764,18 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-org-agenda.el
 :END:
+**** Files
+
+#+begin_src emacs-lisp
+
+(let ((files org-agenda-files))
+  (dolist (file files)
+    (if (not (file-exists-p file))
+        (progn (setq org-agenda-files (remove file files))
+               (print (concat "Error: ignoring nonexistent agenda file: " file))))))
+
+#+end_src
+
 **** Tags
 
 #+begin_src emacs-lisp

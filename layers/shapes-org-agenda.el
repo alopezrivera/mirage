@@ -1,3 +1,9 @@
+(let ((files org-agenda-files))
+  (dolist (file files)
+    (if (not (file-exists-p file))
+        (progn (setq org-agenda-files (remove file files))
+               (print (concat "Error: ignoring nonexistent agenda file: " file))))))
+
 (setq org-tag-alist
       '((:startgroup)
 	;; Put mutually exclusive tags here
