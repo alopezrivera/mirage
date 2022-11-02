@@ -6,5 +6,9 @@
 (moody-replace-vc-mode)
 (moody-replace-eldoc-minibuffer-message-function)
 
+;; reload active theme
+(let ((active-theme (car custom-enabled-themes)))
+  (if active-theme (enable-theme active-theme)))
+
 (provide 'shapes-module-moody)
 ;;; shapes-moody.el ends here
