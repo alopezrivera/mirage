@@ -150,9 +150,9 @@ resume your writing where you left off")
 if it is too narrow to split, and resize it."
   (if (> (window-total-width) (* bitacora-morph-window-width-factor (bitacora-window-width)))
       (progn (split-window-horizontally)
-	         (windmove-right)))
-  (if (not (ignore-errors (bitacora-resize-window)))
-      (delete-other-windows)))
+	     (windmove-right)
+             (if (not (ignore-errors (bitacora-resize-window)))
+                 (delete-other-windows)))))
 
 (defun bitacora-resize-window ()
   (interactive)
@@ -293,10 +293,10 @@ switch to that window; otherwise, switch to that buffer.
 			    (get-buffer-window entry-buffer)
 		          nil))
   (cond (noselect                      (find-file-noselect entry))
-	   (entry-window                  (select-window entry-window))
-	   ((and entry-buffer new-window) (progn (bitacora-new-window) (switch-to-buffer entry-buffer)))
-	   (new-window                    (progn (bitacora-new-window) (find-file        entry)))
-	   (t                             (find-file entry))))
+	(entry-window                  (select-window entry-window))
+	((and entry-buffer new-window) (progn (bitacora-new-window) (switch-to-buffer entry-buffer)))
+	(new-window                    (progn (bitacora-new-window) (find-file        entry)))
+	(t                             (find-file entry))))
 
 (defun bitacora-visit (time &optional arg dir)
   "Open the Bitácora entry corresponding to the specified time, and initialize it if necessary.
