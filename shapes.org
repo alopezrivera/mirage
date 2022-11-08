@@ -495,6 +495,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ;; extensions
 (shapes-extend "session")
+(shapes-extend "external-programs")
 
 #+end_src 
 
@@ -596,9 +597,6 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "rainbow-delimiters")
 ;; python
 (shapes-module "elpy")
-
-;; extensions
-(shapes-extend "ide")
 
 #+end_src
 
@@ -4529,6 +4527,60 @@ not empty. In any case, advance to next line."
 
 #+end_src
 
+*** External programs
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-external-programs.el
+:END:
+**** Keymap
+#+begin_src emacs-lisp
+
+(defcustom custom/external-application-map (make-keymap)
+  "External application keymap")
+
+(defcustom custom/external-application-bindings '()
+  "List of external application key-binding pairs")
+
+(defun custom/bind-external-application (binding)
+  (add-to-list 'custom/external-application-bindings binding))
+
+(global-set-key (kbd "C-c C-o") custom/external-application-map)
+
+#+end_src
+
+**** Codium
+
+#+begin_src emacs-lisp
+
+(defun open-in-codium ()
+  (interactive)
+  (let ((root (projectile-root-bottom-up (file-name-directory buffer-file-name))))
+    (call-process-shell-command (concat "codium " root "&") nil 0)))
+
+(custom/bind-external-application '("c" . open-in-codium))
+
+#+end_src
+
+**** Firefox
+
+#+begin_src emacs-lisp
+
+(defun open-in-firefox ()
+  (interactive)
+  (call-process-shell-command (concat "firefox-trunk " (buffer-file-name)) nil 0))
+
+(custom/bind-external-application '("f" . open-in-firefox))
+
+#+end_src
+
+**** Binding definition
+
+#+begin_src emacs-lisp
+
+(dolist (binding custom/external-application-bindings)
+  (define-key custom/external-application-map (kbd (car binding)) (cdr binding)))
+
+#+end_src
+
 
 ** Navigation
 :PROPERTIES:
@@ -4767,23 +4819,6 @@ the user for confirmation."
 
 #+end_src
 
-
-** IDE
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-ide.el
-:END:
-
-*** Codium
-#+begin_src emacs-lisp
-
-(defun custom/codium ()
-  (interactive)
-  (let ((root (projectile-root-bottom-up (file-name-directory buffer-file-name))))
-    (call-process-shell-command (concat "codium " root "&") nil 0)))
-
-(define-key projectile-command-map (kbd "o") #'custom/codium)
-
-#+end_src
 
 ** PDF
 :PROPERTIES:

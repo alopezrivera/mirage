@@ -6,6 +6,7 @@
 
 ;; extensions
 (shapes-extend "session")
+(shapes-extend "external-programs")
 
 (provide 'shapes-layer-session)
 ;;; shapes-session.el ends here
