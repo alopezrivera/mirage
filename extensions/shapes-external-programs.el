@@ -18,7 +18,7 @@
 
 (defun open-in-firefox ()
   (interactive)
-  (call-process-shell-command (concat "firefox-trunk " (buffer-file-name)) nil 0))
+  (call-process-shell-command (concat "firefox-trunk \"" (buffer-file-name) "\"") nil 0))
 
 (custom/bind-external-application '("f" . open-in-firefox))
 
