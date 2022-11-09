@@ -90,6 +90,7 @@
         mouse-set-region
         mouse-start-rectangle
         next-buffer
+        org-babel-execute-subtree
         org-babel-tangle
         org-metadown
         org-open-at-mouse

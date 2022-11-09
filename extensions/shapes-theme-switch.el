@@ -70,7 +70,7 @@ displayed by `display-line-numbers-mode'."
   (apply 'custom/line-number-set-colors custom/dark-line-number-colors))
 
 (defun custom/set-light-line-number-colors ()
-  (apply 'custom/line-number-set-colors custom/dark-line-number-colors))
+  (apply 'custom/line-number-set-colors custom/light-line-number-colors))
 
 (add-to-list 'custom/theme-advice-dark  #'custom/set-dark-line-number-colors)
 (add-to-list 'custom/theme-advice-light #'custom/set-light-line-number-colors)
