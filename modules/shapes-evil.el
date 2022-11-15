@@ -5,6 +5,12 @@
 ;; bindings
 (global-set-key (kbd "C-<escape>") #'evil-mode)
 
+;; eliminate blinking cursor in pdf-pdf-view
+(add-hook 'pdf-view-mode-hook (lambda ()
+                                (set (make-local-variable 
+                                      'evil-emacs-state-cursor)
+                                     (list nil))))
+
 ;; evil god state
 (straight-use-package 'evil-god-state)
 (require 'evil-god-state)

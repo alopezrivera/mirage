@@ -1478,6 +1478,18 @@ the local machine:
 
 #+end_src
 
+***** bugs
+
+#+begin_src emacs-lisp
+
+;; eliminate blinking cursor in pdf-pdf-view
+(add-hook 'pdf-view-mode-hook (lambda ()
+                                (set (make-local-variable 
+                                      'evil-emacs-state-cursor)
+                                     (list nil))))
+
+#+end_src
+
 ***** states
 ****** evil-god
 
@@ -4072,6 +4084,7 @@ key binding input with C-g."
 (global-set-key (kbd "M-t") #'custom/mode-line-invert)
 
 #+end_src
+
 
 ** Themes
 *** Switch
