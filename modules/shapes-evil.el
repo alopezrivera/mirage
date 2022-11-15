@@ -2,7 +2,8 @@
 (straight-use-package 'evil)
 (require 'evil)
 
-(evil-mode 1)
+;; bindings
+(global-set-key (kbd "C-<escape>") #'evil-mode)
 
 ;; evil god state
 (straight-use-package 'evil-god-state)
@@ -24,7 +25,16 @@
 (setq evil-default-cursor (quote (t "#750000"))
       evil-visual-state-cursor '("green" hollow)
       evil-normal-state-cursor '("green" box)
-      evil-insert-state-cursor '("pink" (bar . 2))
+      evil-insert-state-cursor '("pink" (bar . 2)))
+
+(straight-use-package 'evil-org)
+
+(require 'evil-org)
+(add-hook 'org-mode-hook (lambda () (if evil-mode (evil-org-mode))))
+(evil-org-set-key-theme '(navigation insert textobjects additional calendar))
+
+(require 'evil-org-agenda)
+(evil-org-agenda-set-keys)
 
 (provide 'shapes-module-evil)
 ;;; shapes-evil.el ends here

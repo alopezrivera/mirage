@@ -4,6 +4,7 @@
 (put 'narrow-to-region 'disabled nil)
 
 ;; modules
+(shapes-module "evil")
 (shapes-module "god-mode")
 
 (provide 'shapes-layer-input)
