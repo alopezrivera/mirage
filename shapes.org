@@ -1503,7 +1503,7 @@ the local machine:
 (setq evil-default-cursor (quote (t "#750000"))
       evil-visual-state-cursor '("green" hollow)
       evil-normal-state-cursor '("green" box)
-      evil-insert-state-cursor '("pink" (bar . 2))
+      evil-insert-state-cursor '("pink" (bar . 2)))
 
 #+end_src
 
