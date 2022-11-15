@@ -309,6 +309,7 @@ Content of a layer:
 (put 'narrow-to-region 'disabled nil)
 
 ;; modules
+(shapes-module "evil")
 (shapes-module "god-mode")
 
 #+end_src
@@ -1472,7 +1473,8 @@ the local machine:
 (straight-use-package 'evil)
 (require 'evil)
 
-(evil-mode 1)
+;; bindings
+(global-set-key (kbd "C-<escape>") #'evil-mode)
 
 #+end_src
 
