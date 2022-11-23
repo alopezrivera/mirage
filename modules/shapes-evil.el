@@ -36,11 +36,14 @@
 (straight-use-package 'evil-org)
 
 (require 'evil-org)
-(add-hook 'org-mode-hook (lambda () (if evil-mode (evil-org-mode))))
-(evil-org-set-key-theme '(navigation insert textobjects additional calendar))
+(evil-org-set-key-theme  '(navigation insert textobjects additional calendar))
 
 (require 'evil-org-agenda)
 (evil-org-agenda-set-keys)
+
+;; hooks
+(add-hook 'org-mode-hook  (lambda () (if evil-mode (evil-org-mode))))
+(add-hook 'evil-mode-hook (lambda () (if (string-equal major-mode "org-mode") (evil-org-mode))))
 
 (provide 'shapes-module-evil)
 ;;; shapes-evil.el ends here
