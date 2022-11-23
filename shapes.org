@@ -3427,6 +3427,34 @@ if it was previously enabled."
    (latex      . t)))
 
 #+end_src
+
+******* Bash
+
+#+begin_src emacs-lisp
+
+(defun org-babel-bash-initiate-session (&optional session _params)
+  "Initiate a bash/sh session named SESSION according to PARAMS."
+  (org-babel-sh-initiate-session session _params))
+
+#+end_src
+
+******* Python
+
+#+begin_src emacs-lisp
+
+(setq org-babel-python-command "python3")
+
+#+end_src
+
+****** Execution
+
+#+begin_src emacs-lisp
+
+;; suppress security confirmation when evaluating code
+(setq org-confirm-babel-evaluate nil)
+
+#+end_src
+
 ****** Typesetting
 ******* Bleeding
 
@@ -3489,44 +3517,19 @@ folded."
 
 #+end_src
 
-****** Languages
+****** Default header arguments
 
 #+begin_src emacs-lisp
 
-;; Language packages
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python     . t)
-   (shell      . t)
-   (latex      . t)))
-
-#+end_src
-
-******* Bash
-
-#+begin_src emacs-lisp
-
-(defun org-babel-bash-initiate-session (&optional session _params)
-  "Initiate a bash/sh session named SESSION according to PARAMS."
-  (org-babel-sh-initiate-session session _params))
-
-#+end_src
-
-******* Python
-
-#+begin_src emacs-lisp
-
-(setq org-babel-python-command "python3")
-
-#+end_src
-
-****** Execution
-
-#+begin_src emacs-lisp
-
-;; suppress security confirmation when evaluating code
-(setq org-confirm-babel-evaluate nil)
+(setq org-babel-default-header-args
+      '((:noweb   . "yes")
+        (:async   . "yes")
+        (:session . "none")
+        (:results . "replace")
+        (:exports . "code")
+        (:cache   . "no")
+        (:hlines  . "no")
+        (:tangle  . "no")))
 
 #+end_src
 
