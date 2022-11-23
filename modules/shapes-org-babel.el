@@ -1,3 +1,21 @@
+;; Language packages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)
+   (C          . t)
+   (shell      . t)
+   (latex      . t)))
+
+(defun org-babel-bash-initiate-session (&optional session _params)
+  "Initiate a bash/sh session named SESSION according to PARAMS."
+  (org-babel-sh-initiate-session session _params))
+
+(setq org-babel-python-command "python3")
+
+;; suppress security confirmation when evaluating code
+(setq org-confirm-babel-evaluate nil)
+
 (defun custom/org-fix-bleed-end-line-block (from to flag spec)
   "Toggle fontification of last char of block end lines when cycling.
 

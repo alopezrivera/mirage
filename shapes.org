@@ -3079,9 +3079,10 @@ beginning lies on an Org Mode heading,
 			 language))
 
 (dolist (pair '(("<sh"   "shell")
-		      ("<el"   "emacs-lisp")
-		      ("<py"   "python")
-		      ("<bash" "bash")
+		("<el"   "emacs-lisp")
+		("<py"   "python")
+                ("<cpp"  "C++")
+		("<bash" "bash")
                 ("<tx"   "latex")))
   (apply 'custom/tempo-code-block pair))
 
@@ -3412,6 +3413,20 @@ if it was previously enabled."
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-babel.el
 :END:
+****** Languages
+
+#+begin_src emacs-lisp
+
+;; Language packages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python     . t)
+   (C          . t)
+   (shell      . t)
+   (latex      . t)))
+
+#+end_src
 ****** Typesetting
 ******* Bleeding
 
