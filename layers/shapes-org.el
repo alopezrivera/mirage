@@ -34,6 +34,7 @@
 (shapes-extend "org-display")
 (shapes-extend "org-outline")
 (shapes-extend "org-navigation")
+(shapes-extend "org-applications")
 
 (provide 'shapes-layer-org)
 ;;; shapes-org.el ends here
