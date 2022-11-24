@@ -94,6 +94,7 @@
         org-babel-tangle
         org-metadown
         org-open-at-mouse
+        org-shifttab
         pixel-scroll-interpolate-up
         pixel-scroll-precision
         pixel-scroll-start-momentum
