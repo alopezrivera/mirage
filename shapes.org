@@ -295,25 +295,6 @@ Content of a layer:
 
 #+end_src
 
-
-** Input
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-input.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; confirmation
-(advice-add 'yes-or-no-p :override #'y-or-n-p)
-;; advanced commands
-(put 'narrow-to-region 'disabled nil)
-
-;; modules
-(shapes-module "evil")
-(shapes-module "god-mode")
-
-#+end_src
-
 ** Themes
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-themes.el
@@ -417,41 +398,21 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 #+end_src
 
 
-** Editing
+** Input
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-editing.el
+:header-args:emacs-lisp+: :tangle ./layers/shapes-input.el
 :END:
 
 #+begin_src emacs-lisp
 
-;; settings
-(setq-default indent-tabs-mode nil)
-
-;; built-ins
-(global-so-long-mode 1)
-
-;; modules
-(shapes-module "vundo")
-(shapes-module "multiple-cursors")
-
-;; extensions
-(shapes-extend "editing")
-
-#+end_src
-
-** Search
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-search.el
-:END:
-
-#+begin_src emacs-lisp
+;; confirmation
+(advice-add 'yes-or-no-p :override #'y-or-n-p)
+;; advanced commands
+(put 'narrow-to-region 'disabled nil)
 
 ;; modules
-(shapes-module "swiper")
-(shapes-module "rg")
-
-;; extensions
-(shapes-extend "search")
+(shapes-module "evil")
+(shapes-module "god-mode")
 
 #+end_src
 
@@ -478,6 +439,70 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "orderless")
 
 (shapes-module "all-the-icons-completion")
+
+#+end_src
+** Navigation
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-navigation.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; scrolling
+(pixel-scroll-precision-mode)
+(setq auto-window-vscroll nil)
+(setq mouse-wheel-progressive-speed nil)
+
+;; windows
+(winner-mode)
+
+;; modules
+(shapes-module "ace-window")
+
+;; extensions
+(shapes-extend "navigation")
+
+;; bindings
+(global-set-key (kbd "C-S-n") #'make-frame-command)
+
+#+end_src
+
+
+** Search
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-search.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; modules
+(shapes-module "swiper")
+(shapes-module "rg")
+
+;; extensions
+(shapes-extend "search")
+
+#+end_src
+
+** Editing
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/shapes-editing.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; settings
+(setq-default indent-tabs-mode nil)
+
+;; built-ins
+(global-so-long-mode 1)
+
+;; modules
+(shapes-module "vundo")
+(shapes-module "multiple-cursors")
+
+;; extensions
+(shapes-extend "editing")
 
 #+end_src
 
@@ -511,32 +536,6 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; modules
 (shapes-module "projectile")
 (shapes-module "treemacs")
-
-#+end_src
-
-** Navigation
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-navigation.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; scrolling
-(pixel-scroll-precision-mode)
-(setq auto-window-vscroll nil)
-(setq mouse-wheel-progressive-speed nil)
-
-;; windows
-(winner-mode)
-
-;; modules
-(shapes-module "ace-window")
-
-;; extensions
-(shapes-extend "navigation")
-
-;; bindings
-(global-set-key (kbd "C-S-n") #'make-frame-command)
 
 #+end_src
 
@@ -1461,221 +1460,6 @@ the local machine:
 
 #+end_src
 
-
-** Input
-*** Editing
-**** evil
-:PROPERTIES:
-:header-args: emacs-lisp :tangle ./modules/shapes-evil.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; evil
-(straight-use-package 'evil)
-(require 'evil)
-
-;; bindings
-(global-set-key (kbd "C-<escape>") #'evil-mode)
-
-#+end_src
-
-***** bugs
-
-#+begin_src emacs-lisp
-
-;; eliminate blinking cursor in pdf-pdf-view
-(add-hook 'pdf-view-mode-hook (lambda ()
-                                (set (make-local-variable 
-                                      'evil-emacs-state-cursor)
-                                     (list nil))))
-
-#+end_src
-
-***** states
-****** evil-god
-
-#+begin_src emacs-lisp
-
-;; evil god state
-(straight-use-package 'evil-god-state)
-(require 'evil-god-state)
-
-(evil-define-key 'normal global-map (kbd ",") #'evil-execute-in-god-state)
-
-(evil-define-key 'god    global-map (kbd "<escape>") #'evil-god-state-bail)
-
-;; mode indicators
-(setq evil-normal-state-tag   (propertize " COMMAND " 'face '((:background "dark khaki"     :foreground "black")))
-      evil-emacs-state-tag    (propertize "  EMACS  " 'face '((:background "turquoise"      :foreground "black")))
-      evil-insert-state-tag   (propertize " ------- " 'face '((:background "dark sea green" :foreground "black")))
-      evil-replace-state-tag  (propertize " REPLACE " 'face '((:background "dark orange"    :foreground "black")))
-      evil-motion-state-tag   (propertize "  MOTION " 'face '((:background "khaki"          :foreground "black")))
-      evil-visual-state-tag   (propertize "  VISUAL " 'face '((:background "light salmon"   :foreground "black")))
-      evil-operator-state-tag (propertize " OPERATE " 'face '((:background "sandy brown"    :foreground "black"))))
-
-(setq evil-default-cursor (quote (t "#750000"))
-      evil-visual-state-cursor '("green" hollow)
-      evil-normal-state-cursor '("green" box)
-      evil-insert-state-cursor '("pink" (bar . 2)))
-
-#+end_src
-
-****** evil-org
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'evil-org)
-
-(require 'evil-org)
-(evil-org-set-key-theme  '(navigation insert textobjects additional calendar))
-
-(require 'evil-org-agenda)
-(evil-org-agenda-set-keys)
-
-;; hooks
-(add-hook 'org-mode-hook  (lambda () (if evil-mode (evil-org-mode))))
-(add-hook 'evil-mode-hook (lambda () (if (string-equal major-mode "org-mode") (evil-org-mode))))
-
-#+end_src
-
-**** meow
-:PROPERTIES:
-:header-args: emacs-lisp :tangle ./modules/shapes-meow.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'meow)
-(require 'meow)
-
-#+end_src
-
-***** setup
-
-#+begin_src emacs-lisp
-
-(defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-overwrite-define-key
-   '("j" . meow-next)
-   '("k" . meow-prev)
-   '("<escape>" . ignore))
-  (meow-leader-define-key
-   ;; SPC j/k will run the original command in MOTION state.
-   '("j" . "H-j")
-   '("k" . "H-k")
-   ;; Use SPC (0-9) for digit arguments.
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("[" . meow-beginning-of-thing)
-   '("]" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("e" . meow-next-word)
-   '("E" . meow-next-symbol)
-   '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
-   '("j" . meow-next)
-   '("J" . meow-next-expand)
-   '("k" . meow-prev)
-   '("K" . meow-prev-expand)
-   '("l" . meow-right)
-   '("L" . meow-right-expand)
-   '("m" . meow-join)
-   '("n" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-yank)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("s" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
-   '("w" . meow-mark-word)
-   '("W" . meow-mark-symbol)
-   '("x" . meow-line)
-   '("X" . meow-goto-line)
-   '("y" . meow-save)
-   '("Y" . meow-sync-grab)
-   '("z" . meow-pop-selection)
-   '("'" . repeat)
-   '("<escape>" . ignore)))
-
-#+end_src
-
-***** load
-
-#+begin_src emacs-lisp
-
-(meow-setup)
-(meow-global-mode 1)
-
-#+end_src
-
-*** Commands
-**** god-mode
-:PROPERTIES:
-:header-args: emacs-lisp :tangle ./modules/shapes-god-mode.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'god-mode)
-(require 'god-mode)
-
-;; god
-(global-set-key (kbd "<escape>") #'god-mode-all)
-
-;; local
-(define-key god-local-mode-map (kbd "i") #'god-local-mode)
-
-;; bindings
-(define-key god-local-mode-map (kbd ".") #'repeat)
-(define-key god-local-mode-map (kbd "]") #'forward-paragraph)
-(define-key god-local-mode-map (kbd "[") #'backward-paragraph)
-
-#+end_src
-
 ** Themes
 *** Themes
 **** Ef
@@ -1905,192 +1689,283 @@ the local machine:
 #+end_src
 
 
-** Editing
-*** Undo
-**** TODO vundo
+** Input
+*** Editing
+**** evil
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-vundo.el
-:END:
-
-- undo-fu
-- Back
-   - Record character number in current line relative to the end of the line
-   - If impossible to go to previous position, to recorded character number of previous line
-   - Org Mode
-      - restore visibility before undone command
-      - if previous command created heading
-         - undo heading creation and restore visibility
-
-#+begin_src emacs-lisp
-
-;; vundo
-(straight-use-package 'vundo)
-
-(global-set-key (kbd "C-v") #'vundo)
-
-#+end_src
-
-**** undo-tree                                                        :ARCHIVE:
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-undo-tree.el
+:header-args: emacs-lisp :tangle ./modules/shapes-evil.el
 :END:
 
 #+begin_src emacs-lisp
 
-;; undo-tree
-(use-package undo-tree
-  :bind (("M-/" . undo-tree-visualize)
-         :map undo-tree-visualizer-mode-map
-         ("RET" . undo-tree-visualizer-quit)
-         ("ESC" . undo-tree-visualizer-quit))
-  :config
-  (global-undo-tree-mode))
+;; evil
+(straight-use-package 'evil)
+(require 'evil)
+
+;; bindings
+(global-set-key (kbd "C-<escape>") #'evil-mode)
 
 #+end_src
 
-***** Visualize in side buffer
+***** bugs
 
 #+begin_src emacs-lisp
 
-;; visualize in side buffer
-(defun custom/undo-tree-split-side-by-side (orig-fun &rest args)
-  "Split undo-tree side-by-side"
-  (let ((split-height-threshold nil)
-        (split-width-threshold 0))
-    (apply orig-fun args)))
-
-(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
+;; eliminate blinking cursor in pdf-pdf-view
+(add-hook 'pdf-view-mode-hook (lambda ()
+                                (set (make-local-variable 
+                                      'evil-emacs-state-cursor)
+                                     (list nil))))
 
 #+end_src
 
-*** Multiline
-**** multiple-cursors
+***** states
+****** evil-god
+
+#+begin_src emacs-lisp
+
+;; evil god state
+(straight-use-package 'evil-god-state)
+(require 'evil-god-state)
+
+(evil-define-key 'normal global-map (kbd ",") #'evil-execute-in-god-state)
+
+(evil-define-key 'god    global-map (kbd "<escape>") #'evil-god-state-bail)
+
+;; mode indicators
+(setq evil-normal-state-tag   (propertize " COMMAND " 'face '((:background "dark khaki"     :foreground "black")))
+      evil-emacs-state-tag    (propertize "  EMACS  " 'face '((:background "turquoise"      :foreground "black")))
+      evil-insert-state-tag   (propertize " ------- " 'face '((:background "dark sea green" :foreground "black")))
+      evil-replace-state-tag  (propertize " REPLACE " 'face '((:background "dark orange"    :foreground "black")))
+      evil-motion-state-tag   (propertize "  MOTION " 'face '((:background "khaki"          :foreground "black")))
+      evil-visual-state-tag   (propertize "  VISUAL " 'face '((:background "light salmon"   :foreground "black")))
+      evil-operator-state-tag (propertize " OPERATE " 'face '((:background "sandy brown"    :foreground "black"))))
+
+(setq evil-default-cursor (quote (t "#750000"))
+      evil-visual-state-cursor '("green" hollow)
+      evil-normal-state-cursor '("green" box)
+      evil-insert-state-cursor '("pink" (bar . 2)))
+
+#+end_src
+
+****** evil-org
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'evil-org)
+
+(require 'evil-org)
+(evil-org-set-key-theme  '(navigation insert textobjects additional calendar))
+
+(require 'evil-org-agenda)
+(evil-org-agenda-set-keys)
+
+;; hooks
+(add-hook 'org-mode-hook  (lambda () (if evil-mode (evil-org-mode))))
+(add-hook 'evil-mode-hook (lambda () (if (string-equal major-mode "org-mode") (evil-org-mode))))
+
+#+end_src
+
+**** meow
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-multiple-cursors.el
+:header-args: emacs-lisp :tangle ./modules/shapes-meow.el
 :END:
 
 #+begin_src emacs-lisp
 
-;; Multiple cursors
-(straight-use-package 'multiple-cursors)
-(require 'multiple-cursors)
-
-;; mc-lists
-(setq mc/list-file (concat config-directory "persistent/mc-lists.el"))
-
-;; Create cursors
-(global-set-key (kbd "C-.")         #'mc/mark-next-like-this)
-(global-set-key (kbd "C-;")         #'mc/mark-previous-like-this)
-(global-set-key (kbd "C-<mouse-1>") #'mc/add-cursor-on-click)
-(global-unset-key [C-down-mouse-1]) ; necessary
-
-;; Return as usual
-(define-key mc/keymap (kbd "<return>")       #'electric-newline-and-maybe-indent)
-
-;; Exit multiple-cursors-mode
-(define-key mc/keymap (kbd "<escape>")       #'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<mouse-1>")      #'multiple-cursors-mode)
-(define-key mc/keymap (kbd "<down-mouse-1>")   nil) ; necessary
+(straight-use-package 'meow)
+(require 'meow)
 
 #+end_src
-** Search
-*** swiper
+
+***** setup
+
+#+begin_src emacs-lisp
+
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . ignore)))
+
+#+end_src
+
+***** load
+
+#+begin_src emacs-lisp
+
+(meow-setup)
+(meow-global-mode 1)
+
+#+end_src
+
+*** Commands
+**** god-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-swiper.el
+:header-args: emacs-lisp :tangle ./modules/shapes-god-mode.el
 :END:
 
 #+begin_src emacs-lisp
 
-;; Swiper
-(straight-use-package 'swiper)
-(require 'swiper)
+(straight-use-package 'god-mode)
+(require 'god-mode)
+
+;; god
+(global-set-key (kbd "<escape>") #'god-mode-all)
+
+;; local
+(define-key god-local-mode-map (kbd "i") #'god-local-mode)
+
+;; bindings
+(define-key god-local-mode-map (kbd ".") #'repeat)
+(define-key god-local-mode-map (kbd "]") #'forward-paragraph)
+(define-key god-local-mode-map (kbd "[") #'backward-paragraph)
 
 #+end_src
 
-**** mc
-
-#+begin_src emacs-lisp
-
-(defun custom/swiper-multiple-cursors ()
-  (interactive)
-  (swiper-mc)
-  (minibuffer-keyboard-quit))
-
-;; M-RET: multiple-cursors-mode
-(define-key swiper-map (kbd "M-<return>") #'custom/swiper-multiple-cursors)
-
-#+end_src
-
-**** isearch
-
-#+begin_src emacs-lisp
-
-(defun custom/swiper-isearch (orig-fun &rest args)
-  "`swiper-isearch' the selected region. If none are, `swiper-isearch'."
-  (if (region-active-p)
-      (let ((beg (region-beginning))
-	    (end (region-end)))
-	(deactivate-mark)
-	(apply orig-fun (list (buffer-substring-no-properties beg end))))
-    (apply orig-fun args)))
-
-(advice-add 'swiper-isearch :around #'custom/swiper-isearch)
-
-(define-key global-map (kbd "C-s") #'swiper-isearch)
-
-#+end_src
-
-*** ripgrep
+** Guidance
+*** counsel
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-rg.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-counsel.el
 :END:
 
 #+begin_src emacs-lisp
 
-(straight-use-package 'rg)
-(require 'rg)
+(straight-use-package 'counsel)
+(require 'counsel)
+
+(global-set-key (kbd "<menu>") #'counsel-M-x)
 
 #+end_src
-** Templates
-*** yasnippet
+
+*** helpful
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-yasnippet.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-helpful.el
 :END:
 
 #+begin_src emacs-lisp
 
-;; yasnippet
-(straight-use-package 'yasnippet)
+;; replace description key bindings by their helpful equivalents
+(straight-use-package 'helpful)
 
-(yas-global-mode 1)
+(setq counsel-describe-function-function  #'helpful-callable)
+(setq counsel-describe-variable-function  #'helpful-variable)
 
-#+end_src
-
-**** <
-
-#+begin_src emacs-lisp
-
-(defun custom/<-snippet (orig-fun &rest args)
-  "Require < before snippets."
-  (interactive)
-  (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-	(if (not (string-equal line ""))
-	    (if (string-equal (substring line 0 1) "<")
-		(progn (save-excursion (move-beginning-of-line nil)
-				       (right-char 1)
-				       (delete-region (line-beginning-position) (point)))
-		       (apply orig-fun args)))))
-
-(advice-add 'yas-expand :around #'custom/<-snippet)
+(global-set-key [remap describe-function] #'helpful-function)
+(global-set-key [remap describe-command]  #'helpful-command)
+(global-set-key [remap describe-variable] #'helpful-variable)
+(global-set-key [remap describe-key]      #'helpful-key)
 
 #+end_src
 
-**** Snippets
+*** which-key
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-which-key.el
+:END:
 
 #+begin_src emacs-lisp
 
-;; yasnippet-snippets
-(straight-use-package 'yasnippet-snippets)
+;; command suggestions
+(straight-use-package 'which-key)
+(require 'which-key)
+
+(setq which-key-idle-delay 1.0)
+
+(which-key-mode)
+
+#+end_src
+
+*** command-log-mode                                                  :ARCHIVE:
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-command-log-mode.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'command-log-mode)
+(require 'command-log-mode)
+
+(global-command-log-mode)
 
 #+end_src
 
@@ -2192,6 +2067,169 @@ the local machine:
 
 #+end_src
 
+** Navigation
+*** ace-window
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-ace-window.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; ace-window
+(straight-use-package 'ace-window)
+(require 'ace-window)
+
+(global-set-key (kbd "C-x o") #'ace-window)
+
+#+end_src
+
+
+** Search
+*** swiper
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-swiper.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; Swiper
+(straight-use-package 'swiper)
+(require 'swiper)
+
+#+end_src
+
+**** mc
+
+#+begin_src emacs-lisp
+
+(defun custom/swiper-multiple-cursors ()
+  (interactive)
+  (swiper-mc)
+  (minibuffer-keyboard-quit))
+
+;; M-RET: multiple-cursors-mode
+(define-key swiper-map (kbd "M-<return>") #'custom/swiper-multiple-cursors)
+
+#+end_src
+
+**** isearch
+
+#+begin_src emacs-lisp
+
+(defun custom/swiper-isearch (orig-fun &rest args)
+  "`swiper-isearch' the selected region. If none are, `swiper-isearch'."
+  (if (region-active-p)
+      (let ((beg (region-beginning))
+	    (end (region-end)))
+	(deactivate-mark)
+	(apply orig-fun (list (buffer-substring-no-properties beg end))))
+    (apply orig-fun args)))
+
+(advice-add 'swiper-isearch :around #'custom/swiper-isearch)
+
+(define-key global-map (kbd "C-s") #'swiper-isearch)
+
+#+end_src
+
+*** ripgrep
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-rg.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'rg)
+(require 'rg)
+
+#+end_src
+** Editing
+*** Undo
+**** TODO vundo
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-vundo.el
+:END:
+
+- undo-fu
+- Back
+   - Record character number in current line relative to the end of the line
+   - If impossible to go to previous position, to recorded character number of previous line
+   - Org Mode
+      - restore visibility before undone command
+      - if previous command created heading
+         - undo heading creation and restore visibility
+
+#+begin_src emacs-lisp
+
+;; vundo
+(straight-use-package 'vundo)
+
+(global-set-key (kbd "C-v") #'vundo)
+
+#+end_src
+
+**** undo-tree                                                        :ARCHIVE:
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-undo-tree.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; undo-tree
+(use-package undo-tree
+  :bind (("M-/" . undo-tree-visualize)
+         :map undo-tree-visualizer-mode-map
+         ("RET" . undo-tree-visualizer-quit)
+         ("ESC" . undo-tree-visualizer-quit))
+  :config
+  (global-undo-tree-mode))
+
+#+end_src
+
+***** Visualize in side buffer
+
+#+begin_src emacs-lisp
+
+;; visualize in side buffer
+(defun custom/undo-tree-split-side-by-side (orig-fun &rest args)
+  "Split undo-tree side-by-side"
+  (let ((split-height-threshold nil)
+        (split-width-threshold 0))
+    (apply orig-fun args)))
+
+(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
+
+#+end_src
+
+*** Multiline
+**** multiple-cursors
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-multiple-cursors.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; Multiple cursors
+(straight-use-package 'multiple-cursors)
+(require 'multiple-cursors)
+
+;; mc-lists
+(setq mc/list-file (concat config-directory "persistent/mc-lists.el"))
+
+;; Create cursors
+(global-set-key (kbd "C-.")         #'mc/mark-next-like-this)
+(global-set-key (kbd "C-;")         #'mc/mark-previous-like-this)
+(global-set-key (kbd "C-<mouse-1>") #'mc/add-cursor-on-click)
+(global-unset-key [C-down-mouse-1]) ; necessary
+
+;; Return as usual
+(define-key mc/keymap (kbd "<return>")       #'electric-newline-and-maybe-indent)
+
+;; Exit multiple-cursors-mode
+(define-key mc/keymap (kbd "<escape>")       #'multiple-cursors-mode)
+(define-key mc/keymap (kbd "<mouse-1>")      #'multiple-cursors-mode)
+(define-key mc/keymap (kbd "<down-mouse-1>")   nil) ; necessary
+
+#+end_src
 ** Workflow
 *** Export
 **** htmlize
@@ -2378,85 +2416,46 @@ the local machine:
 
 #+end_src
 
-** Guidance
-*** counsel
+** Templates
+*** yasnippet
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-counsel.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-yasnippet.el
 :END:
 
 #+begin_src emacs-lisp
 
-(straight-use-package 'counsel)
-(require 'counsel)
+;; yasnippet
+(straight-use-package 'yasnippet)
 
-(global-set-key (kbd "<menu>") #'counsel-M-x)
+(yas-global-mode 1)
 
 #+end_src
 
-*** helpful
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-helpful.el
-:END:
+**** <
 
 #+begin_src emacs-lisp
 
-;; replace description key bindings by their helpful equivalents
-(straight-use-package 'helpful)
+(defun custom/<-snippet (orig-fun &rest args)
+  "Require < before snippets."
+  (interactive)
+  (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+	(if (not (string-equal line ""))
+	    (if (string-equal (substring line 0 1) "<")
+		(progn (save-excursion (move-beginning-of-line nil)
+				       (right-char 1)
+				       (delete-region (line-beginning-position) (point)))
+		       (apply orig-fun args)))))
 
-(setq counsel-describe-function-function  #'helpful-callable)
-(setq counsel-describe-variable-function  #'helpful-variable)
-
-(global-set-key [remap describe-function] #'helpful-function)
-(global-set-key [remap describe-command]  #'helpful-command)
-(global-set-key [remap describe-variable] #'helpful-variable)
-(global-set-key [remap describe-key]      #'helpful-key)
+(advice-add 'yas-expand :around #'custom/<-snippet)
 
 #+end_src
 
-*** which-key
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-which-key.el
-:END:
+**** Snippets
 
 #+begin_src emacs-lisp
 
-;; command suggestions
-(straight-use-package 'which-key)
-(require 'which-key)
-
-(setq which-key-idle-delay 1.0)
-
-(which-key-mode)
-
-#+end_src
-
-*** command-log-mode                                                  :ARCHIVE:
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-command-log-mode.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'command-log-mode)
-(require 'command-log-mode)
-
-(global-command-log-mode)
-
-#+end_src
-
-** Navigation
-*** ace-window
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-ace-window.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; ace-window
-(straight-use-package 'ace-window)
-(require 'ace-window)
-
-(global-set-key (kbd "C-x o") #'ace-window)
+;; yasnippet-snippets
+(straight-use-package 'yasnippet-snippets)
 
 #+end_src
 
@@ -4113,7 +4112,6 @@ key binding input with C-g."
 (global-set-key (kbd "M-t") #'custom/mode-line-invert)
 
 #+end_src
-
 
 ** Themes
 *** Switch
@@ -6358,7 +6356,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 :header-args:emacs-lisp+: :tangle ./extensions/shapes-org-applications.el
 :END:
 **** org-babel
-***** Result formatting
+***** TODO Result formatting
 
 Modify ~org-babel-insert-result~ such that a list stores all result insertion formats,
 allowing users to easily add custom result insertion formats.
