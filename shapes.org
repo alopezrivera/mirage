@@ -2650,6 +2650,21 @@ sudo apt-get install python3-venv
 
 #+end_src
 
+**** Matlab
+***** matlab-emacs
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-matlab-emacs.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package '(matlab-emacs :type git :host nil :repo "https://git.code.sf.net/p/matlab-emacs/src"))
+(load-library "matlab-load")
+
+(add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
+
+#+end_src
+
 ** PDF
 *** pdf-tools
 :PROPERTIES:
