@@ -1,7 +1,3 @@
-;; Org Mode
-(straight-use-package 'org)
-(require 'org)
-
 (shapes-module "el-patch")
 
 (el-patch-feature org)

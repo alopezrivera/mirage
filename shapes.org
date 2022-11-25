@@ -2723,15 +2723,6 @@ sudo apt-get install python3-venv
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org.el
 :END:
-
-#+begin_src emacs-lisp
-
-;; Org Mode
-(straight-use-package 'org)
-(require 'org)
-
-#+end_src
-
 *** Patches
 
 #+begin_src emacs-lisp
