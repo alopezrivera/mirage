@@ -334,6 +334,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "doom-themes")
 (shapes-module "modus-themes")
 (shapes-module "solarized-theme")
+(shapes-module "catppuccin-themes")
 ;; standalone themes
 (shapes-module "sweet-theme")
 (shapes-module "graphite-theme")
@@ -5294,6 +5295,297 @@ a `custom/region-blank'."
   (save-excursion (org-goto-first-child)))
 
 #+end_src
+
+*** UI
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-display.el
+:END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
+**** Theme
+
+#+begin_src emacs-lisp
+
+;; reload Org Mode
+(defun custom/org-theme-reload ()
+  (if (string-equal major-mode "org-mode")
+      (org-mode)
+    (progn
+      (setq window (get-buffer-window (current-buffer)))
+      (cl-loop for buffer in (custom/get-visible-buffers)
+	             do (select-window (get-buffer-window buffer))
+	 	     if (string-equal major-mode "org-mode")
+		        do (org-mode))
+      (select-window window))))
+
+;; (add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
+
+#+end_src
+
+**** Variable pitch
+
+#+begin_src emacs-lisp
+
+(defface custom/variable-pitch-marker
+  '((nil :inherit fixed-pitch))
+  "List marker typeface.")
+
+(defface custom/variable-pitch-indent
+  '((nil :inherit fixed-pitch :invisible t))
+  "Indent typeface.")
+
+(defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
+					      ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
+					      ("^[[:blank:]]+"                                  0 'custom/variable-pitch-indent))
+  "Variable pitch font-lock keywords.")
+
+(font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
+
+#+end_src
+
+**** TODO Continuous numbering of equations
+
+#+begin_src emacs-lisp
+
+;; continuous numbering of Org Mode equations
+(defun org-renumber-environment (orig-fun &rest args)
+  (let ((results '()) 
+        (counter -1)
+        (numberp))
+
+    (setq results (cl-loop for (begin .  env) in 
+                        (org-element-map (org-element-parse-buffer) 'latex-environment
+                          (lambda (env)
+                            (cons
+                             (org-element-property :begin env)
+                             (org-element-property :value env))))
+                        do
+                        (cond
+                         ((and (string-match "\\\\begin{equation}" env)
+                               (not (string-match "\\\\tag{" env)))
+                          (cl-incf counter)
+                          (cons begin counter))
+                         ((string-match "\\\\begin{align}" env)
+                          (prog2
+                              (cl-incf counter)
+                              (cons begin counter)                          
+                            (with-temp-buffer
+                              (insert env)
+                              (goto-char (point-min))
+                              ;; \\ is used for a new line. Each one leads to a number
+                              (cl-incf counter (count-matches "\\\\$"))
+                              ;; unless there are nonumbers.
+                              (goto-char (point-min))
+                              (cl-decf counter (count-matches "\\nonumber")))))
+                         (t
+                          (cons begin nil)))))
+
+    (when (setq numberp (cdr (assoc (point) results)))
+      (setf (car args)
+            (concat
+             (format "\\setcounter{equation}{%s}\n" numberp)
+             (car args)))))
+  
+  (apply orig-fun args))
+
+(advice-add 'org-create-formula-image :around #'org-renumber-environment)
+
+#+end_src
+
+*** TODO Outline
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-outline.el
+:END:
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
+- deprecated cl warning
+   - find dependency
+
+**** Hide
+***** org-hide-previous-subtree
+
+#+begin_src emacs-lisp
+
+(defun custom/org-hide-previous-subtree ()
+  "Cycle previous Org Mode heading."
+  (save-excursion (custom/org-goto-heading-previous)
+		        (outline-hide-subtree)))
+
+#+end_src
+
+**** Show
+***** org-show
+
+#+begin_src emacs-lisp
+
+(defun custom/org-show (orig-fun &rest args)
+  (if (custom/org-at-ellipsis)
+      (progn (custom/org-goto-heading-bol) (apply orig-fun args))
+    (apply orig-fun args)))
+
+#+end_src
+
+***** org-show-subtree
+
+#+begin_src emacs-lisp
+
+(advice-add 'org-show-subtree :around #'custom/org-show)
+
+#+end_src
+
+***** org-show-children
+
+#+begin_src emacs-lisp
+
+(advice-add 'org-show-children :around #'custom/org-show)
+
+#+end_src
+
+***** org-show-minimum
+
+#+begin_src emacs-lisp
+
+(defun custom/org-show-minimum ()
+  (if (or (custom/org-relative-line-list-folded)
+	        (custom/org-relative-line-heading-folded))
+      (progn (if (custom/org-at-ellipsis)
+		       (progn (beginning-of-visual-line) (end-of-line)))
+	           (org-show-entry)
+	           (if (custom/org-heading-has-children) (org-show-children)))))
+
+#+end_src
+
+**** TODO Cycle
+
+- bug
+   - https://lists.gnu.org/archive/html/emacs-orgmode/2022-05/msg00150.html
+   - https://www.reddit.com/r/emacs/comments/ulpdhu/org_mode_command_doesnt_update_a_buffer_if_i_use/
+
+#+begin_src emacs-lisp
+
+(defun custom/org-cycle (orig-fun &rest args)
+  "Conditional `org-cycle'.
+
+Default: `org-cycle'
+
+If cursor lies at `end-of-visual-line' of folded heading or list,
+move cursor to `end-of-line' of the current visual line and then
+call `org-cycle'.
+
+If cursor lies at a paragraph directly under a list item and not
+indented at the level of the previous list item, indent the paragraph."
+  (interactive)
+  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
+      (if (= (point) (custom/get-point 'end-of-visual-line))
+	  (progn (beginning-of-visual-line)
+		 (end-of-line)
+		 (apply orig-fun args))
+	(apply orig-fun args))
+    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
+	      (org-indent-line)
+      (apply orig-fun args))))
+
+(advice-add 'org-cycle :around #'custom/org-cycle)
+
+#+end_src
+
+**** TODO Restore
+
+- rewrite get-outline-state and set-outline-state
+   - org-macs.el
+
+***** get-outline-state
+
+#+begin_src emacs-lisp
+
+(defun custom/org-identify-hidden-overlays (overlay)
+  (when (eq (overlay-get overlay 'invisible) 'outline)
+    (let ((beg (overlay-start overlay))
+          (end (overlay-end overlay)))
+      (and beg end (> end beg)
+           (if use-markers
+               (cons (copy-marker beg)
+                     (copy-marker end t))
+             (cons beg end))))))
+
+(defun custom/org-get-outline-state (&optional use-markers)
+  "Return a list of the locations of all outline overlays.
+These are overlays with the `invisible' property value `outline'.
+The return value is a list of cons cells, with start and stop
+positions for each overlay.
+If USE-MARKERS is set, return the positions as markers."
+  (let (beg end)
+    (org-with-wide-buffer
+     (delq nil
+       (mapcar 'custom/org-identify-hidden-overlays
+           (overlays-in (point-min) (point-max)))))))
+
+#+end_src
+
+***** save-outline-state
+
+#+begin_src emacs-lisp
+
+(defun custom/org-save-outline-state ()
+  "Save org outline state in `custom/org-outline-state'.
+It can be recovered afterwards with `custom/org-recover-outline-state'."
+  (setq custom/org-outline-state (custom/org-get-outline-state t)))
+
+#+end_src
+
+***** set-outline-state
+
+#+begin_src emacs-lisp
+
+(defvar-local custom/org-outline-state nil
+  "Variable to save the org outline.")
+(put 'custom/org-outline-state 'permanent-local t)
+
+(defun custom/org-set-outline-state (data)
+  "Create visibility overlays for all positions in DATA.
+DATA should have been made by `custom/org-get-outline-state'."
+  (org-with-wide-buffer
+   (org-show-all)
+   (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
+
+#+end_src
+
+***** restore-outline-state
+
+#+begin_src emacs-lisp
+
+(defun custom/org-restore-outline-state ()
+  "Restore Org Mode outline stored in `custom/org-outline-state'."
+  (when custom/org-outline-state
+    (custom/org-set-outline-state custom/org-outline-state)
+    (setq custom/org-outline-state nil)))
+
+#+end_src
+
+***** TODO Reload advice
+
+- not working
+
+#+begin_src emacs-lisp
+
+(defun custom/org-mode (orig-fun &rest args)
+  (if (string-equal major-mode "org-mode")
+      (progn (custom/org-save-outline-state)
+             (apply orig-fun args)
+             (custom/org-restore-outline-state))
+    (apply orig-fun args)))
+
+(advice-add 'org-mode :around #'custom/org-mode)
+
+#+end_src
+
+
 *** Editing
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./extensions/shapes-org-editing.el
@@ -5865,292 +6157,6 @@ function that sets `deactivate-mark' to t."
 
 #+end_src
 
-*** Display
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-display.el
-:END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
-
-**** Theme
-
-#+begin_src emacs-lisp
-
-;; reload Org Mode
-(defun custom/org-theme-reload ()
-  (if (string-equal major-mode "org-mode")
-      (org-mode)
-    (progn
-      (setq window (get-buffer-window (current-buffer)))
-      (cl-loop for buffer in (custom/get-visible-buffers)
-	             do (select-window (get-buffer-window buffer))
-	 	     if (string-equal major-mode "org-mode")
-		        do (org-mode))
-      (select-window window))))
-
-(add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
-
-#+end_src
-
-**** Variable pitch
-
-#+begin_src emacs-lisp
-
-(defface custom/variable-pitch-marker
-  '((nil :inherit fixed-pitch))
-  "List marker typeface.")
-
-(defface custom/variable-pitch-indent
-  '((nil :inherit fixed-pitch :invisible t))
-  "Indent typeface.")
-
-(defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
-					      ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
-					      ("^[[:blank:]]+"                                  0 'custom/variable-pitch-indent))
-  "Variable pitch font-lock keywords.")
-
-(font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
-
-#+end_src
-
-**** Continuous numbering of equations
-
-#+begin_src emacs-lisp
-
-;; continuous numbering of Org Mode equations
-(defun org-renumber-environment (orig-fun &rest args)
-  (let ((results '()) 
-        (counter -1)
-        (numberp))
-
-    (setq results (cl-loop for (begin .  env) in 
-                        (org-element-map (org-element-parse-buffer) 'latex-environment
-                          (lambda (env)
-                            (cons
-                             (org-element-property :begin env)
-                             (org-element-property :value env))))
-                        do
-                        (cond
-                         ((and (string-match "\\\\begin{equation}" env)
-                               (not (string-match "\\\\tag{" env)))
-                          (cl-incf counter)
-                          (cons begin counter))
-                         ((string-match "\\\\begin{align}" env)
-                          (prog2
-                              (cl-incf counter)
-                              (cons begin counter)                          
-                            (with-temp-buffer
-                              (insert env)
-                              (goto-char (point-min))
-                              ;; \\ is used for a new line. Each one leads to a number
-                              (cl-incf counter (count-matches "\\\\$"))
-                              ;; unless there are nonumbers.
-                              (goto-char (point-min))
-                              (cl-decf counter (count-matches "\\nonumber")))))
-                         (t
-                          (cons begin nil)))))
-
-    (when (setq numberp (cdr (assoc (point) results)))
-      (setf (car args)
-            (concat
-             (format "\\setcounter{equation}{%s}\n" numberp)
-             (car args)))))
-  
-  (apply orig-fun args))
-
-(advice-add 'org-create-formula-image :around #'org-renumber-environment)
-
-#+end_src
-
-*** TODO Outline
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-outline.el
-:END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
-
-- deprecated cl warning
-   - find dependency
-
-**** Hide
-***** org-hide-previous-subtree
-
-#+begin_src emacs-lisp
-
-(defun custom/org-hide-previous-subtree ()
-  "Cycle previous Org Mode heading."
-  (save-excursion (custom/org-goto-heading-previous)
-		        (outline-hide-subtree)))
-
-#+end_src
-
-**** Show
-***** org-show
-
-#+begin_src emacs-lisp
-
-(defun custom/org-show (orig-fun &rest args)
-  (if (custom/org-at-ellipsis)
-      (progn (custom/org-goto-heading-bol) (apply orig-fun args))
-    (apply orig-fun args)))
-
-#+end_src
-
-***** org-show-subtree
-
-#+begin_src emacs-lisp
-
-(advice-add 'org-show-subtree :around #'custom/org-show)
-
-#+end_src
-
-***** org-show-children
-
-#+begin_src emacs-lisp
-
-(advice-add 'org-show-children :around #'custom/org-show)
-
-#+end_src
-
-***** org-show-minimum
-
-#+begin_src emacs-lisp
-
-(defun custom/org-show-minimum ()
-  (if (or (custom/org-relative-line-list-folded)
-	        (custom/org-relative-line-heading-folded))
-      (progn (if (custom/org-at-ellipsis)
-		       (progn (beginning-of-visual-line) (end-of-line)))
-	           (org-show-entry)
-	           (if (custom/org-heading-has-children) (org-show-children)))))
-
-#+end_src
-
-**** TODO Cycle
-
-- bug
-   - https://lists.gnu.org/archive/html/emacs-orgmode/2022-05/msg00150.html
-   - https://www.reddit.com/r/emacs/comments/ulpdhu/org_mode_command_doesnt_update_a_buffer_if_i_use/
-
-#+begin_src emacs-lisp
-
-(defun custom/org-cycle (orig-fun &rest args)
-  "Conditional `org-cycle'.
-
-Default: `org-cycle'
-
-If cursor lies at `end-of-visual-line' of folded heading or list,
-move cursor to `end-of-line' of the current visual line and then
-call `org-cycle'.
-
-If cursor lies at a paragraph directly under a list item and not
-indented at the level of the previous list item, indent the paragraph."
-  (interactive)
-  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
-      (if (= (point) (custom/get-point 'end-of-visual-line))
-	  (progn (beginning-of-visual-line)
-		 (end-of-line)
-		 (apply orig-fun args))
-	(apply orig-fun args))
-    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
-	      (org-indent-line)
-      (apply orig-fun args))))
-
-(advice-add 'org-cycle :around #'custom/org-cycle)
-
-#+end_src
-
-**** TODO Restore
-
-- rewrite get-outline-state and set-outline-state
-   - org-macs.el
-
-***** get-outline-state
-
-#+begin_src emacs-lisp
-
-(defun custom/org-get-outline-state (&optional use-markers)
-  "Return a list of the locations of all outline overlays.
-These are overlays with the `invisible' property value `outline'.
-The return value is a list of cons cells, with start and stop
-positions for each overlay.
-If USE-MARKERS is set, return the positions as markers."
-  (let (beg end)
-    (org-with-wide-buffer
-     (delq nil
-       (mapcar (lambda (o)
-             (when (eq (overlay-get o 'invisible) 'outline)
-               (setq beg (overlay-start o)
-                     end (overlay-end o))
-               (and beg end (> end beg)
-                (if use-markers
-                (cons (copy-marker beg)
-                      (copy-marker end t))
-                  (cons beg end)))))
-           (overlays-in (point-min) (point-max)))))))
-
-#+end_src
-
-***** save-outline-state
-
-#+begin_src emacs-lisp
-
-(defun custom/org-save-outline-state ()
-  "Save org outline state in `custom/org-outline-state'.
-It can be recovered afterwards with `custom/org-recover-outline-state'."
-  (setq custom/org-outline-state (custom/org-get-outline-state t)))
-
-#+end_src
-
-***** set-outline-state
-
-#+begin_src emacs-lisp
-
-(defvar-local custom/org-outline-state nil
-  "Variable to save the org outline.")
-(put 'custom/org-outline-state 'permanent-local t)
-
-(defun custom/org-set-outline-state (data)
-  "Create visibility overlays for all positions in DATA.
-DATA should have been made by `custom/org-get-outline-state'."
-  (org-with-wide-buffer
-   (org-show-all)
-   (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
-
-#+end_src
-
-***** restore-outline-state
-
-#+begin_src emacs-lisp
-
-(defun custom/org-restore-outline-state ()
-  "Restore Org Mode outline stored in `custom/org-outline-state'."
-  (when custom/org-outline-state
-    (custom/org-set-outline-state custom/org-outline-state)
-    (setq custom/org-outline-state nil)))
-
-#+end_src
-
-***** TODO Reload advice
-
-- not working
-
-#+begin_src emacs-lisp
-
-(defun custom/org-mode (orig-fun &rest args)
-  (if (string-equal major-mode "org-mode")
-      (progn (custom/org-save-outline-state)
-             (apply orig-fun args)
-             (custom/org-restore-outline-state))
-    (apply orig-fun args)))
-
-;; (advice-add 'org-mode :around #'custom/org-mode)
-
-#+end_src
 
 *** Navigation
 :PROPERTIES:

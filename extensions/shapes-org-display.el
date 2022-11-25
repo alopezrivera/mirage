@@ -12,7 +12,7 @@
 		        do (org-mode))
       (select-window window))))
 
-(add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
+;; (add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
 
 (defface custom/variable-pitch-marker
   '((nil :inherit fixed-pitch))

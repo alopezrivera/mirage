@@ -46,6 +46,16 @@ indented at the level of the previous list item, indent the paragraph."
 
 (advice-add 'org-cycle :around #'custom/org-cycle)
 
+(defun custom/org-identify-hidden-overlays (overlay)
+  (when (eq (overlay-get overlay 'invisible) 'outline)
+    (let ((beg (overlay-start overlay))
+          (end (overlay-end overlay)))
+      (and beg end (> end beg)
+           (if use-markers
+               (cons (copy-marker beg)
+                     (copy-marker end t))
+             (cons beg end))))))
+
 (defun custom/org-get-outline-state (&optional use-markers)
   "Return a list of the locations of all outline overlays.
 These are overlays with the `invisible' property value `outline'.
@@ -55,15 +65,7 @@ If USE-MARKERS is set, return the positions as markers."
   (let (beg end)
     (org-with-wide-buffer
      (delq nil
-       (mapcar (lambda (o)
-             (when (eq (overlay-get o 'invisible) 'outline)
-               (setq beg (overlay-start o)
-                     end (overlay-end o))
-               (and beg end (> end beg)
-                (if use-markers
-                (cons (copy-marker beg)
-                      (copy-marker end t))
-                  (cons beg end)))))
+       (mapcar 'custom/org-identify-hidden-overlays
            (overlays-in (point-min) (point-max)))))))
 
 (defun custom/org-save-outline-state ()
@@ -95,7 +97,7 @@ DATA should have been made by `custom/org-get-outline-state'."
              (custom/org-restore-outline-state))
     (apply orig-fun args)))
 
-;; (advice-add 'org-mode :around #'custom/org-mode)
+(advice-add 'org-mode :around #'custom/org-mode)
 
 (provide 'shapes-extension-org-outline)
 ;;; shapes-org-outline.el ends here

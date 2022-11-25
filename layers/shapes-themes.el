@@ -9,6 +9,7 @@
 (shapes-module "doom-themes")
 (shapes-module "modus-themes")
 (shapes-module "solarized-theme")
+(shapes-module "catppuccin-themes")
 ;; standalone themes
 (shapes-module "sweet-theme")
 (shapes-module "graphite-theme")
