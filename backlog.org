@@ -6,7 +6,103 @@
 #+title:Backlog
 
 
-* plan
+* references
+** blogs
+
+- https://karthinks.com/
+- https://ladicle.com/
+
+** configs
+
+- https://github.com/radian-software/radian
+- https://github.com/SystemCrafters/rational-emacs
+- https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
+- https://github.com/jkitchin/scimax
+- https://github.com/alhassy/emacs.d
+- https://yannesposito.com/
+- https://github.com/ThomasFKJorna/doom-emacs-config
+- https://github.com/rougier/dotemacs
+   - https://www.reddit.com/r/unixporn/comments/s2extx/yabai_emacs_and_my_favorite_emacs_bootloader/
+- https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
+- https://github.com/Lambda-Emacs/lambda-emacs
+- https://github.com/Gavinok/emacs.d
+- https://github.com/guilhermecomum/emacs.d
+
+** design
+
+- https://www.reddit.com/r/emacs/comments/vcbnht/most_visually_impressive_emacs_packages/
+
+- https://github.com/rougier/book-mode
+- https://github.com/rougier/nano-emacs/blob/master/nano-writer.el
+
+** general
+
+- https://github.com/emacs-tw/awesome-emacs
+
+** org-mode
+
+- https://alphapapa.github.io/org-almanac/
+- http://doc.norang.ca/org-mode.html
+- https://orgmode.org/worg/org-hacks.html
+
+** authors
+
+- https://protesilaos.com/emacs/
+
+** workflows
+
+- Rougier
+   - https://www.labri.fr/perso/nrougier/GTD/index.html
+
+- Mathematics
+   - https://tony-zorman.com/posts/phd-workflow/2022-05-01-my-phd-workflow.html
+   - https://castel.dev/post/research-workflow/
+
+- Note-taking
+   - https://codethrasher.com/post/2022-09-09-evolving-my-note-taking-processes/
+   - https://takeonrules.com/2022/02/07/org-roam-emacs-and-ever-refining-the-note-taking-process/
+   - https://beepb00p.xyz/annotating.html#pdfs
+- Literate programming
+   - http://howardism.org/Technical/Emacs/literate-programming-tutorial.html
+
+** emacs lisp
+*** features
+
+- https://scripter.co/emacs-lisp-advice-combinators/
+- https://arnesonium.com/2022/11/pattern-matching-tail-recursion-emacs-lisp
+
+*** performance
+
+- https://nullprogram.com/blog/2017/01/30/
+
+** debugging
+
+- https://whatacold.io/blog/2022-07-17-emacs-elisp-debug/
+- dap-mode
+   - https://www.youtube.com/watch?v=0bilcQVSlbM
+   - https://github.com/emacs-lsp/dap-mode
+   - https://www.reddit.com/r/emacs/comments/fr35f2/debugger_suggestion_for_python/
+
+** miscellaneous
+
+- https://github.com/bbatsov/crux
+- https://github.com/alphapapa/unpackaged.el
+- https://www.emacswiki.org/emacs/download/misc-cmds.el
+
+
+* action
+
+Functional needs, resources, action plans - dirty.
+
+- Core TODOs
+- Extension TODOs
+- Layer factory
+- Other
+
+** bugs
+
+- org-renumber-environment not working
+
 ** agenda
 *** setup
 
@@ -25,9 +121,12 @@
       - https://emacs.stackexchange.com/questions/20130/exclude-tag-from-default-agenda-view
 
 *** workflow
+**** gtd
 
 - https://orgmode.org/worg/org-gtd-etc.html
 - https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
+
+**** time-tracking and progress
 
 - org-agenda-log-mode
 - org-clock-report
@@ -44,7 +143,19 @@
    - https://github.com/psamim/dotfiles/blob/master/doom/config.el#L73
 
 ** shapes
+*** lockfile
+
+- load
+   - error
+      - (setq shapes-load-error t)
+   - if no load error
+      - automatic straight package freeze
+- frozen lockfile -> config
+   - org-transclusion
+
 *** home buffer
+
+- https://xenodium.com/emacs-a-welcoming-experiment/
 
 https://github.com/pashinin/workgroups2/issues/108#issuecomment-1001104900e
 
@@ -291,77 +402,54 @@ wrap around arrow color -> barely visible
 
 -> user-emacs-directory
 
-* references
-** blogs
 
-- https://karthinks.com/
+* contributing
+** emacs
 
-** configs
+- https://www.fosskers.ca/en/blog/contributing-to-emacs
 
-- https://github.com/radian-software/radian
-- https://github.com/SystemCrafters/rational-emacs
-- https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
-- https://github.com/jkitchin/scimax
-- https://github.com/alhassy/emacs.d
-- https://yannesposito.com/
-- https://github.com/ThomasFKJorna/doom-emacs-config
-- https://github.com/rougier/dotemacs
-   - https://www.reddit.com/r/unixporn/comments/s2extx/yabai_emacs_and_my_favorite_emacs_bootloader/
-- https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
-- https://github.com/Lambda-Emacs/lambda-emacs
-- https://github.com/Gavinok/emacs.d
+** org mode
 
-** design
+- https://orgmode.org/worg/org-contribute.html
 
-- https://www.reddit.com/r/emacs/comments/vcbnht/most_visually_impressive_emacs_packages/
-
-- https://github.com/rougier/book-mode
-- https://github.com/rougier/nano-emacs/blob/master/nano-writer.el
-
-** general
-
-- https://github.com/emacs-tw/awesome-emacs
-
-** packages
-
-- https://protesilaos.com/emacs/
-
-** workflows
-
-- Rougier
-   - https://www.labri.fr/perso/nrougier/GTD/index.html
-
-- Mathematics
-   - https://tony-zorman.com/posts/phd-workflow/2022-05-01-my-phd-workflow.html
-   - https://castel.dev/post/research-workflow/
-
-- Note-taking
-   - https://codethrasher.com/post/2022-09-09-evolving-my-note-taking-processes/
-   - https://takeonrules.com/2022/02/07/org-roam-emacs-and-ever-refining-the-note-taking-process/
-   - https://beepb00p.xyz/annotating.html#pdfs
-- Literate programming
-   - http://howardism.org/Technical/Emacs/literate-programming-tutorial.html
-
-** debugging
-
-- https://whatacold.io/blog/2022-07-17-emacs-elisp-debug/
-- dap-mode
-   - https://www.youtube.com/watch?v=0bilcQVSlbM
-   - https://github.com/emacs-lsp/dap-mode
-   - https://www.reddit.com/r/emacs/comments/fr35f2/debugger_suggestion_for_python/
-
-** performance
-
-- https://nullprogram.com/blog/2017/01/30/
-
-** miscellaneous
-
-- https://github.com/bbatsov/crux
-- https://github.com/alphapapa/unpackaged.el
-- https://www.emacswiki.org/emacs/download/misc-cmds.el
+*** TODO org-babel result formatting
 
 
-* shortlist
+* package shortlist
+
+- org-super-agenda
+   - https://github.com/alphapapa/org-super-agenda
+
+- prism
+   - https://github.com/alphapapa/prism.el
+
+- hammy
+   - https://github.com/alphapapa/hammy.el
+
+- org-graph-view
+   - https://github.com/alphapapa/org-graph-view
+
+- org content management
+   - roam-block
+      - https://github.com/Kinneyzhang/roam-block
+   - org-transclusion
+      - https://nobiot.github.io/org-transclusion/
+
+- org toc
+   - org-make-toc
+      - https://github.com/alphapapa/org-make-toc-
+   - toc-org
+      - https://github.com/snosov1/toc-org
+   - sidebar
+      - https://github.com/rougier/dotemacs/blob/master/dotemacs.org#sidebar
+
+- annotations
+   - org-noter
+      - https://github.com/weirdNox/org-noter
+      - https://www.youtube.com/watch?v=lCc3UoQku-E
+      - https://www.reddit.com/r/orgmode/comments/y0hend/share_your_workflows_for_highlighting_books_roam/
+   - org-remark
+      - https://github.com/nobiot/org-remark
 
 - session
    - workgroups2
@@ -382,35 +470,13 @@ wrap around arrow color -> barely visible
       - https://github.com/rejeep/drag-stuff.el
 
 
-* immature
+* applications
 
-- sublimity
-   - https://github.com/zk-phi/sublimity
+Application backlog
 
-
-* portability
-
-- org-web
-   - https://org-web.org/
-- organice
-   - https://github.com/200ok-ch/organice
-- logseq
-   - https://coredumped.dev/2021/05/26/taking-org-roam-everywhere-with-logseq/
-
-- mirrors
-   - https://github.com/d12frosted/elpa-mirror
-
-* file browsing
-
-- deft
-   - https://jblevins.org/projects/deft/
-- notdeft
-   - https://github.com/hasu/notdeft
-
-- scroll simultaneously in two different files
-- diff between two different files
-
-* text highlighting
+** Internal
+*** UI
+**** Text highlighting
 
 - highlight-symbol
    - https://github.com/nschum/highlight-symbol.el
@@ -430,47 +496,117 @@ wrap around arrow color -> barely visible
 - permanent
    - custom font-lock
 
-* visual cues
+**** Visual cues
 
 - Pulsar
    - https://protesilaos.com/emacs/pulsar
 - process
    - https://github.com/haji-ali/procress
 
-* advice
+*** Themes
+*** Mode line
 
-- https://scripter.co/emacs-lisp-advice-combinators/
+
+*** Input
+
+- https://github.com/abo-abo/hydra
+
+*** Completion
+
+- https://www.youtube.com/watch?v=Vx0bSKF4y78
+
+- https://github.com/minad/corfu
+- https://kisaragi-hiu.com/emacs-completion-metadata.html
 
 
-* latex
+** External
+*** Version control
+*** File management
 
-- https://www.emacswiki.org/emacs/AUCTeX
-- https://www.gnu.org/software/auctex/manual/auctex.html#Multifile
-- latexmk
-   - auctex replacements
-      - https://www.gnu.org/software/auctex/manual/auctex.html#Starting-a-Command
-        https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
-- https://www.emacswiki.org/emacs/LaTeXPreviewPane
+- deft
+   - https://jblevins.org/projects/deft/
+- notdeft
+   - https://github.com/hasu/notdeft
 
-** org
------
-#+latex_class: pbusiness
-#+latex_class_options: [twocolumn]
------
+- scroll simultaneously in two different files
+- diff between two different files
 
-- https://www.reddit.com/r/emacs/comments/uomvik/org_mode_to_latex_using_a_cls_file/
+*** External process management
 
-#+begin_src emacs-lisp
+- https://xenodium.com/emacs-quick-kill-process/
 
-(setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
-			        "xelatex -interaction nonstopmode %f"))
 
-#+end_src
+*** IDE
+**** General
+***** UI
 
-* pdf
+- code folding
+   - https://github.com/tarsius/bicycle
+- jumps
+   - https://github.com/jacktasia/dumb-jump
+- minimap
+   - https://github.com/dengste/minimap
 
-- org-noter
-   - https://www.reddit.com/r/orgmode/comments/y0hend/share_your_workflows_for_highlighting_books_roam/
+***** VC
+
+- https://codeberg.org/pidu/git-timemachine
+
+***** Debugging
+
+- dap-mode
+   - https://github.com/emacs-lsp/dap-mode
+
+***** Code formatting
+
+- https://github.com/raxod502/apheleia
+- https://www.reddit.com/r/emacs/comments/vkxsdy/linting_on_save/
+
+***** Structural editing
+
+- M-arrows
+   - Reorder function definitions
+
+- https://github.com/ethan-leba/tree-edit
+
+- search and replace
+   - https://www.reddit.com/r/neovim/comments/ytvx43/structural_search_and_replace/
+
+***** Collaborative editing
+
+- https://code.librehq.com/qhong/crdt.el
+
+**** Specific
+***** C++
+
+- https://www.reddit.com/r/emacs/comments/yin0p3/eglot_configuration_with_clangd/
+- https://github.com/Andersbakken/rtags
+
+***** Lisp
+
+- https://github.com/joaotavora/sly
+- https://github.com/abo-abo/lispy
+
+***** Common lisp
+
+- https://gitlab.com/sasanidas/clede
+
+***** Bash
+
+- https://www.youtube.com/watch?app=desktop&v=LTC6SP7R1hA&feature=emb_title
+
+***** Java
+
+- https://www.youtube.com/watch?v=Yah69AfYP34(t)
+   - java
+   - projectile
+   - flycheck
+   - yasnippet
+   - dap-mode
+   - helm-lsp
+   - helm
+
+*** PDF
+
 - pdf-tools
    - https://pragmaticemacs.wordpress.com/2017/11/08/more-pdf-tools-tweaks/
 
@@ -482,13 +618,14 @@ wrap around arrow color -> barely visible
 
 - doc-tools
    - https://github.com/dalanicolai/doc-tools
+   - https://github.com/dalanicolai/doc-tools-toc
 
 - preserve locations, zoom across sessions
    - https://github.com/politza/pdf-tools/issues/18
 - bookmarking with bookmark names
    - https://sachachua.com/blog/2021/02/guest-post-bookmarking-pdfs-in-emacs-with-pdf-tools-and-registers/
 
-* markdown
+*** Markdown
 
 - markdown-mode
    - https://jblevins.org/projects/markdown-mode/
@@ -498,59 +635,62 @@ wrap around arrow color -> barely visible
    - other
       - https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time
 
-* presentations
+*** Email
 
-- references
-   - https://www.reddit.com/r/emacs/comments/pgw0tq/classy_slideshows_from_emacs_org_mode_orgreveal/
+- https://www.reddit.com/r/emacs/comments/yx1q69/how_to_set_up_email_step_by_step_guide_for/
+- https://github.com/org-mime/org-mime
+- https://macowners.club/posts/email-emacs-mu4e-macos/
+
+*** LaTeX
+
+- https://www.emacswiki.org/emacs/AUCTeX
+- https://www.gnu.org/software/auctex/manual/auctex.html#Multifile
+- latexmk
+   - auctex replacements
+      - https://www.gnu.org/software/auctex/manual/auctex.html#Starting-a-Command
+        https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
+- https://www.emacswiki.org/emacs/LaTeXPreviewPane
+
+*** Org Mode
+**** UI
+
+- sidebar
+   - https://github.com/alphapapa/org-sidebar
+- rainbow tags
+   - https://github.com/KaratasFurkan/org-rainbow-tags
 
 
-* org
+**** Queries
 
-- references
-   - https://orgmode.org/worg/org-hacks.html
-   - http://doc.norang.ca/org-mode.html
+- metarosetta
+   - https://github.com/73D1/metarosetta
 
-- transclusion
-   - https://nobiot.github.io/org-transclusion/
+**** Navigation
 
 - jump to heading with completion
    - https://github.com/abo-abo/worf
 
-- table of contents
-   - https://github.com/snosov1/toc-org
-   - imenu-list
-      - https://github.com/rougier/dotemacs/blob/master/dotemacs.org#sidebar
+**** Content browsing
 
-- tag formatting
+- https://www.reddit.com/r/emacs/comments/xg0hwm/i_wrote_a_command_for_recursively_viewing_the/
 
-- marker typeface
-   - references
-      - org-modern
-      - Ringbearer
-         - *
-   - [[https://github.com/fontforge/fontforge]]
 
-* org ui
-
-- sidebar
-   - https://github.com/alphapapa/org-sidebar
-
-* org-noter
-
-- https://github.com/weirdNox/org-noter
-- https://www.youtube.com/watch?v=lCc3UoQku-E
-
-* org-agenda
+**** Agenda
 
 - workflows
    - NEXT -> TODO -> DONE
 
-- bug
+- notifications
+   - https://github.com/salehmu/notifier.go
+
 - time-log of headings
    - folding after setting element as done (time log)
       - Cached element is incorrect
       - LOOGBOOK :END: keeps ellipsis when unfolded
    - org-meta-return not working after time-logged headings
+
+- conflicts
+   - https://github.com/rougier/org-agenda-conflict
 
 - sync
    - https://200ok.ch/posts/2022-02-13_integrating_org_mode_agenda_into_other_calendar_apps.html
@@ -574,7 +714,7 @@ wrap around arrow color -> barely visible
 - interaction
    - https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html
 	
-* org-calendar
+**** Calendar
 
 - C-c more than once -> agenda files lost
 
@@ -590,7 +730,7 @@ wrap around arrow color -> barely visible
 - hyperscheduler
    - https://github.com/dmitrym0/org-hyperscheduler/
 
-* org-contacts
+**** Contacts
 
 - https://github.com/jd/google-contacts.el
 
@@ -600,7 +740,69 @@ wrap around arrow color -> barely visible
 - org-vcard
    - https://github.com/flexibeast/org-vcard
 
-* org-roam
+
+**** Export
+
+- early-init not loaded when async exporting
+
+***** LaTeX
+
+-----
+#+latex_class: pbusiness
+#+latex_class_options: [twocolumn]
+-----
+
+- https://www.reddit.com/r/emacs/comments/uomvik/org_mode_to_latex_using_a_cls_file/
+
+#+begin_src emacs-lisp
+
+(setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
+			        "xelatex -interaction nonstopmode %f"))
+
+#+end_src
+
+***** Site
+
+- output look
+   - scientific
+      - http://www.math.toronto.edu/courses/mat237y1/20199/notes/Chapter2/S2.7.html
+
+- references
+   - https://www.reddit.com/r/emacs/comments/vj63n0/yet_another_blog_setup_based_on_emacs_org_mode/
+   - https://m.youtube.com/watch?v=0g9BcZvQbXU
+
+- org -> HTML
+   - https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
+- Hugo
+   - https://ox-hugo.scripter.co/
+   - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
+   - https://www.youtube.com/watch?app=desktop&v=0g9BcZvQbXU
+
+***** Anki
+
+- https://yiufung.net/post/anki-org/
+
+***** Presentations
+****** org-reveal
+
+- https://www.youtube.com/watch?v=avtiR0AUVlo
+- Nice code block transitions
+   - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
+
+****** emacs-reveal
+
+- https://gitlab.com/oer/emacs-reveal/
+
+****** org-ioslide
+
+- https://github.com/coldnew/org-ioslide
+
+**** Collaboration
+
+- https://www.reddit.com/r/emacs/comments/x8gxw1/webbased_org_viewer_that_is_perhaps_a_seedling/
+
+
+**** org-roam
 
 - https://github.com/d12frosted/vulpea
 - https://d12frosted.io/posts/2021-01-24-task-management-with-roam-vol6.html
@@ -610,7 +812,7 @@ wrap around arrow color -> barely visible
 - UI
    - deactivate when reloading org mode
      
-* org-babel
+**** org-babel
 
 - tangle block to all files
    - noweb block references
@@ -629,176 +831,29 @@ wrap around arrow color -> barely visible
 - vterm
    - https://www.reddit.com/r/emacs/comments/xyo2fo/orgmode_vterm_tmux/
 
-* org-queries
-
-- metarosetta
-   - https://github.com/73D1/metarosetta
-
-* org-export
-
-- early-init not loaded when async exporting
-
-** site
-
-- references
-   - https://www.reddit.com/r/emacs/comments/vj63n0/yet_another_blog_setup_based_on_emacs_org_mode/
-   - https://m.youtube.com/watch?v=0g9BcZvQbXU
-
-- org -> HTML
-   - https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
-- Hugo
-   - https://ox-hugo.scripter.co/
-   - https://scripter.co/using-emacs-advice-to-silence-messages-from-functions/?utm_source=atom_feed
-   - https://www.youtube.com/watch?app=desktop&v=0g9BcZvQbXU
-
-** anki
-
-- https://yiufung.net/post/anki-org/
-
-** presentations
-*** org-reveal
-
-- https://www.youtube.com/watch?v=avtiR0AUVlo
-- Nice code block transitions
-   - https://www.reddit.com/r/orgmode/comments/ueti10/oxreveal_trying_to_get_nice_transitions_between/
-
-*** emacs-reveal
-
-- https://gitlab.com/oer/emacs-reveal/
-
-*** org-ioslide
-
-- https://github.com/coldnew/org-ioslide
-
-* org-capture
+**** org-capture
 
 - https://github.com/abo-abo/orca
+- https://github.com/progfolio/doct
 
-* org collaboration
-
-- https://www.reddit.com/r/emacs/comments/x8gxw1/webbased_org_viewer_that_is_perhaps_a_seedling/
-
-* org note browsing
-
-- https://www.reddit.com/r/emacs/comments/xg0hwm/i_wrote_a_command_for_recursively_viewing_the/
-
-* org protocols
+**** org protocols
 
 - https://orgmode.org/manual/Protocols.html#Protocols
 - Reference and alternative solution
    - https://takeonrules.com/2022/02/07/org-roam-emacs-and-ever-refining-the-note-taking-process/
 
-
-* runtime
-
-- server
-   - emacs . in directories
-- startup
-   - command line arguments
-      - https://stackoverflow.com/a/2112346
-        
-* display
-
-- frame
-   - https://www.reddit.com/r/emacs/comments/b2r2oj/is_it_possible_to_disable_or_hide_the_titlebar_in/
-
-- golden ratio
-   - https://github.com/roman/golden-ratio.el
-- vertical padding
-   - https://stackoverflow.com/questions/25040666/vertical-padding-or-margin-on-emacs-buffer
-
-* minibuffer
-
-- floating minibuffer
-   - https://www.reddit.com/r/emacs/comments/jl8xwl/question_how_to_achieve_this_look/
-- embark
-   - https://github.com/oantolin/embark
-
-* highlights
-
-- bionic reading
-   - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
-
-* completion
-
-- composition of various tools
-   - https://www.youtube.com/watch?v=Vx0bSKF4y78
-   - https://www.youtube.com/watch?app=desktop&v=43Dg5zYPHTU
-   - corfu
-      - https://github.com/minad/corfu
-
-- vanilla emacs
-   - https://www.scss.tcd.ie/~sulimanm/posts/default-emacs-completion.html
-
-* alerts
-
-- alert
-   - https://github.com/jwiegley/alert
-- notification
-   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Notifications.html
-- org-mode
-   - https://github.com/spegoraro/org-alert
-
-
-* IDE
+*** Writing
 
 - general
-   - https://github.com/jacktasia/dumb-jump
-- lisp
-   - https://github.com/joaotavora/sly
-   - https://github.com/abo-abo/lispy
-- common lisp
-   - https://gitlab.com/sasanidas/clede
-- bash
-   - https://www.youtube.com/watch?app=desktop&v=LTC6SP7R1hA&feature=emb_title
+   - https://www.reddit.com/r/emacs/comments/ysfcmx/advice_emacs_as_a_word_processor/
 
------
-
-- Structure editing
-   - M-arrows
-      - Reorder function definitions
-   - https://github.com/ethan-leba/tree-edit
-- Debugging
-   - dap-mode
-      - https://github.com/emacs-lsp/dap-mode
-- minimap
-   - https://github.com/dengste/minimap
-
-- Code formatting
-   - https://github.com/raxod502/apheleia
-   - https://www.reddit.com/r/emacs/comments/vkxsdy/linting_on_save/
-- Collaborative editing
-   - https://code.librehq.com/qhong/crdt.el
-- Annotations
-   - https://github.com/bastibe/annotate.el
-
------
-
-- references
-   - https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a
-      - elpy
-      - company
-      - formatting
-      - pyenv
-   - https://www.youtube.com/watch?v=Yah69AfYP34(t)
-      - java
-      - projectile
-      - flycheck
-      - yasnippet
-      - dap-mode
-      - helm-lsp
-      - helm
-
------
-
-- C++
-   - https://github.com/Andersbakken/rtags
-
-* writing
+- GPT
+   - https://github.com/samrawal/gpt-emacs-macro
 
 - spell checking and dictionary
    - https://www.masteringemacs.org/article/wordsmithing-in-emacs
    - https://github.com/tecosaur/lexic
+   - https://github.com/valentjn/ltex-ls
 - writeroom mode
    - https://github.com/joostkremers/writeroom-mode
 - writegood mode
@@ -819,7 +874,100 @@ wrap around arrow color -> barely visible
    - Language detection
       - https://github.com/tmalsburg/guess-language.el
 
-* templating
+*** Annotating
+**** PDF
+**** Plain text
+
+- https://github.com/bastibe/annotate.el
+- https://github.com/milkypostman/hl-sentence
+
+*** Presentations
+
+- https://www.reddit.com/r/emacs/comments/pgw0tq/classy_slideshows_from_emacs_org_mode_orgreveal/
+
+*** Web browsing
+
+- https://www.reddit.com/r/emacs/comments/ywexhw/eww_is_awesome_what_do_you_use_it_for/
+
+
+** Mobile
+
+- org-orgzly
+   - https://codeberg.org/anoduck/org-orgzly
+
+- org-web
+   - https://org-web.org/
+
+- organice
+   - https://github.com/200ok-ch/organice
+
+- logseq
+   - https://coredumped.dev/2021/05/26/taking-org-roam-everywhere-with-logseq/
+
+
+* applications [old]
+
+** immature
+
+- sublimity
+   - https://github.com/zk-phi/sublimity
+
+
+** runtime
+
+- server
+   - emacs . in directories
+- startup
+   - command line arguments
+      - https://stackoverflow.com/a/2112346
+        
+** display
+
+- frame
+   - https://www.reddit.com/r/emacs/comments/b2r2oj/is_it_possible_to_disable_or_hide_the_titlebar_in/
+
+- golden ratio
+   - https://github.com/roman/golden-ratio.el
+- vertical padding
+   - https://stackoverflow.com/questions/25040666/vertical-padding-or-margin-on-emacs-buffer
+
+** minibuffer
+
+- floating minibuffer
+   - https://www.reddit.com/r/emacs/comments/jl8xwl/question_how_to_achieve_this_look/
+- embark
+   - https://github.com/oantolin/embark
+
+** highlights
+
+- bionic reading
+   - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
+
+** completion
+
+- composition of various tools
+   - https://www.youtube.com/watch?v=Vx0bSKF4y78
+   - https://www.youtube.com/watch?app=desktop&v=43Dg5zYPHTU
+   - corfu
+      - https://github.com/minad/corfu
+
+- vanilla emacs
+   - https://www.scss.tcd.ie/~sulimanm/posts/default-emacs-completion.html
+
+** alarms/notifications
+
+- https://github.com/wlemuel/alarm-clock
+
+- https://emacs.stackexchange.com/questions/3844/good-methods-for-setting-up-alarms-audio-visual-triggered-by-org-mode-events
+- alert
+   - https://github.com/jwiegley/alert
+- notification
+   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Notifications.html
+- org-mode
+   - https://github.com/spegoraro/org-alert
+
+
+** templating
 
 - research tempel
    - https://github.com/minad/tempel/blob/main/README.org
@@ -828,12 +976,8 @@ wrap around arrow color -> barely visible
    - https://www.gnu.org/software/emacs/manual/html_mono/autotype.html
    - https://sachachua.com/blog/2015/01/developing-emacs-micro-habits-text-automation/
 
-* annotating
 
-- https://github.com/nobiot/org-remark
-- https://github.com/milkypostman/hl-sentence
-
-* text editing
+** text editing
 
 - completion at point
    - https://with-emacs.com/
@@ -841,11 +985,11 @@ wrap around arrow color -> barely visible
 - text object editing
    - https://github.com/clemera/objed
 
-* modal editing
+** modal editing
 
 - https://www.reddit.com/r/emacs/comments/xex6dk/modal_editing_evil_boon_or_meow/
 
-** evil
+*** evil
 
 - practice
    - https://www.vimified.com/
@@ -858,12 +1002,12 @@ wrap around arrow color -> barely visible
    - https://www.youtube.com/watch?v=Uz_0i27wYbg
    - https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
 
-* collaboration
+** collaboration
 
 - https://www.reddit.com/r/emacs/comments/x8gxw1/webbased_org_viewer_that_is_perhaps_a_seedling/
    - https://proto.formation.tools/
 
-* file management
+** file management
 
 - dired
    - file deletion confirmation -> enter/previous key again
@@ -871,20 +1015,20 @@ wrap around arrow color -> barely visible
    - https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
 
 
-* accounting
+** accounting
 
 - https://github.com/narendraj9/hledger-mode
 
-* datetime
+** datetime
 
 - https://github.com/alphapapa/ts.el
 - https://github.com/rougier/relative-date
 
-* planning
+** planning
 
 - https://stackoverflow.com/questions/23566000/how-to-count-days-excluding-weekends-and-holidays-in-emacs-calendar
 
-* rss
+** rss
 
 - elfeed
    - https://github.com/skeeto/elfeed
@@ -902,8 +1046,13 @@ wrap around arrow color -> barely visible
       - [[https://scottaaronson.blog/]]
    - Cultural
       - [[https://acoup.blog/]]
+   - Emacs
+      - http://intertwingly.net/code/venus/
 
-* email
+** email
+
+- toolbar
+   - https://github.com/rougier/nano-toolbar
 
 - mu4e
    - dashboard
@@ -917,32 +1066,37 @@ wrap around arrow color -> barely visible
    - MS Outlook 2FA
       - https://www.macs.hw.ac.uk/~rs46/posts/2022-01-11-mu4e-oauth.html
 
-* hypermedia
+** hypermedia
 
 - https://github.com/aviaviavi/link-preview.el
 
-* slack
+** slack
 
 - https://github.com/yuya373/emacs-slack
 
-* redacting
+** redacting
 
 - https://github.com/bkaestner/redacted.el
 
+** taxonomies
 
-* hyperbole
+- taxy
+   - https://github.com/alphapapa/taxy.el
+
+
+** hyperbole
 
 - https://github.com/rswgnu/hyperbole
 - https://tilde.town/~ramin_hal9001/articles/intro-to-hyperbole.html
 
-* multimedia
+** multimedia
 
 - MPV
    - https://mpv.io/
    - https://github.com/daviwil/dotfiles/blob/master/Emacs.org#mpv
 
 
-* text search
+** text search
 
 - fzf
    - https://github.com/junegunn/fzf
@@ -951,7 +1105,7 @@ wrap around arrow color -> barely visible
 - snails
    - https://github.com/manateelazycat/snails
 
-* navigation
+** navigation
 
 - narrow dwim
    - https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
@@ -959,11 +1113,19 @@ wrap around arrow color -> barely visible
 - repeat-mode
    - https://karthinks.com/software/it-bears-repeating/
 
-* side frame
+- scrolling
+   - pixel-scroll-precision-mode
+      - sudden jumps
+   - scrolling without moving mark
+   - sources
+      - https://www.reddit.com/r/emacs/comments/6osik2/random_scroll_jumps_in_emacs/
+      - https://www.emacswiki.org/emacs/SmoothScrolling
+
+** side frame
 
 - https://github.com/rougier/sideframe
 
-* window manager
+** window manager
 
 - WXEM
 - herbstluftwm
@@ -971,7 +1133,7 @@ wrap around arrow color -> barely visible
 
 
 
-* theme
+** theme
 
 -----
 - https://github.com/konrad1977/emacs/tree/main/themes
@@ -998,7 +1160,7 @@ wrap around arrow color -> barely visible
    - Linux
       - iio-sensor-proxy
              
-* mode line
+** mode line
 
 - bespoke
    - https://github.com/mclear-tools/bespoke-modeline
@@ -1009,13 +1171,13 @@ wrap around arrow color -> barely visible
    - https://github.com/manateelazycat/awesome-tray
 
 
-* package management
+** package management
 
 - el-get
    - https://github.com/dimitri/el-get
 
 
-* terminal
+** terminal
 
 - libvterm
    - https://github.com/akermu/emacs-libvterm
@@ -1025,7 +1187,7 @@ wrap around arrow color -> barely visible
 
 - https://github.com/xenodium/dwim-shell-command
 
-* async
+** async
 
 - References
    - https://github.com/skeeto/emacs-aio/issues/1
@@ -1039,7 +1201,7 @@ wrap around arrow color -> barely visible
    - https://emacs.stackexchange.com/questions/299/how-can-i-run-an-async-process-in-the-background-without-popping-up-a-buffer
       - https://github.com/ilya-babanov/emacs-bpr
 
-* commands
+** commands
 
 - swiper
    - C-s
@@ -1058,7 +1220,7 @@ wrap around arrow color -> barely visible
 - Go back to recorded position
    - http://www.gnu.org/software/emacs/manual/html_node/emacs/Mark-Ring.html
 
-* performance
+** performance
 
 - defer load time
 - profiler
@@ -1074,16 +1236,16 @@ wrap around arrow color -> barely visible
 - load to memory
    - http://blog.binchen.org/posts/emacs-speed-up-1000.html
 
-* font rendering
+** font rendering
 
 - https://github.com/snowie2000/MacType
 
-* system recycling bin
+** system recycling bin
 
 - https://xenodium.com/rm-important-txt-oh-sht/
 
 
-* upgrade
+** upgrade
 
 - emacs application framework
    - https://github.com/emacs-eaf/emacs-application-framework
@@ -1092,7 +1254,7 @@ wrap around arrow color -> barely visible
    - Figure directory
    - Input with reference
 
-* note-taking
+** note-taking
 
 - howm
    - http://howm.osdn.jp/index.html
