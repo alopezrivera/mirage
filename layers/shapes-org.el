@@ -12,14 +12,14 @@
 (shapes-module "org-tempo")
 (shapes-module "org-capture")
 
-;; notes
-(shapes-module "bitacora")
-(shapes-module "org-roam")
-
-;; agenda
+;; agenda - IMPORTANT: LOAD BEFORE org-roam
 (shapes-module "org-agenda")
 (shapes-module "org-contacts")
 (shapes-module "org-calendar")
+
+;; notes
+(shapes-module "bitacora")
+(shapes-module "org-roam")
 
 ;; presentations
 (shapes-module "org-reveal")
