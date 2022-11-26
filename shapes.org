@@ -587,8 +587,11 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; remove duplicates in shell history
 (setq comint-input-ignoredups t)
 
-;; folding
+;; outline
 (shapes-module "hideshow")
+;; editing
+(shapes-module "puni")
+(shapes-module "embrace")
 ;; completion
 (shapes-module "company")
 ;; syntax checking
@@ -2505,7 +2508,63 @@ the local machine:
 
 ** IDE
 *** General
-**** hideshow
+**** Editing
+***** Wrapping
+****** embrace
+':PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-embrace.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'embrace)
+
+#+end_src
+
+***** Parenthesis
+****** puni
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-puni.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'puni)
+
+;; mode hooks
+(dolist (hook '(prog-mode-hook
+                sgml-mode-hook
+                nxml-mode-hook
+                tex-mode-hook
+                eval-expression-minibuffer-setup-hook))
+  (add-hook hook #'puni-mode))
+
+#+end_src
+
+****** smartparens                                                    :ARCHIVE:
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-smartparens.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'smartparens)
+
+#+end_src
+
+****** paredit                                                        :ARCHIVE:
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-paredit.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'paredit)
+
+#+end_src
+
+**** Outline
+***** hideshow
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-hideshow.el
 :END:
@@ -2518,7 +2577,7 @@ the local machine:
 
 #+end_src
 
-***** TODO Cycle
+****** TODO Cycle
 
 - fold back in 1 when no children
 
@@ -2562,7 +2621,8 @@ the local machine:
 
 #+end_src
 
-**** company
+**** Completion
+***** company
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-company.el
 :END:
@@ -2575,7 +2635,8 @@ the local machine:
 
 #+end_src
 
-**** flycheck
+**** Syntax checking
+***** flycheck
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-flycheck.el
 :END:
@@ -2592,7 +2653,7 @@ the local machine:
 
 *** Specific
 **** Lisp
-***** Syntax highlighting
+***** rainbow-delimiters
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-rainbow-delimiters.el
 :END:

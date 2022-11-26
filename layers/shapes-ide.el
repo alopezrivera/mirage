@@ -1,8 +1,11 @@
 ;; remove duplicates in shell history
 (setq comint-input-ignoredups t)
 
-;; folding
+;; outline
 (shapes-module "hideshow")
+;; editing
+(shapes-module "puni")
+(shapes-module "embrace")
 ;; completion
 (shapes-module "company")
 ;; syntax checking
