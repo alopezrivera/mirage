@@ -551,6 +551,11 @@ Application backlog
 
 - https://codeberg.org/pidu/git-timemachine
 
+***** Editing
+
+- https://jingsi.space/post/2019/10/21/parentheses-in-emacs/
+   - https://github.com/casouri/isolate
+
 ***** Debugging
 
 - dap-mode
