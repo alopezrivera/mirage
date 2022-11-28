@@ -12,7 +12,8 @@
 (setq dashboard-set-file-icons t)
 
 ;; initial buffer choice
-(if (not initial-buffer-choice)
+(if (and (not initial-buffer-choice)
+         (eq (buffer-name (current-buffer)) "*scratch*"))
     (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))))
 
 (provide 'shapes-module-emacs-dashboard)

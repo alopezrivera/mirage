@@ -8,7 +8,7 @@
 
 (shapes-layer "modeline-moody")
 
-;; default
+;; defaultn
 (set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
 
 ;; fixed pitch

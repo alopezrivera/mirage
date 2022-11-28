@@ -1,3 +1,6 @@
+;; bindings
+(global-set-key (kbd "C-x c") #'org-capture)
+
 ;; dependencies
 (shapes-layer  "editing")
 

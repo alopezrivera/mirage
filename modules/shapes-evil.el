@@ -34,9 +34,7 @@
       evil-insert-state-cursor '("pink" (bar . 2)))
 
 (straight-use-package 'evil-org)
-
-(require 'evil-org)
-(evil-org-set-key-theme  '(navigation insert textobjects additional calendar))
+(evil-org-set-key-theme '(navigation insert textobjects additional calendar))
 
 (require 'evil-org-agenda)
 (evil-org-agenda-set-keys)

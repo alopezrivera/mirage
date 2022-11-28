@@ -1,5 +1,7 @@
 ;; remove duplicates in shell history
 (setq comint-input-ignoredups t)
+;; indentation
+(setq-default c-basic-offset 4)
 
 ;; outline
 (shapes-module "hideshow")
