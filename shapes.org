@@ -586,6 +586,8 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ;; remove duplicates in shell history
 (setq comint-input-ignoredups t)
+;; indentation
+(setq-default c-basic-offset 4)
 
 ;; outline
 (shapes-module "hideshow")
