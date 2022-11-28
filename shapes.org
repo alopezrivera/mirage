@@ -63,11 +63,11 @@ extension fails to load.")
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./core/shapes-package-manager.el
 :END:
-*** straight
 
 #+begin_src emacs-lisp
 
 (shapes-module "straight")
+(shapes-module "use-package")
 
 #+end_src
 
@@ -1098,7 +1098,7 @@ Content of a module:
 - Package setup
 
 ** Infrastructure
-*** Package manager
+*** Package management
 **** straight
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-straight.el
@@ -1122,35 +1122,18 @@ Content of a module:
 
 #+end_src
 
-**** use-package                                                      :ARCHIVE:
+**** use-package
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-use-package.el
 :END:
 
 #+begin_src emacs-lisp
 
-;; package
-(require 'package)
-(setq package-archives '(("melpa"     . "https://melpa.org/packages/")
-			 ("org"       . "https://orgmode.org/elpa/")
-			 ("elpa"      . "https://elpa.gnu.org/packages/")
-                         ("gnu-devel" . "https://elpa.gnu.org/devel/")))
-(package-initialize)
-
 ;; use-package
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-(require 'use-package)
+(straight-use-package 'use-package)
 
-;; ensure
-(setq use-package-always-ensure t)
-
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-
-;; update package database
-(package-refresh-contents)
+;; fall back to straight.el
+(setq straight-use-package-by-default t)
 
 #+end_src
 
