@@ -22,11 +22,12 @@
 - https://yannesposito.com/
 - https://github.com/ThomasFKJorna/doom-emacs-config
 - https://github.com/rougier/dotemacs
-   - https://www.reddit.com/r/unixporn/comments/s2extx/yabai_emacs_and_my_favorite_emacs_bootloader/
+- https://www.reddit.com/r/unixporn/comments/s2extx/yabai_emacs_and_my_favorite_emacs_bootloader/
 - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
 - https://github.com/Lambda-Emacs/lambda-emacs
 - https://github.com/Gavinok/emacs.d
 - https://github.com/guilhermecomum/emacs.d
+- https://github.com/tecosaur/emacs-config/blob/master/config.org
 
 ** design
 
@@ -125,6 +126,7 @@ Functional needs, resources, action plans - dirty.
 
 - https://orgmode.org/worg/org-gtd-etc.html
 - https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
+- https://www.reddit.com/r/planetemacs/comments/z1fxr7/task_management_using_org_mode/
 
 **** time-tracking and progress
 
@@ -519,6 +521,11 @@ Application backlog
 - https://kisaragi-hiu.com/emacs-completion-metadata.html
 
 
+*** Testing
+
+- https://www.reddit.com/r/planetemacs/comments/z3av0a/learn_how_to_test_emacs_lisp_code_intended_to_be/
+
+
 ** External
 *** Version control
 *** File management
@@ -542,10 +549,15 @@ Application backlog
 
 - code folding
    - https://github.com/tarsius/bicycle
+   - https://github.com/emacs-tree-sitter/ts-fold
 - jumps
    - https://github.com/jacktasia/dumb-jump
 - minimap
    - https://github.com/dengste/minimap
+- highlighting
+   - https://github.com/DarthFennec/highlight-indent-guides
+- sublimity (immature)
+   - https://github.com/zk-phi/sublimity
 
 ***** VC
 
@@ -614,7 +626,8 @@ Application backlog
 
 - pdf-tools
    - https://pragmaticemacs.wordpress.com/2017/11/08/more-pdf-tools-tweaks/
-
+- docview
+   - https://lifeofpenguin.blogspot.com/2022/10/take-charge-of-pdf-in-gnu-emacs.html?m=1
 - qpdf
    - https://github.com/orgtre/qpdf.el
 - follow-mode
@@ -744,6 +757,13 @@ Application backlog
 
 - org-vcard
    - https://github.com/flexibeast/org-vcard
+
+**** Literate programming
+
+- multiple major modes
+   - https://www.masteringemacs.org/article/polymode-multiple-major-modes-how-to-use-sql-python-in-one-buffer
+   - https://github.com/polymode/poly-org
+   - https://github.com/polymode/polymode
 
 
 **** Export
@@ -894,6 +914,15 @@ Application backlog
 
 - https://www.reddit.com/r/emacs/comments/ywexhw/eww_is_awesome_what_do_you_use_it_for/
 
+*** Tree-sitter
+
+- https://derek.stride.host/posts/comprehensive-introduction-to-tree-sitter
+
+
+** Interaction with other applications
+
+- https://github.com/zachcurry/emacs-anywhere
+
 
 ** Mobile
 
@@ -911,12 +940,6 @@ Application backlog
 
 
 * applications [old]
-
-** immature
-
-- sublimity
-   - https://github.com/zk-phi/sublimity
-
 
 ** runtime
 
