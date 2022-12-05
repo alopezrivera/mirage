@@ -2,13 +2,13 @@
 
 (shapes-layer "input")
 
-(setq light   'modus-operandi)
+(setq light   'ef-summer)
 (setq dark    'modus-vivendi)
 (shapes-layer "themes")
 
 (shapes-layer "modeline-moody")
 
-;; defaultn
+;; default
 (set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
 
 ;; fixed pitch
