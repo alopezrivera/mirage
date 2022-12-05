@@ -477,6 +477,11 @@ wrap around arrow color -> barely visible
 Application backlog
 
 ** Internal
+*** Package manager
+
+- https://github.com/progfolio/elpaca
+
+
 *** UI
 **** Text highlighting
 
@@ -517,7 +522,16 @@ Application backlog
 
 - https://www.youtube.com/watch?v=Vx0bSKF4y78
 
-- https://github.com/minad/corfu
+- composition of various tools
+   - https://www.youtube.com/watch?v=Vx0bSKF4y78
+   - https://www.youtube.com/watch?app=desktop&v=43Dg5zYPHTU
+   - corfu
+      - https://github.com/minad/corfu
+      - https://www.reddit.com/r/emacs/comments/z6sk1f/how_to_update_corfudoc_to_the_new_corfuinfo/
+   - vertico
+      - https://github.com/minad/vertico
+
+
 - https://kisaragi-hiu.com/emacs-completion-metadata.html
 
 
@@ -788,6 +802,8 @@ Application backlog
 
 ***** Site
 
+- https://m.youtube.com/watch?v=mRGFE-Pn86Q&feature=emb_title
+
 - output look
    - scientific
       - http://www.math.toronto.edu/courses/mat237y1/20199/notes/Chapter2/S2.7.html
@@ -972,12 +988,6 @@ Application backlog
    - http://xahlee.info/talk_show/xah_talk_show_2022-05-21.html
 
 ** completion
-
-- composition of various tools
-   - https://www.youtube.com/watch?v=Vx0bSKF4y78
-   - https://www.youtube.com/watch?app=desktop&v=43Dg5zYPHTU
-   - corfu
-      - https://github.com/minad/corfu
 
 - vanilla emacs
    - https://www.scss.tcd.ie/~sulimanm/posts/default-emacs-completion.html
