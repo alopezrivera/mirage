@@ -1,4 +1,6 @@
-(flet ((repo (name) (concat config-directory "straight/repos/" name)))
+(require 'autothemer)
+
+(cl-flet ((repo (name) (concat config-directory "straight/repos/" name)))
   ;; install and rename repository directory to "catppuccin-themes"
   (if (not (file-exists-p (repo "catppuccin-themes/catppuccin-theme.el")))
       (progn (straight-use-package '(catppuccin-themes :type git :host github :repo "catppuccin/emacs"))

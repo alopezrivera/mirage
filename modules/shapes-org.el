@@ -1,7 +1,7 @@
 (straight-use-package 'org)
 (require 'org)
 
-(shapes-module "el-patch")
+(require 'el-patch)
 
 (el-patch-feature org)
 (el-patch-defun org-self-insert-command (N)

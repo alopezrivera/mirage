@@ -13,7 +13,7 @@
 ;; Programming modes
 (add-hook 'prog-mode-hook 'olivetti-mode)
 
-(shapes-module "el-patch")
+(require 'el-patch)
 
 (el-patch-feature olivetti)
 (el-patch-defun olivetti-set-width (width)

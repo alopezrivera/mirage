@@ -49,6 +49,11 @@
 ;; mode display
 (shapes-module "delight")
 
+;; requirements
+(shapes-module "projectile")
+(shapes-module "all-the-icons")
+(shapes-module "page-break-lines")
+
 ;; dashboard
 (shapes-module "emacs-dashboard")
 

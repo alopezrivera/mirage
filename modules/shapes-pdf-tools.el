@@ -1,4 +1,5 @@
-(shapes-module "tablist")
+;; requirements
+(require 'tablist)
 
 (straight-use-package 'pdf-tools)
 (pdf-tools-install)

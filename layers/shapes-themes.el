@@ -3,6 +3,9 @@
 (defcustom dark  'modus-vivendi
   "Dark theme")
 
+;; creation
+(shapes-module "autothemer")
+
 ;; theme bundles
 (shapes-module "ef-themes")
 (shapes-module "nano-theme")
