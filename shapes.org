@@ -704,6 +704,16 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-org-ui.el
 :END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "org-modern")
+
+(setq org-modern-table        nil)
+(setq org-modern-block-fringe nil)
+
+#+end_src
+
 **** Text
 ***** Hidden
 
@@ -878,16 +888,6 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-org-typesetting.el
 :END:
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-modern")
-
-(setq org-modern-table        nil)
-(setq org-modern-block-fringe nil)
-
-#+end_src
-
 **** Text
 ***** Typefaces
 ****** Body
