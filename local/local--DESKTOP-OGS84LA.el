@@ -10,7 +10,6 @@
 (advice-add 'find-file :around #'sudo-find-file)
 
 ;; local emacs config
-
 (setq config "home")
 
 (setq home "/mnt/e/")
@@ -32,8 +31,7 @@
 (setq org-roam-directory (concat home "home/scribbles/roam"))
 
 ;; org-diary directory
-(setq org-diary-directory (concat home "home/scribbles/journal/diary/"))
-
+(setq bitacora-directory (concat home "home/scribbles/journal/diary/"))
 
 ;; projectile
 (setq projectile-project-search-path (list (concat home "studio/")
