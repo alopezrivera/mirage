@@ -1,8 +1,3 @@
-(shapes-module "org-modern")
-
-(setq org-modern-table        nil)
-(setq org-modern-block-fringe nil)
-
 (defun custom/org-typefaces-body ()
   (with-eval-after-load 'org-faces
 

@@ -1,6 +1,9 @@
 ;; settings
 (setq doc-view-resolution 250)
 
+;; requirements
+(shapes-module "tablist")
+
 ;; modules
 (shapes-module "pdf-tools")
 (shapes-module "pdf-view-restore")

@@ -1,4 +1,4 @@
-(defcustom shapes-debug-on-error nil
+(defcustom shapes-debug-on-error t
   "Whether to enter the debugger if a shapes module, layer or
 extension fails to load.")
 

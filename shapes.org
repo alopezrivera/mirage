@@ -16,7 +16,7 @@
 
 #+begin_src emacs-lisp
 
-(defcustom shapes-debug-on-error nil
+(defcustom shapes-debug-on-error t
   "Whether to enter the debugger if a shapes module, layer or
 extension fails to load.")
 
@@ -281,6 +281,11 @@ Content of a layer:
 
 #+begin_src emacs-lisp
 
+;; requirements
+(shapes-module "projectile")
+(shapes-module "all-the-icons")
+(shapes-module "page-break-lines")
+
 ;; dashboard
 (shapes-module "emacs-dashboard")
 
@@ -308,6 +313,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
   "Light theme")
 (defcustom dark  'modus-vivendi
   "Dark theme")
+
+;; creation
+(shapes-module "autothemer")
 
 ;; theme bundles
 (shapes-module "ef-themes")
@@ -438,6 +446,8 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "vertico")
 (shapes-module "orderless")
 
+;; icons
+(shapes-module "all-the-icons")
 (shapes-module "all-the-icons-completion")
 
 #+end_src
@@ -616,6 +626,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; settings
 (setq doc-view-resolution 250)
 
+;; requirements
+(shapes-module "tablist")
+
 ;; modules
 (shapes-module "pdf-tools")
 (shapes-module "pdf-view-restore")
@@ -691,6 +704,16 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-org-ui.el
 :END:
+
+#+begin_src emacs-lisp
+
+(shapes-module "org-modern")
+
+(setq org-modern-table        nil)
+(setq org-modern-block-fringe nil)
+
+#+end_src
+
 **** Text
 ***** Hidden
 
@@ -865,16 +888,6 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-org-typesetting.el
 :END:
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-modern")
-
-(setq org-modern-table        nil)
-(setq org-modern-block-fringe nil)
-
-#+end_src
-
 **** Text
 ***** Typefaces
 ****** Body
@@ -1192,9 +1205,10 @@ Content of a module:
 
 #+begin_src emacs-lisp
 
-(shapes-module "projectile")
-(shapes-module "all-the-icons")
-(shapes-module "page-break-lines")
+;; requirements
+(require 'projectile)
+(require 'all-the-icons)
+(require 'page-break-lines)
 
 (straight-use-package 'dashboard)
 (require 'dashboard)
@@ -1241,7 +1255,7 @@ Content of a module:
 
 #+begin_src emacs-lisp
 
-(shapes-module "el-patch")
+(require 'el-patch)
 
 #+end_src
 
@@ -1444,7 +1458,7 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(shapes-module "all-the-icons")
+(require 'all-the-icons)
 
 (straight-use-package '(all-the-icons-completion :type git :host github :repo "MintSoup/all-the-icons-completion"))
 
@@ -1512,7 +1526,9 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(flet ((repo (name) (concat config-directory "straight/repos/" name)))
+(require 'autothemer)
+
+(cl-flet ((repo (name) (concat config-directory "straight/repos/" name)))
   ;; install and rename repository directory to "catppuccin-themes"
   (if (not (file-exists-p (repo "catppuccin-themes/catppuccin-theme.el")))
       (progn (straight-use-package '(catppuccin-themes :type git :host github :repo "catppuccin/emacs"))
@@ -1585,6 +1601,19 @@ the local machine:
 #+begin_src emacs-lisp
 
 (load-file (concat config-directory "local/themes/doom-zen-writer-theme.el"))
+
+#+end_src
+
+*** Creation
+**** autothemer
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-autothemer.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'autothemer)
+(require 'autothemer)
 
 #+end_src
 
@@ -1745,6 +1774,7 @@ the local machine:
 #+begin_src emacs-lisp
 
 (straight-use-package 'evil-org)
+(require 'evil-org)
 (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
 
 (require 'evil-org-agenda)
@@ -2498,7 +2528,7 @@ the local machine:
 **** Editing
 ***** Wrapping
 ****** embrace
-':PROPERTIES:
+:PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-embrace.el
 :END:
 
@@ -2720,7 +2750,8 @@ sudo apt-get install python3-venv
 
 #+begin_src emacs-lisp
 
-(shapes-module "tablist")
+;; requirements
+(require 'tablist)
 
 (straight-use-package 'pdf-tools)
 (pdf-tools-install)
@@ -2782,7 +2813,7 @@ sudo apt-get install python3-venv
 
 #+begin_src emacs-lisp
 
-(shapes-module "el-patch")
+(require 'el-patch)
 
 #+end_src
 

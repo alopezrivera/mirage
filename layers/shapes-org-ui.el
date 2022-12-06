@@ -1,3 +1,8 @@
+(shapes-module "org-modern")
+
+(setq org-modern-table        nil)
+(setq org-modern-block-fringe nil)
+
 (shapes-module "org-appear")
 
 ;; title face
