@@ -803,7 +803,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
   (dolist (file files)
     (if (not (file-exists-p file))
         (progn (setq org-agenda-files (remove file files))
-               (print (concat "Error: ignoring nonexistent agenda file: " file))))))
+               (print (concat "WARNING: ignoring nonexistent agenda file: " file))))))
 
 #+end_src
 
