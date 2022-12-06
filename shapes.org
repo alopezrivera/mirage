@@ -1633,7 +1633,7 @@ the local machine:
 
 (straight-use-package 'circadian)
 (setq circadian-themes `((:sunrise . ,light)  
-			      (:sunset  . ,dark)))
+			 (:sunset  . ,dark)))
 (circadian-setup)
 
 #+end_src
@@ -3148,7 +3148,7 @@ beginning lies on an Org Mode heading,
 #+begin_src emacs-lisp
 
 ;; figures
-(tempo-define-template "figure"
+(tempo-define-template "fig"
 		          '("#+NAME: fig:" p n
 			    "#+CAPTION: " p n
 			    "#+ATTR_ORG: :width 450" n

@@ -26,7 +26,7 @@
 			  "LaTeX derivation template")
 
 ;; figures
-(tempo-define-template "figure"
+(tempo-define-template "fig"
 		          '("#+NAME: fig:" p n
 			    "#+CAPTION: " p n
 			    "#+ATTR_ORG: :width 450" n
