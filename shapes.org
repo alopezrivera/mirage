@@ -413,6 +413,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+begin_src emacs-lisp
 
+;; bindings
+(global-set-key (kbd "C-=") #'save-buffer)
+
 ;; confirmation
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 ;; advanced commands

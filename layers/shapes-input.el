@@ -1,3 +1,6 @@
+;; bindings
+(global-set-key (kbd "C-=") #'save-buffer)
+
 ;; confirmation
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 ;; advanced commands
