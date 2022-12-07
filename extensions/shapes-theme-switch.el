@@ -21,9 +21,9 @@ using `enable-theme'"
   (interactive)
   (let ((theme (nth 0 custom-enabled-themes)))
     (cond ((string-equal theme light) (progn (disable-theme light)
-					          (custom/enable-or-load-theme    dark)))
-	       (t                          (progn (disable-theme theme)
-					          (custom/enable-or-load-theme    light))))))
+					     (custom/enable-or-load-theme dark)))
+	  (t                          (progn (disable-theme dark)
+					     (custom/enable-or-load-theme light))))))
 
 (global-set-key (kbd "C-t") #'custom/theme-toggle)
 

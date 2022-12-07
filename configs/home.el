@@ -3,7 +3,7 @@
 (shapes-layer "input")
 
 (setq light   'ef-summer)
-(setq dark    'modus-vivendi)
+(setq dark    'nano-dark)
 (shapes-layer "themes")
 
 (shapes-layer "modeline-moody")

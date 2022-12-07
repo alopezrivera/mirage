@@ -154,7 +154,7 @@ References:
 #+begin_src emacs-lisp
 
 (setq light   'ef-summer)
-(setq dark    'modus-vivendi)
+(setq dark    'nano-dark)
 (shapes-layer "themes")
 
 #+end_src
