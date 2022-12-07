@@ -2,7 +2,7 @@
   (dolist (file files)
     (if (not (file-exists-p file))
         (progn (setq org-agenda-files (remove file files))
-               (print (concat "Error: ignoring nonexistent agenda file: " file))))))
+               (print (concat "WARNING: ignoring nonexistent agenda file: " file))))))
 
 (setq org-tag-alist
       '((:startgroup)

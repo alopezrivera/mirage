@@ -1,12 +1,3 @@
-;; local settings
-(let ((local (concat config-directory "local/local--" (system-name) ".el")))
-  (if (file-exists-p local)
-      (load-file local)
-    (write-region ";; local emacs config" nil local)))
-
-;; config directory
-(setq config-directory (string-replace "~" (getenv "HOME") config-directory))
-
 ;; shapes core
 (add-to-list 'load-path (concat config-directory "core/"))
 
@@ -19,6 +10,15 @@
       shapes-core-components)
 
 (message "Shapes: core loaded")
+
+;; local settings
+(let ((local (concat config-directory "local/local--" (system-name) ".el")))
+  (if (file-exists-p local)
+      (load-file local)
+    (write-region ";; local emacs config" nil local)))
+
+;; config directory
+(setq config-directory (string-replace "~" (getenv "HOME") config-directory))
 
 (load-file (concat config-directory "configs/" (concat config ".el")))
 

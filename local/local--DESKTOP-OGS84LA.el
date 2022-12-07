@@ -9,21 +9,21 @@
     (error (funcall orig-fun (concat "/sudo::" FILENAME) WILDCARDS))))
 (advice-add 'find-file :around #'sudo-find-file)
 
-;; local emacs config
+;; load org-mode early to prevent version conflicts
+(straight-use-package 'org)
 
+;; local emacs config
 (setq config "home")
 
+;; home
 (setq home "/mnt/e/")
 
 (setq startup-buffers
-      (list (concat config-directory "backlog.org")
-            (concat home "backlog.org")
-	    (concat home "studio/professional/work/DFKI/repos/hopping_leg/backlog.org")))
-
+      (list (concat home "backlog.org")
+            (concat config-directory "backlog.org")))
 
 ;; org-agenda
-(setq org-agenda-files (list (concat home "studio/contacts.org")
-			     (concat home "studio/professional/work/DFKI/repos/hopping_leg/backlog.org")))
+(setq org-agenda-files (list (concat home "studio/contacts.org")))
 
 ;; org-contacts
 (setq org-contacts-files (list (concat home "studio/contacts.org")))
@@ -32,8 +32,7 @@
 (setq org-roam-directory (concat home "home/scribbles/roam"))
 
 ;; org-diary directory
-(setq org-diary-directory (concat home "home/scribbles/journal/diary/"))
-
+(setq bitacora-directory (concat home "home/scribbles/journal/diary/"))
 
 ;; projectile
 (setq projectile-project-search-path (list (concat home "studio/")
