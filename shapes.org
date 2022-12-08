@@ -5348,8 +5348,9 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-;; reload Org Mode
+;; theme reload advice
 (defun custom/org-theme-reload ()
+  "Re-set Org Mode UI typesetting after theme changes"
   (if (string-equal major-mode "org-mode")
       (org-mode)
     (progn
@@ -5357,10 +5358,26 @@ a `custom/region-blank'."
       (cl-loop for buffer in (custom/get-visible-buffers)
 	             do (select-window (get-buffer-window buffer))
 	 	     if (string-equal major-mode "org-mode")
-		        do (org-mode))
+                     do (custom/org-ui-typeset))
       (select-window window))))
 
-;; (add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
+(add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
+
+#+end_src
+
+**** Typesetting
+
+#+begin_src emacs-lisp
+
+;; UI typesetting
+(defun custom/org-ui-typeset ()
+  "Typeset the following Org Mode UI elements:
+- title of Org Mode documents
+- indent typeface used in `org-indent-mode' and `visual-line-mode'"
+  (with-eval-after-load 'org-faces       (set-face-attribute 'org-document-title nil :font typeface-title :weight 'regular :height 200))
+  (with-eval-after-load 'org-indent-mode (set-face-attribute 'org-indent         nil :inherit '(org-hide fixed-pitch))))
+
+(add-hook 'org-mode-hook #'custom/org-ui-typeset)
 
 #+end_src
 
