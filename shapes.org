@@ -696,7 +696,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-extend "org-get")
 (shapes-extend "org-queries")
 (shapes-extend "org-editing")
-(shapes-extend "org-display")
+(shapes-extend "org-ui")
 (shapes-extend "org-outline")
 (shapes-extend "org-navigation")
 (shapes-extend "org-applications")
@@ -710,87 +710,27 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+begin_src emacs-lisp
 
-(shapes-module "org-modern")
-
-(setq org-modern-table        nil)
-(setq org-modern-block-fringe nil)
-
-#+end_src
-
-**** Text
-***** Hidden
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-appear")
-
-#+end_src
-
-***** Typefaces
-****** Title
-
-#+begin_src emacs-lisp
-
-;; title face
-(defun custom/org-typeface-title ()
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title        nil :font typeface-title   :weight 'regular :height 200 :foreground 'unspecified)))
-
-(add-hook 'org-mode-hook #'custom/org-typeface-title)
-
-#+end_src
-
-****** Indent
-
-#+begin_src emacs-lisp
-
-(defun custom/org-typeface-indent ()
-  "Indent typeface used in `org-indent-mode' and `visual-line-mode'."
-  (with-eval-after-load 'org-indent-mode
-    (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))))
-
-(add-hook 'org-mode-hook #'custom/org-typeface-indent)
-
-#+end_src
-
-***** Indentation
-
-#+begin_src emacs-lisp
-
 ;; org-indent-mode
 (setq org-startup-indented nil)
-
 ;; list indentation
 (setq-default org-list-indent-offset 1)
-
-#+end_src
-
-**** Figures
-
-#+begin_src emacs-lisp
-
 ;; startup with inline images
 (setq org-startup-with-inline-images t)
-
-;; no actual width
+;; do not force inline images to their actual width
 (setq org-image-actual-width nil)
-
-#+end_src
-
-**** Outline
-
-#+begin_src emacs-lisp
-
 ;; do not consider empty lines content
 (setq org-cycle-separator-lines 2)
 
-#+end_src
-
-**** Line-wrapping
-
-#+begin_src emacs-lisp
-
+;; line wrapping
 (add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+;; design
+(shapes-module "org-modern")
+(setq org-modern-table        nil)
+(setq org-modern-block-fringe nil)
+
+;; markup
+(shapes-module "org-appear")
 
 #+end_src
 
@@ -5397,7 +5337,7 @@ a `custom/region-blank'."
 
 *** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-display.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-ui.el
 :END:
 
 #+begin_src emacs-lisp
@@ -5437,8 +5377,8 @@ a `custom/region-blank'."
   "Indent typeface.")
 
 (defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
-					      ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
-					      ("^[[:blank:]]+"                                  0 'custom/variable-pitch-indent))
+					 ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
+					 ("^[[:blank:]]+"                                  0 'custom/variable-pitch-indent))
   "Variable pitch font-lock keywords.")
 
 (font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)

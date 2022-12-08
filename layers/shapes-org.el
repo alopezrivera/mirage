@@ -34,7 +34,7 @@
 (shapes-extend "org-get")
 (shapes-extend "org-queries")
 (shapes-extend "org-editing")
-(shapes-extend "org-display")
+(shapes-extend "org-ui")
 (shapes-extend "org-outline")
 (shapes-extend "org-navigation")
 (shapes-extend "org-applications")
