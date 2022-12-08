@@ -46,7 +46,7 @@ indented at the level of the previous list item, indent the paragraph."
 
 (advice-add 'org-cycle :around #'custom/org-cycle)
 
-(defun custom/org-identify-hidden-overlays (overlay)
+(defun custom/org-identify-hidden-overlays (overlay &optional use-markers)
   (when (eq (overlay-get overlay 'invisible) 'outline)
     (let ((beg (overlay-start overlay))
           (end (overlay-end overlay)))

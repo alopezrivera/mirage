@@ -5451,7 +5451,7 @@ a `custom/region-blank'."
 
 #+end_src
 
-*** TODO Outline
+*** Outline
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./extensions/shapes-org-outline.el
 :END:
@@ -5551,16 +5551,17 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-**** TODO Restore
+**** Restore
 
 - rewrite get-outline-state and set-outline-state
    - org-macs.el
 
-***** get-outline-state
+***** Implementation
+****** get-outline-state
 
 #+begin_src emacs-lisp
 
-(defun custom/org-identify-hidden-overlays (overlay)
+(defun custom/org-identify-hidden-overlays (overlay &optional use-markers)
   (when (eq (overlay-get overlay 'invisible) 'outline)
     (let ((beg (overlay-start overlay))
           (end (overlay-end overlay)))
@@ -5584,7 +5585,7 @@ If USE-MARKERS is set, return the positions as markers."
 
 #+end_src
 
-***** save-outline-state
+****** save-outline-state
 
 #+begin_src emacs-lisp
 
@@ -5595,7 +5596,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-***** set-outline-state
+****** set-outline-state
 
 #+begin_src emacs-lisp
 
@@ -5612,7 +5613,7 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+end_src
 
-***** restore-outline-state
+****** restore-outline-state
 
 #+begin_src emacs-lisp
 
@@ -5624,7 +5625,7 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+end_src
 
-***** TODO Reload advice
+***** Advice
 
 - not working
 
