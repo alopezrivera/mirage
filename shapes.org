@@ -663,6 +663,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; bindings
 (global-set-key (kbd "C-x c") #'org-capture)
 
+;; always use property inheritance
+(setq-default org-use-property-inheritance t)
+
 ;; dependencies
 (shapes-layer  "editing")
 
@@ -823,7 +826,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; Define TODO keyword sequences
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)")
-	     (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+	(sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
 #+end_src
 
@@ -3565,7 +3568,7 @@ folded."
 (setq org-babel-default-header-args
       '((:noweb   . "yes")
         (:async   . "yes")
-        (:session . "none")
+        (:session . "ob-session")
         (:results . "replace")
         (:exports . "code")
         (:cache   . "no")

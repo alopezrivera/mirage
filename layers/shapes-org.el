@@ -1,6 +1,9 @@
 ;; bindings
 (global-set-key (kbd "C-x c") #'org-capture)
 
+;; always use property inheritance
+(setq-default org-use-property-inheritance t)
+
 ;; dependencies
 (shapes-layer  "editing")
 

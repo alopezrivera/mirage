@@ -68,7 +68,7 @@ folded."
 (setq org-babel-default-header-args
       '((:noweb   . "yes")
         (:async   . "yes")
-        (:session . "none")
+        (:session . "ob-session")
         (:results . "replace")
         (:exports . "code")
         (:cache   . "no")
