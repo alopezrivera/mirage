@@ -153,7 +153,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(setq light   'ef-summer)
+(setq light   'ef-deuteranopia-light)
 (setq dark    'catppuccin)
 (shapes-layer "themes")
 

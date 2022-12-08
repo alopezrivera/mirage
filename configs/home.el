@@ -2,7 +2,7 @@
 
 (shapes-layer "input")
 
-(setq light   'ef-summer)
+(setq light   'ef-deuteranopia-light)
 (setq dark    'catppuccin)
 (shapes-layer "themes")
 
