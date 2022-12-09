@@ -1,6 +1,9 @@
 ;; bindings
 (global-set-key (kbd "C-x c") #'org-capture)
 
+;; always use property inheritance
+(setq-default org-use-property-inheritance t)
+
 ;; dependencies
 (shapes-layer  "editing")
 
@@ -34,7 +37,7 @@
 (shapes-extend "org-get")
 (shapes-extend "org-queries")
 (shapes-extend "org-editing")
-(shapes-extend "org-display")
+(shapes-extend "org-ui")
 (shapes-extend "org-outline")
 (shapes-extend "org-navigation")
 (shapes-extend "org-applications")

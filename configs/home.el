@@ -2,8 +2,8 @@
 
 (shapes-layer "input")
 
-(setq light   'ef-summer)
-(setq dark    'modus-vivendi)
+(setq light   'ef-deuteranopia-light)
+(setq dark    'catppuccin)
 (shapes-layer "themes")
 
 (shapes-layer "modeline-moody")

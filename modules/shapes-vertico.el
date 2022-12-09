@@ -11,7 +11,7 @@
                  crm-separator)
                 (car args))
         (cdr args)))
-(advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+(advice-add 'completing-read-multiple :filter-args #'crm-indicator)
 
 (setq minibuffer-prompt-properties
       '(read-only t cursor-intangible t face minibuffer-prompt))

@@ -413,6 +413,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+begin_src emacs-lisp
 
+;; bindings
+(global-set-key (kbd "C-=") #'save-buffer)
+
 ;; confirmation
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 ;; advanced commands
@@ -660,6 +663,9 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; bindings
 (global-set-key (kbd "C-x c") #'org-capture)
 
+;; always use property inheritance
+(setq-default org-use-property-inheritance t)
+
 ;; dependencies
 (shapes-layer  "editing")
 
@@ -693,7 +699,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-extend "org-get")
 (shapes-extend "org-queries")
 (shapes-extend "org-editing")
-(shapes-extend "org-display")
+(shapes-extend "org-ui")
 (shapes-extend "org-outline")
 (shapes-extend "org-navigation")
 (shapes-extend "org-applications")
@@ -707,87 +713,27 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+begin_src emacs-lisp
 
-(shapes-module "org-modern")
-
-(setq org-modern-table        nil)
-(setq org-modern-block-fringe nil)
-
-#+end_src
-
-**** Text
-***** Hidden
-
-#+begin_src emacs-lisp
-
-(shapes-module "org-appear")
-
-#+end_src
-
-***** Typefaces
-****** Title
-
-#+begin_src emacs-lisp
-
-;; title face
-(defun custom/org-typeface-title ()
-  (with-eval-after-load 'org-faces
-    (set-face-attribute 'org-document-title        nil :font typeface-title   :weight 'regular :height 200 :foreground 'unspecified)))
-
-(add-hook 'org-mode-hook #'custom/org-typeface-title)
-
-#+end_src
-
-****** Indent
-
-#+begin_src emacs-lisp
-
-(defun custom/org-typeface-indent ()
-  "Indent typeface used in `org-indent-mode' and `visual-line-mode'."
-  (with-eval-after-load 'org-indent-mode
-    (set-face-attribute 'org-indent                nil                 :inherit '(org-hide fixed-pitch))))
-
-(add-hook 'org-mode-hook #'custom/org-typeface-indent)
-
-#+end_src
-
-***** Indentation
-
-#+begin_src emacs-lisp
-
 ;; org-indent-mode
 (setq org-startup-indented nil)
-
 ;; list indentation
 (setq-default org-list-indent-offset 1)
-
-#+end_src
-
-**** Figures
-
-#+begin_src emacs-lisp
-
 ;; startup with inline images
 (setq org-startup-with-inline-images t)
-
-;; no actual width
+;; do not force inline images to their actual width
 (setq org-image-actual-width nil)
-
-#+end_src
-
-**** Outline
-
-#+begin_src emacs-lisp
-
 ;; do not consider empty lines content
 (setq org-cycle-separator-lines 2)
 
-#+end_src
-
-**** Line-wrapping
-
-#+begin_src emacs-lisp
-
+;; line wrapping
 (add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
+
+;; design
+(shapes-module "org-modern")
+(setq org-modern-table        nil)
+(setq org-modern-block-fringe nil)
+
+;; markup
+(shapes-module "org-appear")
 
 #+end_src
 
@@ -880,7 +826,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; Define TODO keyword sequences
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)")
-	     (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+	(sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
 #+end_src
 
@@ -1035,7 +981,7 @@ the issue is resolved.
 
 (setq org-format-latex-options
         (list :foreground 'default
-              :scale      0.750))
+              :scale       1.000))
 
 #+end_src
 
@@ -1489,6 +1435,12 @@ the local machine:
 
 (straight-use-package 'nano-theme)
 (require 'nano-theme)
+
+;; always use load-theme + enable-theme for the nano themes
+(advice-add 'enable-theme :around (lambda (orig-fun THEME) (if (string-match "^nano-.*" (symbol-name THEME))
+                                                               (progn (load-theme THEME t t)
+                                                                      (funcall orig-fun THEME))
+                                                             (funcall orig-fun THEME))))
 
 #+end_src
 
@@ -2062,7 +2014,7 @@ the local machine:
                  crm-separator)
                 (car args))
         (cdr args)))
-(advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+(advice-add 'completing-read-multiple :filter-args #'crm-indicator)
 
 (setq minibuffer-prompt-properties
       '(read-only t cursor-intangible t face minibuffer-prompt))
@@ -3616,7 +3568,7 @@ folded."
 (setq org-babel-default-header-args
       '((:noweb   . "yes")
         (:async   . "yes")
-        (:session . "none")
+        (:session . "ob-session")
         (:results . "replace")
         (:exports . "code")
         (:cache   . "no")
@@ -4245,13 +4197,14 @@ using `enable-theme'"
   (interactive)
   (let ((theme (nth 0 custom-enabled-themes)))
     (cond ((string-equal theme light) (progn (disable-theme light)
-					          (custom/enable-or-load-theme    dark)))
-	       (t                          (progn (disable-theme theme)
-					          (custom/enable-or-load-theme    light))))))
+					     (custom/enable-or-load-theme dark)))
+	  (t                          (progn (disable-theme dark)
+					     (custom/enable-or-load-theme light))))))
 
 (global-set-key (kbd "C-t") #'custom/theme-toggle)
 
 #+end_src
+
 **** Light and dark
 
 #+begin_src emacs-lisp
@@ -5385,9 +5338,10 @@ a `custom/region-blank'."
 
 #+end_src
 
+
 *** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-display.el
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-ui.el
 :END:
 
 #+begin_src emacs-lisp
@@ -5398,8 +5352,9 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-;; reload Org Mode
+;; theme reload advice
 (defun custom/org-theme-reload ()
+  "Re-set Org Mode UI typesetting after theme changes"
   (if (string-equal major-mode "org-mode")
       (org-mode)
     (progn
@@ -5407,10 +5362,26 @@ a `custom/region-blank'."
       (cl-loop for buffer in (custom/get-visible-buffers)
 	             do (select-window (get-buffer-window buffer))
 	 	     if (string-equal major-mode "org-mode")
-		        do (org-mode))
+                     do (custom/org-ui-typeset))
       (select-window window))))
 
-;; (add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
+(add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
+
+#+end_src
+
+**** Typesetting
+
+#+begin_src emacs-lisp
+
+;; UI typesetting
+(defun custom/org-ui-typeset ()
+  "Typeset the following Org Mode UI elements:
+- title of Org Mode documents
+- indent typeface used in `org-indent-mode' and `visual-line-mode'"
+  (with-eval-after-load 'org-faces       (set-face-attribute 'org-document-title nil :font typeface-title :weight 'regular :height 200))
+  (with-eval-after-load 'org-indent-mode (set-face-attribute 'org-indent         nil :inherit '(org-hide fixed-pitch))))
+
+(add-hook 'org-mode-hook #'custom/org-ui-typeset)
 
 #+end_src
 
@@ -5427,8 +5398,8 @@ a `custom/region-blank'."
   "Indent typeface.")
 
 (defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
-					      ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
-					      ("^[[:blank:]]+"                                  0 'custom/variable-pitch-indent))
+					 ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
+					 ("^[[:blank:]]+"                                  0 'custom/variable-pitch-indent))
   "Variable pitch font-lock keywords.")
 
 (font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
@@ -5484,7 +5455,7 @@ a `custom/region-blank'."
 
 #+end_src
 
-*** TODO Outline
+*** Outline
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./extensions/shapes-org-outline.el
 :END:
@@ -5584,16 +5555,17 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-**** TODO Restore
+**** Restore
 
 - rewrite get-outline-state and set-outline-state
    - org-macs.el
 
-***** get-outline-state
+***** Implementation
+****** get-outline-state
 
 #+begin_src emacs-lisp
 
-(defun custom/org-identify-hidden-overlays (overlay)
+(defun custom/org-identify-hidden-overlays (overlay &optional use-markers)
   (when (eq (overlay-get overlay 'invisible) 'outline)
     (let ((beg (overlay-start overlay))
           (end (overlay-end overlay)))
@@ -5617,7 +5589,7 @@ If USE-MARKERS is set, return the positions as markers."
 
 #+end_src
 
-***** save-outline-state
+****** save-outline-state
 
 #+begin_src emacs-lisp
 
@@ -5628,7 +5600,7 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+end_src
 
-***** set-outline-state
+****** set-outline-state
 
 #+begin_src emacs-lisp
 
@@ -5645,7 +5617,7 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+end_src
 
-***** restore-outline-state
+****** restore-outline-state
 
 #+begin_src emacs-lisp
 
@@ -5657,7 +5629,7 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+end_src
 
-***** TODO Reload advice
+***** Advice
 
 - not working
 

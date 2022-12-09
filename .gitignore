@@ -8,6 +8,7 @@
 # littering
 var/*
 transient/*
+persistent/custom.el
 .org-generic-id-locations
 
 # directories

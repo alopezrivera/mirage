@@ -2,7 +2,7 @@
 
 (setq org-format-latex-options
         (list :foreground 'default
-              :scale      0.750))
+              :scale       1.000))
 
 (setq custom/org-latex-preview-class-args "fleqn")
 (setq custom/org-latex-preview-width      "18cm")
