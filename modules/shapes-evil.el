@@ -33,16 +33,17 @@
       evil-normal-state-cursor '("green" box)
       evil-insert-state-cursor '("pink" (bar . 2)))
 
-(straight-use-package 'evil-org)
-(require 'evil-org)
-(evil-org-set-key-theme '(navigation insert textobjects additional calendar))
+(with-eval-after-load 'org
+  (straight-use-package 'evil-org)
+  (require 'evil-org)
+  (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
 
-(require 'evil-org-agenda)
-(evil-org-agenda-set-keys)
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys)
 
-;; hooks
-(add-hook 'org-mode-hook  (lambda () (if evil-mode (evil-org-mode))))
-(add-hook 'evil-mode-hook (lambda () (if (string-equal major-mode "org-mode") (evil-org-mode))))
+  ;; hooks
+  (add-hook 'org-mode-hook  (lambda () (if evil-mode (evil-org-mode))))
+  (add-hook 'evil-mode-hook (lambda () (if (string-equal major-mode "org-mode") (evil-org-mode)))))
 
 (provide 'shapes-module-evil)
 ;;; shapes-evil.el ends here
