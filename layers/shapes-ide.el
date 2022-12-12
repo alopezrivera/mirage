@@ -12,11 +12,15 @@
 (shapes-module "company")
 ;; syntax checking
 (shapes-module "flycheck")
+;; language server protocol
+(shapes-module "lsp-mode")
 
 ;; lisp
 (shapes-module "rainbow-delimiters")
 ;; python
 (shapes-module "elpy")
+;; rust
+(shapes-module "rustic")
 
 (provide 'shapes-layer-ide)
 ;;; shapes-ide.el ends here

@@ -79,6 +79,8 @@ extension fails to load.")
 
 #+begin_src emacs-lisp
 
+(shapes-module "async")
+
 (defun custom/shapes-tangle (org-file &optional quiet)
   "Asynchronously tangle an org file."
   (let ((init-tangle-start-time (current-time))
@@ -551,7 +553,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "treemacs")
 
 #+end_src
-
+a
 
 ** Version control
 :PROPERTIES:
@@ -611,11 +613,15 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "company")
 ;; syntax checking
 (shapes-module "flycheck")
+;; language server protocol
+(shapes-module "lsp-mode")
 
 ;; lisp
 (shapes-module "rainbow-delimiters")
 ;; python
 (shapes-module "elpy")
+;; rust
+(shapes-module "rustic")
 
 #+end_src
 
@@ -2621,6 +2627,42 @@ the local machine:
 
 #+end_src
 
+**** Language server protocol
+***** eglot                                                         :ARCHIVE:
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-eglot.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'eglot)
+
+#+end_src
+
+***** lsp-mode
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-lsp-mode.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'lsp-mode)
+(require 'lsp-mode)
+
+#+end_src
+
+***** lsp-bridge                                                    :ARCHIVE:
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-lsp-bridge.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'lsp-bridge)
+(require 'lsp-bridge)
+
+#+end_src
+
 *** Specific
 **** Lisp
 ***** rainbow-delimiters
@@ -2638,7 +2680,6 @@ the local machine:
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 #+end_src
-
 **** Python
 ***** elpy
 :PROPERTIES:
@@ -2692,6 +2733,18 @@ sudo apt-get install python3-venv
 (load-library "matlab-load")
 
 (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
+
+#+end_src
+
+**** Rust
+***** rustic
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-rustic.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'rustic)
 
 #+end_src
 
@@ -3128,6 +3181,7 @@ beginning lies on an Org Mode heading,
 (dolist (pair '(("<sh"   "shell")
 		("<el"   "emacs-lisp")
 		("<py"   "python")
+                ("<rs"   "rustic")
                 ("<cpp"  "C++")
 		("<bash" "bash")
                 ("<tx"   "latex")))
