@@ -28,6 +28,7 @@
 - https://github.com/Gavinok/emacs.d
 - https://github.com/guilhermecomum/emacs.d
 - https://github.com/tecosaur/emacs-config/blob/master/config.org
+- https://github.com/Likhon-baRoy/.emacs.d#readme
 
 ** design
 
