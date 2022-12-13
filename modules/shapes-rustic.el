@@ -1,5 +1,4 @@
 (straight-use-package 'rustic)
-(require 'rustic)
 
 ;; Do not format org-babel blocks after a successful build
 (setq rustic-babel-format-src-block nil)
