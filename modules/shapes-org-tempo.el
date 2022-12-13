@@ -47,7 +47,7 @@
 (dolist (pair '(("<sh"   "shell")
 		("<el"   "emacs-lisp")
 		("<py"   "python")
-                ("<rs"   "rustic")
+                ("<rs"   "rust")
                 ("<cpp"  "C++")
 		("<bash" "bash")
                 ("<tx"   "latex")))
