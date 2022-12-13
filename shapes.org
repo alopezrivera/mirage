@@ -2746,6 +2746,9 @@ sudo apt-get install python3-venv
 
 (straight-use-package 'rustic)
 
+;; add cargo to exec-path
+(add-to-list 'exec-path "~/.cargo/bin")
+
 #+end_src
 
 ** PDF

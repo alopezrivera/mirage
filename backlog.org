@@ -620,6 +620,13 @@ Application backlog
 - https://github.com/joaotavora/sly
 - https://github.com/abo-abo/lispy
 
+***** Rust
+
+- https://robert.kra.hn/posts/rust-emacs-setup/#rust-emacs-configuration-in-detail
+
+- completion
+   - https://github.com/racer-rust/emacs-racer
+
 ***** Common lisp
 
 - https://gitlab.com/sasanidas/clede
