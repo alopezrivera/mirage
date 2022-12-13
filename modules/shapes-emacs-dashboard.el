@@ -11,8 +11,6 @@
 ;; options
 (setq dashboard-center-content t)
 (setq dashboard-set-file-icons t)
-(setq dashboard-image-banner-max-width 300)
-(setq dashboard-image-banner-max-height 300)
 
 ;; initial buffer choice
 (if (and (not initial-buffer-choice)
