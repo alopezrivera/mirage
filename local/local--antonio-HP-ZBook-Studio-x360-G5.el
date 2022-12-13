@@ -7,6 +7,9 @@
 (setq startup-buffers (list (concat config-directory "backlog.org")
                             (concat home "backlog.org")))
 
+;; dashboard image
+(setq dashboard-startup-banner (concat config-directory "art/e-red.png"))
+
 ;; org-agenda
 (setq org-agenda-files (list (concat home "studio/contacts.org")))
 
