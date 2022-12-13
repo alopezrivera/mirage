@@ -1,3 +1,5 @@
+(shapes-module "async")
+
 (defun custom/shapes-tangle (org-file &optional quiet)
   "Asynchronously tangle an org file."
   (let ((init-tangle-start-time (current-time))

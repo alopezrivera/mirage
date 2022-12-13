@@ -7,6 +7,11 @@
 (setq startup-buffers (list (concat config-directory "backlog.org")
                             (concat home "backlog.org")))
 
+;; dashboard image
+(setq dashboard-startup-banner (concat home "home/images/space/jupiter/NASA Juno - Jupiter (2) Dither.png"))
+(setq dashboard-image-banner-max-width  300)
+(setq dashboard-image-banner-max-height 300)
+
 ;; org-agenda
 (setq org-agenda-files (list (concat home "studio/contacts.org")))
 

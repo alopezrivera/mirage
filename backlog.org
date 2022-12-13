@@ -14,21 +14,24 @@
 
 ** configs
 
-- https://github.com/radian-software/radian
-- https://github.com/SystemCrafters/rational-emacs
-- https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
-- https://github.com/jkitchin/scimax
-- https://github.com/alhassy/emacs.d
-- https://yannesposito.com/
-- https://github.com/ThomasFKJorna/doom-emacs-config
-- https://github.com/rougier/dotemacs
-- https://www.reddit.com/r/unixporn/comments/s2extx/yabai_emacs_and_my_favorite_emacs_bootloader/
-- https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
-- https://github.com/Lambda-Emacs/lambda-emacs
-- https://github.com/Gavinok/emacs.d
-- https://github.com/guilhermecomum/emacs.d
-- https://github.com/tecosaur/emacs-config/blob/master/config.org
-- https://github.com/Likhon-baRoy/.emacs.d#readme
+- direct influences
+   - https://github.com/Lambda-Emacs/lambda-emacs
+   - https://github.com/tecosaur/emacs-config/blob/master/config.org
+   - https://github.com/Likhon-baRoy/.emacs.d#readme
+
+- inspiration
+   - https://github.com/radian-software/radian
+   - https://github.com/SystemCrafters/rational-emacs
+   - https://www.lucacambiaghi.com/vanilla-emacs/readme.html#h:89A2FA66-9647-4BF8-A45C-EA61D5D95FDC
+   - https://github.com/jkitchin/scimax
+   - https://github.com/alhassy/emacs.d
+   - https://yannesposito.com/
+   - https://github.com/ThomasFKJorna/doom-emacs-config
+   - https://github.com/rougier/dotemacs
+   - https://www.reddit.com/r/unixporn/comments/s2extx/yabai_emacs_and_my_favorite_emacs_bootloader/
+   - https://www.fugue.co/blog/2015-11-11-guide-to-emacs.html
+   - https://github.com/Gavinok/emacs.d
+   - https://github.com/guilhermecomum/emacs.d
 
 ** design
 
@@ -617,6 +620,16 @@ Application backlog
 
 - https://github.com/joaotavora/sly
 - https://github.com/abo-abo/lispy
+
+***** Rust
+
+- https://robert.kra.hn/posts/rust-emacs-setup/#rust-emacs-configuration-in-detail
+
+- docs
+   - https://github.com/brotzeit/rustic#rust-docs-in-org-mode
+
+- completion
+   - https://github.com/racer-rust/emacs-racer
 
 ***** Common lisp
 

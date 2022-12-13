@@ -5,6 +5,9 @@
 *~
 *#*
 
+# art
+art/*
+
 # littering
 var/*
 transient/*

@@ -79,6 +79,8 @@ extension fails to load.")
 
 #+begin_src emacs-lisp
 
+(shapes-module "async")
+
 (defun custom/shapes-tangle (org-file &optional quiet)
   "Asynchronously tangle an org file."
   (let ((init-tangle-start-time (current-time))
@@ -551,7 +553,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "treemacs")
 
 #+end_src
-
+a
 
 ** Version control
 :PROPERTIES:
@@ -611,11 +613,15 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "company")
 ;; syntax checking
 (shapes-module "flycheck")
+;; language server protocol
+(shapes-module "lsp-mode")
 
 ;; lisp
 (shapes-module "rainbow-delimiters")
 ;; python
 (shapes-module "elpy")
+;; rust
+(shapes-module "rustic")
 
 #+end_src
 
@@ -773,49 +779,49 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ;; Configure custom agenda views
 (setq org-agenda-custom-commands
       '(("d" "Dashboard"
-	      ((agenda "" ((org-deadline-warning-days 7)))
-	       (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
-	       (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+	 ((agenda "" ((org-deadline-warning-days 7)))
+	  (todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))
+	  (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
 
-	     ("n" "Next Tasks"
-	      ((todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))))
+	("n" "Next Tasks"
+	 ((todo "NEXT" ((org-agenda-overriding-header "Next Tasks")))))
 
-	     ("w" "Work Tasks" tags-todo "work")
+	("w" "Work Tasks" tags-todo "work")
 
-	     ("e" "Emacs Tasks" tags-todo "emacs")
+	("e" "Emacs Tasks" tags-todo "emacs")
 
-	     ("z" "Low Effort" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-	      ((org-agenda-overriding-header "Low Effort Tasks")
-	       (org-agenda-max-todos 20)
-	       (org-agenda-files org-agenda-files)))
+	("z" "Low Effort" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+	 ((org-agenda-overriding-header "Low Effort Tasks")
+	  (org-agenda-max-todos 20)
+	  (org-agenda-files org-agenda-files)))
 
-	     ("s" "Workflow Status"
-	      ((todo "WAIT"
-		     ((org-agenda-overriding-header "Waiting on External")
-		      (org-agenda-files org-agenda-files)))
-	       (todo "REVIEW"
-		     ((org-agenda-overriding-header "In Review")
-		      (org-agenda-files org-agenda-files)))
-	       (todo "PLAN"
-		     ((org-agenda-overriding-header "In Planning")
-		      (org-agenda-todo-list-sublevels nil)
-		      (org-agenda-files org-agenda-files)))
-	       (todo "BACKLOG"
-		     ((org-agenda-overriding-header "Project Backlog")
-		      (org-agenda-todo-list-sublevels nil)
-		      (org-agenda-files org-agenda-files)))
-	       (todo "READY"
-		     ((org-agenda-overriding-header "Ready for Work")
-		      (org-agenda-files org-agenda-files)))
-	       (todo "ACTIVE"
-		     ((org-agenda-overriding-header "Active Projects")
-		      (org-agenda-files org-agenda-files)))
-	       (todo "COMPLETED"
-		     ((org-agenda-overriding-header "Completed Projects")
-		      (org-agenda-files org-agenda-files)))
-	       (todo "CANC"
-		     ((org-agenda-overriding-header "Cancelled Projects")
-		      (org-agenda-files org-agenda-files)))))))
+	("s" "Workflow Status"
+	 ((todo "WAIT"
+		((org-agenda-overriding-header "Waiting on External")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "REVIEW"
+		((org-agenda-overriding-header "In Review")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "PLAN"
+		((org-agenda-overriding-header "In Planning")
+		 (org-agenda-todo-list-sublevels nil)
+		 (org-agenda-files org-agenda-files)))
+	  (todo "BACKLOG"
+		((org-agenda-overriding-header "Project Backlog")
+		 (org-agenda-todo-list-sublevels nil)
+		 (org-agenda-files org-agenda-files)))
+	  (todo "READY"
+		((org-agenda-overriding-header "Ready for Work")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "ACTIVE"
+		((org-agenda-overriding-header "Active Projects")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "COMPLETED"
+		((org-agenda-overriding-header "Completed Projects")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "CANC"
+		((org-agenda-overriding-header "Cancelled Projects")
+		 (org-agenda-files org-agenda-files)))))))
 
 #+end_src
 
@@ -1725,16 +1731,17 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(straight-use-package 'evil-org)
-(require 'evil-org)
-(evil-org-set-key-theme '(navigation insert textobjects additional calendar))
+(with-eval-after-load 'org
+  (straight-use-package 'evil-org)
+  (require 'evil-org)
+  (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
 
-(require 'evil-org-agenda)
-(evil-org-agenda-set-keys)
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys)
 
-;; hooks
-(add-hook 'org-mode-hook  (lambda () (if evil-mode (evil-org-mode))))
-(add-hook 'evil-mode-hook (lambda () (if (string-equal major-mode "org-mode") (evil-org-mode))))
+  ;; hooks
+  (add-hook 'org-mode-hook  (lambda () (if evil-mode (evil-org-mode))))
+  (add-hook 'evil-mode-hook (lambda () (if (string-equal major-mode "org-mode") (evil-org-mode)))))
 
 #+end_src
 
@@ -2620,6 +2627,42 @@ the local machine:
 
 #+end_src
 
+**** Language server protocol
+***** eglot                                                         :ARCHIVE:
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-eglot.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'eglot)
+
+#+end_src
+
+***** lsp-mode
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-lsp-mode.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'lsp-mode)
+(require 'lsp-mode)
+
+#+end_src
+
+***** lsp-bridge                                                    :ARCHIVE:
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-lsp-bridge.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'lsp-bridge)
+(require 'lsp-bridge)
+
+#+end_src
+
 *** Specific
 **** Lisp
 ***** rainbow-delimiters
@@ -2637,7 +2680,6 @@ the local machine:
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 #+end_src
-
 **** Python
 ***** elpy
 :PROPERTIES:
@@ -2691,6 +2733,26 @@ sudo apt-get install python3-venv
 (load-library "matlab-load")
 
 (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
+
+#+end_src
+
+**** Rust
+***** rustic
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-rustic.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'rustic)
+
+;; Do not format org-babel blocks after a successful build
+(setq rustic-babel-format-src-block nil)
+;; Do not display compilation buffer of babel process
+(setq rustic-babel-display-compilation-buffer nil)
+
+;; Add cargo to exec-path
+(add-to-list 'exec-path "~/.cargo/bin")
 
 #+end_src
 
@@ -3127,6 +3189,7 @@ beginning lies on an Org Mode heading,
 (dolist (pair '(("<sh"   "shell")
 		("<el"   "emacs-lisp")
 		("<py"   "python")
+                ("<rs"   "rust")
                 ("<cpp"  "C++")
 		("<bash" "bash")
                 ("<tx"   "latex")))
