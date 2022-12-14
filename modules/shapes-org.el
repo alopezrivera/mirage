@@ -1,6 +1,9 @@
 (straight-use-package 'org)
 (require 'org)
 
+;; bindings  
+(define-key org-mode-map (kbd "C-<tab>") #'org-fold-hide-subtree)
+
 (require 'el-patch)
 
 (el-patch-feature org)

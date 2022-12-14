@@ -668,7 +668,6 @@ a
 
 ;; bindings
 (global-set-key (kbd "C-x c") #'org-capture)
-(define-key org-mode-map (kbd "C-<tab>") #'org-fold-hide-subtree)
 
 ;; always use property inheritance
 (setq-default org-use-property-inheritance t)
@@ -2821,6 +2820,9 @@ sudo apt-get install python3-venv
 
 (straight-use-package 'org)
 (require 'org)
+
+;; bindings  
+(define-key org-mode-map (kbd "C-<tab>") #'org-fold-hide-subtree)
 
 #+end_src
 

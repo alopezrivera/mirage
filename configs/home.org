@@ -154,7 +154,7 @@ References:
 #+begin_src emacs-lisp
 
 (setq light   'ef-deuteranopia-light)
-(setq dark    'catppuccin)
+(setq dark    'ef-tritanopia-dark)
 (shapes-layer "themes")
 
 #+end_src

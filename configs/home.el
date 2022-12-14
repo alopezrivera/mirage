@@ -3,7 +3,7 @@
 (shapes-layer "input")
 
 (setq light   'ef-deuteranopia-light)
-(setq dark    'catppuccin)
+(setq dark    'ef-tritanopia-dark)
 (shapes-layer "themes")
 
 (shapes-layer "modeline-moody")
