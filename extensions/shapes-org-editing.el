@@ -244,7 +244,7 @@ one character."
 								 (delete-forward-char 1)))
 	      (t (custom/nimble-delete-forward))))
 
-(define-key org-mode-map (kbd "<deletechar>") 'custom/org-nimble-delete-forward)
+(define-key org-mode-map (kbd "<delete>") 'custom/org-nimble-delete-forward)
 
 (defun custom/org-nimble-delete-backward ()
   "Org Mode complement to `custom/nimble-delete-backward'."

@@ -11,7 +11,7 @@
   (interactive)
   (delete-region (point) (progn (backward-word arg) (point))))
 
-(global-set-key (kbd "C-<deletechar>") #'custom/delete-word-forward)
+(global-set-key (kbd "C-<delete>") #'custom/delete-word-forward)
 (global-set-key (kbd "C-<backspace>")  #'custom/delete-word-backward)
 
 (defun custom/@delete-hungry (query)
@@ -52,7 +52,7 @@ next line plus one character."
 	    ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
 	    (t                                              (delete-forward-char 1))))
 
-(global-set-key (kbd "<deletechar>") #'custom/nimble-delete-forward)
+(global-set-key (kbd "<delete>") #'custom/nimble-delete-forward)
 
 (defun custom/nimble-delete-backward ()
   "Conditional forward deletion.

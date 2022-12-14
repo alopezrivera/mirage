@@ -4416,7 +4416,7 @@ displayed by `display-line-numbers-mode'."
   (interactive)
   (delete-region (point) (progn (backward-word arg) (point))))
 
-(global-set-key (kbd "C-<deletechar>") #'custom/delete-word-forward)
+(global-set-key (kbd "C-<delete>") #'custom/delete-word-forward)
 (global-set-key (kbd "C-<backspace>")  #'custom/delete-word-backward)
 
 #+end_src
@@ -4471,7 +4471,7 @@ next line plus one character."
 	    ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
 	    (t                                              (delete-forward-char 1))))
 
-(global-set-key (kbd "<deletechar>") #'custom/nimble-delete-forward)
+(global-set-key (kbd "<delete>") #'custom/nimble-delete-forward)
 
 #+end_src
 
@@ -6137,7 +6137,7 @@ one character."
 								 (delete-forward-char 1)))
 	      (t (custom/nimble-delete-forward))))
 
-(define-key org-mode-map (kbd "<deletechar>") 'custom/org-nimble-delete-forward)
+(define-key org-mode-map (kbd "<delete>") 'custom/org-nimble-delete-forward)
 
 #+end_src
 
