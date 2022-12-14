@@ -5615,7 +5615,9 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+end_src
 
-**** Restore
+**** TODO Restore
+
+- Not working
 
 - rewrite get-outline-state and set-outline-state
    - org-macs.el
@@ -5690,8 +5692,6 @@ DATA should have been made by `custom/org-get-outline-state'."
 #+end_src
 
 ***** Advice
-
-- not working
 
 #+begin_src emacs-lisp
 
