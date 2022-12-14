@@ -2,8 +2,8 @@
 (require 'org-tempo)
 
 ;; navigation
-(global-set-key (kbd "C-<tab>")         #'tempo-forward-mark)
-(global-set-key (kbd "C-<iso-lefttab>") #'tempo-backward-mark)
+(define-key org-mode-map (kbd "C-c f") #'tempo-forward-mark)
+(define-key org-mode-map (kbd "C-c b") #'tempo-backward-mark)
 
 ;; equations
 (tempo-define-template "latex-equation"

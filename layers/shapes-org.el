@@ -1,5 +1,6 @@
 ;; bindings
 (global-set-key (kbd "C-x c") #'org-capture)
+(define-key org-mode-map (kbd "C-<tab>") #'org-fold-hide-subtree)
 
 ;; always use property inheritance
 (setq-default org-use-property-inheritance t)
