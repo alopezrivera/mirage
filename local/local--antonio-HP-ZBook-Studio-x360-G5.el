@@ -9,8 +9,8 @@
 
 ;; dashboard image
 (setq dashboard-startup-banner (concat home "home/images/space/jupiter/NASA Juno - Jupiter (2) Dither.png"))
-(setq dashboard-image-banner-max-width  300)
-(setq dashboard-image-banner-max-height 300)
+(setq dashboard-image-banner-max-width  250)
+(setq dashboard-image-banner-max-height 250)
 
 ;; org-agenda
 (setq org-agenda-files (list (concat home "studio/contacts.org")))
