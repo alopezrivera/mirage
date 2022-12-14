@@ -3,15 +3,11 @@
 ;; theme reload advice
 (defun custom/org-theme-reload ()
   "Re-set Org Mode UI typesetting after theme changes"
-  (if (string-equal major-mode "org-mode")
-      (org-mode)
-    (progn
-      (setq window (get-buffer-window (current-buffer)))
-      (cl-loop for buffer in (custom/get-visible-buffers)
-	             do (select-window (get-buffer-window buffer))
-	 	     if (string-equal major-mode "org-mode")
-                     do (custom/org-ui-typeset))
-      (select-window window))))
+  (save-window-excursion
+    (cl-loop for buffer in (custom/get-visible-buffers)
+	     do (select-window (get-buffer-window buffer))
+	     if (string-equal major-mode "org-mode")
+             do (custom/org-ui-typeset))))
 
 (add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
 
