@@ -3523,6 +3523,15 @@ if it was previously enabled."
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-babel.el
 :END:
+****** Editing
+
+#+begin_src emacs-lisp
+
+;; src edit buffer in current window
+(setq org-src-window-setup "current-window")
+
+#+end_src
+
 ****** Languages
 
 #+begin_src emacs-lisp

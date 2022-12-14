@@ -1,3 +1,6 @@
+;; src edit buffer in current window
+(setq org-src-window-setup "current-window")
+
 ;; Language packages
 (org-babel-do-load-languages
  'org-babel-load-languages
