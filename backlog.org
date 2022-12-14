@@ -17,6 +17,7 @@
 - direct influences
    - https://github.com/Lambda-Emacs/lambda-emacs
    - https://github.com/tecosaur/emacs-config/blob/master/config.org
+   - https://github.com/Likhon-baRoy/.emacs.d#readme
 
 - inspiration
    - https://github.com/radian-software/radian
