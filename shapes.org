@@ -4406,6 +4406,8 @@ displayed by `display-line-numbers-mode'."
 
 **** Word
 
+Do not save whole killed words in kill ring.
+
 #+begin_src emacs-lisp
 
 (defun custom/delete-word-forward (&optional arg)
