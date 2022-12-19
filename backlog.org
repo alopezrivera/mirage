@@ -792,7 +792,11 @@ Application backlog
    - https://www.masteringemacs.org/article/polymode-multiple-major-modes-how-to-use-sql-python-in-one-buffer
    - https://github.com/polymode/poly-org
    - https://github.com/polymode/polymode
-
+- sync block with external file
+   - detangle
+      - https://emacs.stackexchange.com/a/45180
+   - tanglesync (single block per file)
+      - https://github.com/mtekman/org-tanglesync.el
 
 **** Export
 
@@ -810,7 +814,7 @@ Application backlog
 #+begin_src emacs-lisp
 
 (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
-			        "xelatex -interaction nonstopmode %f"))
+			      "xelatex -interaction nonstopmode %f"))
 
 #+end_src
 
