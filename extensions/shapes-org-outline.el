@@ -3,7 +3,7 @@
 (defun custom/org-hide-previous-subtree ()
   "Cycle previous Org Mode heading."
   (save-excursion (custom/org-goto-heading-previous)
-		        (outline-hide-subtree)))
+		  (outline-hide-subtree)))
 
 (defun custom/org-show (orig-fun &rest args)
   (if (custom/org-at-ellipsis)
@@ -45,6 +45,15 @@ indented at the level of the previous list item, indent the paragraph."
       (apply orig-fun args))))
 
 (advice-add 'org-cycle :around #'custom/org-cycle)
+
+(defun custom/c-cycle ()
+  (interactive)
+  (if (and (org-in-src-block-p) (not (invisible-p (point-at-eol))))
+      (progn (org-babel-goto-src-block-head)
+             (org-fold-hide-block-toggle))
+    (org-fold-hide-subtree)))
+
+(define-key org-mode-map (kbd "C-<tab>") #'custom/c-cycle)
 
 (defun custom/org-identify-hidden-overlays (overlay &optional use-markers)
   (when (eq (overlay-get overlay 'invisible) 'outline)
