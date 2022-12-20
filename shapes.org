@@ -4,8 +4,10 @@
 #+FILETAGS: :emacs:
 
 
+
 #+title:Shapes
 #+PROPERTY: header-args:emacs-lisp :results none :mkdirp yes
+
 
 
 * Core
@@ -2121,6 +2123,7 @@ the local machine:
 (require 'rg)
 
 #+end_src
+
 ** Editing
 *** Undo
 **** TODO vundo
@@ -5134,6 +5137,7 @@ the user for confirmation."
   (custom/relative-line-regex "^#+.*$" number))
 
 #+END_src 
+
 ****** org-at-heading
 
 #+begin_src emacs-lisp
@@ -5273,6 +5277,7 @@ is on a folded heading."
   (custom/relative-line 'org-at-heading-or-item-p number))
 
 #+end_src
+
 ***** subtree
 ****** org-subtree-blank
 
