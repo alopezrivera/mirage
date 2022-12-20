@@ -27,12 +27,12 @@
 
 ;; figures
 (tempo-define-template "fig"
-		          '("#+NAME: fig:" p n
-			    "#+CAPTION: " p n
-			    "#+ATTR_ORG: :width 450" n
-			    "[[./" p "]]" >)
-			  "<f"
-			  "Org Mode figure template")
+		       '("#+NAME: fig:" p n
+			 "#+CAPTION: " p n
+			 "#+ATTR_ORG: :width 450" n
+			 "[[./" p "]]" >)
+		       "<fig"
+		       "Org Mode figure template")
 
 (defun custom/tempo-code-block (key language)
   (tempo-define-template language

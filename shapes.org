@@ -3166,12 +3166,12 @@ beginning lies on an Org Mode heading,
 
 ;; figures
 (tempo-define-template "fig"
-		          '("#+NAME: fig:" p n
-			    "#+CAPTION: " p n
-			    "#+ATTR_ORG: :width 450" n
-			    "[[./" p "]]" >)
-			  "<f"
-			  "Org Mode figure template")
+		       '("#+NAME: fig:" p n
+			 "#+CAPTION: " p n
+			 "#+ATTR_ORG: :width 450" n
+			 "[[./" p "]]" >)
+		       "<fig"
+		       "Org Mode figure template")
 
 #+end_src
 
