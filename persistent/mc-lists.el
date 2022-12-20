@@ -19,6 +19,7 @@
         custom/org-double-home
         custom/org-nimble-delete-backward
         custom/org-nimble-delete-forward
+        custom/org-super-return
         custom/org-undo
         custom/rectangular-region-multiple-cursors
         custom/smart-comment
@@ -83,6 +84,7 @@
         find-file
         list-buffers
         magit-status
+        mark-whole-buffer
         mouse-drag-mode-line
         mouse-drag-vertical-line
         mouse-save-then-kill

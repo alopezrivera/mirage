@@ -4,8 +4,9 @@
 
 (setq home "/media/antonio/T7/")
 
-(setq startup-buffers (list (concat config-directory "backlog.org")
-                            (concat home "backlog.org")))
+(setq startup-buffers (list (concat home "backlog.org")
+                            (concat home "studio/projects/projects.org")
+                            (concat config-directory "backlog.org")))
 
 ;; dashboard image
 (setq dashboard-startup-banner (concat home "home/images/space/jupiter/NASA Juno - Jupiter (2) Dither.png"))
@@ -13,10 +14,10 @@
 (setq dashboard-image-banner-max-height 250)
 
 ;; org-agenda
-(setq org-agenda-files (list (concat home "studio/contacts.org")))
+(setq org-agenda-files (list (concat home "studio/contact book.org")))
 
 ;; org-contacts
-(setq org-contacts-files (list (concat home "studio/contacts.org")))
+(setq org-contacts-files (list (concat home "studio/contact book.org")))
 
 ;; org-roam directory
 (setq org-roam-directory (concat home "home/library/zettelkasten"))

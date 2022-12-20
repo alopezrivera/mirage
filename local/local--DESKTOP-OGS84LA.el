@@ -18,15 +18,19 @@
 ;; home
 (setq home "/mnt/e/")
 
-(setq startup-buffers
-      (list (concat home "backlog.org")
-            (concat config-directory "backlog.org")))
+(setq startup-buffers (list (concat home "backlog.org")
+                            (concat home "studio/projects/projects.org")
+                            (concat config-directory "backlog.org")))
+
+;; dashboard image
+(setq dashboard-image-banner-max-width  250)
+(setq dashboard-image-banner-max-height 250)
 
 ;; org-agenda
-(setq org-agenda-files (list (concat home "studio/contacts.org")))
+(setq org-agenda-files (list (concat home "studio/contact book.org")))
 
 ;; org-contacts
-(setq org-contacts-files (list (concat home "studio/contacts.org")))
+(setq org-contacts-files (list (concat home "studio/contact book.org")))
 
 ;; org-roam directory
 (setq org-roam-directory (concat home "home/scribbles/roam"))

@@ -40,6 +40,8 @@
 - https://github.com/rougier/book-mode
 - https://github.com/rougier/nano-emacs/blob/master/nano-writer.el
 
+- https://lepisma.xyz/2017/10/28/ricing-org-mode/
+
 ** general
 
 - https://github.com/emacs-tw/awesome-emacs
@@ -560,7 +562,7 @@ Application backlog
 
 - https://xenodium.com/emacs-quick-kill-process/
 
-
+ 
 *** IDE
 **** General
 ***** UI
@@ -649,6 +651,15 @@ Application backlog
    - dap-mode
    - helm-lsp
    - helm
+
+***** PowerShell
+
+- mode
+   - https://github.com/jschaf/powershell.el
+- org-babel
+   - https://github.com/togakangaroo/ob-pwsh#org1bf670c
+   - https://gist.github.com/cbilson/ae0d90d163be4d769f8a15ddb58292bc
+
 
 *** PDF
 
@@ -793,6 +804,11 @@ Application backlog
    - https://github.com/polymode/poly-org
    - https://github.com/polymode/polymode
 
+- reverse tangling
+   - org-babel-detangle
+      - https://emacs.stackexchange.com/a/45180
+   - org-tanglesync (single block per file)
+      - https://gitlab.com/mtekman/org-tanglesync.el
 
 **** Export
 
@@ -1138,6 +1154,12 @@ Application backlog
 - taxy
    - https://github.com/alphapapa/taxy.el
 
+** ChatGPT
+- https://www.seotraininglondon.org/gpt3-business-email-generator/
+- https://github.com/joshcho/ChatGPT.el
+- https://zapier.com/
+- https://github.com/huginn/huginn
+- https://medevel.com/open-source-zapier-ifttt-alternatives/
 
 ** hyperbole
 
