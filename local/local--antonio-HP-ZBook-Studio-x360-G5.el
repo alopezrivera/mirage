@@ -4,7 +4,7 @@
 
 (setq home "/media/antonio/T7/")
 
-(setq startup-buffers (list (concat home "backlog.org")
+(setq startup-buffers (list (concat home "studio/agenda.org")
                             (concat home "studio/projects/projects.org")
                             (concat config-directory "backlog.org")))
 
@@ -14,7 +14,8 @@
 (setq dashboard-image-banner-max-height 250)
 
 ;; org-agenda
-(setq org-agenda-files (list (concat home "studio/contact book.org")))
+(setq org-agenda-files (list (concat home "studio/agenda.org")
+                             (concat home "studio/contact book.org")))
 
 ;; org-contacts
 (setq org-contacts-files (list (concat home "studio/contact book.org")))

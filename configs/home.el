@@ -65,3 +65,6 @@
 (shapes-layer "org-agenda")
 ;; (shapes-layer "org-typesetting")
 (shapes-layer "org-latex-preview")
+
+;; custom links
+(@custom/org-dir-link "msc1" (concat home "studio/academic/education/TU Delft/MSc/Space Flight/SPF-1/"))
