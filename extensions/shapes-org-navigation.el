@@ -120,5 +120,22 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
       ;; else, attempt going to last subheading of previous same-level heading
       (custom/org-goto-child-last))))
 
+(defmacro @custom/org-dir-link-complete (name dir)
+  `(defun ,(intern (concat "org-" name "-link-complete")) ()
+     "Create an org-link target string to a file in org-`name'-link-complete."
+     (concat ,name ":" (file-relative-name (read-file-name "File: " ,dir) ,dir))))
+
+(defmacro @custom/org-dir-link-follow (name dir)
+  `(defun ,(intern (concat "org-" name "-link-follow")) (link)
+     "Follow an org-link to a file in org-`name'-link-follow."
+     (find-file (expand-file-name link ,dir))))
+
+(defmacro @custom/org-dir-link (name dir)
+  `(progn (@custom/org-dir-link-complete ,name ,dir)
+          (@custom/org-dir-link-follow   ,name ,dir)
+          (org-link-set-parameters ,name
+                                   :complete ',(intern (concat "org-" name "-link-complete"))
+                                   :follow   ',(intern (concat "org-" name "-link-follow")))))
+
 (provide 'shapes-extension-org-navigation)
 ;;; shapes-org-navigation.el ends here

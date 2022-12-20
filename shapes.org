@@ -6438,6 +6438,33 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+end_src
 
+**** Custom link types
+
+Macros to make the creation of custom link types a breeze.
+
+***** Link to items in a specific directory
+
+#+begin_src emacs-lisp
+
+(defmacro @custom/org-dir-link-complete (name dir)
+  `(defun ,(intern (concat "org-" name "-link-complete")) ()
+     "Create an org-link target string to a file in org-`name'-link-complete."
+     (concat ,name ":" (file-relative-name (read-file-name "File: " ,dir) ,dir))))
+
+(defmacro @custom/org-dir-link-follow (name dir)
+  `(defun ,(intern (concat "org-" name "-link-follow")) (link)
+     "Follow an org-link to a file in org-`name'-link-follow."
+     (find-file (expand-file-name link ,dir))))
+
+(defmacro @custom/org-dir-link (name dir)
+  `(progn (@custom/org-dir-link-complete ,name ,dir)
+          (@custom/org-dir-link-follow   ,name ,dir)
+          (org-link-set-parameters ,name
+                                   :complete ',(intern (concat "org-" name "-link-complete"))
+                                   :follow   ',(intern (concat "org-" name "-link-follow")))))
+
+#+end_src
+
 
 *** Applications
 :PROPERTIES:
