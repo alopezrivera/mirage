@@ -2821,9 +2821,6 @@ sudo apt-get install python3-venv
 (straight-use-package 'org)
 (require 'org)
 
-;; bindings  
-(define-key org-mode-map (kbd "C-<tab>") #'org-fold-hide-subtree)
-
 #+end_src
 
 *** Patches
@@ -5548,7 +5545,7 @@ a `custom/region-blank'."
 (defun custom/org-hide-previous-subtree ()
   "Cycle previous Org Mode heading."
   (save-excursion (custom/org-goto-heading-previous)
-		        (outline-hide-subtree)))
+		  (outline-hide-subtree)))
 
 #+end_src
 
@@ -5625,6 +5622,21 @@ indented at the level of the previous list item, indent the paragraph."
       (apply orig-fun args))))
 
 (advice-add 'org-cycle :around #'custom/org-cycle)
+
+#+end_src
+
+**** C-Cycle
+
+#+begin_src emacs-lisp
+
+(defun custom/c-cycle ()
+  (interactive)
+  (if (and (org-in-src-block-p) (not (invisible-p (point-at-eol))))
+      (progn (org-babel-goto-src-block-head)
+             (org-fold-hide-block-toggle))
+    (org-fold-hide-subtree)))
+
+(define-key org-mode-map (kbd "C-<tab>") #'custom/c-cycle)
 
 #+end_src
 
