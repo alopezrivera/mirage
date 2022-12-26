@@ -1,3 +1,10 @@
+;; Mark items as done
+(defun custom/org-agenda-todo-done ()
+  (interactive)
+  (org-agenda-todo 'done))
+
+(define-key org-agenda-mode-map (kbd "d") 'custom/org-agenda-todo-done)
+
 (defvar custom/org-babel-result-wrap-formats
   '(((assq :wrap (nth 2 info))
      (let* ((full (or (cdr (assq :wrap (nth 2 info))) "results"))
