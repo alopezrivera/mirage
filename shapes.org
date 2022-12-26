@@ -749,28 +749,30 @@ a
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-org-agenda.el
 :END:
-**** Files
 
 #+begin_src emacs-lisp
 
-(let ((files org-agenda-files))
-  (dolist (file files)
-    (if (not (file-exists-p file))
-        (progn (setq org-agenda-files (remove file files))
-               (print (concat "WARNING: ignoring nonexistent agenda file: " file))))))
+;; settings
+(setq org-agenda-skip-scheduled-if-done nil)
+(setq org-agenda-skip-deadline-if-done nil)
+(setq org-agenda-window-setup 'reorganize-frame)
+(setq org-deadline-warning-days 14)
+
+;; modules
+(shapes-module "org-agenda")
+(shapes-module "org-super-agenda")
+(shapes-module "org-rainbow-tags")
 
 #+end_src
 
-**** Tags
+**** Keywords
 
 #+begin_src emacs-lisp
 
-(setq org-tag-alist
-      '((:startgroup)
-	;; Put mutually exclusive tags here
-	(:endgroup)
-	("home"     . ?h)
-	("work"     . ?w)))
+;; Define TODO keyword sequences
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "TODAY(n)" "WAIT(w@/!)" "|" "DONE(d!)")
+	(sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(r)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
 #+end_src
 
