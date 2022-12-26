@@ -6573,8 +6573,8 @@ allowing users to easily add custom result insertion formats.
 
 #+end_src
 
-****** Custom formats
-******* LaTeX equations
+******* Custom formats
+******** LaTeX equations
 
 Display results inside of a LaTeX ~equation~ environment, and automatically preview it with ~org-latex-preview~.
 
@@ -6588,7 +6588,7 @@ Display results inside of a LaTeX ~equation~ environment, and automatically prev
 
 #+end_src
 
-****** Patch
+******* Patch
 
 #+begin_src emacs-lisp
 
@@ -6928,3 +6928,4 @@ INFO may provide the values of these header arguments (in the
 	    (set-marker visible-end nil)))))))
 
 #+end_src
+
