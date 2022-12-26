@@ -3400,54 +3400,37 @@ if it was previously enabled."
 (require 'org-agenda)
 (global-set-key (kbd "C-c a") #'org-agenda)
 
-#+end_src
-
-****** Entries
-******* Tag alignment
-
-#+begin_src emacs-lisp
-
 ;; Tag indentation
 (setq org-tags-column 70)
 
 #+end_src
 
-****** Agenda
-******* Editing
+***** org-super-agenda
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-super-agenda.el
+:END:
 
 #+begin_src emacs-lisp
 
-;; Mark items as done
-(defun custom/org-agenda-todo-done ()
-  (interactive)
-  (org-agenda-todo 'done))
-
-(define-key org-agenda-mode-map (kbd "d") 'custom/org-agenda-todo-done)
+(straight-use-package 'org-super-agenda)
+(require 'org-super-agenda)
+(org-super-agenda-mode)
 
 #+end_src
 
-******* Navigation
-******** TODO Visit
+***** org-rainbow-tags
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-rainbow-tags.el
+:END:
 
-- org-recenter -> unfold -> move away -> fold back
-   - arrows -> fold previous item
-   - recenter -> unfold item
-- currently- 
-   - org-recenter -> all todo items unfolded
+#+begin_src emacs-lisp
 
-#+begin_src emacs-lisp :tangle no
+(straight-use-package '(org-rainbow-tags :type git :host github :repo "KaratasFurkan/org-rainbow-tags"))
+(require 'org-rainbow-tags)
 
-(defun custom/org-agenda-recenter (arg)
-  (interactive "P")
-  (let ((last-called (get this-command 'custom/last-call-time)))
-    (if (eq last-command this-command)
-        (progn (custom/org-restore-outline-state)
-	       (org-agenda-recenter arg))
-      (progn (custom/org-save-outline-state)
-	     (org-agenda-recenter arg))))
-  (put this-command 'custom/last-call-time (current-time)))
+(add-hook 'org-mode-hook 'org-rainbow-tags-mode)
 
-(define-key org-agenda-mode-map (kbd "<tab>") 'org-agenda-recenter)
+(setq org-rainbow-tags-hash-start-index 5)
 
 #+end_src
 
@@ -6477,15 +6460,56 @@ Macros to make the creation of custom link types a breeze.
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./extensions/shapes-org-applications.el
 :END:
-**** org-babel
-***** TODO Result formatting
+**** Agenda
+***** org-agenda
+****** Editing
+
+#+begin_src emacs-lisp
+
+;; Mark items as done
+(defun custom/org-agenda-todo-done ()
+  (interactive)
+  (org-agenda-todo 'done))
+
+(define-key org-agenda-mode-map (kbd "d") 'custom/org-agenda-todo-done)
+
+#+end_src
+
+****** Navigation
+******* TODO Visit
+
+- org-recenter -> unfold -> move away -> fold back
+   - arrows -> fold previous item
+   - recenter -> unfold item
+- currently- 
+   - org-recenter -> all todo items unfolded
+
+#+begin_src emacs-lisp :tangle no
+
+(defun custom/org-agenda-recenter (arg)
+  (interactive "P")
+  (let ((last-called (get this-command 'custom/last-call-time)))
+    (if (eq last-command this-command)
+        (progn (custom/org-restore-outline-state)
+	       (org-agenda-recenter arg))
+      (progn (custom/org-save-outline-state)
+	     (org-agenda-recenter arg))))
+  (put this-command 'custom/last-call-time (current-time)))
+
+(define-key org-agenda-mode-map (kbd "<tab>") 'org-agenda-recenter)
+
+#+end_src
+
+**** Programming
+***** org-babel
+****** TODO Result formatting
 
 Modify ~org-babel-insert-result~ such that a list stores all result insertion formats,
 allowing users to easily add custom result insertion formats.
 
 - [[https://www.reddit.com/r/emacs/comments/z3lz0d/orgbabel_custom_result_formatting_automatic/][Discussion on Reddit]]
 
-****** Default formats
+******* Default formats
 
 #+begin_src emacs-lisp
 
