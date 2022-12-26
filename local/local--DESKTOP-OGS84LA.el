@@ -20,7 +20,7 @@
 
 (setq startup-buffers (list (concat home "studio/agenda.org")
                             (concat home "studio/projects/projects.org")
-                            (concat config-directory "backlog.org")))
+                            (concat config-directory "shapes.org")))
 
 ;; dashboard image
 (setq dashboard-image-banner-max-width  250)

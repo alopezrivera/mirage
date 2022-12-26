@@ -6,7 +6,7 @@
 
 (setq startup-buffers (list (concat home "studio/agenda.org")
                             (concat home "studio/projects/projects.org")
-                            (concat config-directory "backlog.org")))
+                            (concat config-directory "shapes.org")))
 
 ;; dashboard image
 (setq dashboard-startup-banner (concat home "home/images/space/jupiter/NASA Juno - Jupiter (2) Dither.png"))
