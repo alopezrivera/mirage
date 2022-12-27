@@ -9,6 +9,7 @@
         comment-line
         custom/del-backward
         custom/delete-word-backward
+        custom/delete-word-forward
         custom/double-end
         custom/double-home
         custom/kill-ring-mouse
