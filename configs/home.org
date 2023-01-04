@@ -146,6 +146,7 @@ References:
 #+begin_src emacs-lisp
 
 (shapes-layer "input")
+(shapes-extend "rsi")
 
 #+end_src
 

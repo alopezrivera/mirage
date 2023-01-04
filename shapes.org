@@ -417,9 +417,6 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 #+begin_src emacs-lisp
 
-;; bindings
-(global-set-key (kbd "C-=") #'save-buffer)
-
 ;; confirmation
 (advice-add 'yes-or-no-p :override #'y-or-n-p)
 ;; advanced commands
@@ -4315,6 +4312,20 @@ displayed by `display-line-numbers-mode'."
 
 #+end_src
 
+
+** Input
+*** RSI
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-rsi.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; save-buffer
+(global-set-key (kbd "C-=") #'save-buffer)
+(global-set-key (kbd "C-x C-s") nil)
+
+#+end_src
 
 ** Editing
 :PROPERTIES:

@@ -1,6 +1,7 @@
 (shapes-layer "ui")
 
 (shapes-layer "input")
+(shapes-extend "rsi")
 
 (setq light   'ef-deuteranopia-light)
 (setq dark    'ef-tritanopia-dark)
