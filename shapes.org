@@ -3732,9 +3732,9 @@ Content of an extension:
 
 (defun custom/get-buffer-by-file-name (file)
   (cl-loop for buffer in (buffer-list)
-	        if (string-equal (buffer-name buffer) (file-name-nondirectory file))
-	           return buffer
-		finally return nil))
+	   if (string-equal (buffer-name buffer) (file-name-nondirectory file))
+	   return buffer
+	   finally return nil))
 
 #+end_src
 

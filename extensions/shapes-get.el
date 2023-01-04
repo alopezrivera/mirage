@@ -35,9 +35,9 @@
 
 (defun custom/get-buffer-by-file-name (file)
   (cl-loop for buffer in (buffer-list)
-	        if (string-equal (buffer-name buffer) (file-name-nondirectory file))
-	           return buffer
-		finally return nil))
+	   if (string-equal (buffer-name buffer) (file-name-nondirectory file))
+	   return buffer
+	   finally return nil))
 
 (defun custom/get-active-window-number ()
   "Retrieve the current window's number."
