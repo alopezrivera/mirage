@@ -41,7 +41,6 @@
         kill-rectangle
         kill-region
         nxml-electric-slash
-        org-babel-execute-src-block
         org-backward-sentence
         org-beginning-of-line
         org-ctrl-c-ctrl-c
@@ -71,6 +70,7 @@
         clm/toggle-command-log-buffer
         comint-interrupt-subjob
         comint-previous-input
+        completion-at-point
         counsel-M-x
         custom/double-escape
         custom/mouse-rectangle
@@ -93,6 +93,7 @@
         mouse-set-region
         mouse-start-rectangle
         next-buffer
+        org-babel-execute-src-block
         org-babel-execute-subtree
         org-babel-tangle
         org-metadown
