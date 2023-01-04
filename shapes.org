@@ -2779,6 +2779,10 @@ sudo apt-get install python3-venv
 (pdf-loader-install)
 (require 'pdf-tools)
 
+;; page switching
+(define-key pdf-view-mode-map (kbd "<up>")   #'pdf-view-previous-page)
+(define-key pdf-view-mode-map (kbd "<down>") #'pdf-view-next-page)
+
 ;; replace swiper
 (define-key pdf-view-mode-map (kbd "C-s") #'isearch-forward)
 
@@ -4329,6 +4333,7 @@ displayed by `display-line-numbers-mode'."
 (cl-loop for map in (list
                      global-map
                      ;; plus minor mode maps that override the keys
+                     pdf-view-mode-map
                      pixel-scroll-precision-mode-map)
          do (define-key map (kbd "<next>")  #'next-buffer)
          do (define-key map (kbd "<prior>") #'previous-buffer))

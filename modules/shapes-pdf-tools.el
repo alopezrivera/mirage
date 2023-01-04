@@ -6,6 +6,10 @@
 (pdf-loader-install)
 (require 'pdf-tools)
 
+;; page switching
+(define-key pdf-view-mode-map (kbd "<up>")   #'pdf-view-previous-page)
+(define-key pdf-view-mode-map (kbd "<down>") #'pdf-view-next-page)
+
 ;; replace swiper
 (define-key pdf-view-mode-map (kbd "C-s") #'isearch-forward)
 
