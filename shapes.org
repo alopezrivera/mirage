@@ -286,9 +286,9 @@ Content of a layer:
 #+begin_src emacs-lisp
 
 ;; requirements
-(require 'projectile)
-(require 'all-the-icons)
-(require 'page-break-lines)
+(shapes-module "projectile")
+(shapes-module "all-the-icons")
+(shapes-module "page-break-lines")
 
 ;; dashboard
 (shapes-module "emacs-dashboard")
@@ -455,6 +455,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 (shapes-module "all-the-icons-completion")
 
 #+end_src
+
 ** Navigation
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./layers/shapes-navigation.el
@@ -2772,7 +2773,7 @@ sudo apt-get install python3-venv
 #+begin_src emacs-lisp
 
 ;; requirements
-(require 'tablist)
+(shapes-module "tablist")
 
 (straight-use-package 'pdf-tools)
 (pdf-tools-install)

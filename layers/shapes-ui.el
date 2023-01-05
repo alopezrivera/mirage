@@ -50,9 +50,9 @@
 (shapes-module "delight")
 
 ;; requirements
-(require 'projectile)
-(require 'all-the-icons)
-(require 'page-break-lines)
+(shapes-module "projectile")
+(shapes-module "all-the-icons")
+(shapes-module "page-break-lines")
 
 ;; dashboard
 (shapes-module "emacs-dashboard")
