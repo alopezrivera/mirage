@@ -1,3 +1,7 @@
+;; requirements
+(pixel-scroll-precision-mode)
+(shapes-module "pdf-tools")
+
 ;; save-buffer
 (global-set-key (kbd "C-=") #'save-buffer)
 (global-set-key (kbd "C-x C-s") nil)
@@ -5,7 +9,7 @@
 ;; buffer switching
 (cl-loop for map in (list
                      global-map
-                     ;; plus minor mode maps that override the keys
+                     ;; plus mode maps that override the keys
                      pdf-view-mode-map
                      pixel-scroll-precision-mode-map)
          do (define-key map (kbd "<next>")  #'next-buffer)
