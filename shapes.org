@@ -3622,6 +3622,18 @@ if it was previously enabled."
 #+end_src
 
 **** Time-tracking
+***** org-pomodoro
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-org-pomodoro.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; org-pomodoro
+(straight-use-package 'org-pomodoro)
+
+#+end_src
+
 ***** org-agenda-log-mode
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-agenda-log-mode.el

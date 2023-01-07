@@ -63,21 +63,21 @@
 
 (shapes-layer "org")
 (shapes-layer "org-ui")
-(shapes-layer "org-agenda")
 ;; (shapes-layer "org-typesetting")
 (shapes-layer "org-latex-preview")
 
 ;; custom links
 (@custom/org-dir-link "msc1" (concat home "studio/academic/education/TU Delft/MSc/Space Flight/SPF-1/"))
 
-;; org-agenda tags
+;; org-agenda
+(shapes-layer "org-agenda")
+
 (setq org-tag-alist
       '((:startgroup)
 	;; Put mutually exclusive tags here
         ("internship" . ?u)
 	(:endgroup)))
 
-;; org-super-agenda groups
 (setq org-super-agenda-groups
       '(;; Each group has an implicit boolean OR operator between its selectors.
         (:name "Today"  ; Optionally specify section name
@@ -94,3 +94,6 @@
         ;; After the last group, the agenda will display items that didn't
         ;; match any of these groups, with the default order position of 99
         ))
+
+;; org-gtd
+(shapes-layer "org-gtd")
