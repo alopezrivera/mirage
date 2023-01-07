@@ -3632,6 +3632,9 @@ if it was previously enabled."
 ;; org-pomodoro
 (straight-use-package 'org-pomodoro)
 
+;; visual notifications
+(setq alert-user-configuration (quote ((((:category . "org-pomodoro")) libnotify nil))))
+
 #+end_src
 
 ***** org-agenda-log-mode
