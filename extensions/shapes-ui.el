@@ -23,7 +23,7 @@ through as a theme loads."
 	   do (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
 		     (set-face-attribute face nil :inherit accent))))
 
-(advice-add 'load-theme :around #'custom/theme-accents)
+(advice-add 'custom/enable-or-load-theme :around #'custom/theme-accents)
 
 (defun custom/quit-window ()
   (interactive)

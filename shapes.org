@@ -2834,6 +2834,18 @@ sudo apt-get install python3-venv
 
 #+end_src
 
+** LaTeX
+*** AUCTeX
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-AUCTeX.el
+:END:
+
+#+begin_src emacs-lisp
+
+(use-package tex :straight auctex)
+
+#+end_src
+
 ** Org Mode
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org.el
@@ -4073,7 +4085,7 @@ through as a theme loads."
 	   do (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
 		     (set-face-attribute face nil :inherit accent))))
 
-(advice-add 'load-theme :around #'custom/theme-accents)
+(advice-add 'custom/enable-or-load-theme :around #'custom/theme-accents)
 
 #+end_src
 
