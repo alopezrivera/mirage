@@ -3,6 +3,9 @@
 (setq auto-window-vscroll nil)
 (setq mouse-wheel-progressive-speed nil)
 
+;; buffers
+(global-set-key (kbd "C-<down>") #'bury-buffer)
+
 ;; windows
 (winner-mode)
 
