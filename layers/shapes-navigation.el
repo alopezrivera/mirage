@@ -4,7 +4,7 @@
 (setq mouse-wheel-progressive-speed nil)
 
 ;; buffers
-(global-set-key (kbd "M-<delete>") #'bury-buffer)
+(global-set-key (kbd "C-<delete>") #'bury-buffer)
 
 ;; windows
 (winner-mode)
