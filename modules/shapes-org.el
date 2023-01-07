@@ -1,6 +1,9 @@
 (straight-use-package 'org)
 (require 'org)
 
+;; org modules
+(require 'org-inlinetask)
+
 (require 'el-patch)
 
 (el-patch-feature org)

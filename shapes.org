@@ -2856,6 +2856,9 @@ sudo apt-get install python3-venv
 (straight-use-package 'org)
 (require 'org)
 
+;; org modules
+(require 'org-inlinetask)
+
 #+end_src
 
 *** Patches
