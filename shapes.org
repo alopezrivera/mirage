@@ -3632,6 +3632,9 @@ if it was previously enabled."
 ;; org-pomodoro
 (straight-use-package 'org-pomodoro)
 
+;; bindings
+(define-key org-mode-map (kbd "C-c p") #'org-pomodoro)
+
 ;; visual notifications
 (setq alert-user-configuration (quote ((((:category . "org-pomodoro")) libnotify nil))))
 
@@ -4924,7 +4927,7 @@ before the execution of any command.")
 	      (progn (select-window target)
 		     (setq custom/window-previous current)))))
 
-(global-set-key (kbd "C-c p") #'custom/goto-window-previous)
+(global-set-key (kbd "C-p") #'custom/goto-window-previous)
 
 #+end_src
 

@@ -130,7 +130,7 @@ before the execution of any command.")
 	      (progn (select-window target)
 		     (setq custom/window-previous current)))))
 
-(global-set-key (kbd "C-c p") #'custom/goto-window-previous)
+(global-set-key (kbd "C-p") #'custom/goto-window-previous)
 
 (provide 'shapes-extension-navigation)
 ;;; shapes-navigation.el ends here
