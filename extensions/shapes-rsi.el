@@ -7,6 +7,8 @@
 (global-set-key (kbd "C-x C-s") nil)
 
 ;; buffer switching
+(global-unset-key (kbd "C-x <right>"))
+(global-unset-key (kbd "C-x <left>"))
 (cl-loop for map in (list
                      global-map
                      ;; plus mode maps that override the keys
