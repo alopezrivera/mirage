@@ -7,8 +7,10 @@
 (require 'pdf-tools)
 
 ;; page switching
-(define-key pdf-view-mode-map (kbd "<up>")   #'pdf-view-previous-line-or-previous-page)
-(define-key pdf-view-mode-map (kbd "<down>") #'pdf-view-next-line-or-next-page)
+(define-key pdf-view-mode-map (kbd "<up>")    #'pdf-view-previous-line-or-previous-page)
+(define-key pdf-view-mode-map (kbd "<down>")  #'pdf-view-next-line-or-next-page)
+(define-key pdf-view-mode-map (kbd "<left>")  #'pdf-view-previous-page)
+(define-key pdf-view-mode-map (kbd "<right>") #'pdf-view-next-page)
 
 ;; replace swiper
 (define-key pdf-view-mode-map (kbd "C-s") #'isearch-forward)
@@ -29,8 +31,8 @@
 ;; [d]elete annotation
 (define-key pdf-view-mode-map (kbd "d") #'pdf-annot-delete)
 ;; lateral scrolling
-(define-key pdf-view-mode-map (kbd "S-<wheel-up>")   #'image-backward-hscroll)
-(define-key pdf-view-mode-map (kbd "S-<wheel-down>") #'image-forward-hscroll)
+(define-key pdf-view-mode-map (kbd "S-<wheel-up>")   #'image-forward-hscroll)
+(define-key pdf-view-mode-map (kbd "S-<wheel-down>") #'image-backward-hscroll)
 
 ;; themed view
 (define-key pdf-view-mode-map (kbd "C-c C-r t") #'pdf-view-themed-minor-mode)
