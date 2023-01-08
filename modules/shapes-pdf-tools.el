@@ -28,6 +28,9 @@
 (define-key pdf-view-mode-map (kbd "t") #'pdf-annot-add-text-annotation)
 ;; [d]elete annotation
 (define-key pdf-view-mode-map (kbd "d") #'pdf-annot-delete)
+;; lateral scrolling
+(define-key pdf-view-mode-map (kbd "S-<wheel-up>")   #'image-backward-hscroll)
+(define-key pdf-view-mode-map (kbd "S-<wheel-down>") #'image-forward-hscroll)
 
 ;; themed view
 (define-key pdf-view-mode-map (kbd "C-c C-r t") #'pdf-view-themed-minor-mode)
