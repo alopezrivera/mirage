@@ -8,7 +8,7 @@
 
 ;; buffer selection
 (global-unset-key (kbd "C-x b"))
-(global-set-key (kbd "C-<menu>") #'switch-to-buffer)
+(global-set-key (kbd "<menu>") #'switch-to-buffer)
 
 ;; buffer switching
 (global-unset-key (kbd "C-x <right>"))
