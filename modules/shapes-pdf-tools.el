@@ -7,8 +7,8 @@
 (require 'pdf-tools)
 
 ;; page switching
-(define-key pdf-view-mode-map (kbd "<up>")   #'pdf-view-previous-page)
-(define-key pdf-view-mode-map (kbd "<down>") #'pdf-view-next-page)
+(define-key pdf-view-mode-map (kbd "<up>")   #'pdf-view-previous-line-or-previous-page)
+(define-key pdf-view-mode-map (kbd "<down>") #'pdf-view-next-line-or-next-page)
 
 ;; replace swiper
 (define-key pdf-view-mode-map (kbd "C-s") #'isearch-forward)
