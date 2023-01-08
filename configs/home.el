@@ -86,6 +86,9 @@
         (:name "Important"
                ;; Single arguments given alone
                :priority "A")
+        (:name "Birthdays"
+               ;; Single arguments given alone
+               :file-path ".*/contact book.org")
         (:priority<= "B"
                      ;; Show this section after "Today" and "Important", because
                      ;; their order is unspecified, defaulting to 0. Sections
