@@ -711,6 +711,8 @@ a
 
 ;; programming
 (shapes-module "org-babel")
+(shapes-module "ox-ipynb")
+(shapes-extend "org-babel")
 
 ;; extensions
 (shapes-extend "org-get")
@@ -3620,6 +3622,18 @@ if it was previously enabled."
         (:cache   . "no")
         (:hlines  . "no")
         (:tangle  . "no")))
+
+#+end_src
+
+***** ox-ipynb
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-ox-ipynb.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package '(ox-ipynb :type git :host github :repo "jkitchin/ox-ipynb"))
+(require 'ox-ipynb)
 
 #+end_src
 

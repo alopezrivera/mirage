@@ -33,6 +33,8 @@
 
 ;; programming
 (shapes-module "org-babel")
+(shapes-module "ox-ipynb")
+(shapes-extend "org-babel")
 
 ;; extensions
 (shapes-extend "org-get")
