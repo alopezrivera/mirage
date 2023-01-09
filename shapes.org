@@ -700,6 +700,7 @@ a
 (shapes-module "org-agenda")
 (shapes-module "org-contacts")
 (shapes-module "org-calendar")
+(shapes-extend "org-agenda")
 
 ;; notes
 (shapes-module "bitacora")
@@ -718,7 +719,6 @@ a
 (shapes-extend "org-ui")
 (shapes-extend "org-outline")
 (shapes-extend "org-navigation")
-(shapes-extend "org-applications")
 
 #+end_src
 
@@ -6548,11 +6548,11 @@ Macros to make the creation of custom link types a breeze.
 
 
 *** Applications
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-applications.el
-:END:
 **** Agenda
 ***** org-agenda
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-agenda.el
+:END:
 ****** Editing
 
 #+begin_src emacs-lisp
@@ -6593,6 +6593,9 @@ Macros to make the creation of custom link types a breeze.
 
 **** Programming
 ***** org-babel
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-babel.el
+:END:
 ****** TODO Result formatting
 
 Modify ~org-babel-insert-result~ such that a list stores all result insertion formats,

@@ -1,10 +1,3 @@
-;; Mark items as done
-(defun custom/org-agenda-todo-done ()
-  (interactive)
-  (org-agenda-todo 'done))
-
-(define-key org-agenda-mode-map (kbd "d") 'custom/org-agenda-todo-done)
-
 (defvar custom/org-babel-result-wrap-formats
   '(((assq :wrap (nth 2 info))
      (let* ((full (or (cdr (assq :wrap (nth 2 info))) "results"))
@@ -433,5 +426,5 @@ INFO may provide the values of these header arguments (in the
 	    (set-marker visible-beg nil)
 	    (set-marker visible-end nil)))))))
 
-(provide 'shapes-extension-org-applications)
-;;; shapes-org-applications.el ends here
+(provide 'shapes-extension-org-babel)
+;;; shapes-org-babel.el ends here

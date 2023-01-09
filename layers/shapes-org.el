@@ -22,6 +22,7 @@
 (shapes-module "org-agenda")
 (shapes-module "org-contacts")
 (shapes-module "org-calendar")
+(shapes-extend "org-agenda")
 
 ;; notes
 (shapes-module "bitacora")
@@ -40,7 +41,6 @@
 (shapes-extend "org-ui")
 (shapes-extend "org-outline")
 (shapes-extend "org-navigation")
-(shapes-extend "org-applications")
 
 (provide 'shapes-layer-org)
 ;;; shapes-org.el ends here
