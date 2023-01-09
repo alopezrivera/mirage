@@ -43,7 +43,6 @@
         nxml-electric-slash
         org-backward-sentence
         org-beginning-of-line
-        org-ctrl-c-ctrl-c
         org-cycle
         org-delete-char
         org-end-of-line
@@ -79,6 +78,7 @@
         custom/swiper-multiple-cursors
         custom/theme-toggle
         dabbrev-expand
+        describe-key-briefly
         dired-do-flagged-delete
         elpy-shell-send-region-or-buffer
         end-of-buffer
@@ -96,6 +96,7 @@
         org-babel-execute-src-block
         org-babel-execute-subtree
         org-babel-tangle
+        org-ctrl-c-ctrl-c
         org-metadown
         org-open-at-mouse
         org-shifttab
