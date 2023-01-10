@@ -10,8 +10,6 @@
 (global-set-key (kbd "S-<wheel-up>")    (lambda () (interactive) (scroll-right 2)))
 (global-set-key (kbd "S-<wheel-down>")  (lambda () (interactive) (scroll-left  2)))
 ;; mouse side wheel
-(global-set-key (kbd "<wheel-left>")    (lambda () (interactive) (scroll-right 8)))
-(global-set-key (kbd "<wheel-right>")   (lambda () (interactive) (scroll-left  8)))
 (global-set-key (kbd "S-<wheel-left>")  (lambda () (interactive) (scroll-right 4)))
 (global-set-key (kbd "S-<wheel-right>") (lambda () (interactive) (scroll-left  4)))
 
