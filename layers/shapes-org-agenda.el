@@ -1,10 +1,3 @@
-;; file pre-processing
-(let ((files org-agenda-files))
-  (dolist (file files)
-    (if (not (file-exists-p file))
-        (progn (setq org-agenda-files (remove file files))
-               (print (concat "WARNING: ignoring nonexistent agenda file: " file))))))
-
 ;; settings
 (setq org-agenda-skip-scheduled-if-done nil)
 (setq org-agenda-skip-deadline-if-done nil)
