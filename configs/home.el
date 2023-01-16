@@ -63,7 +63,7 @@
 
 (shapes-layer "org")
 (shapes-layer "org-ui")
-;; (shapes-layer "org-typesetting")
+(shapes-layer "org-typesetting")
 (shapes-layer "org-latex-preview")
 
 ;; custom links
