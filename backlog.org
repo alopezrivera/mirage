@@ -852,6 +852,7 @@ Application backlog
 ***** Anki
 
 - https://yiufung.net/post/anki-org/
+- https://github.com/louietan/anki-editor
 
 ***** Presentations
 ****** org-reveal
