@@ -2,6 +2,13 @@
 (setq default-directory "/tmp/")
 (setq command-line-default-directory "/tmp/")
 
+;; mount disk
+(defun mount ()
+  (interactive)
+  (shell-command (concat "echo " (shell-quote-argument (read-passwd (concat "[sudo] password for "
+                                                                            (shell-command-to-string "echo $USER"))))
+                         " | sudo -S mount -t drvfs E: /mnt/e")))
+
 ;; sudo find-file
 (defun sudo-find-file (orig-fun FILENAME &optional WILDCARDS)
   (condition-case nil
