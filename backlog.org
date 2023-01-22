@@ -851,8 +851,13 @@ Application backlog
 
 ***** Anki
 
-- https://yiufung.net/post/anki-org/
-- https://github.com/louietan/anki-editor
+- org-mode
+   - https://yiufung.net/post/anki-org/
+   - https://github.com/louietan/anki-editor
+      - ignore anki-editor Front and Back headings when exporting
+         - https://emacs.stackexchange.com/a/41685
+   - sync
+      - https://github.com/eyeinsky/org-anki
 
 ***** Presentations
 ****** org-reveal
