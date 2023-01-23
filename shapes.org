@@ -547,6 +547,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ;; modules
 (shapes-module "workgroups")
+(shapes-module "super-save")
 
 ;; extensions
 (shapes-extend "session")
@@ -2268,6 +2269,20 @@ the local machine:
 (setq wg-morph-on nil)
 
 (global-set-key (kbd "C-c w") #'workgroups-mode)
+
+#+end_src
+
+*** Auto-save
+**** super-save
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-super-save.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'super-save)
+
+(super-save-mode +1)
 
 #+end_src
 
