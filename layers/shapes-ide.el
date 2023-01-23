@@ -2,6 +2,14 @@
 (setq comint-input-ignoredups t)
 ;; indentation
 (setq-default c-basic-offset 4)
+;; electric pairs
+(electric-pair-mode)
+(setq electric-pair-pairs
+      '(
+        (?\( . ?\))
+        (?\[ . ?\])
+        (?\{ . ?\})
+        (?\" . ?\")))
 
 ;; outline
 (shapes-module "hideshow")
