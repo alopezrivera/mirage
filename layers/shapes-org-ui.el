@@ -1,5 +1,7 @@
 ;; org-indent-mode
 (setq org-startup-indented nil)
+;; tag indentation
+(setq org-tags-column 70)
 ;; list indentation
 (setq-default org-list-indent-offset 1)
 ;; startup with inline images

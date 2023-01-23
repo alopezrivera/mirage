@@ -1,9 +1,7 @@
 (straight-use-package 'puni)
 
-;; mode hooks
+;; specific modes
 (dolist (hook '(prog-mode-hook
-                sgml-mode-hook
-                nxml-mode-hook
                 tex-mode-hook
                 eval-expression-minibuffer-setup-hook))
   (add-hook hook #'puni-mode))

@@ -1,4 +1,4 @@
-;; file pre-processing
+;; file pre-processing to avoid errors at startup
 (let ((files org-agenda-files))
   (dolist (file files)
     (if (not (file-exists-p file))
@@ -9,8 +9,8 @@
 (require 'org-agenda)
 (global-set-key (kbd "C-c a") #'org-agenda)
 
-;; Tag indentation
-(setq org-tags-column 70)
+;; remove redundant bindings
+(define-key org-mode-map (kbd "C-,") nil)
 
 (provide 'shapes-module-org-agenda)
 ;;; shapes-org-agenda.el ends here
