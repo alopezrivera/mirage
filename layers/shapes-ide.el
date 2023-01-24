@@ -4,8 +4,7 @@
 (setq-default c-basic-offset 4)
 ;; electric pairs
 (setq electric-pair-pairs
-      '(
-        (?\( . ?\))
+      '((?\( . ?\))
         (?\[ . ?\])
         (?\{ . ?\})
         (?\" . ?\")))
