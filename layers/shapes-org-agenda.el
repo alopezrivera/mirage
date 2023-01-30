@@ -1,7 +1,7 @@
 ;; settings
 (setq org-agenda-skip-scheduled-if-done nil)
 (setq org-agenda-skip-deadline-if-done nil)
-(setq org-agenda-window-setup 'reorganize-frame)
+(setq org-agenda-window-setup 'current-window)
 (setq org-deadline-warning-days 14)
 
 ;; modules
