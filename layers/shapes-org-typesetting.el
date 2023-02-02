@@ -20,11 +20,11 @@
 
 (add-hook 'org-mode-hook #'custom/org-typefaces-body)
 
-;; use levels 1 through 8
+;; use levels 1 through 16
 (setq org-n-level-faces 8)
 
 ;; do not cycle header style after 8th level
-(setq org-cycle-level-faces nil)
+(setq org-cycle-level-faces t)
 
 ;; hide leading stars
 (setq org-hide-leading-starts t)
@@ -32,14 +32,14 @@
 ;; font sizes
 (defun custom/org-heading-typefaces () 
   (with-eval-after-load 'org-faces
-    (dolist (face '((org-level-1 . 1.175)
-                    (org-level-2 . 1.175)
-                    (org-level-3 . 1.175)
-                    (org-level-4 . 1.175)
-                    (org-level-5 . 1.175)
-                    (org-level-6 . 1.175)
-                    (org-level-7 . 1.175)
-                    (org-level-8 . 1.175)))
+    (dolist (face '((org-level-1  . 1.175)
+                    (org-level-2  . 1.175)
+                    (org-level-3  . 1.175)
+                    (org-level-4  . 1.175)
+                    (org-level-5  . 1.175)
+                    (org-level-6  . 1.175)
+                    (org-level-7  . 1.175)
+                    (org-level-8  . 1.175)))
          (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
 
 (add-hook 'org-mode-hook #'custom/org-heading-typefaces)

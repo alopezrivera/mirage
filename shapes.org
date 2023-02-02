@@ -807,11 +807,11 @@ a
 
 #+begin_src emacs-lisp
 
-;; use levels 1 through 8
+;; use levels 1 through 16
 (setq org-n-level-faces 8)
 
 ;; do not cycle header style after 8th level
-(setq org-cycle-level-faces nil)
+(setq org-cycle-level-faces t)
 
 ;; hide leading stars
 (setq org-hide-leading-starts t)
@@ -819,14 +819,14 @@ a
 ;; font sizes
 (defun custom/org-heading-typefaces () 
   (with-eval-after-load 'org-faces
-    (dolist (face '((org-level-1 . 1.175)
-                    (org-level-2 . 1.175)
-                    (org-level-3 . 1.175)
-                    (org-level-4 . 1.175)
-                    (org-level-5 . 1.175)
-                    (org-level-6 . 1.175)
-                    (org-level-7 . 1.175)
-                    (org-level-8 . 1.175)))
+    (dolist (face '((org-level-1  . 1.175)
+                    (org-level-2  . 1.175)
+                    (org-level-3  . 1.175)
+                    (org-level-4  . 1.175)
+                    (org-level-5  . 1.175)
+                    (org-level-6  . 1.175)
+                    (org-level-7  . 1.175)
+                    (org-level-8  . 1.175)))
          (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
 
 (add-hook 'org-mode-hook #'custom/org-heading-typefaces)
@@ -1014,24 +1014,15 @@ matches the current theme."
 
 ;; base TODO keyword sequence
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "TODAY(n)" "NEXT(x)" "WAIT(w@/!)" "|" "DONE(d!)")))
+      '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)")))
 
 ;; base custom agenda views
 (setq org-agenda-custom-commands
       '(("d" "Dashboard"
-	 ((agenda "" ((org-deadline-warning-days 7)))
-	  (todo "TODAY" ((org-agenda-overriding-header "Today")))
-	  (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+	 ((agenda "" ((org-deadline-warning-days 14)))
+	  (todo "TODO" ((org-agenda-overriding-header "Unscheduled Tasks")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))))
 
-	("n" "Tasks for the Day"
-	 ((todo "TODAY" ((org-agenda-overriding-header "Today")))))
-
-	("w" "Work Tasks" tags-todo "work")
-
-	("z" "Low Effort" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-	 ((org-agenda-overriding-header "Low Effort Tasks")
-	  (org-agenda-max-todos 20)
-	  (org-agenda-files org-agenda-files)))))
 
 #+end_src
 

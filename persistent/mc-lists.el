@@ -94,6 +94,7 @@
         mouse-set-region
         mouse-start-rectangle
         next-buffer
+        org-agenda
         org-babel-execute-src-block
         org-babel-execute-subtree
         org-babel-tangle
