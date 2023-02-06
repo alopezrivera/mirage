@@ -145,6 +145,8 @@ References:
 
 #+begin_src emacs-lisp
 
+(setq default-input-method 'spanish-prefix)
+
 (shapes-layer "input")
 (shapes-extend "rsi")
 

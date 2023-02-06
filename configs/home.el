@@ -1,5 +1,7 @@
 (shapes-layer "ui")
 
+(setq default-input-method 'spanish-prefix)
+
 (shapes-layer "input")
 (shapes-extend "rsi")
 
