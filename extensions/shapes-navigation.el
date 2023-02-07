@@ -63,7 +63,9 @@ If the current line is a wrapped visual line, home to
 `prog-mode' or the cursor lies in an `org-babel' source code block,
 arrow-up to `end-of-visual-line' of `previous-line'."
   (apply orig-fun args)
-  (if (and (region-active-p) (or (derived-mode-p 'prog-mode) (and (string-equal major-mode "org-mode") (org-in-src-block-p))))
+  (if (and (region-active-p)
+           (or (derived-mode-p 'prog-mode)
+               (and (string-equal major-mode "org-mode") (org-in-src-block-p))))
       (progn (point-to-register 'region-up-register)
              (end-of-visual-line))))
 
