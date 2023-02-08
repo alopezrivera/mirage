@@ -1,5 +1,7 @@
 (shapes-layer "ui")
 
+(setq default-input-method 'spanish-prefix)
+
 (shapes-layer "input")
 (shapes-extend "rsi")
 
@@ -63,29 +65,42 @@
 
 (shapes-layer "org")
 (shapes-layer "org-ui")
-;; (shapes-layer "org-typesetting")
+(shapes-layer "org-typesetting")
 (shapes-layer "org-latex-preview")
 
-;; custom links
+;; custom link types
 (@custom/org-dir-link "msc1" (concat home "studio/academic/education/TU Delft/MSc/Space Flight/SPF-1/"))
+(@custom/org-dir-link "ta"(concat home "studio/academic/education/TU Delft/_assistantships/"))
 
 ;; org-agenda
 (shapes-layer "org-agenda")
 
-(setq org-tag-alist
-      '((:startgroup)
-	;; Put mutually exclusive tags here
-        ("internship" . ?u)
-	(:endgroup)))
+;; hide group tags
+(setq org-agenda-hide-tags-regexp
+      "CW\\|INT\\|THESIS\\|TA")
 
 (setq org-super-agenda-groups
       '(;; Each group has an implicit boolean OR operator between its selectors.
-        (:name "Today"  ; Optionally specify section name
-               :time-grid t  ; Items that appear on the time grid
-               :todo "TODAY")  ; Items that have this TODO keyword
         (:name "Important"
+               :time-grid t
                ;; Single arguments given alone
                :priority "A")
+        (:name "Coursework"
+               :time-grid t
+               ;; Single arguments given alone
+               :tag "CW")
+        (:name "Internship"
+               :time-grid t
+               ;; Single arguments given alone
+               :tag "INT")
+        (:name "Thesis"
+               :time-grid t
+               ;; Single arguments given alone
+               :tag "THESIS")
+        (:name "Assistantships"
+               :time-grid t
+               ;; Single arguments given alone
+               :tag "TA")
         (:name "Birthdays"
                ;; Single arguments given alone
                :file-path ".*/contact book.org")

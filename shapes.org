@@ -547,6 +547,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ;; modules
 (shapes-module "workgroups")
+(shapes-module "super-save")
 
 ;; extensions
 (shapes-extend "session")
@@ -616,6 +617,13 @@ a
 (setq comint-input-ignoredups t)
 ;; indentation
 (setq-default c-basic-offset 4)
+;; electric pairs
+(setq electric-pair-pairs
+      '((?\( . ?\))
+        (?\[ . ?\])
+        (?\{ . ?\})
+        (?\" . ?\")))
+(electric-pair-mode)
 
 ;; outline
 (shapes-module "hideshow")
@@ -680,11 +688,11 @@ a
 
 #+begin_src emacs-lisp
 
+;; settings
+(setq-default org-use-property-inheritance t)
+
 ;; bindings
 (global-set-key (kbd "C-x c") #'org-capture)
-
-;; always use property inheritance
-(setq-default org-use-property-inheritance t)
 
 ;; dependencies
 (shapes-layer  "editing")
@@ -737,6 +745,8 @@ a
 
 ;; org-indent-mode
 (setq org-startup-indented nil)
+;; tag indentation
+(setq org-tags-column 70)
 ;; list indentation
 (setq-default org-list-indent-offset 1)
 ;; startup with inline images
@@ -797,11 +807,11 @@ a
 
 #+begin_src emacs-lisp
 
-;; use levels 1 through 8
+;; use levels 1 through 16
 (setq org-n-level-faces 8)
 
 ;; do not cycle header style after 8th level
-(setq org-cycle-level-faces nil)
+(setq org-cycle-level-faces t)
 
 ;; hide leading stars
 (setq org-hide-leading-starts t)
@@ -809,14 +819,14 @@ a
 ;; font sizes
 (defun custom/org-heading-typefaces () 
   (with-eval-after-load 'org-faces
-    (dolist (face '((org-level-1 . 1.175)
-                    (org-level-2 . 1.175)
-                    (org-level-3 . 1.175)
-                    (org-level-4 . 1.175)
-                    (org-level-5 . 1.175)
-                    (org-level-6 . 1.175)
-                    (org-level-7 . 1.175)
-                    (org-level-8 . 1.175)))
+    (dolist (face '((org-level-1  . 1.175)
+                    (org-level-2  . 1.175)
+                    (org-level-3  . 1.175)
+                    (org-level-4  . 1.175)
+                    (org-level-5  . 1.175)
+                    (org-level-6  . 1.175)
+                    (org-level-7  . 1.175)
+                    (org-level-8  . 1.175)))
          (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
 
 (add-hook 'org-mode-hook #'custom/org-heading-typefaces)
@@ -991,17 +1001,10 @@ matches the current theme."
 
 #+begin_src emacs-lisp
 
-;; file pre-processing
-(let ((files org-agenda-files))
-  (dolist (file files)
-    (if (not (file-exists-p file))
-        (progn (setq org-agenda-files (remove file files))
-               (print (concat "WARNING: ignoring nonexistent agenda file: " file))))))
-
 ;; settings
 (setq org-agenda-skip-scheduled-if-done nil)
 (setq org-agenda-skip-deadline-if-done nil)
-(setq org-agenda-window-setup 'reorganize-frame)
+(setq org-agenda-window-setup 'current-window)
 (setq org-deadline-warning-days 14)
 
 ;; modules
@@ -1011,24 +1014,15 @@ matches the current theme."
 
 ;; base TODO keyword sequence
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "TODAY(n)" "NEXT(x)" "WAIT(w@/!)" "|" "DONE(d!)")))
+      '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)" "|" "DONE(d!)")))
 
 ;; base custom agenda views
 (setq org-agenda-custom-commands
       '(("d" "Dashboard"
-	 ((agenda "" ((org-deadline-warning-days 7)))
-	  (todo "TODAY" ((org-agenda-overriding-header "Today")))
-	  (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+	 ((agenda "" ((org-deadline-warning-days 14)))
+	  (todo "TODO" ((org-agenda-overriding-header "Unscheduled Tasks")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))))
 
-	("n" "Tasks for the Day"
-	 ((todo "TODAY" ((org-agenda-overriding-header "Today")))))
-
-	("w" "Work Tasks" tags-todo "work")
-
-	("z" "Low Effort" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-	 ((org-agenda-overriding-header "Low Effort Tasks")
-	  (org-agenda-max-todos 20)
-	  (org-agenda-files org-agenda-files)))))
 
 #+end_src
 
@@ -2278,6 +2272,20 @@ the local machine:
 
 #+end_src
 
+*** Auto-save
+**** super-save
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-super-save.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'super-save)
+
+(super-save-mode +1)
+
+#+end_src
+
 *** Project interaction
 **** projectile
 :PROPERTIES:
@@ -2471,85 +2479,42 @@ the local machine:
 #+end_src
 
 
-** Version control
-*** magit
+** Applications
+*** IDE
+**** General
+***** Editing
+****** Selection
+******* expand-region
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-magit.el
+:header-args:emacs-lisp+: :tangle ./modules/shapes-expand-region.el
 :END:
 
 #+begin_src emacs-lisp
 
-(straight-use-package 'magit)
-(require 'magit)
-
-(global-set-key (kbd "C-x g") #'magit-status)
+(straight-use-package 'expand-region)
 
 #+end_src
 
-*** forge
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-forge.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'forge)
-
-#+end_src
-
-** File management
-*** dirvish
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-dirvish.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'dirvish)
-(require 'dirvish)
-
-;; override dired
-(dirvish-override-dired-mode)
-
-#+end_src
-
-
-** IDE
-*** General
-**** Editing
-***** Wrapping
-****** embrace
+****** Wrapping
+******* embrace
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-embrace.el
 :END:
 
 #+begin_src emacs-lisp
 
+;; dependencies
+(shapes-module "expand-region")
+
+;; embrace
 (straight-use-package 'embrace)
+(global-set-key (kbd "C-,") #'embrace-commander)
+
+(add-hook 'org-mode-hook #'embrace-org-mode-hook)
 
 #+end_src
 
-***** Parenthesis
-****** puni
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-puni.el
-:END:
-
-#+begin_src emacs-lisp
-
-(straight-use-package 'puni)
-
-;; mode hooks
-(dolist (hook '(prog-mode-hook
-                sgml-mode-hook
-                nxml-mode-hook
-                tex-mode-hook
-                eval-expression-minibuffer-setup-hook))
-  (add-hook hook #'puni-mode))
-
-#+end_src
-
-****** smartparens                                                    :ARCHIVE:
+******* smartparens                                                         :ARCHIVE:
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-smartparens.el
 :END:
@@ -2558,9 +2523,11 @@ the local machine:
 
 (straight-use-package 'smartparens)
 
+(smartparens-global-mode)
+
 #+end_src
 
-****** paredit                                                        :ARCHIVE:
+******* paredit                                                               :ARCHIVE:
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-paredit.el
 :END:
@@ -2571,8 +2538,8 @@ the local machine:
 
 #+end_src
 
-**** Outline
-***** hideshow
+***** Outline
+****** hideshow
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-hideshow.el
 :END:
@@ -2585,7 +2552,7 @@ the local machine:
 
 #+end_src
 
-****** TODO Cycle
+******* TODO Cycle
 
 - fold back in 1 when no children
 
@@ -2629,8 +2596,8 @@ the local machine:
 
 #+end_src
 
-**** Completion
-***** company
+***** Completion
+****** company
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-company.el
 :END:
@@ -2643,8 +2610,26 @@ the local machine:
 
 #+end_src
 
-**** Syntax checking
-***** flycheck
+***** Structural editing
+******* puni
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-puni.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'puni)
+
+;; specific modes
+(dolist (hook '(prog-mode-hook
+                tex-mode-hook
+                eval-expression-minibuffer-setup-hook))
+  (add-hook hook #'puni-mode))
+
+#+end_src
+
+***** Syntax checking
+****** flycheck
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-flycheck.el
 :END:
@@ -2659,8 +2644,8 @@ the local machine:
 
 #+end_src
 
-**** Language server protocol
-***** eglot                                                         :ARCHIVE:
+***** Language server protocol
+****** eglot                                                          :ARCHIVE:
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-eglot.el
 :END:
@@ -2671,7 +2656,7 @@ the local machine:
 
 #+end_src
 
-***** lsp-mode
+****** lsp-mode
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-lsp-mode.el
 :END:
@@ -2683,7 +2668,7 @@ the local machine:
 
 #+end_src
 
-***** lsp-bridge                                                    :ARCHIVE:
+****** lsp-bridge                                                     :ARCHIVE:
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-lsp-bridge.el
 :END:
@@ -2695,9 +2680,9 @@ the local machine:
 
 #+end_src
 
-*** Specific
-**** Lisp
-***** rainbow-delimiters
+**** Specific
+***** Lisp
+****** rainbow-delimiters
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-rainbow-delimiters.el
 :END:
@@ -2712,8 +2697,9 @@ the local machine:
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 #+end_src
-**** Python
-***** elpy
+
+***** Python
+****** elpy
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-elpy.el
 :END:
@@ -2732,7 +2718,7 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-****** RPC
+******* RPC
 
 #+begin_src emacs-lisp
 
@@ -2744,7 +2730,7 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-****** Navigation
+******* Navigation
 
 #+begin_src emacs-lisp
 
@@ -2753,8 +2739,8 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-**** Matlab
-***** matlab-emacs
+***** Matlab
+****** matlab-emacs
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-matlab-emacs.el
 :END:
@@ -2768,8 +2754,8 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-**** Rust
-***** rustic
+***** Rust
+****** rustic
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-rustic.el
 :END:
@@ -2788,8 +2774,8 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-** PDF
-*** pdf-tools
+*** PDF
+**** pdf-tools
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-pdf-tools.el
 :END:
@@ -2839,7 +2825,7 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-*** pdf-view-restore
+**** pdf-view-restore
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-pdf-view-restore.el
 :END:
@@ -2852,8 +2838,8 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-** LaTeX
-*** AUCTeX
+*** LaTeX
+**** AUCTeX
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-AUCTeX.el
 :END:
@@ -2864,7 +2850,7 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-** Org Mode
+*** Org Mode
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org.el
 :END:
@@ -2879,7 +2865,7 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-*** Patches
+**** Patches
 
 #+begin_src emacs-lisp
 
@@ -2887,7 +2873,7 @@ sudo apt-get install python3-venv
 
 #+end_src
 
-**** org-self-insert-command
+***** org-self-insert-command
 
 #+begin_src emacs-lisp
 
@@ -2961,7 +2947,7 @@ overwritten, and the table is not marked as requiring realignment."
 
 #+end_src
 
-**** TODO org-indent--compute-prefixes
+***** TODO org-indent--compute-prefixes
 
 - el-patch
 
@@ -2982,8 +2968,8 @@ match the indentation of the parent heading."
 
 #+end_src
 
-*** UI
-**** org-modern
+**** UI
+***** org-modern
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-modern.el
 :END:
@@ -2997,8 +2983,8 @@ match the indentation of the parent heading."
 
 #+end_src
 
-***** Lists
-****** Markers
+****** Lists
+******* Markers
 
 #+begin_src emacs-lisp
 
@@ -3008,7 +2994,7 @@ match the indentation of the parent heading."
 
 #+end_src
 
-****** Checkboxes
+******* Checkboxes
 
 #+begin_src emacs-lisp
 
@@ -3016,7 +3002,7 @@ match the indentation of the parent heading."
 
 #+end_src
 
-***** Tables
+****** Tables
 
 #+begin_src emacs-lisp
 
@@ -3028,7 +3014,7 @@ match the indentation of the parent heading."
 
 #+end_src
 
-***** Highlights
+****** Highlights
 
 #+begin_src emacs-lisp
 
@@ -3040,7 +3026,7 @@ match the indentation of the parent heading."
 
 #+end_src
 
-**** org-appear
+***** org-appear
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-appear.el
 :END:
@@ -3070,7 +3056,7 @@ match the indentation of the parent heading."
 
 #+end_src
 
-**** org-fragtog
+***** org-fragtog
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-fragtog.el
 :END:
@@ -3085,8 +3071,8 @@ match the indentation of the parent heading."
 
 #+end_src
 
-*** Editing
-**** org-paragraph
+**** Editing
+***** org-paragraph
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-paragraph.el
 :END:
@@ -3097,7 +3083,7 @@ match the indentation of the parent heading."
 
 #+end_src
 
-***** org-meta-arrows-h
+****** org-meta-arrows-h
 
 #+begin_src emacs-lisp
 
@@ -3116,7 +3102,7 @@ beginning lies on an Org Mode heading,
 
 #+end_src
 
-***** TODO org-meta-arrows-v
+****** TODO org-meta-arrows-v
 
 - paragraphs
 - visibility change when heading visibility is CHILDREN
@@ -3145,7 +3131,7 @@ beginning lies on an Org Mode heading,
 
 #+end_src
 
-**** org-download
+***** org-download
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-download.el
 :END:
@@ -3170,8 +3156,8 @@ beginning lies on an Org Mode heading,
 
 #+end_src
 
-*** Templates
-**** org-tempo
+**** Templates
+***** org-tempo
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-tempo.el
 :END:
@@ -3187,7 +3173,7 @@ beginning lies on an Org Mode heading,
 
 #+end_src
 
-***** LaTeX
+****** LaTeX
 
 #+begin_src emacs-lisp
 
@@ -3213,7 +3199,7 @@ beginning lies on an Org Mode heading,
 
 #+end_src
 
-***** Figures
+****** Figures
 
 #+begin_src emacs-lisp
 
@@ -3228,7 +3214,7 @@ beginning lies on an Org Mode heading,
 
 #+end_src
 
-***** Code blocks
+****** Code blocks
 
 #+begin_src emacs-lisp
 
@@ -3253,7 +3239,7 @@ beginning lies on an Org Mode heading,
 
 #+end_src
 
-**** org-capture
+***** org-capture
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-capture.el
 :END:
@@ -3264,15 +3250,15 @@ beginning lies on an Org Mode heading,
 
 #+end_src
 
-***** TODO Templates
+****** TODO Templates
 
 - lecture
    - specify directory
    - template
 
-*** Applications
-**** Notes
-***** bitacora
+**** Applications
+***** Notes
+****** bitacora
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-bitacora.el
 :END:
@@ -3283,7 +3269,7 @@ beginning lies on an Org Mode heading,
 
 #+end_src
 
-***** org-roam
+****** org-roam
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-roam.el
 :END:
@@ -3297,7 +3283,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-****** UI
+******* UI
 
 #+begin_src emacs-lisp
 
@@ -3306,7 +3292,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-******** Follow
+********* Follow
 
 #+begin_src emacs-lisp
 
@@ -3314,7 +3300,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-******** Theme
+********* Theme
 
 #+begin_src emacs-lisp
 
@@ -3323,7 +3309,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-******** Startup
+********* Startup
 
 #+begin_src emacs-lisp
 
@@ -3331,7 +3317,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-******** Update
+********* Update
 
 #+begin_src emacs-lisp
 
@@ -3339,7 +3325,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-****** Hooks
+******* Hooks
 
 #+begin_src emacs-lisp
 
@@ -3356,8 +3342,8 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-****** Startup
-******* db-autosync-mode
+******* Startup
+******** db-autosync-mode
 
 #+begin_src emacs-lisp
 
@@ -3366,7 +3352,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-****** Keymap
+******* Keymap
 
 #+begin_src emacs-lisp
 
@@ -3384,8 +3370,8 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-****** Templates
-******* Default
+******* Templates
+******** Default
 
 #+begin_src emacs-lisp
 
@@ -3401,7 +3387,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-****** Timestamps
+******* Timestamps
 
 #+begin_src emacs-lisp
 
@@ -3434,24 +3420,31 @@ if it was previously enabled."
 
 #+end_src
 
-**** Agenda
-***** org-agenda
+***** Agenda
+****** org-agenda
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-agenda.el
 :END:
 
 #+begin_src emacs-lisp
 
+;; file pre-processing to avoid errors at startup
+(let ((files org-agenda-files))
+  (dolist (file files)
+    (if (not (file-exists-p file))
+        (progn (setq org-agenda-files (remove file files))
+               (print (concat "WARNING: ignoring nonexistent agenda file: " file))))))
+
 ;; org-agenda
 (require 'org-agenda)
 (global-set-key (kbd "C-c a") #'org-agenda)
 
-;; Tag indentation
-(setq org-tags-column 70)
+;; remove redundant bindings
+(define-key org-mode-map (kbd "C-,") nil)
 
 #+end_src
 
-***** org-super-agenda
+****** org-super-agenda
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-super-agenda.el
 :END:
@@ -3464,7 +3457,7 @@ if it was previously enabled."
 
 #+end_src
 
-***** org-rainbow-tags
+****** org-rainbow-tags
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-rainbow-tags.el
 :END:
@@ -3480,8 +3473,8 @@ if it was previously enabled."
 
 #+end_src
 
-**** Contacts
-***** org-contacts
+***** Contacts
+****** org-contacts
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-contacts.el
 :END:
@@ -3494,7 +3487,7 @@ if it was previously enabled."
 
 #+end_src
 
-****** Template
+******* Template
 
 #+begin_src emacs-lisp
 
@@ -3513,8 +3506,8 @@ if it was previously enabled."
 
 #+end_src
 
-**** Calendar
-***** org-calendar
+***** Calendar
+****** org-calendar
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-calendar.el
 :END:
@@ -3541,12 +3534,12 @@ if it was previously enabled."
 
 #+end_src
 
-**** Programming
-***** org-babel
+***** Programming
+****** org-babel
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-babel.el
 :END:
-****** Editing
+******* Editing
 
 #+begin_src emacs-lisp
 
@@ -3555,7 +3548,7 @@ if it was previously enabled."
 
 #+end_src
 
-****** Languages
+******* Languages
 
 #+begin_src emacs-lisp
 
@@ -3570,7 +3563,7 @@ if it was previously enabled."
 
 #+end_src
 
-******* Bash
+******** Bash
 
 #+begin_src emacs-lisp
 
@@ -3580,7 +3573,7 @@ if it was previously enabled."
 
 #+end_src
 
-******* Python
+******** Python
 
 #+begin_src emacs-lisp
 
@@ -3588,7 +3581,7 @@ if it was previously enabled."
 
 #+end_src
 
-****** Execution
+******* Execution
 
 #+begin_src emacs-lisp
 
@@ -3597,8 +3590,8 @@ if it was previously enabled."
 
 #+end_src
 
-****** Typesetting
-******* Indentation
+******* Typesetting
+******** Indentation
 
 #+begin_src emacs-lisp
 
@@ -3613,7 +3606,7 @@ if it was previously enabled."
 
 #+end_src
 
-****** Default header arguments
+******* Default header arguments
 
 #+begin_src emacs-lisp
 
@@ -3621,7 +3614,7 @@ if it was previously enabled."
       '((:noweb   . "yes")
         (:async   . "yes")
         (:session . "ob-session")
-        (:results . "replace")
+        (:results . "replace output")
         (:exports . "code")
         (:cache   . "no")
         (:hlines  . "no")
@@ -3629,7 +3622,7 @@ if it was previously enabled."
 
 #+end_src
 
-***** ox-ipynb
+****** ox-ipynb
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-ox-ipynb.el
 :END:
@@ -3641,7 +3634,7 @@ if it was previously enabled."
 
 #+end_src
 
-***** ob-async
+****** ob-async
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-ob-async.el
 :END:
@@ -3653,8 +3646,8 @@ if it was previously enabled."
 
 #+end_src
 
-**** Presentations
-***** org-reveal
+***** Presentations
+****** org-reveal
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-reveal.el
 :END:
@@ -3669,8 +3662,8 @@ if it was previously enabled."
 
 #+end_src
 
-**** Time-tracking
-***** org-pomodoro
+***** Time-tracking
+****** org-pomodoro
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-pomodoro.el
 :END:
@@ -3688,7 +3681,7 @@ if it was previously enabled."
 
 #+end_src
 
-***** org-agenda-log-mode
+****** org-agenda-log-mode
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-org-agenda-log-mode.el
 :END:
@@ -3702,8 +3695,8 @@ if it was previously enabled."
 
 #+end_src
 
-** Tabulated lists
-*** tablist
+*** Tabulated lists
+**** tablist
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle ./modules/shapes-tablist.el
 :END:
@@ -3713,6 +3706,61 @@ if it was previously enabled."
 (straight-use-package 'tablist)
 
 #+end_src
+
+*** Version control
+**** magit
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-magit.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'magit)
+(require 'magit)
+
+(global-set-key (kbd "C-x g") #'magit-status)
+
+#+end_src
+
+**** forge
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-forge.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'forge)
+
+#+end_src
+
+*** File management
+**** dirvish
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-dirvish.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'dirvish)
+(require 'dirvish)
+
+;; override dired
+(dirvish-override-dired-mode)
+
+#+end_src
+
+
+** Extensions
+*** crux
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/shapes-crux.el
+:END:
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'crux)
+
+#+end_src>
 
 
 * Extensions
@@ -4884,7 +4932,9 @@ If the current line is a wrapped visual line, home to
 `prog-mode' or the cursor lies in an `org-babel' source code block,
 arrow-up to `end-of-visual-line' of `previous-line'."
   (apply orig-fun args)
-  (if (and (region-active-p) (or (derived-mode-p 'prog-mode) (and (string-equal major-mode "org-mode") (org-in-src-block-p))))
+  (if (and (region-active-p)
+           (or (derived-mode-p 'prog-mode)
+               (and (string-equal major-mode "org-mode") (org-in-src-block-p))))
       (progn (point-to-register 'region-up-register)
              (end-of-visual-line))))
 
@@ -5914,12 +5964,12 @@ If MARGIN is t:
   (if (custom/org-relative-line-heading) (custom/org-show-minimum))
   ;; Insert heading
   (cond ((not (org-current-level)) (insert "* "))
-	      (t                         (funcall command)))
+        (t                         (funcall command)))
   ;; Insert margin
   (if margin (custom/org-heading-margin-insert-previous))
   ;; Hide previous subtree
   (if (save-excursion (custom/org-goto-heading-previous)
-		            (custom/org-relative-line-heading-folded))
+		      (custom/org-relative-line-heading-folded))
       (custom/org-hide-previous-subtree)))
 
 #+end_src
@@ -6135,8 +6185,8 @@ ellipsis in the first line under the heading."
 (defun custom/org-super-return ()
   (interactive)
   (cond ((or (custom/org-relative-line-list)
-	         (custom/org-relative-line-paragraph)) (org-return t))
-	    (t                                         (custom/org-insert-subheading-at-point))))
+	     (custom/org-relative-line-paragraph)) (org-return t))
+	(t                                         (custom/org-insert-subheading-at-point))))
 
 (define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
 

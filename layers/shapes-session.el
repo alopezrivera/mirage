@@ -3,6 +3,7 @@
 
 ;; modules
 (shapes-module "workgroups")
+(shapes-module "super-save")
 
 ;; extensions
 (shapes-extend "session")

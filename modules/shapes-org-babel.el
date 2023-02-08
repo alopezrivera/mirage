@@ -32,7 +32,7 @@
       '((:noweb   . "yes")
         (:async   . "yes")
         (:session . "ob-session")
-        (:results . "replace")
+        (:results . "replace output")
         (:exports . "code")
         (:cache   . "no")
         (:hlines  . "no")

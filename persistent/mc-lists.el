@@ -66,6 +66,7 @@
 (setq mc/cmds-to-run-once
       '(
         beginning-of-buffer
+        bitacora-insert-time-hhmm
         clm/toggle-command-log-buffer
         comint-interrupt-subjob
         comint-previous-input
@@ -93,6 +94,7 @@
         mouse-set-region
         mouse-start-rectangle
         next-buffer
+        org-agenda
         org-babel-execute-src-block
         org-babel-execute-subtree
         org-babel-tangle

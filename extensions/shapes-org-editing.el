@@ -89,12 +89,12 @@ If MARGIN is t:
   (if (custom/org-relative-line-heading) (custom/org-show-minimum))
   ;; Insert heading
   (cond ((not (org-current-level)) (insert "* "))
-	      (t                         (funcall command)))
+        (t                         (funcall command)))
   ;; Insert margin
   (if margin (custom/org-heading-margin-insert-previous))
   ;; Hide previous subtree
   (if (save-excursion (custom/org-goto-heading-previous)
-		            (custom/org-relative-line-heading-folded))
+		      (custom/org-relative-line-heading-folded))
       (custom/org-hide-previous-subtree)))
 
 (defun custom/org-insert-subheading (orig-fun &optional arg)
@@ -216,8 +216,8 @@ ellipsis in the first line under the heading."
 (defun custom/org-super-return ()
   (interactive)
   (cond ((or (custom/org-relative-line-list)
-	         (custom/org-relative-line-paragraph)) (org-return t))
-	    (t                                         (custom/org-insert-subheading-at-point))))
+	     (custom/org-relative-line-paragraph)) (org-return t))
+	(t                                         (custom/org-insert-subheading-at-point))))
 
 (define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
 
