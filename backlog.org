@@ -700,13 +700,18 @@ Application backlog
 
 *** LaTeX
 
-- https://www.emacswiki.org/emacs/AUCTeX
-- https://www.gnu.org/software/auctex/manual/auctex.html#Multifile
-- latexmk
-   - auctex replacements
-      - https://www.gnu.org/software/auctex/manual/auctex.html#Starting-a-Command
-        https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
-- https://www.emacswiki.org/emacs/LaTeXPreviewPane
+- auctex
+   - https://www.emacswiki.org/emacs/AUCTeX
+   - https://tex.stackexchange.com/questions/50827/a-simpletons-guide-to-tex-workflow-with-emacs
+   - multifile
+      - https://www.gnu.org/software/auctex/manual/auctex.html#Multifile
+   - latexmk
+      - auctex replacements
+         - https://www.gnu.org/software/auctex/manual/auctex.html#Starting-a-Command
+         - 
+           https://www.gnu.org/software/auctex/manual/auctex.html#Cleaning
+   - preview
+      - https://www.emacswiki.org/emacs/LaTeXPreviewPane
 
 *** Org Mode
 **** UI
@@ -770,12 +775,16 @@ Application backlog
    - https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
 - interaction
    - https://blog.aaronbieber.com/2016/09/25/agenda-interactions-primer.html
-	
+
+- time clocking
+   - https://www.erichgrunewald.com/posts/how-i-track-my-hour-balance-with-a-custom-org-mode-clock-table/
+
 **** Calendar
 
 - C-c more than once -> agenda files lost
 
 - Calendar sync
+   - https://200ok.ch/posts/2022-02-13_integrating_org_mode_agenda_into_other_calendar_apps.html
    - org-caldav
       - https://github.com/dengste/org-caldav
    - org-gcal
@@ -990,7 +999,7 @@ Application backlog
 - logseq
    - https://coredumped.dev/2021/05/26/taking-org-roam-everywhere-with-logseq/
 
-
+     
 * applications [old]
 
 ** runtime
