@@ -29,7 +29,8 @@
 (defun custom/spawn-startup-buffers ()
   "Spawn startup buffers"
   (cl-loop for buffer in startup-buffers
-	      collect (find-file-noselect buffer)))
+	   do (if (file-exists-p buffer)
+                  (find-file-noselect buffer))))
 
 (if spawn-startup-buffers
     (add-hook 'emacs-startup-hook #'custom/spawn-startup-buffers))
