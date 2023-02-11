@@ -15,10 +15,19 @@
 
 ;; base custom agenda views
 (setq org-agenda-custom-commands
-      '(("d" "Dashboard"
+      '(("t" "Today"
+	 ((agenda "" ((org-agenda-span 1)
+                      (org-deadline-warning-days 14)))
+	  (todo "TODO" ((org-agenda-overriding-header "Unscheduled Tasks")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))
+        ("d" "Dashboard"
 	 ((agenda "" ((org-deadline-warning-days 14)))
 	  (todo "TODO" ((org-agenda-overriding-header "Unscheduled Tasks")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))))
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))
+        ("b" "Birthdays"
+         ((org-super-agenda-mode -1)
+          (agenda "" ((org-agenda-ndays 7))))
+         ((org-agenda-regexp-filter-preset '("Birthday"))))))
 
 (provide 'shapes-layer-org-agenda)
 ;;; shapes-org-agenda.el ends here
