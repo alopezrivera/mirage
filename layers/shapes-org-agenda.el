@@ -18,7 +18,11 @@
       '(("d" "Dashboard"
 	 ((agenda "" ((org-deadline-warning-days 14)))
 	  (todo "TODO" ((org-agenda-overriding-header "Unscheduled Tasks")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))))
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))
+        ("b" "Birthdays"
+         ((agenda "" ((org-agenda-ndays 7)))
+          (org-super-agenda-mode -1))
+         ((org-agenda-regexp-filter-preset '("Birthday"))))))
 
 (provide 'shapes-layer-org-agenda)
 ;;; shapes-org-agenda.el ends here

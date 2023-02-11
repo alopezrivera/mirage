@@ -77,7 +77,7 @@
 
 ;; hide group tags
 (setq org-agenda-hide-tags-regexp
-      "CW\\|INT\\|THESIS\\|TA")
+      "CW\\|INT\\|THESIS\\|TA\\|BIRTHDAY")
 
 (setq org-super-agenda-groups
       '(;; Each group has an implicit boolean OR operator between its selectors.
@@ -103,7 +103,7 @@
                :tag "TA")
         (:name "Birthdays"
                ;; Single arguments given alone
-               :file-path ".*/contact book.org")
+               :tag "BIRTHDAY")
         (:priority<= "B"
                      ;; Show this section after "Today" and "Important", because
                      ;; their order is unspecified, defaulting to 0. Sections
