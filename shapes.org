@@ -6662,9 +6662,9 @@ This function makes sure that dates are aligned for easy reading."
 			 (format " W%02d" iso-week)
 		       ""))
          ;; label
-         (label-length 30)
-         (label (format "%-10s %2d %s"
-                        dayname day monthname year))
+         (label-length 26)
+         (label (format "%-9s %2d %-9s"
+                        dayname day monthname))
          ;; margin fill
          (fill (make-string (/ (- label-length (string-width label)) 2) 32))
          ;; separators
