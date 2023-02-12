@@ -21,8 +21,8 @@ This function makes sure that dates are aligned for easy reading."
 			 (format " W%02d" iso-week)
 		       ""))
          ;; label
-         (label-length 27)
-         (label (format "%-9s %2d %s"
+         (label-length 30)
+         (label (format "%-10s %2d %s"
                         dayname day monthname year))
          ;; margin fill
          (fill (make-string (/ (- label-length (string-width label)) 2) 32))
