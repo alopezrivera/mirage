@@ -4,6 +4,9 @@
 (setq org-agenda-window-setup 'current-window)
 (setq org-deadline-warning-days 14)
 
+;; bindings
+(define-key org-agenda-mode-map (kbd "<tab>") 'org-agenda-recenter)
+
 ;; modules
 (shapes-module "org-agenda")
 (shapes-module "org-super-agenda")

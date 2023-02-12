@@ -1007,6 +1007,9 @@ matches the current theme."
 (setq org-agenda-window-setup 'current-window)
 (setq org-deadline-warning-days 14)
 
+;; bindings
+(define-key org-agenda-mode-map (kbd "<tab>") 'org-agenda-recenter)
+
 ;; modules
 (shapes-module "org-agenda")
 (shapes-module "org-super-agenda")
@@ -6696,15 +6699,17 @@ This function makes sure that dates are aligned for easy reading."
 ****** Navigation
 ******* TODO Visit
 
-- org-recenter -> unfold -> move away -> fold back
-   - arrows -> fold previous item
-   - recenter -> unfold item
-- currently- 
+- desired behavior
+   - restore outline after recentering
+   - org-recenter -> unfold -> move away -> fold back
+      - recenter -> save outline -> unfold item
+      - arrows -> restore outline
+- currently
    - org-recenter -> all todo items unfolded
 
 #+begin_src emacs-lisp :tangle no
 
-(defun custom/org-agenda-recenter (arg)
+(defun custom/org-agenda-recenter (orig-fun &rest args)
   (interactive "P")
   (let ((last-called (get this-command 'custom/last-call-time)))
     (if (eq last-command this-command)
@@ -6714,7 +6719,7 @@ This function makes sure that dates are aligned for easy reading."
 	     (org-agenda-recenter arg))))
   (put this-command 'custom/last-call-time (current-time)))
 
-(define-key org-agenda-mode-map (kbd "<tab>") 'org-agenda-recenter)
+(advice-add 'org-agenda-recenter :around #'custom/org-agenda-recenter)
 
 #+end_src
 
