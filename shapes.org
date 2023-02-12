@@ -1018,12 +1018,12 @@ matches the current theme."
 
 ;; base custom agenda views
 (setq org-agenda-custom-commands
-      '(("t" "Today"
+      '(("d" "Daily Dashboard"
 	 ((agenda "" ((org-agenda-span 1)
                       (org-deadline-warning-days 14)))
 	  (todo "TODO" ((org-agenda-overriding-header "Unscheduled Tasks")
                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))
-        ("d" "Dashboard"
+        ("w" "Weekly Dashboard"
 	 ((agenda "" ((org-deadline-warning-days 14)))
 	  (todo "TODO" ((org-agenda-overriding-header "Unscheduled Tasks")
                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))
