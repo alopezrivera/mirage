@@ -331,30 +331,52 @@ References:
 
 ;; hide group tags
 (setq org-agenda-hide-tags-regexp
-      "CW\\|INT\\|THESIS\\|TA\\|BIRTHDAY")
+      "CW\\|INT\\|THESIS\\|TA\\|BIRTHDAY\\|PERSONAL\\|PROFESSIONAL\\|TRAVEL\\|PEOPLE\\|HOME\\|FINANCE\\|PURCHASES\\|GIFTS")
 
 (setq org-super-agenda-groups
       '(;; Each group has an implicit boolean OR operator between its selectors.
         (:name "Important"
-               :time-grid t
                ;; Single arguments given alone
                :priority "A")
         (:name "Coursework"
-               :time-grid t
                ;; Single arguments given alone
                :tag "CW")
         (:name "Internship"
-               :time-grid t
                ;; Single arguments given alone
                :tag "INT")
         (:name "Thesis"
-               :time-grid t
                ;; Single arguments given alone
                :tag "THESIS")
         (:name "Assistantships"
-               :time-grid t
                ;; Single arguments given alone
                :tag "TA")
+        (:name "Personal"
+               ;; Single arguments given alone
+               :tag "PERSONAL")
+        (:name "Professional"
+               ;; Single arguments given alone
+               :tag "PROFESSIONAL")
+        (:name "Travel"
+               ;; Single arguments given alone
+               :tag "TRAVEL")
+        (:name "Keeping in touch"
+               ;; Single arguments given alone
+               :tag "PEOPLE")
+        (:name "Home"
+               ;; Single arguments given alone
+               :tag "HOME")
+        (:name "Medical"
+               ;; Single arguments given alone
+               :tag "MEDICAL")
+        (:name "Finance"
+               ;; Single arguments given alone
+               :tag "FINANCE")
+        (:name "Purchases"
+               ;; Single arguments given alone
+               :tag "PURCHASES")
+        (:name "Gifts"
+               ;; Single arguments given alone
+               :tag "GIFTS")
         (:name "Birthdays"
                ;; Single arguments given alone
                :tag "BIRTHDAY")
