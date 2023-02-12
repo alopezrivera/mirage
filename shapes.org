@@ -3463,7 +3463,7 @@ if it was previously enabled."
 (require 'org-super-agenda)
 
 ;; advice
-(advice-add 'org-agenda :after (lambda (&rest args) (org-super-agenda-mode 1)))
+(advice-add 'org-agenda :before (lambda (&rest args) (org-super-agenda-mode 1)))
 
 #+end_src
 
