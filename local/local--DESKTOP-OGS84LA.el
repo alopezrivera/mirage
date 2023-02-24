@@ -27,6 +27,7 @@
 
 (setq startup-buffers (list (concat home "studio/agenda.org")
                             (concat home "studio/projects/projects.org")
+                            (concat home "studio/professional/professional.org")
                             (concat config-directory "shapes.org")))
 
 ;; dashboard image

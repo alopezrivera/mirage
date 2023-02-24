@@ -18,6 +18,7 @@
         custom/org-control-return
         custom/org-double-end
         custom/org-double-home
+        custom/org-insert-heading-at-point
         custom/org-nimble-delete-backward
         custom/org-nimble-delete-forward
         custom/org-super-return
