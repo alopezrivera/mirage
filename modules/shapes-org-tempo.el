@@ -5,6 +5,11 @@
 (define-key org-mode-map (kbd "C-c f") #'tempo-forward-mark)
 (define-key org-mode-map (kbd "C-c b") #'tempo-backward-mark)
 
+;; inhibit electric-pair completion of <
+(add-hook 'org-mode-hook
+          (lambda () (setq-local electric-pair-inhibit-predicate
+                                 `(lambda (c) (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+
 ;; equations
 (tempo-define-template "latex-equation"
 		          '("#+NAME: eq:" p n
