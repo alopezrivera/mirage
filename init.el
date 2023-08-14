@@ -1,9 +1,9 @@
-(shapes-module "ef-themes")
+(seaman-module 'ef-themes)
 
 (setq light-theme 'ef-deuteranopia-light)
 (setq dark-theme  'ef-tritanopia-dark)
 
-(shapes-layer "modeline-moody")
+(seaman-layer 'modeline-moody)
 
 ;; default
 (set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
@@ -28,36 +28,36 @@
 ;; mode line
 (set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
 
-(shapes-layer "editing")
+(seaman-layer 'editing)
 
-(shapes-layer "search")
+(seaman-layer 'search)
 
-(shapes-module "yasnippet")
+(seaman-module 'yasnippet)
 
-(shapes-layer "completion-vertico")
+(seaman-layer 'completion-vertico)
 
-(shapes-layer "session")
+(seaman-layer 'session)
 
-(shapes-layer "project-interaction")
+(seaman-layer 'project-interaction)
 
-(shapes-module "counsel")
-(shapes-module "helpful")
-(shapes-module "which-key")
+(seaman-module 'counsel)
+(seaman-module 'helpful)
+(seaman-module 'which-key)
 
-(shapes-layer "navigation")
+(seaman-layer 'navigation)
 
-(shapes-layer "version-control")
+(seaman-layer 'version-control)
 
-(shapes-layer "file-management")
+(seaman-layer 'file-management)
 
-(shapes-layer "ide")
+(seaman-layer 'ide)
 
-(shapes-layer "pdf")
+(seaman-layer 'pdf)
 
-(shapes-layer "latex")
+(seaman-layer 'latex)
 
-(shapes-layer "org-agenda")
-(shapes-layer "org-gtd")
+(seaman-layer 'org-agenda)
+(seaman-layer 'org-gtd)
 
 ;; language
 (setq default-input-method 'spanish-prefix)

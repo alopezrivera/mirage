@@ -171,7 +171,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-module "ef-themes")
+(seaman-module 'ef-themes)
 
 (setq light-theme 'ef-deuteranopia-light)
 (setq dark-theme  'ef-tritanopia-dark)
@@ -182,7 +182,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "modeline-moody")
+(seaman-layer 'modeline-moody)
 
 #+end_src
 
@@ -220,7 +220,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "editing")
+(seaman-layer 'editing)
 
 #+end_src
 
@@ -228,7 +228,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "search")
+(seaman-layer 'search)
 
 #+end_src
 
@@ -236,7 +236,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-module "yasnippet")
+(seaman-module 'yasnippet)
 
 #+end_src
 
@@ -244,7 +244,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "completion-vertico")
+(seaman-layer 'completion-vertico)
 
 #+end_src
 
@@ -254,7 +254,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "session")
+(seaman-layer 'session)
 
 #+end_src
 
@@ -262,7 +262,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "project-interaction")
+(seaman-layer 'project-interaction)
 
 #+end_src
 
@@ -270,9 +270,9 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-module "counsel")
-(shapes-module "helpful")
-(shapes-module "which-key")
+(seaman-module 'counsel)
+(seaman-module 'helpful)
+(seaman-module 'which-key)
 
 #+end_src
 
@@ -280,7 +280,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "navigation")
+(seaman-layer 'navigation)
 
 #+end_src
 
@@ -289,7 +289,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "version-control")
+(seaman-layer 'version-control)
 
 #+end_src
 
@@ -297,7 +297,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "file-management")
+(seaman-layer 'file-management)
 
 #+end_src
 
@@ -306,7 +306,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "ide")
+(seaman-layer 'ide)
 
 #+end_src
 
@@ -314,7 +314,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "pdf")
+(seaman-layer 'pdf)
 
 #+end_src
 
@@ -322,7 +322,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "latex")
+(seaman-layer 'latex)
 
 #+end_src
 
@@ -330,8 +330,8 @@ References:
 
 #+begin_src emacs-lisp
 
-(shapes-layer "org-agenda")
-(shapes-layer "org-gtd")
+(seaman-layer 'org-agenda)
+(seaman-layer 'org-gtd)
 
 #+end_src
 

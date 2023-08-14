@@ -105,13 +105,10 @@
 ;;;; Seaman core
 (add-to-list 'load-path (concat user-emacs-directory "elisp/core/"))
 
-(defvar shapes-core-components '("load"
+(defvar seaman-core-components '("load"
                                  "package-manager"
                                  "config-management"
                                  "base-config"))
 
-(mapc (lambda (component) (require (intern (concat "shapes-core-" component)) (concat "shapes-" component)))
-      shapes-core-components)
-
-(provide 'shapes-io/.-)
-;;; shapes-.el ends here
+(mapc (lambda (component) (require (intern (concat "seaman-core-" component)) (concat "seaman-" component)))
+      seaman-core-components)

@@ -155,12 +155,12 @@ Functional needs, resources, action plans - dirty.
 - https://www.reddit.com/r/emacs/comments/hnf3cw/my_orgmode_agenda_much_better_now_with_category/
    - https://github.com/psamim/dotfiles/blob/master/doom/config.el#L73
 
-** shapes
+** seaman
 *** lockfile
 
 - load
    - error
-      - (setq shapes-load-error t)
+      - (setq seaman-load-error t)
    - if no load error
       - automatic straight package freeze
 - frozen lockfile -> config
