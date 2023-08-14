@@ -1,53 +1,73 @@
-;; shapes core
-(add-to-list 'load-path (concat config-directory "core/"))
+(setq default-input-method 'spanish-prefix)
 
-(defvar shapes-core-components '("load"
-                                 "extensions"
-                                 "package-manager"
-                                 "config-management"))
+(shapes-module "ef-themes")
 
-(mapc (lambda (component) (require (intern (concat "shapes-core-" component)) (concat "shapes-" component)))
-      shapes-core-components)
+(setq light-theme 'ef-deuteranopia-light)
+(setq dark-theme  'ef-tritanopia-dark)
 
-(message "Shapes: core loaded")
+(shapes-layer "modeline-moody")
 
-;; local settings
-(let ((local (concat config-directory "local/local--" (system-name) ".el")))
-  (if (file-exists-p local)
-      (load-file local)
-    (write-region ";; local emacs config" nil local)))
+;; default
+(set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
 
-;; config directory
-(setq config-directory (string-replace "~" (getenv "HOME") config-directory))
+;; fixed pitch
+(set-face-attribute 'fixed-pitch nil    :font "Fira Code Retina" :height 93)
 
-(load-file (concat config-directory "configs/" (concat config ".el")))
+;; variable pitch
+(set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 105 :weight 'regular)
 
-;; inhibit startup message
-(setq inhibit-startup-message t)
+;; italic
+(defface custom/italic
+  '((t :font "Victor Mono" :height  86 :weight  bold :slant italic))
+  "Italic typeface")
 
-;; startup buffers
-(defun custom/spawn-startup-buffers ()
-  "Spawn startup buffers"
-  (cl-loop for buffer in startup-buffers
-	   do (if (file-exists-p buffer)
-                  (find-file-noselect buffer))))
+;; titles
+(setq typeface-title "Latin Modern Roman")
 
-(if spawn-startup-buffers
-    (add-hook 'emacs-startup-hook #'custom/spawn-startup-buffers))
+;; headings
+(setq typeface-heading "Century Gothic")
 
-;; credentials
-(defvar shapes-credentials-map (make-keymap))
+;; mode line
+(set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
 
-(defun shapes-load-credentials ()
-  (interactive)
-  (let ((credential-file (concat config-directory "creds.el.gpg")))
-    (if (file-exists-p credential-file)
-        (condition-case nil
-            (load-file credential-file)
-          (error nil))
-      (message "~/creds.el.gpg does not exist")))
-  (global-set-key (kbd "C-M-p") shapes-credentials-map))
+(shapes-layer "editing")
 
-(global-set-key (kbd "C-M-p") #'shapes-load-credentials)
+(shapes-layer "search")
 
-(provide 'init)
+;; templates
+(shapes-module "yasnippet")
+
+(shapes-layer "completion-vertico")
+
+(shapes-layer "session")
+
+(shapes-layer "project-interaction")
+
+(shapes-module "counsel")
+(shapes-module "helpful")
+(shapes-module "which-key")
+
+(shapes-layer "navigation")
+
+(shapes-layer "version-control")
+
+(shapes-layer "file-management")
+
+(shapes-layer "ide")
+
+(shapes-layer "pdf")
+
+(shapes-layer "latex")
+
+(shapes-layer "org")
+(shapes-layer "org-ui")
+(shapes-layer "org-typesetting")
+(shapes-layer "org-latex-preview")
+
+;; applications
+(shapes-layer "org-agenda")
+(shapes-layer "org-gtd")
+
+;; custom link types
+(@seaman/org-dir-link "msc1" (concat home "studio/academic/education/TU Delft/MSc/Space Flight/SPF-1/"))
+(@seaman/org-dir-link "ta"(concat home "studio/academic/education/TU Delft/_assistantships/"))

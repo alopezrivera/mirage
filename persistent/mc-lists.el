@@ -108,6 +108,7 @@
         pixel-scroll-precision
         pixel-scroll-start-momentum
         previous-buffer
+        seaman/theme-toggle
         split-and-follow-horizontally
         suspend-frame
         swiper

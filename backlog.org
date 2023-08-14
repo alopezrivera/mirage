@@ -6,6 +6,11 @@
 #+title:Backlog
 
 
+Real deal:
+- Region delete copies deleted content
+- Indentation terrible
+
+
 * references
 ** blogs
 
@@ -406,11 +411,6 @@ wrap around arrow color -> barely visible
    - home
       - if at bol-text -> bol-visual
 
-*** config-directory
-
--> user-emacs-directory
-
-
 * contributing
 ** emacs
 
@@ -466,6 +466,8 @@ wrap around arrow color -> barely visible
       - https://github.com/alphapapa/salv.el
    - dogears
       - https://github.com/alphapapa/dogears.el/tree/c05b69e504a538c9e00fbb0ea86934fafe191d0c
+   - saveplace
+      - https://ugeek.github.io/blog/post/2019-11-14-emacs-guardando-el-ultimo-lugar-que-estas-editando-para-volver-en-otra-sesion.html
 
 - typesetting
    - fontaine
@@ -607,6 +609,9 @@ Application backlog
 
 - search and replace
    - https://www.reddit.com/r/neovim/comments/ytvx43/structural_search_and_replace/
+
+- symex
+   - https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/
 
 ***** Collaborative editing
 
