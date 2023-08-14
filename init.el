@@ -1,5 +1,3 @@
-(setq default-input-method 'spanish-prefix)
-
 (shapes-module "ef-themes")
 
 (setq light-theme 'ef-deuteranopia-light)
@@ -34,7 +32,6 @@
 
 (shapes-layer "search")
 
-;; templates
 (shapes-module "yasnippet")
 
 (shapes-layer "completion-vertico")
@@ -59,14 +56,11 @@
 
 (shapes-layer "latex")
 
-(shapes-layer "org")
-(shapes-layer "org-ui")
-(shapes-layer "org-typesetting")
-(shapes-layer "org-latex-preview")
-
-;; applications
 (shapes-layer "org-agenda")
 (shapes-layer "org-gtd")
+
+;; language
+(setq default-input-method 'spanish-prefix)
 
 ;; custom link types
 (@seaman/org-dir-link "msc1" (concat home "studio/academic/education/TU Delft/MSc/Space Flight/SPF-1/"))

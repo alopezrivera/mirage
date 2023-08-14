@@ -96,6 +96,8 @@
 ;; https://www.reddit.com/r/emacs/comments/9jp9zt/anyone_know_what_variable_binding_depth_exceeds/
 (customize-set-variable 'max-specpdl-size 13000)
 
+(setq user-emacs-directory (expand-file-name user-emacs-directory))
+
 ;;;; Customize interface file
 (setq custom-file (concat user-emacs-directory "persistent/custom.el"))
 (load-file custom-file)
@@ -110,8 +112,6 @@
 
 (mapc (lambda (component) (require (intern (concat "shapes-core-" component)) (concat "shapes-" component)))
       shapes-core-components)
-
-(setq user-emacs-directory (expand-file-name user-emacs-directory))
 
 (provide 'shapes-io/.-)
 ;;; shapes-.el ends here

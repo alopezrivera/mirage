@@ -52,11 +52,9 @@
 
 (shapes-module "el-patch")
 
-(global-set-key (kbd "C-x e") #'eval-buffer)
+(setq debug-on-error nil)
 
 (global-set-key (kbd "C-c SPC") #'whitespace-mode)
-
-(setq debug-on-error nil)
 
 (provide 'shapes-core-config-management)
 ;;; shapes-config-management.el ends here

@@ -82,7 +82,7 @@ It can be recovered afterwards with `seaman/org-recover-outline-state'."
 
 (defvar-local seaman/org-outline-state nil
   "Variable to save the org outline.")
-(put seaman/org-outline-state 'permanent-local t)
+(put 'seaman/org-outline-state 'permanent-local t)
 
 (defun seaman/org-set-outline-state (data)
   "Create visibility overlays for all positions in DATA.
