@@ -48,82 +48,115 @@ We can run M-x ~straight-freeze-versions~ to write the file ~straight/versions/d
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/straight/versions/default.el
 
-(("Emacs-wgrep" . "f9687c28bbc2e84f87a479b6ce04407bb97cfb23")
+(("Emacs-wgrep" . "3132abd3750b8c87cbcf6942db952acfab5edccd")
  ("Highlight-Indentation-for-Emacs" . "d88db4248882da2d4316e76ed673b4ac1fa99ce3")
- ("ace-window" . "0577c426a9833ab107bab46c60d1885c611b2fb9")
- ("all-the-icons.el" . "9c90dbaa31a2fdc163e4394514bf9ee359e46ee5")
- ("autothemer" . "1dbc06ad430c51b5ec1a602a808ee46b9bd4bafa")
- ("avy" . "ba5f035be33693d1a136a5cbeedb24327f551a92")
+ ("ace-window" . "77115afc1b0b9f633084cf7479c767988106c196")
+ ("alert" . "c762380ff71c429faf47552a83605b2578656380")
+ ("all-the-icons-completion" . "e09e65bf05b247ea0e2bdc5d36ea5a58fc2ed69b")
+ ("all-the-icons.el" . "f491f39c21336d354e85bdb4cca281e0a0c2f880")
+ ("autothemer" . "6277b086ec2d0a17f5722caf6a0ec5ca16cb5486")
+ ("avy" . "be612110cb116a38b8603df367942e2bb3d9bdbe")
  ("cfrs" . "f3a21f237b2a54e6b9f8a420a9da42b4f0a63121")
- ("circadian.el" . "bf5a00ea45c14dfdcda72c5d9f61bcd230c48159")
- ("company-mode" . "1490c235b96acdbcc3927751473c67c1d32b2148")
- ("compat" . "e1a22bf72ff8af445157db421adae2fbc549b224")
- ("dash.el" . "0ac1ecf6b56eb67bb81a3cf70f8d4354b5782341")
+ ("circadian.el" . "52e336d9bb66cfd6d6dc5b9213ea21796ac873d4")
+ ("closql" . "ea49aa1d12ad7fb5d8e9f87eec033732aff1ee7a")
+ ("company-mode" . "7c24dc8668af5aea8a5d07aeceda5fac7a2a85b5")
+ ("compat" . "9428a64eb8a579f35d57bc4d4cdb6c5cf10806c1")
+ ("dash.el" . "6db80c711ce947f6c6fa11e5c2257fff2c79d139")
  ("delight" . "70cb8cec9e5eb2c24364e065d85c2ea8f14a587c")
- ("dirvish" . "0f61b3e3f73bdfebe29ea6cab810f71f8c9d3540")
- ("doom-modeline" . "1d1f37c0a73eb131c2fbd44b6b08237760dd4e43")
- ("el-get" . "bf3dba444dcd240b8cb358a0850c8c5a92606134")
- ("el-patch" . "156c61b72c1c9c61bd886b5931b8a382153f52fa")
- ("elisp-refs" . "af73739084637c8ebadad337a8fe58ff4f1d2ec1")
- ("elpy" . "de31d30003c515c25ff7bfd3a361c70c298f78bb")
+ ("dirvish" . "119f9f59a618bb7b476c93e9ab1d7542c5c1df41")
+ ("ef-themes" . "86b92a5567800c50ea316d97846df138f34a3307")
+ ("el-get" . "f3f1edd434221dc6daef565ebf77fa40c4cead36")
+ ("el-patch" . "e358febcb03f71f3aed4b37f99990ae865f1124b")
+ ("eldoc" . "a2aaed2b7c70c1f28dd212fe2f4304ce89c338d7")
+ ("elisp-refs" . "bf3cca8f74065b1b31036f461e3a093b162311bd")
+ ("elpy" . "7ff8ffa918411887d165764f7a5a12bc46646e73")
+ ("emacs-async" . "bb0509060ddc9c94bc7db7bddb12995acb3b53e4")
  ("emacs-calfw" . "03abce97620a4a7f7ec5f911e669da9031ab9088")
- ("emacs-chocolate-theme" . "ccc05f7ad96d3d1332727689bf6250443adc7ec0")
- ("emacs-web-server" . "22ce66ea43e0eadb9ec1d691a35d9695fc29cee6")
- ("emacs-websocket" . "82b370602fa0158670b1c6c769f223159affce9b")
- ("emacs-which-key" . "1ab1d0cc88843c9a614ed3226c5a1070e32e4823")
- ("emacsmirror-mirror" . "ebaa7a97ab71b1af4236e730e54845b380eb1792")
- ("emacsql" . "373975cbccf7776af771e23f86043b236a330702")
+ ("emacs-dashboard" . "0cae7b872552c73da2ff61de6623b8c3196f1937")
+ ("emacs-web-server" . "6260232da8b53c4e214bc5e427ec00c3ebdd9869")
+ ("emacs-websocket" . "40c208eaab99999d7c1e4bea883648da24c03be3")
+ ("emacs-which-key" . "df6b0cb8449812e7fb200bc852107fa7eb708496")
+ ("emacsmirror-mirror" . "8e7cbfea765e5f9095c6f130a5efd949c04f9c72")
+ ("emacsql" . "64012261f65fcdd7ea137d1973ef051af1dced42")
+ ("embrace.el" . "dd5da196e5bcc5e6d87e1937eca0c21da4334ef2")
  ("epl" . "78ab7a85c08222cd15582a298a364774e3282ce6")
- ("f.el" . "d2019d4f9625bcc44349c69fe46d6645fd9ff4ff")
- ("flycheck" . "c955fd6fb970eed5fdecf675369d3d61a41f6c68")
- ("gnu-elpa-mirror" . "aa9f0535e6e034acd89312ca0de3dd5a20f0f883")
- ("helpful" . "94a07d49a80f66f8ebc54a49a4b4f6899a65fbe3")
- ("ht.el" . "c4c1be487d6ecb353d07881526db05d7fc90ea87")
- ("hydra" . "9e9e00cb240ea1903ffd36a54956b3902c379d29")
- ("let-alist" . "592553db5929b54db40af0df90c5add0aaca045b")
- ("magit" . "acd26dd9f3708602d4c721395d790a4af7937eed")
- ("melpa" . "f1f3d4dc42a050f6d1b466459593fa198cd151c4")
- ("modus-themes" . "2860a94f78154dfdd0b2d01bdf0af7992195f34c")
- ("multiple-cursors.el" . "225fc0e889e094bfd2913cfd448084cb49211ac6")
- ("nano-modeline" . "35276a9139293c42287565d3bf84f46090a86e8e")
- ("nano-theme" . "de3118f14e0fb696983c1c9f93453609010ffd14")
- ("no-littering" . "d9db6d88ccae0727fa96125fae8601cac80efde0")
- ("olivetti" . "8d287a80c5e3d72ac01b56c8afe60b01f18500b4")
- ("org" . "5b45ad083c92f24f0e8a859f1873edc0c6820d74")
+ ("evil" . "b291039b0c6ffc3b2f3c9f02b8ad2f0041127b12")
+ ("evil-god-state" . "3d44197dc0a1fb40e7b7ff8717f8a8c339ce1d40")
+ ("evil-org-mode" . "b1f309726b1326e1a103742524ec331789f2bf94")
+ ("expand-region.el" . "b70feaa644310dc2d599dc277cd20a1f2b6446ac")
+ ("f.el" . "19e1da061e759b05e8c480b426287a063ca39484")
+ ("flycheck" . "5f2ef177cb21ae8b73714575802beef04abd0f5e")
+ ("forge" . "dc777b64ad33d0b70dc2067af8401a9598d21764")
+ ("ghub" . "0fd648f0529f34b5da441d54c9dbff7810477d12")
+ ("gntp.el" . "767571135e2c0985944017dc59b0be79af222ef5")
+ ("gnu-elpa-mirror" . "be1351c478935b8348c19d3197cd5d84330c708d")
+ ("god-mode" . "607aff10a7b27a8aa0c1a15c2c39337ab17cfda7")
+ ("goto-chg" . "278cd3e6d5107693aa2bb33189ca503f22f227d0")
+ ("helpful" . "c57ff0d284b50ff430fe1f13fd48deaa0d1a910e")
+ ("ht.el" . "1c49aad1c820c86f7ee35bf9fff8429502f60fef")
+ ("hydra" . "317e1de33086637579a7aeb60f77ed0405bf359b")
+ ("let-alist" . "021fc10df2e44faba4728d849ee767cf890aa51a")
+ ("log4e" . "737d275eac28dbdfb0b26d28e99da148bfce9d16")
+ ("lsp-mode" . "d14d3d5e1e21eb658b2cf2f6be34f43072027328")
+ ("magit" . "93d30c5459e75a0d53581da2a5539a54efa329ab")
+ ("markdown-mode" . "f8a91fef75d99b83591417df856b5240d78ae563")
+ ("melpa" . "bdb191b4cd65bd60a905ec2866471031abec7f23")
+ ("moody" . "888e6fb37eb5122803c70ae60d28fc54589e26c0")
+ ("multiple-cursors.el" . "234806c832994cadedb42596fe235e91bbd59e8c")
+ ("no-littering" . "fcfd51fbdf08469e6d1b59bc4bd2d75aa708c791")
+ ("nongnu-elpa" . "14e9631cd2b81f66ed551b14d31811a75cc53a4b")
+ ("olivetti" . "a644ee9d24c7283435ce42e11498951e100608c9")
+ ("orderless" . "6936fe46ef07df168a423f04efeda130b4e69753")
+ ("org" . "8ef6205a560cd3a92f8c5f8fe34953b80121c2cb")
  ("org-appear" . "60ba267c5da336e75e603f8c7ab3f44e6f4e4dac")
- ("org-contacts" . "dba21b48952e78e9db27e25628bcfb0353c19b24")
+ ("org-contacts" . "7f03eafaad2e5746949c0bebb98353e939c51ade")
+ ("org-download" . "19e166f0a8c539b4144cfbc614309d47a9b2a9b7")
  ("org-fragtog" . "ede4ac61e8cb580f63f882bdee2b0e573cd3dd60")
- ("org-modern" . "239c02aa99dc52755edf38d5e9c9e986683c4249")
- ("org-roam" . "c3867619147175faf89ed8f3e90a1e67a4fd9655")
- ("org-roam-timestamps" . "604fdad0feb61419751d3d6b828cc443a99f418f")
- ("org-roam-ui" . "9474a254390b1e42488a1801fed5826b32a8030b")
- ("ox-rst" . "99fa790da55b57a3f2e9aa187493ba434a64250e")
- ("pfuture" . "f9e67bd7edbd5b4e033efd82c0acc4a85ff860a8")
+ ("org-modern" . "63372bda43a9d0dd9940c1ec3c53f752b642ac41")
+ ("org-pomodoro" . "3f5bcfb80d61556d35fc29e5ddb09750df962cc6")
+ ("org-rainbow-tags" . "550cc521013ba631bb3ad5fc4acdb72b655b24b7")
+ ("org-reveal" . "f55c851bf6aeb1bb2a7f6cf0f2b7bd0e79c4a5a0")
+ ("org-roam" . "5c06471c3a11348342719fd9011486455adeb701")
+ ("org-roam-timestamps" . "c4ff1e2f5b0905b5caa917249aab56ddc1de1ab3")
+ ("org-roam-ui" . "5ac74960231db0bf7783c2ba7a19a60f582e91ab")
+ ("org-super-agenda" . "f4f528985397c833c870967884b013cf91a1da4a")
+ ("ox-ipynb" . "4c1cc46268a76751eec83a66d481687a0da6d668")
+ ("page-break-lines" . "5e9ed86bb56fd076b12ae7adaf40eeaa09aed4c5")
+ ("pdf-tools" . "c69e7656a4678fe25afbd29f3503dd19ee7f9896")
+ ("pdf-view-restore" . "5a1947c01a3edecc9e0fe7629041a2f53e0610c9")
+ ("pfuture" . "19b53aebbc0f2da31de6326c495038901bffb73c")
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
- ("posframe" . "0d23bc5f7cfac00277d83ae7ba52c48685bcbc68")
- ("powerline" . "566c77844f053cb39fa7acdfbc143a855450f0b5")
- ("projectile" . "2e4105c947610986e08980dcf1a891cf1f4303e1")
+ ("posframe" . "017deece88360c7297265680d78a0bb316470716")
+ ("project" . "927a7534138b70fa80e89450c77258f9386d03a1")
+ ("projectile" . "971cd5c4f25ff1f84ab7e8337ffc7f89f67a1b52")
+ ("puni" . "a39a4ecac7279bed1a150a895bbc80baa7272888")
  ("pyvenv" . "31ea715f2164dd611e7fc77b26390ef3ca93509b")
  ("rainbow-delimiters" . "a32b39bdfe6c61c322c37226d66e1b6d4f107ed0")
- ("rainbow-mode" . "55a8c15782197cd9db8950d2f5ed1b9caca08dae")
- ("rg.el" . "51596cb516d7af1737d964ffdbb4c4d416d6dfaf")
- ("s.el" . "08661efb075d1c6b4fa812184c1e5e90c08795a9")
- ("shrink-path.el" . "c14882c8599aec79a6e8ef2d06454254bb3e1e41")
- ("spaceline" . "9a81afa52738544ad5e8b71308a37422ca7e25ba")
- ("straight.el" . "4517e118ee43f849f708025dbb2cf4f281793121")
- ("svg-lib" . "1e7834642fb74d4d5b2b84973fbb2095d5b7618b")
- ("svg-tag-mode" . "efd22edf650fb25e665269ba9fed7ccad0771a2f")
- ("sweet-theme" . "78f741806ecebe01224bf54d09ad80e306652508")
- ("swiper" . "2051de5882706246da298ce5f60482cd7f469fe7")
- ("themes" . "d79a41f593c69697af1ddaac971c0c47ecc446a8")
- ("transient" . "a583d2b2f5f8963f08cb5a15a4d4dd55faa13585")
- ("treemacs" . "e80c3020270720ff114f7a2ad62c85e1fb627678")
- ("vundo" . "80f5cb5775bb4120e36b2959db07fc88993eff81")
- ("with-editor" . "cfcbc2731e402b9169c0dc03e89b5b57aa988502")
+ ("rainbow-mode" . "8e96388fb4d616a9dde23e712bad0d9cd048fbf0")
+ ("rg.el" . "e9dc4ed342e0212d08fb82554dfd3c57fdfa5b1a")
+ ("rust-mode" . "9c26dc1195ec05309ee15c014631fb9abd6cf5d2")
+ ("rustic" . "39423d1cf4fa054c36bf9577356451f4c06ee148")
+ ("s.el" . "dda84d38fffdaf0c9b12837b504b402af910d01d")
+ ("spinner" . "634529bb3173e09b37499f636de70abf29d9fa8a")
+ ("straight.el" . "ff63b154bef1ef8d92c141bd189001bff74f6982")
+ ("super-save" . "6f6512bc44b09f7187e58772892fa330f4518c12")
+ ("swiper" . "595d44264420d989e420351ea25b3c99528547c0")
+ ("tablist" . "5f7b71a92bfb25418d7da86ad9c45f14b149496f")
+ ("transient" . "d056a6c013b9e7160a676365bcf29905bfe65093")
+ ("treemacs" . "6a6171c6d09522a736f1bb91b7e351aa93d0ac2e")
+ ("treepy.el" . "75fe3ec37e6f9b2bdfd6d0584efd984d0c00a43e")
+ ("ts.el" . "552936017cfdec89f7fc20c254ae6b37c3f22c5b")
+ ("use-package" . "a6e856418d2ebd053b34e0ab2fda328abeba731c")
+ ("vertico" . "353694558a1caffe1d1f8fe3a3eb7a4a9fee7d3a")
+ ("vundo" . "5e917b35a942c7e18044ba8ebddbe98f8e85d818")
+ ("with-editor" . "a4853781835346aabf083d2d9cb87f656d01ccac")
  ("workgroups.el" . "9572b3492ee09054dc329f64ed846c962b395e39")
+ ("xref" . "420511e20187d0c6c8680c0e63ae8810f84dee00")
+ ("xterm-color" . "2ad407c651e90fff2ea85d17bf074cee2c022912")
+ ("yaml.el" . "ee86566af1ed4975531ab3aa4eb4dba770c227f6")
  ("yasnippet" . "5cbdbf0d2015540c59ed8ee0fcf4788effdf75b6")
- ("yasnippet-snippets" . "c5bf4c4085aa61b9c07563de89f7aacc2a357db5"))
-:beta
+ ("yasnippet-snippets" . "bec49fa129ae8c0104ba150f9b8352a39c54dbd6"))
+:gamma
 
 #+end_src
 
@@ -132,15 +165,9 @@ References:
 
 - [[https://www.lucacambiaghi.com/vanilla-emacs/readme.html][Luca Ambiaghi, Luca's literate Emacs config]]
 
-* Input
 
-#+begin_src emacs-lisp
-
-(setq default-input-method 'spanish-prefix)
-
-#+end_src
-
-* Themes
+* Config
+** Themes
 
 #+begin_src emacs-lisp
 
@@ -151,7 +178,7 @@ References:
 
 #+end_src
 
-* Mode line
+** Mode line
 
 #+begin_src emacs-lisp
 
@@ -159,9 +186,7 @@ References:
 
 #+end_src
 
-* Typefaces
-
-- dpi font size scaling
+** Typefaces
 
 #+begin_src emacs-lisp
 
@@ -191,7 +216,7 @@ References:
 #+end_src
 
 
-* Editing
+** Editing
 
 #+begin_src emacs-lisp
 
@@ -199,7 +224,7 @@ References:
 
 #+end_src
 
-* Search
+** Search
 
 #+begin_src emacs-lisp
 
@@ -207,16 +232,15 @@ References:
 
 #+end_src
 
-* Templates
+** Templates
 
 #+begin_src emacs-lisp
 
-;; templates
 (shapes-module "yasnippet")
 
 #+end_src
 
-* Completion
+** Completion
 
 #+begin_src emacs-lisp
 
@@ -225,8 +249,8 @@ References:
 #+end_src
 
 
-* Workflow
-** Session
+** Workflow
+*** Session
 
 #+begin_src emacs-lisp
 
@@ -234,7 +258,7 @@ References:
 
 #+end_src
 
-** Project interaction
+*** Project interaction
 
 #+begin_src emacs-lisp
 
@@ -242,7 +266,7 @@ References:
 
 #+end_src
 
-* Guidance
+** Guidance
 
 #+begin_src emacs-lisp
 
@@ -252,7 +276,7 @@ References:
 
 #+end_src
 
-* Navigation
+** Navigation
 
 #+begin_src emacs-lisp
 
@@ -261,7 +285,7 @@ References:
 #+end_src
 
 
-* Version control
+** Version control
 
 #+begin_src emacs-lisp
 
@@ -269,7 +293,7 @@ References:
 
 #+end_src
 
-* File management
+** File management
 
 #+begin_src emacs-lisp
 
@@ -278,7 +302,7 @@ References:
 #+end_src
 
 
-* IDE
+** IDE
 
 #+begin_src emacs-lisp
 
@@ -286,7 +310,7 @@ References:
 
 #+end_src
 
-* PDF
+** PDF
 
 #+begin_src emacs-lisp
 
@@ -294,7 +318,7 @@ References:
 
 #+end_src
 
-* LaTeX
+** LaTeX
 
 #+begin_src emacs-lisp
 
@@ -302,21 +326,28 @@ References:
 
 #+end_src
 
-* Org Mode
+** Org Mode
 
 #+begin_src emacs-lisp
 
-(shapes-layer "org")
-(shapes-layer "org-ui")
-(shapes-layer "org-typesetting")
-(shapes-layer "org-latex-preview")
-
-;; applications
 (shapes-layer "org-agenda")
 (shapes-layer "org-gtd")
+
+#+end_src
+
+
+* Personal settings
+
+#+begin_src emacs-lisp
+
+;; language
+(setq default-input-method 'spanish-prefix)
 
 ;; custom link types
 (@seaman/org-dir-link "msc1" (concat home "studio/academic/education/TU Delft/MSc/Space Flight/SPF-1/"))
 (@seaman/org-dir-link "ta"(concat home "studio/academic/education/TU Delft/_assistantships/"))
 
 #+end_src
+
+
+

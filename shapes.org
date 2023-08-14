@@ -5,29 +5,170 @@
 
 
 
-#+title:Shapes
+#+title:Seaman
 #+PROPERTY: header-args:emacs-lisp :results none :mkdirp yes
 
 
+* Early initialization
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./early-init.el
+:END:
+** Performance settings
+
+From Lambda Emacs.
+
+#+begin_src emacs-lisp
+
+;;;; Speed up startup
+;; Help speed up emacs initialization See
+;; https://blog.d46.us/advanced-emacs-startup/ and
+;; http://tvraman.github.io/emacspeak/blog/emacs-start-speed-up.html and
+;; https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/
+;; This will be set back to normal at the end of the init file
+
+(defvar lem-file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+;;;; Garbage collection
+
+;; Defer garbage collection further back in the startup process. We'll lower
+;; this to a more reasonable number at the end of the init process (i.e. at end of
+;; init.el)
+
+(setq gc-cons-threshold most-positive-fixnum)
+
+;; Adjust garbage collection thresholds during startup, and thereafter
+;; See http://akrl.sdf.org https://gitlab.com/koral/gcmh
+
+(defmacro k-time (&rest body)
+  "Measure and return the time it takes evaluating BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (float-time (time-since time))))
+
+;; When idle for 15sec run the GC no matter what.
+(defvar k-gc-timer
+  (run-with-idle-timer 15 t
+                       (lambda ()
+                         (let ((inhibit-message t))
+                           (message "Garbage Collector has run for %.06fsec"
+                                    (k-time (garbage-collect)))))))
+
+;;;; Native Comp
+
+;; See https://github.com/jimeh/build-emacs-for-macos#native-comp
+;; https://akrl.sdf.org/gccemacs.html#org335c0de
+;; https://github.com/emacscollective/no-littering/wiki/Setting-gccemacs'-eln-cache
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=53891
+;; https://emacs.stackexchange.com/a/70478/11934
+
+;; See if native-comp is available
+(cond ((not (and (fboundp 'native-comp-available-p)
+                 (native-comp-available-p)))
+       (message "Native complation is *not* available"))
+      ;; Put eln-cache dir in cache directory
+      ;; NOTE the method for setting the eln-cache dir depends on the emacs version
+      ((version< emacs-version "29")
+       (setcar native-comp-eln-load-path
+               (expand-file-name (convert-standard-filename "var/cache/eln-cache/") user-emacs-directory)))
+      (t
+       (startup-redirect-eln-cache (convert-standard-filename (expand-file-name "var/cache/eln-cache/" user-emacs-directory)))))
+
+;; Silence nativecomp warnings popping up
+(customize-set-variable 'native-comp-async-report-warnings-errors nil)
+
+;; Native-comp settings
+(customize-set-variable 'native-comp-speed 2)
+(customize-set-variable 'native-comp-deferred-compilation t)
+
+;;;; Set C Directory
+;; NOTE this assumes that the C source files are included with emacs.
+;; This depends on the build process used.
+;; For one example see https://github.com/mclear-tools/build-emacs-macos
+(setq find-function-C-source-directory "/Applications/Emacs.app/Contents/Resources/src")
+
+;;;; Prefer Newer files
+;; Prefer newer versions of files
+(setq load-prefer-newer t)
+
+;;;; Byte Compile Warnings
+;; Disable certain byte compiler warnings to cut down on the noise. This is a
+;; personal choice and can be removed if you would like to see any and all byte
+;; compiler warnings.
+(customize-set-variable 'byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local obsolete))
+;;;; Check Errors
+;; Don't produce backtraces when errors occur.
+;; This can be set to `t' interactively when debugging.
+(customize-set-variable 'debug-on-error nil)
+
+;;;; When-let errors
+;; https://github.com/alphapapa/frame-purpose.el/issues/3
+(eval-and-compile
+  (when (version< emacs-version "26")
+    (with-no-warnings
+      (defalias 'when-let* #'when-let)
+      (function-put #'when-let* 'lisp-indent-function 1)
+      (defalias 'if-let* #'if-let)
+      (function-put #'if-let* 'lisp-indent-function 2))))
+
+;;;; Variable Binding Depth
+;; This variable controls the number of lisp bindings that can exists at a time.
+;; We should make it fairly large for modern machines.
+;; https://www.reddit.com/r/emacs/comments/9jp9zt/anyone_know_what_variable_binding_depth_exceeds/
+(customize-set-variable 'max-specpdl-size 13000)
+
+#+end_src
+
+** System variables
+
+#+begin_src emacs-lisp
+
+(setq user-emacs-directory (expand-file-name user-emacs-directory))
+
+#+end_src
+
+** Customize interface
+
+#+begin_src emacs-lisp
+
+;;;; Customize interface file
+(setq custom-file (concat user-emacs-directory "persistent/custom.el"))
+(load-file custom-file)
+
+#+end_src
+
+** Seaman core
+
+#+begin_src emacs-lisp
+
+;;;; Seaman core
+(add-to-list 'load-path (concat user-emacs-directory "elisp/core/"))
+
+(defvar shapes-core-components '("load"
+                                 "package-manager"
+                                 "config-management"
+                                 "base-config"))
+
+(mapc (lambda (component) (require (intern (concat "shapes-core-" component)) (concat "shapes-" component)))
+      shapes-core-components)
+
+#+end_src
+
 
 * Core
-** Load
+** Loading
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/shapes-load.el
+:header-args:emacs-lisp+: :tangle ./elisp/core/shapes-load.el
 :END:
 
 #+begin_src emacs-lisp
 
-(defcustom shapes-debug-on-error t
-  "Whether to enter the debugger if a shapes module, layer or
-extension fails to load.")
-
 (defun shapes-load (type component)
   "Load a shapes COMPONENT of the given TYPE"
   (condition-case err
-      (require (intern (concat "shapes-" type "-" component)) (concat config-directory type "s" "/shapes-" component ".el"))
+      (require (intern (concat "shapes-" type "-" component)) (concat user-emacs-directory "elisp/" type "s" "/shapes-" component ".el"))
     (error (progn (message "ERROR: shapes-%s %s load failed" component type)
-		     (if shapes-debug-on-error
+		     (if debug-on-error
 		         (debug err))))))
 
 ;; shapes modules
@@ -47,23 +188,9 @@ extension fails to load.")
 
 #+end_src
 
-** Extensions
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/shapes-extensions.el
-:END:
-
-#+begin_src emacs-lisp
-
-(shapes-extend "get")
-(shapes-extend "queries")
-(shapes-extend "execution")
-(shapes-extend "operators")
-
-#+end_src
-
 ** Package manager
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/shapes-package-manager.el
+:header-args:emacs-lisp+: :tangle ./elisp/core/shapes-package-manager.el
 :END:
 
 #+begin_src emacs-lisp
@@ -75,7 +202,7 @@ extension fails to load.")
 
 ** Config management
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/shapes-config-management.el
+:header-args:emacs-lisp+: :tangle ./elisp/core/shapes-config-management.el
 :END:
 *** Tangling
 
@@ -83,20 +210,20 @@ extension fails to load.")
 
 (shapes-module "async")
 
-(defun custom/shapes-tangle (org-file &optional quiet)
+(defun seaman/shapes-tangle (org-file &optional quiet)
   "Asynchronously tangle an org file."
   (let ((init-tangle-start-time (current-time))
 	(file (buffer-file-name))
 	(async-quiet-switch "-q"))
     (async-start
      `(lambda ()
-              (dolist (comp-dir (mapcar (lambda (dir) (concat ,config-directory dir)) '("core" "layers" "modules" "extensions")))
+              (dolist (comp-dir (mapcar (lambda (dir) (concat ,user-emacs-directory "elisp/" dir)) '("core" "layers" "modules" "extensions")))
                 (dolist (file (directory-files comp-dir t directory-files-no-dot-files-regexp))
                   (delete-file file)))
 	      (require 'org)
 	      (add-hook 'org-babel-post-tangle-hook
 			(lambda ()
-				(string-match "\\(^.*/\\)\\(.*\\)\\(/shapes-\\)\\(.*\\)\\(.el\\)" (buffer-file-name))
+				(string-match "\\(^.*/elisp/\\)\\(.*\\)\\(/shapes-\\)\\(.*\\)\\(.el\\)" (buffer-file-name))
 				(let ((component (match-string 4 (buffer-file-name)))
 				      (comp-type (match-string 2 (buffer-file-name))))
 				     (end-of-buffer)
@@ -118,18 +245,18 @@ extension fails to load.")
 							     ',init-tangle-start-time)))
 		       (message "ERROR: %s tangling failed." ,org-file)))))))
 
-(defun custom/shapes-tangle-auto ()
+(defun seaman/shapes-tangle-auto ()
   "Automatically tangle Org Mode files in the Emacs config directory"
   (let* ((file   (expand-file-name buffer-file-name))
-	 (source (string-match (concat config-directory ".*.org$") file))
-	 (shapes (string-match (concat config-directory "shapes.org$") buffer-file-name))
+	 (source (string-match (concat user-emacs-directory ".*.org$") file))
+	 (shapes (string-match (concat user-emacs-directory "shapes.org$") buffer-file-name))
 	 (org-confirm-babel-evaluate nil))
     (if source
 	(if shapes
-	    (custom/shapes-tangle file)
+	    (seaman/shapes-tangle file)
 	  (org-babel-tangle)))))
 
-(add-hook 'after-save-hook #'custom/shapes-tangle-auto)
+(add-hook 'after-save-hook #'seaman/shapes-tangle-auto)
 
 #+end_src
 
@@ -149,27 +276,44 @@ extension fails to load.")
 
 #+end_src
 
-*** Execution
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-x e") #'eval-buffer)
-
-#+end_src
-
-*** Inspection
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "C-c SPC") #'whitespace-mode)
-
-#+end_src
-
 *** Debugging
 
 #+begin_src emacs-lisp
 
 (setq debug-on-error nil)
+
+(global-set-key (kbd "C-c SPC") #'whitespace-mode)
+
+#+end_src
+
+** Configuration
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./elisp/core/shapes-base-config.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; utilities
+(shapes-extend "get")
+(shapes-extend "queries")
+(shapes-extend "execution")
+(shapes-extend "operators")
+
+;; UI
+(shapes-layer "ui")
+(shapes-layer "input")
+
+;; input
+(shapes-extend "rsi")
+
+;; themes
+(shapes-layer "themes")
+
+;; org-mode
+(shapes-layer "org")
+(shapes-layer "org-ui")
+(shapes-layer "org-typesetting")
+(shapes-layer "org-latex-preview")
 
 #+end_src
 
@@ -185,7 +329,7 @@ Content of a layer:
 
 ** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-ui.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-ui.el
 :END:
 *** Text
 **** Typefaces
@@ -306,34 +450,22 @@ Content of a layer:
 
 ** Themes
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-themes.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-themes.el
 :END:
 
-Shapes themes layer. It requires three variables to be defined: the light and dark themes (~light~ and ~dark~ respectively), and the mode line of choice (~modeline~).
+Shapes themes layer. It requires three variables to be defined: the light and dark themes (~light~ and ~dark~ respectively).
 
 #+begin_src emacs-lisp
 
-(defcustom light 'modus-operandi
+(defcustom light-theme 'nil
   "Light theme")
-(defcustom dark  'modus-vivendi
+(defcustom dark-theme  'nil
   "Dark theme")
 
 ;; creation
 (shapes-module "autothemer")
 
-;; theme bundles
-(shapes-module "ef-themes")
-(shapes-module "nano-theme")
-(shapes-module "doom-themes")
-(shapes-module "modus-themes")
-(shapes-module "solarized-theme")
-(shapes-module "catppuccin-themes")
-;; standalone themes
-(shapes-module "sweet-theme")
-(shapes-module "graphite-theme")
-(shapes-module "chocolate-theme")
-
-;; extensions
+;; theme switching
 (shapes-extend "theme-switch")
 
 ;; scheduling
@@ -344,7 +476,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ** Mode line
 *** Doom
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-modeline-doom.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-modeline-doom.el
 :END:
 
 #+begin_src emacs-lisp
@@ -359,7 +491,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 *** Nano
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-modeline-nano.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-modeline-nano.el
 :END:
 
 #+begin_src emacs-lisp
@@ -374,7 +506,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 *** Moody
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-modeline-moody.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-modeline-moody.el
 :END:
 
 #+begin_src emacs-lisp
@@ -399,7 +531,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 *** Spaceline
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-modeline-spaceline.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-modeline-spaceline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -412,7 +544,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ** Input
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-input.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-input.el
 :END:
 
 #+begin_src emacs-lisp
@@ -431,7 +563,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ** Completion
 *** ivy
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-completion-ivy.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-completion-ivy.el
 :END:
 
 #+begin_src emacs-lisp
@@ -442,7 +574,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 *** vertico
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-completion-vertico.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-completion-vertico.el
 :END:
 
 #+begin_src emacs-lisp
@@ -458,7 +590,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-navigation.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-navigation.el
 :END:
 
 #+begin_src emacs-lisp
@@ -498,7 +630,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ** Search
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-search.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-search.el
 :END:
 
 #+begin_src emacs-lisp
@@ -514,7 +646,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 ** Editing
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-editing.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-editing.el
 :END:
 
 #+begin_src emacs-lisp
@@ -537,7 +669,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 ** Workflow
 *** Session
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-session.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-session.el
 :END:
 
 #+begin_src emacs-lisp
@@ -557,7 +689,7 @@ Shapes themes layer. It requires three variables to be defined: the light and da
 
 *** Project interaction
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-project-interaction.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-project-interaction.el
 :END:
 
 #+begin_src emacs-lisp
@@ -571,7 +703,7 @@ a
 
 ** Version control
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-version-control.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-version-control.el
 :END:
 
 #+begin_src emacs-lisp
@@ -583,7 +715,7 @@ a
 
 ** File management
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-file-management.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-file-management.el
 :END:
 
 ~backup-directory-alist~, which determines where backups are saved, is set by ~no-littering~.
@@ -608,7 +740,7 @@ a
 
 ** IDE
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-ide.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-ide.el
 :END:
 
 #+begin_src emacs-lisp
@@ -648,7 +780,7 @@ a
 
 ** PDF
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-pdf.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-pdf.el
 :END:
 
 #+begin_src emacs-lisp
@@ -670,7 +802,7 @@ a
 
 ** LaTeX
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-latex.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-latex.el
 :END:
 
 #+begin_src emacs-lisp
@@ -683,7 +815,7 @@ a
 *** Config
 **** org
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-org.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-org.el
 :END:
 
 #+begin_src emacs-lisp
@@ -738,7 +870,7 @@ a
 
 **** org-ui
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-org-ui.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-org-ui.el
 :END:
 
 #+begin_src emacs-lisp
@@ -771,7 +903,7 @@ a
 
 **** org-typesetting
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-org-typesetting.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-org-typesetting.el
 :END:
 ***** Text
 ****** Typefaces
@@ -779,7 +911,7 @@ a
 
 #+begin_src emacs-lisp
 
-(defun custom/org-typefaces-body ()
+(defun seaman/org-typefaces-body ()
   (with-eval-after-load 'org-faces
 
     ;; Code
@@ -799,7 +931,7 @@ a
     (set-face-attribute 'org-document-info-keyword nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-special-keyword       nil :inherit 'fixed-pitch)))
 
-(add-hook 'org-mode-hook #'custom/org-typefaces-body)
+(add-hook 'org-mode-hook #'seaman/org-typefaces-body)
 
 #+end_src
 
@@ -817,7 +949,7 @@ a
 (setq org-hide-leading-starts t)
 
 ;; font sizes
-(defun custom/org-heading-typefaces () 
+(defun seaman/org-heading-typefaces () 
   (with-eval-after-load 'org-faces
     (dolist (face '((org-level-1  . 1.175)
                     (org-level-2  . 1.175)
@@ -829,7 +961,12 @@ a
                     (org-level-8  . 1.175)))
          (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
 
-(add-hook 'org-mode-hook #'custom/org-heading-typefaces)
+;; org-mode hook
+(add-hook 'org-mode-hook #'seaman/org-heading-typefaces)
+
+;; theme hooks
+(add-hook 'seaman/enable-or-load-theme-hook #'seaman/org-typefaces-body)
+(add-hook 'seaman/enable-or-load-theme-hook #'seaman/org-heading-typefaces)
 
 #+end_src
 
@@ -870,7 +1007,7 @@ Candidates:
 
 **** org-latex-preview
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-org-latex-preview.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-org-latex-preview.el
 :END:
 
 #+begin_src emacs-lisp
@@ -928,17 +1065,17 @@ the issue is resolved.
 
 #+begin_src emacs-lisp
 
-(setq custom/org-latex-preview-class-args "fleqn")
-(setq custom/org-latex-preview-width      "18cm")
+(setq seaman/org-latex-preview-class-args "fleqn")
+(setq seaman/org-latex-preview-width      "18cm")
 
 (setq org-format-latex-header
-      (string-join `("\\documentclass[" ,custom/org-latex-preview-class-args "]{article}"
+      (string-join `("\\documentclass[" ,seaman/org-latex-preview-class-args "]{article}"
 		         "\\usepackage[usenames]{color}"
 			
 			 "\\usepackage{bm}"
 			
 			 "\\pagestyle{empty}"
-			 "\\setlength{\\textwidth}{" ,custom/org-latex-preview-width "}"
+			 "\\setlength{\\textwidth}{" ,seaman/org-latex-preview-width "}"
 			 "\\addtolength{\\textwidth}{-3cm}"
 			 "\\setlength{\\oddsidemargin}{1.5cm}"
 			 "\\addtolength{\\oddsidemargin}{-2.54cm}"
@@ -968,11 +1105,11 @@ the issue is resolved.
 #+begin_src emacs-lisp
 
 ;; theme-specific LaTeX preview directory
-(defun custom/latex-preview-directory ()
+(defun seaman/latex-preview-directory ()
   "Set `org-preview-latex-image-directory' to the SVG
 LaTeX preview directory of the current theme"
   (setq org-preview-latex-image-directory
-   (concat "/tmp/ltximg/" (custom/get-active-theme) "/")))
+   (concat "/tmp/ltximg/" (seaman/get-active-theme) "/")))
 
 #+end_src
 
@@ -980,23 +1117,23 @@ LaTeX preview directory of the current theme"
 
 #+begin_src emacs-lisp
 
-(defun custom/latex-preview-reload ()
+(defun seaman/latex-preview-reload ()
   "Reload all LaTeX previews in buffer,
 ensuring the LaTeX preview directory
 matches the current theme."
   (if (string-equal major-mode "org-mode")
       (progn (org-latex-preview '(64))
-	     (custom/latex-preview-directory)
+	     (seaman/latex-preview-directory)
 	     (org-latex-preview '(16)))))
 
-(add-hook 'org-mode-hook #'custom/latex-preview-reload)
+(add-hook 'org-mode-hook #'seaman/latex-preview-reload)
 
 #+end_src
 
 *** Applications
 **** Agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-org-agenda.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-org-agenda.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1035,11 +1172,71 @@ matches the current theme."
           (agenda "" ((org-agenda-ndays 7))))
          ((org-agenda-regexp-filter-preset '("Birthday"))))))
 
+;; hide group tags
+(setq org-agenda-hide-tags-regexp
+      "CW\\|INT\\|THESIS\\|TA\\|BIRTHDAY\\|PERSONAL\\|PROFESSIONAL\\|TRAVEL\\|PEOPLE\\|HOME\\|FINANCE\\|PURCHASES\\|GIFTS")
+
+(setq org-super-agenda-groups
+      '(;; Each group has an implicit boolean OR operator between its selectors.
+        (:name "Important"
+               ;; Single arguments given alone
+               :priority "A")
+        (:name "Coursework"
+               ;; Single arguments given alone
+               :tag "CW")
+        (:name "Internship"
+               ;; Single arguments given alone
+               :tag "INT")
+        (:name "Thesis"
+               ;; Single arguments given alone
+               :tag "THESIS")
+        (:name "Assistantships"
+               ;; Single arguments given alone
+               :tag "TA")
+        (:name "Personal"
+               ;; Single arguments given alone
+               :tag "PERSONAL")
+        (:name "Professional"
+               ;; Single arguments given alone
+               :tag "PROFESSIONAL")
+        (:name "Travel"
+               ;; Single arguments given alone
+               :tag "TRAVEL")
+        (:name "Keeping in touch"
+               ;; Single arguments given alone
+               :tag "PEOPLE")
+        (:name "Home"
+               ;; Single arguments given alone
+               :tag "HOME")
+        (:name "Medical"
+               ;; Single arguments given alone
+               :tag "MEDICAL")
+        (:name "Finance"
+               ;; Single arguments given alone
+               :tag "FINANCE")
+        (:name "Purchases"
+               ;; Single arguments given alone
+               :tag "PURCHASES")
+        (:name "Gifts"
+               ;; Single arguments given alone
+               :tag "GIFTS")
+        (:name "Birthdays"
+               ;; Single arguments given alone
+               :tag "BIRTHDAY")
+        (:priority<= "B"
+                     ;; Show this section after "Today" and "Important", because
+                     ;; their order is unspecified, defaulting to 0. Sections
+                     ;; are displayed lowest-number-first.
+                     :order 1)
+        ;; After the last group, the agenda will display items that didn't
+        ;; match any of these groups, with the default order position of 99
+        ))
+
 #+end_src
 
 **** GTD
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/shapes-org-gtd.el
+:header-args:emacs-lisp+: :tangle ./elisp/layers/shapes-org-gtd.el
 :END:
 ***** Agenda
 ****** Keywords
@@ -1106,7 +1303,7 @@ Content of a module:
 *** Package management
 **** straight
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-straight.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-straight.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1129,7 +1326,7 @@ Content of a module:
 
 **** use-package
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-use-package.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-use-package.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1145,7 +1342,7 @@ Content of a module:
 *** Config management
 **** Async
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-async.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-async.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1158,7 +1355,7 @@ Content of a module:
 
 **** Littering
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-no-littering.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-no-littering.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1171,7 +1368,7 @@ Content of a module:
 
 **** Patching
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-el-patch.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-el-patch.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1187,7 +1384,7 @@ Content of a module:
 *** Home
 **** emacs-dashboard
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-emacs-dashboard.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-emacs-dashboard.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1216,7 +1413,7 @@ Content of a module:
 *** Buffer
 **** olivetti
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-olivetti.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-olivetti.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1234,7 +1431,7 @@ Content of a module:
   (add-hook mode 'olivetti-mode))
 
 ;; Programming modes
-(add-hook 'prog-mode-hook 'olivetti-mode)
+(add-hook 'prog-mode-hook #'olivetti-mode)
 
 #+end_src
 
@@ -1268,7 +1465,7 @@ a fraction of the window width."
 
 **** solaire-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-solaire-mode.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-solaire-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1280,7 +1477,7 @@ a fraction of the window width."
 
 **** page-break-lines
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-page-break-lines.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-page-break-lines.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1293,7 +1490,7 @@ a fraction of the window width."
 *** Mode line
 **** delight
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-delight.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-delight.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1318,7 +1515,7 @@ a fraction of the window width."
 *** Typefaces
 **** all-the-icons
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-all-the-icons.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-all-the-icons.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1340,7 +1537,7 @@ the local machine:
 *** Highlights
 **** svg-tag-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-svg-tag-mode.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-svg-tag-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1427,7 +1624,7 @@ the local machine:
 
 **** rainbow-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-rainbow-mode.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-rainbow-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1440,7 +1637,7 @@ the local machine:
 *** Completion
 **** all-the-icons-completion
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-all-the-icons-completion.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-all-the-icons-completion.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1457,7 +1654,7 @@ the local machine:
 *** Themes
 **** Ef
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-ef-themes.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-ef-themes.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1469,7 +1666,7 @@ the local machine:
 
 **** Nano
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-nano-theme.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-nano-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1487,7 +1684,7 @@ the local machine:
 
 **** Doom
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-doom-themes.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-doom-themes.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1497,48 +1694,9 @@ the local machine:
 
 #+end_src
 
-**** Modus
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-modus-themes.el
-:END:
-
-#+begin_src emacs-lisp
-
-(setq modus-themes-headings
-      '((0 . (monochrome))))
-
-(straight-use-package 'modus-themes)
-(modus-themes-load-themes)
-
-#+end_src
-
-**** Catpuccin
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-catppuccin-themes.el
-:END:
-
-#+begin_src emacs-lisp
-
-(require 'autothemer)
-
-(cl-flet ((repo (name) (concat config-directory "straight/repos/" name)))
-  ;; install and rename repository directory to "catppuccin-themes"
-  (if (not (file-exists-p (repo "catppuccin-themes/catppuccin-theme.el")))
-      (progn (straight-use-package '(catppuccin-themes :type git :host github :repo "catppuccin/emacs"))
-             (copy-directory (repo "emacs")
-                             (repo "catppuccin-themes"))
-             (delete-directory (repo "emacs") t)))
-  (require 'catppuccin-theme           (repo "catppuccin-themes/catppuccin-theme.el"))
-  (require 'catppuccin-frappe-theme    (repo "catppuccin-themes/catppuccin-frappe-theme.el"))
-  (require 'catppuccin-latte-theme     (repo "catppuccin-themes/catppuccin-latte-theme.el"))
-  (require 'catppuccin-mocha-theme     (repo "catppuccin-themes/catppuccin-mocha-theme.el"))
-  (require 'catppuccin-macchiato-theme (repo "catppuccin-themes/catppuccin-macchiato-theme.el")))
-
-#+end_src
-
 **** Solarized
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-solarized-theme.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-solarized-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1551,7 +1709,7 @@ the local machine:
 **** Standalone
 ***** Sweet
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-sweet-theme.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-sweet-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1563,7 +1721,7 @@ the local machine:
 
 ***** Graphite
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-graphite-theme.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-graphite-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1576,7 +1734,7 @@ the local machine:
 
 ***** Chocolate
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-chocolate-theme.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-chocolate-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1588,19 +1746,19 @@ the local machine:
 
 ***** Doom Zen Writer
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-doom-zen-writer-theme.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-doom-zen-writer-theme.el
 :END:
 
 #+begin_src emacs-lisp
 
-(load-file (concat config-directory "local/themes/doom-zen-writer-theme.el"))
+(load-file (concat user-emacs-directory "local/themes/doom-zen-writer-theme.el"))
 
 #+end_src
 
 *** Creation
 **** autothemer
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-autothemer.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-autothemer.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1613,7 +1771,7 @@ the local machine:
 *** Scheduling
 **** circadian
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-circadian.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-circadian.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1625,16 +1783,17 @@ the local machine:
 (setq calendar-daylight-time-zone-name "CET")
 
 (straight-use-package 'circadian)
-(setq circadian-themes `((:sunrise . ,light)  
-			 (:sunset  . ,dark)))
-(circadian-setup)
+
+(add-hook 'after-init-hook (lambda () (progn (setq circadian-themes `((:sunrise . ,light-theme)  
+			                                              (:sunset  . ,dark-theme)))
+                                             (circadian-setup))))
 
 #+end_src
 
 ** Mode line
 *** Nano
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-nano-modeline.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-nano-modeline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1649,7 +1808,7 @@ the local machine:
 
 *** Doom
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-doom-modeline.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-doom-modeline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1667,7 +1826,7 @@ the local machine:
 
 *** Moody
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-moody.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-moody.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1688,7 +1847,7 @@ the local machine:
 
 *** Spaceline
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-spaceline.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-spaceline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1707,7 +1866,7 @@ the local machine:
 *** Editing
 **** evil
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ./modules/shapes-evil.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-evil.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1782,7 +1941,7 @@ the local machine:
 
 **** meow
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ./modules/shapes-meow.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-meow.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1896,7 +2055,7 @@ the local machine:
 *** Commands
 **** god-mode
 :PROPERTIES:
-:header-args: emacs-lisp :tangle ./modules/shapes-god-mode.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-god-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1920,7 +2079,7 @@ the local machine:
 ** Guidance
 *** counsel
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-counsel.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-counsel.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1934,7 +2093,7 @@ the local machine:
 
 *** helpful
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-helpful.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-helpful.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1954,7 +2113,7 @@ the local machine:
 
 *** which-key
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-which-key.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-which-key.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1971,7 +2130,7 @@ the local machine:
 
 *** command-log-mode                                                  :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-command-log-mode.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-command-log-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1986,7 +2145,7 @@ the local machine:
 ** Completion
 *** ivy
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-ivy.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-ivy.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2024,7 +2183,7 @@ the local machine:
 
 *** ivy-rich                                                          :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-ivy-rich.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-ivy-rich.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2038,7 +2197,7 @@ the local machine:
 
 *** vertico
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-vertico.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-vertico.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2068,7 +2227,7 @@ the local machine:
 
 *** orderless
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-orderless.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-orderless.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2084,7 +2243,7 @@ the local machine:
 ** Navigation
 *** ace-window
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-ace-window.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-ace-window.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2101,7 +2260,7 @@ the local machine:
 ** Search
 *** swiper
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-swiper.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-swiper.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2116,13 +2275,13 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(defun custom/swiper-multiple-cursors ()
+(defun seaman/swiper-multiple-cursors ()
   (interactive)
   (swiper-mc)
   (minibuffer-keyboard-quit))
 
 ;; M-RET: multiple-cursors-mode
-(define-key swiper-map (kbd "M-<return>") #'custom/swiper-multiple-cursors)
+(define-key swiper-map (kbd "M-<return>") #'seaman/swiper-multiple-cursors)
 
 #+end_src
 
@@ -2130,7 +2289,7 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(defun custom/swiper-isearch (orig-fun &rest args)
+(defun seaman/swiper-isearch (orig-fun &rest args)
   "`swiper-isearch' the selected region. If none are, `swiper-isearch'."
   (if (region-active-p)
       (let ((beg (region-beginning))
@@ -2139,7 +2298,7 @@ the local machine:
 	(apply orig-fun (list (buffer-substring-no-properties beg end))))
     (apply orig-fun args)))
 
-(advice-add 'swiper-isearch :around #'custom/swiper-isearch)
+(advice-add 'swiper-isearch :around #'seaman/swiper-isearch)
 
 (define-key global-map (kbd "C-s") #'swiper-isearch)
 
@@ -2147,7 +2306,7 @@ the local machine:
 
 *** ripgrep
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-rg.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-rg.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2161,7 +2320,7 @@ the local machine:
 *** Undo
 **** TODO vundo
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-vundo.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-vundo.el
 :END:
 
 - undo-fu
@@ -2184,7 +2343,7 @@ the local machine:
 
 **** undo-tree                                                        :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-undo-tree.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-undo-tree.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2205,20 +2364,20 @@ the local machine:
 #+begin_src emacs-lisp
 
 ;; visualize in side buffer
-(defun custom/undo-tree-split-side-by-side (orig-fun &rest args)
+(defun seaman/undo-tree-split-side-by-side (orig-fun &rest args)
   "Split undo-tree side-by-side"
   (let ((split-height-threshold nil)
         (split-width-threshold 0))
     (apply orig-fun args)))
 
-(advice-add 'undo-tree-visualize :around #'custom/undo-tree-split-side-by-side)
+(advice-add 'undo-tree-visualize :around #'seaman/undo-tree-split-side-by-side)
 
 #+end_src
 
 *** Multiline
 **** multiple-cursors
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-multiple-cursors.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-multiple-cursors.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2228,7 +2387,7 @@ the local machine:
 (require 'multiple-cursors)
 
 ;; mc-lists
-(setq mc/list-file (concat config-directory "persistent/mc-lists.el"))
+(setq mc/list-file (concat user-emacs-directory "persistent/mc-lists.el"))
 
 ;; Create cursors
 (global-set-key (kbd "C-.")         #'mc/mark-next-like-this)
@@ -2250,7 +2409,7 @@ the local machine:
 *** Export
 **** htmlize
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-htmlize.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-htmlize.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2262,7 +2421,7 @@ the local machine:
 *** Session
 **** workgroups
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-workgroups.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-workgroups.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2286,7 +2445,7 @@ the local machine:
 *** Auto-save
 **** super-save
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-super-save.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-super-save.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2300,7 +2459,7 @@ the local machine:
 *** Project interaction
 **** projectile
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-projectile.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-projectile.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2318,7 +2477,7 @@ the local machine:
 
 **** treemacs
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-treemacs.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-treemacs.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2332,15 +2491,15 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(defvar custom/treemacs-ignored '(".*__pycache__.*")
+(defvar seaman/treemacs-ignored '(".*__pycache__.*")
   "Files and directories ignored by treemacs")
 
-(defun custom/treemacs-ignore-filter (file _)
-  (cl-loop for ignored in custom/treemacs-ignored
+(defun seaman/treemacs-ignore-filter (file _)
+  (cl-loop for ignored in seaman/treemacs-ignored
 	   if (string-match ignored file)
 	      return t
 	   finally return nil))
-(push #'custom/treemacs-ignore-filter treemacs-ignored-file-predicates)
+(push #'seaman/treemacs-ignore-filter treemacs-ignored-file-predicates)
 
 #+end_src
 
@@ -2449,7 +2608,7 @@ the local machine:
 ** Templates
 *** yasnippet
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-yasnippet.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-yasnippet.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2457,7 +2616,7 @@ the local machine:
 ;; yasnippet
 (straight-use-package 'yasnippet)
 
-(yas-global-mode 1)
+;; (yas-global-mode 1)
 
 #+end_src
 
@@ -2465,7 +2624,7 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(defun custom/<-snippet (orig-fun &rest args)
+(defun seaman/<-snippet (orig-fun &rest args)
   "Require < before snippets."
   (interactive)
   (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
@@ -2476,7 +2635,7 @@ the local machine:
 				       (delete-region (line-beginning-position) (point)))
 		       (apply orig-fun args)))))
 
-(advice-add 'yas-expand :around #'custom/<-snippet)
+(advice-add 'yas-expand :around #'seaman/<-snippet)
 
 #+end_src
 
@@ -2497,7 +2656,7 @@ the local machine:
 ****** Selection
 ******* expand-region
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-expand-region.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-expand-region.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2509,7 +2668,7 @@ the local machine:
 ****** Wrapping
 ******* embrace
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-embrace.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-embrace.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2527,7 +2686,7 @@ the local machine:
 
 ******* smartparens                                                         :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-smartparens.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-smartparens.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2540,7 +2699,7 @@ the local machine:
 
 ******* paredit                                                               :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-paredit.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-paredit.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2552,7 +2711,7 @@ the local machine:
 ***** Outline
 ****** hideshow
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-hideshow.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-hideshow.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2569,7 +2728,7 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(defun custom/hs-cycle (&optional level)
+(defun seaman/hs-cycle (&optional level)
   (interactive "p")
   (save-excursion
     (let (message-log-max (inhibit-message t))
@@ -2595,7 +2754,7 @@ the local machine:
 	(hs-hide-level level)
 	(setq this-command 'hs-hide-level)))))
 
-(defun custom/hs-global-cycle ()
+(defun seaman/hs-global-cycle ()
   (interactive)
   (pcase last-command
     ('hs-global-cycle
@@ -2603,14 +2762,14 @@ the local machine:
      (setq this-command 'hs-global-show))
     (_ (hs-hide-all))))
 
-(define-key hs-minor-mode-map (kbd "C-\\") #'custom/hs-cycle)
+(define-key hs-minor-mode-map (kbd "C-\\") #'seaman/hs-cycle)
 
 #+end_src
 
 ***** Completion
 ****** company
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-company.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-company.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2624,7 +2783,7 @@ the local machine:
 ***** Structural editing
 ******* puni
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-puni.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-puni.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2642,7 +2801,7 @@ the local machine:
 ***** Syntax checking
 ****** flycheck
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-flycheck.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-flycheck.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2658,7 +2817,7 @@ the local machine:
 ***** Language server protocol
 ****** eglot                                                          :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-eglot.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-eglot.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2669,7 +2828,7 @@ the local machine:
 
 ****** lsp-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-lsp-mode.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-lsp-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2681,7 +2840,7 @@ the local machine:
 
 ****** lsp-bridge                                                     :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-lsp-bridge.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-lsp-bridge.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2695,7 +2854,7 @@ the local machine:
 ***** Lisp
 ****** rainbow-delimiters
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-rainbow-delimiters.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-rainbow-delimiters.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2705,14 +2864,14 @@ the local machine:
 (require 'rainbow-delimiters)
 
 ;; enable rainbow delimiters on all programming modes
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
 #+end_src
 
 ***** Python
 ****** elpy
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-elpy.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-elpy.el
 :END:
 
 #+begin_src bash :tangle no
@@ -2753,7 +2912,7 @@ sudo apt-get install python3-venv
 ***** Matlab
 ****** matlab-emacs
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-matlab-emacs.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-matlab-emacs.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2768,7 +2927,7 @@ sudo apt-get install python3-venv
 ***** Rust
 ****** rustic
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-rustic.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-rustic.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2788,7 +2947,7 @@ sudo apt-get install python3-venv
 *** PDF
 **** pdf-tools
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-pdf-tools.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-pdf-tools.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2838,21 +2997,21 @@ sudo apt-get install python3-venv
 
 **** pdf-view-restore
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-pdf-view-restore.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-pdf-view-restore.el
 :END:
 
 #+begin_src emacs-lisp
 
 (straight-use-package 'pdf-view-restore)
 
-(add-hook 'pdf-view-mode-hook 'pdf-view-restore-mode)
+(add-hook 'pdf-view-mode-hook #'pdf-view-restore-mode)
 
 #+end_src
 
 *** LaTeX
 **** AUCTeX
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-AUCTeX.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-AUCTeX.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2863,7 +3022,7 @@ sudo apt-get install python3-venv
 
 *** Org Mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2964,7 +3123,7 @@ overwritten, and the table is not marked as requiring realignment."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-indent--compute-prefixes ()
+(defun seaman/org-indent--compute-prefixes ()
   "Recompute line prefixes for regular text to
 match the indentation of the parent heading."
   (dotimes (n org-indent--deepest-level)
@@ -2975,14 +3134,14 @@ match the indentation of the parent heading."
 	           (concat (make-string (+ n indentation) ?\s))
 		    nil 'face 'org-indent)))))
 
-(advice-add 'org-indent--compute-prefixes :after #'custom/org-indent--compute-prefixes)
+(advice-add 'org-indent--compute-prefixes :after #'seaman/org-indent--compute-prefixes)
 
 #+end_src
 
 **** UI
 ***** org-modern
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-modern.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-modern.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3039,7 +3198,7 @@ match the indentation of the parent heading."
 
 ***** org-appear
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-appear.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-appear.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3050,7 +3209,7 @@ match the indentation of the parent heading."
 
 ;; org-appear
 (straight-use-package '(org-appear :type git :host github :repo "awth13/org-appear"))
-(add-hook 'org-mode-hook #'org-appear-mode)
+(add-hook 'org-mode-hook 'org-appear-mode)
 
 ;; links
 (setq org-appear-autolinks t)
@@ -3069,7 +3228,7 @@ match the indentation of the parent heading."
 
 ***** org-fragtog
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-fragtog.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-fragtog.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3078,19 +3237,19 @@ match the indentation of the parent heading."
 (straight-use-package 'org-fragtog)
 (require 'org-fragtog)
 
-(add-hook 'org-mode-hook #'org-fragtog-mode)
+(add-hook 'org-mode-hook 'org-fragtog-mode)
 
 #+end_src
 
 **** Editing
 ***** org-paragraph
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-paragraph.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-paragraph.el
 :END:
 
 #+begin_src emacs-lisp
 
-(require 'org-paragraph (concat config-directory "elisp/packages/org-paragraph.el"))
+(require 'org-paragraph (concat user-emacs-directory "elisp/packages/org-paragraph.el"))
 
 #+end_src
 
@@ -3098,18 +3257,18 @@ match the indentation of the parent heading."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-meta-arrows-h (orig-fun &rest args)
+(defun seaman/org-meta-arrows-h (orig-fun &rest args)
   "Paragraph indentation with `org-meta<arrows>'.
 Furthermore, if a region is active and its
 beginning lies on an Org Mode heading,
-`custom/org-command-expand-region' to execute ORIG-FUN."
+`seaman/org-command-expand-region' to execute ORIG-FUN."
   (interactive)
-  (cond ((custom/org-relative-line-paragraph) (custom/org-paragraph orig-fun args))
-	    ((region-active-p)                    (custom/org-indent-region orig-fun args))
-	    (t                                    (apply orig-fun args))))
+  (cond ((seaman/org-relative-line-paragraph) (seaman/org-paragraph orig-fun args))
+	((region-active-p)                    (seaman/org-indent-region orig-fun args))
+	(t                                    (apply orig-fun args))))
 
-(advice-add 'org-metaleft  :around #'custom/org-meta-arrows-h)
-(advice-add 'org-metaright :around #'custom/org-meta-arrows-h)
+(advice-add 'org-metaleft  :around #'seaman/org-meta-arrows-h)
+(advice-add 'org-metaright :around #'seaman/org-meta-arrows-h)
 
 #+end_src
 
@@ -3118,7 +3277,7 @@ beginning lies on an Org Mode heading,
 - paragraphs
 - visibility change when heading visibility is CHILDREN
    - save previous visibility
-      - custom/org-subtree-state
+      - seaman/org-subtree-state
          - overlay = overlays-in subtree-beg subtree-end
          - overlay-properties?
    - org-meta-v
@@ -3129,22 +3288,22 @@ beginning lies on an Org Mode heading,
 
 #+begin_src emacs-lisp
 
-(defun custom/org-meta-arrows-v (orig-fun &rest args)
+(defun seaman/org-meta-arrows-v (orig-fun &rest args)
   (interactive)
-  (if (custom/org-at-ellipsis)
+  (if (seaman/org-at-ellipsis)
       (progn (beginning-of-visual-line) (end-of-line)))
   (apply orig-fun args)
-  (if (custom/org-relative-line-heading-folded)
+  (if (seaman/org-relative-line-heading-folded)
       (outline-hide-subtree)))
 
-(advice-add 'org-metaup   :around #'custom/org-meta-arrows-v)
-(advice-add 'org-metadown :around #'custom/org-meta-arrows-v)
+(advice-add 'org-metaup   :around #'seaman/org-meta-arrows-v)
+(advice-add 'org-metadown :around #'seaman/org-meta-arrows-v)
 
 #+end_src
 
 ***** org-download
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-download.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-download.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3153,24 +3312,24 @@ beginning lies on an Org Mode heading,
 
 (dolist (mode '(org-mode-hook
 		dired-mode-hook))
-  (add-hook mode 'org-download-enable))
+  (add-hook mode #'org-download-enable))
 
 ;; download directory
 (setq-default org-download-image-dir "./figures")
 
 ;; customize #+DOWNLOADED attribute
-(defun custom/org-download-annotate (link)
+(defun seaman/org-download-annotate (link)
   "Create a captioned and labeled figure."
   (concat "#+CAPTION:\n"
           "#+NAME: fig:\n"))
-(setq org-download-annotate-function #'custom/org-download-annotate)
+(setq org-download-annotate-function #'seaman/org-download-annotate)
 
 #+end_src
 
 **** Templates
 ***** org-tempo
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-tempo.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-tempo.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3234,7 +3393,7 @@ beginning lies on an Org Mode heading,
 
 #+begin_src emacs-lisp
 
-(defun custom/tempo-code-block (key language)
+(defun seaman/tempo-code-block (key language)
   (tempo-define-template language
 		         `("#+begin_src " ,language n
 			   n
@@ -3251,13 +3410,13 @@ beginning lies on an Org Mode heading,
                 ("<cpp"  "C++")
 		("<bash" "bash")
                 ("<tx"   "latex")))
-  (apply 'custom/tempo-code-block pair))
+  (apply 'seaman/tempo-code-block pair))
 
 #+end_src
 
 ***** org-capture
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-capture.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-capture.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3276,18 +3435,18 @@ beginning lies on an Org Mode heading,
 ***** Notes
 ****** bitacora
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-bitacora.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-bitacora.el
 :END:
 
 #+begin_src emacs-lisp
 
-(require 'bitacora (concat config-directory "elisp/packages/bitacora.el"))
+(require 'bitacora (concat user-emacs-directory "elisp/packages/bitacora.el"))
 
 #+end_src
 
 ****** org-roam
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-roam.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-roam.el
 :END:
 
 Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-available-aborting-error-when-installing-org-roam-v2-on-mac/2178/6][a C compiler (eg: gcc or clang) must be installed for ~emacsql-sqlite~ to install correctly]].
@@ -3346,15 +3505,15 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 #+begin_src emacs-lisp
 
 ;; node visit hook
-(defvar custom/org-roam-node-visit-hook nil
+(defvar seaman/org-roam-node-visit-hook nil
    "Hook ran after `org-roam-node-visit'.")
 
-(defun custom/run-org-roam-node-visit-hook (&rest _args)
+(defun seaman/run-org-roam-node-visit-hook (&rest _args)
    "Run `after-enable-theme-hook'."
-   (run-hooks 'custom/org-roam-node-visit-hook))
+   (run-hooks 'seaman/org-roam-node-visit-hook))
 
 ;; enable-theme
-(advice-add 'org-roam-node-visit :after #'custom/run-org-roam-node-visit-hook)
+(advice-add 'org-roam-node-visit :after #'seaman/run-org-roam-node-visit-hook)
 
 #+end_src
 
@@ -3372,17 +3531,17 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+begin_src emacs-lisp
 
-(setq custom/org-roam-map (make-keymap))
-(global-set-key (kbd "C-r") custom/org-roam-map)
+(setq seaman/org-roam-map (make-keymap))
+(global-set-key (kbd "C-r") seaman/org-roam-map)
 
 ;; Capture
-(define-key custom/org-roam-map (kbd "c") #'org-roam-capture)
+(define-key seaman/org-roam-map (kbd "c") #'org-roam-capture)
 
 ;; Find node
-(define-key custom/org-roam-map (kbd "n") #'org-roam-node-find)
+(define-key seaman/org-roam-map (kbd "n") #'org-roam-node-find)
 
 ;; Insert reference
-(define-key custom/org-roam-map (kbd "i") #'org-roam-node-insert)
+(define-key seaman/org-roam-map (kbd "i") #'org-roam-node-insert)
 
 #+end_src
 
@@ -3416,30 +3575,30 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 (setq org-roam-timestamps-minimum-gap 3600)
 
 ;; visit hook
-(add-hook 'custom/org-roam-node-visit-hook #'org-roam-timestamps-mode)
+(add-hook 'seaman/org-roam-node-visit-hook #'org-roam-timestamps-mode)
 
 ;; capture hook
-(defvar custom/org-roam-timestamps-mode-active-before-capture nil)
+(defvar seaman/org-roam-timestamps-mode-active-before-capture nil)
 
-(defun custom/org-roam-timestamps-mode-off ()
+(defun seaman/org-roam-timestamps-mode-off ()
   "Disable `org-roam-timestamps-mode' in Org Roam capture buffers."
-  (setq custom/org-roam-timestamps-mode-active-before-capture org-roam-timestamps-mode)
+  (setq seaman/org-roam-timestamps-mode-active-before-capture org-roam-timestamps-mode)
   (org-roam-timestamps-mode -1))
-(add-hook 'org-roam-capture-new-node-hook #'custom/org-roam-timestamps-mode-off)
+(add-hook 'org-roam-capture-new-node-hook #'seaman/org-roam-timestamps-mode-off)
 
-(defun custom/org-roam-timestamps-mode-back ()
+(defun seaman/org-roam-timestamps-mode-back ()
   "Re-enable `org-roam-timestamps-mode' after finalizing capture,
 if it was previously enabled."
-  (if custom/org-roam-timestamps-mode-active-before-capture
+  (if seaman/org-roam-timestamps-mode-active-before-capture
       (org-roam-timestamps-mode)))
-(add-hook 'org-capture-after-finalize-hook #'custom/org-roam-timestamps-mode-back)
+(add-hook 'org-capture-after-finalize-hook #'seaman/org-roam-timestamps-mode-back)
 
 #+end_src
 
 ***** Agenda
 ****** org-agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-agenda.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-agenda.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3462,7 +3621,7 @@ if it was previously enabled."
 
 ****** org-super-agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-super-agenda.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-super-agenda.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3477,7 +3636,7 @@ if it was previously enabled."
 
 ****** org-rainbow-tags
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-rainbow-tags.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-rainbow-tags.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3485,7 +3644,7 @@ if it was previously enabled."
 (straight-use-package '(org-rainbow-tags :type git :host github :repo "KaratasFurkan/org-rainbow-tags"))
 (require 'org-rainbow-tags)
 
-(add-hook 'org-mode-hook 'org-rainbow-tags-mode)
+(add-hook 'org-mode-hook #'org-rainbow-tags-mode)
 
 (setq org-rainbow-tags-hash-start-index 5)
 
@@ -3494,7 +3653,7 @@ if it was previously enabled."
 ***** Contacts
 ****** org-contacts
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-contacts.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-contacts.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3509,7 +3668,7 @@ if it was previously enabled."
 
 #+begin_src emacs-lisp
 
-(defvar custom/org-capture-contacts "* %(org-contacts-template-name)
+(defvar seaman/org-capture-contacts "* %(org-contacts-template-name)
 :PROPERTIES:
 :ADDRESS: %^{289 Cleveland St. Brooklyn, 11206 NY, USA}
 :BIRTHDAY: %^{yyyy-mm-dd}
@@ -3520,14 +3679,14 @@ if it was previously enabled."
 (add-to-list 'org-capture-templates
    `(("c" "contact" entry
       (file ,(nth 0 org-contacts-files))
-      ,custom/org-capture-contacts)))
+      ,seaman/org-capture-contacts)))
 
 #+end_src
 
 ***** Calendar
 ****** org-calendar
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-calendar.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-calendar.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3541,21 +3700,21 @@ if it was previously enabled."
   (require 'calfw-org)
   (require 'calfw-ical))
 
-(defun custom/org-calendar ()
+(defun seaman/org-calendar ()
   "Open `calfw' Org Agenda calendar."
   (interactive)
   (require 'org-agenda)
   (let ((inhibit-message t))
        (cfw:open-org-calendar)))
 
-(global-set-key (kbd "C-c c") #'custom/org-calendar)
+(global-set-key (kbd "C-c c") #'seaman/org-calendar)
 
 #+end_src
 
 ***** Programming
 ****** org-babel
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-babel.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-babel.el
 :END:
 ******* Editing
 
@@ -3642,7 +3801,7 @@ if it was previously enabled."
 
 ****** ox-ipynb
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-ox-ipynb.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-ox-ipynb.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3654,7 +3813,7 @@ if it was previously enabled."
 
 ****** ob-async
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-ob-async.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-ob-async.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3667,7 +3826,7 @@ if it was previously enabled."
 ***** Presentations
 ****** org-reveal
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-reveal.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-reveal.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3683,7 +3842,7 @@ if it was previously enabled."
 ***** Time-tracking
 ****** org-pomodoro
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-pomodoro.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-pomodoro.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3701,7 +3860,7 @@ if it was previously enabled."
 
 ****** org-agenda-log-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-org-agenda-log-mode.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-org-agenda-log-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3716,7 +3875,7 @@ if it was previously enabled."
 *** Tabulated lists
 **** tablist
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-tablist.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-tablist.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3728,7 +3887,7 @@ if it was previously enabled."
 *** Version control
 **** magit
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-magit.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-magit.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3742,7 +3901,7 @@ if it was previously enabled."
 
 **** forge
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-forge.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-forge.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3754,7 +3913,7 @@ if it was previously enabled."
 *** File management
 **** dirvish
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-dirvish.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-dirvish.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3771,14 +3930,14 @@ if it was previously enabled."
 ** Extensions
 *** crux
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/shapes-crux.el
+:header-args:emacs-lisp+: :tangle ./elisp/modules/shapes-crux.el
 :END:
 
 #+begin_src emacs-lisp
 
 (straight-use-package 'crux)
 
-#+end_src>
+#+end_src
 
 
 * Extensions
@@ -3791,12 +3950,8 @@ Content of an extension:
 ** Utilities
 *** Get
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-get.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-get.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 **** UI
 ***** get-active-theme
@@ -3804,7 +3959,7 @@ Content of an extension:
 #+begin_src emacs-lisp
 
 ;; Retrieve current theme
-(defun custom/get-active-theme ()
+(defun seaman/get-active-theme ()
   (substring (format "%s" (nth 0 custom-enabled-themes))))
 
 #+end_src
@@ -3814,7 +3969,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun custom/get-point (command &rest args)
+(defun seaman/get-point (command &rest args)
   (interactive)
   (save-excursion
     (apply command args)
@@ -3826,7 +3981,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun custom/get-last-change ()
+(defun seaman/get-last-change ()
   "Retrieve last change in current buffer."
   (setq last-change (nth 1 buffer-undo-list))
   (let ((beg (car last-change))
@@ -3839,7 +3994,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun custom/count-substrings (regexp str)
+(defun seaman/count-substrings (regexp str)
   "Return the number of substrings of STR matching REGEXP"
   (loop with start = 0
         for count from 0
@@ -3854,7 +4009,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun custom/get-keyword-key-value (kwd)
+(defun seaman/get-keyword-key-value (kwd)
    (let ((data (cadr kwd)))
      (list (plist-get data :key)
            (plist-get data :value))))
@@ -3866,7 +4021,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun custom/get-visible-buffers ()
+(defun seaman/get-visible-buffers ()
   (cl-delete-duplicates (mapcar #'window-buffer (window-list))))
 
 #+end_src
@@ -3875,7 +4030,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun custom/get-buffer-by-file-name (file)
+(defun seaman/get-buffer-by-file-name (file)
   (cl-loop for buffer in (buffer-list)
 	   if (string-equal (buffer-name buffer) (file-name-nondirectory file))
 	   return buffer
@@ -3888,7 +4043,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun custom/get-active-window-number ()
+(defun seaman/get-active-window-number ()
   "Retrieve the current window's number."
   (setq window (prin1-to-string (get-buffer-window (current-buffer))))
   (string-match "^[^0-9]*\\([0-9]+\\).*$" window)
@@ -3901,20 +4056,20 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defvar custom/keymap-list '()
+(defvar seaman/keymap-list '()
   "List containing the symbols of all keymaps in the `obarray'.")
 
-(defun custom/get-keymaps ()
+(defun seaman/get-keymaps ()
   "Return a list containing the symbols of all keymaps in the `obarray'."
   (mapatoms (lambda (m) (if (condition-case nil
                                 (or (keymapp (symbol-value m))
                                     (keymapp m))
                               (error nil))
-                            (add-to-list 'custom/keymap-list m))
+                            (add-to-list 'seaman/keymap-list m))
           obarray))
   (when (called-interactively-p 'interactive)
-        (message "Keymap list updated, %s keymaps found" (length custom/keymap-list)))
-  custom/keymap-list)
+        (message "Keymap list updated, %s keymaps found" (length seaman/keymap-list)))
+  seaman/keymap-list)
 
 #+end_src
 
@@ -3922,7 +4077,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun custom/get-keymap-symbol (keymap)
+(defun seaman/get-keymap-symbol (keymap)
   "Return the symbol to which KEYMAP is bound, or nil if no such symbol exists."
   (catch 'gotit
     (mapatoms (lambda (sym)
@@ -3940,23 +4095,19 @@ References:
 
 *** Queries
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-queries.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-queries.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 **** At
 ***** eolp
 
 #+begin_src emacs-lisp
 
-(defun custom/eolp (orig-fun &rest args)
+(defun seaman/eolp (orig-fun &rest args)
   (interactive)
   (or (apply orig-fun args) (looking-at-p "[[:blank:]]*$")))
 
-(advice-add 'eolp :around #'custom/eolp)
+(advice-add 'eolp :around #'seaman/eolp)
 
 #+end_src
 
@@ -3964,7 +4115,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(defun custom/at-point (go-to-point &optional point)
+(defun seaman/at-point (go-to-point &optional point)
   (let ((point (or point (point))))
     (save-excursion
       (funcall go-to-point)
@@ -3976,8 +4127,8 @@ References:
 
 #+begin_src emacs-lisp
 
-(defun custom/at-indent (&optional point)
-  (and (custom/relative-line-indented) (custom/at-point 'back-to-indentation point)))
+(defun seaman/at-indent (&optional point)
+  (and (seaman/relative-line-indented) (seaman/at-point 'back-to-indentation point)))
 
 #+end_src
 
@@ -3986,7 +4137,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line (query &optional number &rest args)
+(defun seaman/relative-line (query &optional number &rest args)
   "Return the result of a boolean query at the beginning
 of the current visual line, or another specified by its
 relative position to the current line.
@@ -4004,11 +4155,11 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-regex (pattern &optional number)
+(defun seaman/relative-line-regex (pattern &optional number)
   (let ((number (or number 0)))
     (save-excursion
       (beginning-of-line-text (+ number 1))
-      (setq line (buffer-substring-no-properties (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line))))
+      (setq line (buffer-substring-no-properties (seaman/get-point 'beginning-of-line) (seaman/get-point 'end-of-line))))
     (string-match-p pattern line)))
 
 #+end_src
@@ -4017,8 +4168,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-list (&optional number)
-  (custom/relative-line-regex "^[[:blank:]]*\\([0-9]+[.\\)]\\{1\\}\\|[-+*]\\{1\\}\\)[[:blank:]]+.*$" number))
+(defun seaman/relative-line-list (&optional number)
+  (seaman/relative-line-regex "^[[:blank:]]*\\([0-9]+[.\\)]\\{1\\}\\|[-+*]\\{1\\}\\)[[:blank:]]+.*$" number))
 
 #+end_src
 
@@ -4026,8 +4177,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-empty (&optional number)
-  (custom/relative-line-regex "^[[:space:]]*$" number))
+(defun seaman/relative-line-empty (&optional number)
+  (seaman/relative-line-regex "^[[:space:]]*$" number))
 
 #+end_src
 
@@ -4037,8 +4188,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-wrapped ()
-  (> (custom/get-point 'beginning-of-visual-line) (custom/get-point 'beginning-of-line-text)))
+(defun seaman/relative-line-wrapped ()
+  (> (seaman/get-point 'beginning-of-visual-line) (seaman/get-point 'beginning-of-line-text)))
 
 #+end_src
 
@@ -4046,8 +4197,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-indented (&optional number)
-  (custom/relative-line-regex "^[[:blank:]]+.*$" number))
+(defun seaman/relative-line-indented (&optional number)
+  (seaman/relative-line-regex "^[[:blank:]]+.*$" number))
 
   #+end_src
 
@@ -4055,8 +4206,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-list-ordered (&optional number)
-  (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+.*$" number))
+(defun seaman/relative-line-list-ordered (&optional number)
+  (seaman/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+.*$" number))
 
 #+end_src
 
@@ -4064,8 +4215,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/relative-line-list-unordered (&optional number)
-  (custom/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+.*$" number))
+(defun seaman/relative-line-list-unordered (&optional number)
+  (seaman/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+.*$" number))
 
 #+end_src
 
@@ -4074,7 +4225,7 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/region-blank (&optional beg end)
+(defun seaman/region-blank (&optional beg end)
   (let ((beg (or beg (region-beginning)))
 	      (end (or end (region-end))))
     (setq region (buffer-substring-no-properties beg end))
@@ -4086,9 +4237,9 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/region-multiline-visual ()
+(defun seaman/region-multiline-visual ()
   "Return t if a region is active and spans more than one visual line."
-  (and (region-active-p) (> (custom/region-count-visual-lines) 1)))
+  (and (region-active-p) (> (seaman/region-count-visual-lines) 1)))
 
 #+end_src
 
@@ -4096,7 +4247,7 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun custom/region-count-visual-lines ()
+(defun seaman/region-count-visual-lines ()
   "Count visual lines in an active region."
   (interactive)
   (save-excursion 
@@ -4107,18 +4258,14 @@ to the query at execution."
 
 *** Execution
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-execution.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-execution.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 **** @buffers
 
 #+begin_src emacs-lisp
 
-(defmacro custom/@buffers (command &optional buffers)
+(defmacro seaman/@buffers (command &optional buffers)
   (let ((buffers (or buffers (buffer-list))))
     `(cl-loop for buffer in ',buffers
               do (if (buffer-live-p buffer)
@@ -4130,12 +4277,8 @@ to the query at execution."
 
 *** Operators
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-operators.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-operators.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 **** <>
 
@@ -4149,12 +4292,8 @@ to the query at execution."
 
 ** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-ui.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-ui.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 *** Text
 **** Theme accents
@@ -4162,29 +4301,29 @@ to the query at execution."
 #+begin_src emacs-lisp
 
 ;; accent typefaces
-(defvar custom/accents '(custom/italic))
+(defvar seaman/accents '(seaman/italic))
 
-(defun custom/theme-accents (orig-fun &rest args)
+(defun seaman/theme-accents (orig-fun &rest args)
   "Many themes will override certain face *attributes*, such as `italic'. To prevent
-this, this function loops over all accent typefaces in `custom/accents', which contains
-faces (defined with `defface') named ~custom/<attribute>~, and makes the ~<attribute>~
-inherit from ~custom/<attribute>~.
+this, this function loops over all accent typefaces in `seaman/accents', which contains
+faces (defined with `defface') named ~seaman/<attribute>~, and makes the ~<attribute>~
+inherit from ~seaman/<attribute>~.
 
 As such, when this function is run, the `italic' face attribute will be made to
-inherit from `custom/italic' as in the expression below.
+inherit from `seaman/italic' as in the expression below.
 
-   (set-face-attribute 'italic nil :inherit 'custom/italic)
+   (set-face-attribute 'italic nil :inherit 'seaman/italic)
 
 Thus, our preferred accent typefaces will stand whatever harassment they may be put
 through as a theme loads."
   ;; load theme
   (apply orig-fun args)
   ;; restore accents
-  (cl-loop for accent in custom/accents
+  (cl-loop for accent in seaman/accents
 	   do (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
 		     (set-face-attribute face nil :inherit accent))))
 
-(advice-add 'custom/enable-or-load-theme :around #'custom/theme-accents)
+(advice-add 'seaman/enable-or-load-theme :around #'seaman/theme-accents)
 
 #+end_src
 
@@ -4193,7 +4332,7 @@ through as a theme loads."
 
 #+begin_src emacs-lisp
 
-(defun custom/quit-window ()
+(defun seaman/quit-window ()
   (interactive)
   (if current-prefix-arg
       (quit-window)
@@ -4202,7 +4341,7 @@ through as a theme loads."
 (with-eval-after-load 'helpful
   (cl-loop for map in '(help-mode-map
                         helpful-mode-map)
-           do (define-key (symbol-value map) [remap quit-window] #'custom/quit-window)))
+           do (define-key (symbol-value map) [remap quit-window] #'seaman/quit-window)))
 
 #+end_src
 
@@ -4211,7 +4350,7 @@ through as a theme loads."
 
 #+begin_src emacs-lisp
 
-(defun custom/window-resize (width)
+(defun seaman/window-resize (width)
   (window-resize nil (- width (window-width)) t))
 
 #+end_src
@@ -4220,7 +4359,7 @@ through as a theme loads."
 
 #+begin_src emacs-lisp
 
-(defun custom/window-resize-fraction (fr &optional min)
+(defun seaman/window-resize-fraction (fr &optional min)
   "Resize window to a fraction of the frame width."
   (interactive)
   (let ((width (max (if min min 0) (truncate (* fr (frame-width))))))
@@ -4237,7 +4376,7 @@ through as a theme loads."
 (defvar last-message nil)
 (defadvice message (after my-message pre act) (setq last-message ad-return-value))
 
-(defun custom/undefined-override (orig-fun &rest args)
+(defun seaman/undefined-override (orig-fun &rest args)
   "Override `undefined' function to suppress
 undefined key binding messages when interrupting
 key binding input with C-g."
@@ -4250,7 +4389,7 @@ key binding input with C-g."
     (message _message)))
 
 ;; Override the undefined key binding notice with a keyboard-quit
-(advice-add 'undefined :around #'custom/undefined-override)
+(advice-add 'undefined :around #'seaman/undefined-override)
 
 #+end_src
 
@@ -4259,26 +4398,26 @@ key binding input with C-g."
 
 #+begin_src emacs-lisp
 
-(defcustom custom/mode-line nil
+(defcustom seaman/mode-line nil
   "Variable containing the format of the hidden mode line")
 
-(defcustom custom/header-line nil
+(defcustom seaman/header-line nil
   "Variable containing the format of the hidden header line")
 
-(defun custom/hide-mode-line ()
+(defun seaman/hide-mode-line ()
   "Hide `modeline' in current buffer"
   (interactive)
   (let ((m mode-line-format)
         (h header-line-format))
-       (custom/@buffers (if (or m h)
-                            (progn (setq custom/mode-line   m)
-                                   (setq custom/header-line h)
+       (seaman/@buffers (if (or m h)
+                            (progn (setq seaman/mode-line   m)
+                                   (setq seaman/header-line h)
                                    (setq mode-line-format   nil)
                                    (setq header-line-format nil))
-                          (progn (setq mode-line-format custom/mode-line)
-                                 (setq header-line-format custom/header-line))))))
+                          (progn (setq mode-line-format seaman/mode-line)
+                                 (setq header-line-format seaman/header-line))))))
 
-(global-set-key (kbd "M-m") #'custom/hide-mode-line)
+(global-set-key (kbd "M-m") #'seaman/hide-mode-line)
 
 #+end_src
 
@@ -4286,33 +4425,29 @@ key binding input with C-g."
 
 #+begin_src emacs-lisp
 
-(defun custom/mode-line-invert ()
+(defun seaman/mode-line-invert ()
   (interactive)
   (if mode-line-format
-      (custom/@buffers (progn (set 'header-line-format mode-line-format)
+      (seaman/@buffers (progn (set 'header-line-format mode-line-format)
                               (set 'mode-line-format nil)))
-    (custom/@buffers (progn (set 'mode-line-format header-line-format)
+    (seaman/@buffers (progn (set 'mode-line-format header-line-format)
                             (set 'header-line-format nil)))))
 
-(global-set-key (kbd "M-t") #'custom/mode-line-invert)
+(global-set-key (kbd "M-t") #'seaman/mode-line-invert)
 
 #+end_src
 
 ** Themes
 *** Switch
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-theme-switch.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-theme-switch.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 **** Load
 
 #+begin_src emacs-lisp
 
-(defun custom/enable-or-load-theme (theme)
+(defun seaman/enable-or-load-theme (theme)
   (condition-case nil
       (enable-theme theme)
     (error (load-theme theme))))
@@ -4323,15 +4458,15 @@ key binding input with C-g."
 
 #+begin_src emacs-lisp
 
-(defvar custom/enable-or-load-theme-hook nil
+(defvar seaman/enable-or-load-theme-hook nil
    "`load-theme' hook.")
 
-(defun custom/enable-or-load-theme-hook (&rest _args)
+(defun seaman/enable-or-load-theme-hook (&rest _args)
    "Run `load-theme-hook'."
-   (run-hooks 'custom/enable-or-load-theme-hook))
+   (run-hooks 'seaman/enable-or-load-theme-hook))
 
-(advice-add 'enable-theme :after #'custom/enable-or-load-theme-hook)
-(advice-add 'load-theme   :after #'custom/enable-or-load-theme-hook)
+(advice-add 'enable-theme :after #'seaman/enable-or-load-theme-hook)
+(advice-add 'load-theme   :after #'seaman/enable-or-load-theme-hook)
 
 #+end_src
 
@@ -4339,17 +4474,17 @@ key binding input with C-g."
 
 #+begin_src emacs-lisp
 
-(defun custom/theme-toggle ()
+(defun seaman/theme-toggle ()
   "Toggle between `dark' and `light' themes
 using `enable-theme'"
   (interactive)
   (let ((theme (nth 0 custom-enabled-themes)))
-    (cond ((string-equal theme light) (progn (disable-theme light)
-					     (custom/enable-or-load-theme dark)))
-	  (t                          (progn (disable-theme dark)
-					     (custom/enable-or-load-theme light))))))
+    (cond ((string-equal theme light-theme) (progn (disable-theme light-theme)
+					           (seaman/enable-or-load-theme dark-theme)))
+	  (t                                (progn (disable-theme dark-theme)
+					           (seaman/enable-or-load-theme light-theme))))))
 
-(global-set-key (kbd "C-t") #'custom/theme-toggle)
+(global-set-key (kbd "C-t") #'seaman/theme-toggle)
 
 #+end_src
 
@@ -4357,59 +4492,59 @@ using `enable-theme'"
 
 #+begin_src emacs-lisp
 
-(defcustom custom/light-dark-themes '("modus"
+(defcustom seaman/light-dark-themes '("modus"
                                       "nano")
   "Themes with light and dark versions.")
 
-(defcustom custom/theme-advice-dark '()
-  "List of functions run when loading the `dark' theme, if it is included in `custom/light-dark-themes'.")
+(defcustom seaman/theme-advice-dark '()
+  "List of functions run when loading the `dark' theme, if it is ncluded in `seaman/light-dark-themes'.")
 
-(defcustom custom/theme-advice-light '()
-  "List of functions run when loading the `light' theme, if it is included in `custom/light-dark-themes'.")
+(defcustom seaman/theme-advice-light '()
+  "List of functions run when loading the `light' theme, if it is ncluded in `seaman/light-dark-themes'.")
 
-(defun custom/theme-specific-advice (orig-fun &rest args)
+(defun seaman/theme-specific-advice (orig-fun &rest args)
   "Apply theme-specific advice when enabling themes, and
 preserve modeline status through theme changes."
   (setq modeline-status mode-line-format)
   (apply orig-fun args)
   (let ((theme (nth 0 args)))
-    (if (string-match-p (string-join custom/light-dark-themes "\\|") (symbol-name theme))
-        (let ((advice-list (if (string-equal theme light)
-                               custom/theme-advice-light
-                             custom/theme-advice-dark)))
+    (if (string-match-p (string-join seaman/light-dark-themes "\\|") (symbol-name theme))
+        (let ((advice-list (if (string-equal theme light-theme)
+                               seaman/theme-advice-light
+                             seaman/theme-advice-dark)))
           (dolist (advice advice-list)
             (funcall advice))))
   (setq mode-line-format modeline-status)))
 
 ;; add
-(advice-add 'enable-theme :around #'custom/theme-specific-advice)
-(advice-add 'load-theme   :around #'custom/theme-specific-advice)
+(advice-add 'enable-theme :around #'seaman/theme-specific-advice)
+(advice-add 'load-theme   :around #'seaman/theme-specific-advice)
 
 #+end_src
 
-***** Line numbers
+**** Line numbers
 
 #+begin_src emacs-lisp
 
-(defvar custom/dark-line-number-colors '("#cfcfcf" "#262626")
+(defvar seaman/dark-line-number-colors '("#cfcfcf" "#262626")
   "Line number HTML colors for dark themes: FOREGROUND, BACKGROUND")
 
-(defvar custom/light-line-number-colors '("#878787" "#ededed")
+(defvar seaman/light-line-number-colors '("#878787" "#ededed")
   "Line number HTML colors for light themes: FOREGROUND, BACKGROUND")
 
-(defun custom/line-number-set-colors (fg bg)
+(defun seaman/line-number-set-colors (fg bg)
   "Set the foreground (FG) and background (BG) colors of the line numbers
 displayed by `display-line-numbers-mode'."
   (set-face-attribute 'line-number nil :foreground fg :background bg))
 
-(defun custom/set-dark-line-number-colors ()
-  (apply 'custom/line-number-set-colors custom/dark-line-number-colors))
+(defun seaman/set-dark-line-number-colors ()
+  (apply 'seaman/line-number-set-colors seaman/dark-line-number-colors))
 
-(defun custom/set-light-line-number-colors ()
-  (apply 'custom/line-number-set-colors custom/light-line-number-colors))
+(defun seaman/set-light-line-number-colors ()
+  (apply 'seaman/line-number-set-colors seaman/light-line-number-colors))
 
-(add-to-list 'custom/theme-advice-dark  #'custom/set-dark-line-number-colors)
-(add-to-list 'custom/theme-advice-light #'custom/set-light-line-number-colors)
+(add-to-list 'seaman/theme-advice-dark  #'seaman/set-dark-line-number-colors)
+(add-to-list 'seaman/theme-advice-light #'seaman/set-light-line-number-colors)
 
 ;; reload active theme
 (let ((active-theme (car custom-enabled-themes)))
@@ -4419,16 +4554,12 @@ displayed by `display-line-numbers-mode'."
 
 *** Mode line
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-theme-modeline.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-theme-modeline.el
 :END:
 
 #+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
-#+begin_src emacs-lisp
-
-(defun custom/modeline-set-colors (fg fg-in bg bg-in)
+(defun seaman/modeline-set-colors (fg fg-in bg bg-in)
   "Set the color of the mode and header lines and blend the 
 `doom-modeline-bar' with the background."
   (set-face-attribute 'mode-line            nil :foreground fg    :background bg    :box nil)
@@ -4436,20 +4567,20 @@ displayed by `display-line-numbers-mode'."
   ;; header line
   (set-face-attribute 'header-line          nil :foreground fg-in :background bg-in :box nil))
 
-(defvar custom/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#454545" "#242424")
+(defvar seaman/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#454545" "#242424")
   "Dark modeline HTML colors: FOREGROUND, FOREGROUND-INACTIVE, BACKGROUND, BACKGROUND-INACTIVE")
 
-(defvar custom/light-modeline-colors '("#616161" "#878787" "#c4c4c4" "#ededed")
+(defvar seaman/light-modeline-colors '("#616161" "#878787" "#c4c4c4" "#ededed")
   "Light modeline HTML colors: FOREGROUND, FOREGROUND-INACTIVE, BACKGROUND, BACKGROUND-INACTIVE")
 
-(defun custom/set-dark-modeline-colors ()
-  (apply 'custom/modeline-set-colors custom/dark-modeline-colors))
+(defun seaman/set-dark-modeline-colors ()
+  (apply 'seaman/modeline-set-colors seaman/dark-modeline-colors))
 
-(defun custom/set-light-modeline-colors ()
-  (apply 'custom/modeline-set-colors custom/light-modeline-colors))
+(defun seaman/set-light-modeline-colors ()
+  (apply 'seaman/modeline-set-colors seaman/light-modeline-colors))
 
-(add-to-list 'custom/theme-advice-dark  #'custom/set-dark-modeline-colors)
-(add-to-list 'custom/theme-advice-light #'custom/set-light-modeline-colors)
+(add-to-list 'seaman/theme-advice-dark  #'seaman/set-dark-modeline-colors)
+(add-to-list 'seaman/theme-advice-light #'seaman/set-light-modeline-colors)
 
 ;; reload active theme
 (let ((active-theme (car custom-enabled-themes)))
@@ -4461,7 +4592,7 @@ displayed by `display-line-numbers-mode'."
 ** Input
 *** RSI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-rsi.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-rsi.el
 :END:
 
 #+begin_src emacs-lisp
@@ -4493,20 +4624,16 @@ displayed by `display-line-numbers-mode'."
 
 ** Editing
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-editing.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-editing.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 *** Delete
 **** Line
 
 #+begin_src emacs-lisp
 
-(defun custom/delete-line ()
-  (delete-region (custom/get-point 'beginning-of-line) (custom/get-point 'end-of-line)))
+(defun seaman/delete-line ()
+  (delete-region (seaman/get-point 'beginning-of-line) (seaman/get-point 'end-of-line)))
 
 #+end_src
 
@@ -4516,16 +4643,16 @@ Do not save whole killed words in kill ring.
 
 #+begin_src emacs-lisp
 
-(defun custom/delete-word-forward (&optional arg)
+(defun seaman/delete-word-forward (&optional arg)
   (interactive)
   (delete-region (point) (progn (forward-word arg) (point))))
 
-(defun custom/delete-word-backward (&optional arg)
+(defun seaman/delete-word-backward (&optional arg)
   (interactive)
   (delete-region (point) (progn (backward-word arg) (point))))
 
-(global-set-key (kbd "C-<delete>") #'custom/delete-word-forward)
-(global-set-key (kbd "C-<backspace>")  #'custom/delete-word-backward)
+(global-set-key (kbd "C-<delete>") #'seaman/delete-word-forward)
+(global-set-key (kbd "C-<backspace>")  #'seaman/delete-word-backward)
 
 #+end_src
 
@@ -4533,7 +4660,7 @@ Do not save whole killed words in kill ring.
 
 #+begin_src emacs-lisp
 
-(defun custom/@delete-hungry (query)
+(defun seaman/@delete-hungry (query)
   "Conditional region deletion.
 
 Default: `delete-region'
@@ -4544,20 +4671,20 @@ indented line, delete region and indent.
 If `query', delete the region and its indent 
 plus one character."
   (setq beg (region-beginning) end (region-end))
-  (if (custom/at-indent beg)
+  (if (seaman/at-indent beg)
 	    (save-excursion (beginning-of-visual-line)
-                      (if (and query (not (bobp)) (not (custom/relative-line-empty -1)))
+                      (if (and query (not (bobp)) (not (seaman/relative-line-empty -1)))
                           (left-char))
                       (delete-region (point) end))
     (delete-region beg end)))
 
-(defun custom/delete-hungry ()
+(defun seaman/delete-hungry ()
   "If the region starts at the beginning of an 
 indented line and the current mode is derived from 
 `prog-mode',  delete the region and its indent plus 
 one character."
   (interactive)
-  (custom/@delete-hungry (derived-mode-p 'prog-mode)))
+  (seaman/@delete-hungry (derived-mode-p 'prog-mode)))
 
 #+end_src
 
@@ -4567,7 +4694,7 @@ one character."
 
 #+begin_src emacs-lisp
 
-(defun custom/nimble-delete-forward ()
+(defun seaman/nimble-delete-forward ()
   "Conditional forward deletion.
 
 Default: `delete-forward-char' 1
@@ -4575,11 +4702,11 @@ Default: `delete-forward-char' 1
 If next line is empty, forward delete indent of 
 next line plus one character."
   (interactive)
-  (cond ((and (eolp) (custom/relative-line-indented 1)) (progn (setq beg (point)) (next-line) (back-to-indentation) (delete-region beg (point))))
-	    ((custom/relative-line-empty)                   (delete-region (point) (custom/get-point 'next-line)))
+  (cond ((and (eolp) (seaman/relative-line-indented 1)) (progn (setq beg (point)) (next-line) (back-to-indentation) (delete-region beg (point))))
+	    ((seaman/relative-line-empty)                   (delete-region (point) (seaman/get-point 'next-line)))
 	    (t                                              (delete-forward-char 1))))
 
-(global-set-key (kbd "<delete>") #'custom/nimble-delete-forward)
+(global-set-key (kbd "<delete>") #'seaman/nimble-delete-forward)
 
 #+end_src
 
@@ -4587,7 +4714,7 @@ next line plus one character."
 
 #+begin_src emacs-lisp
 
-(defun custom/nimble-delete-backward ()
+(defun seaman/nimble-delete-backward ()
   "Conditional forward deletion.
 
 Default: `delete-backward-char' 1
@@ -4596,16 +4723,16 @@ If `multiple-cursors-mode' is active, `delete-backward-char' 1.
 
 If region is active, delete region.
 
-If cursor lies either `custom/at-indent' or is preceded only by
+If cursor lies either `seaman/at-indent' or is preceded only by
 whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
-      (cond ((and (region-active-p) (not (custom/region-blank))) (custom/delete-hungry))
-	         ((custom/at-indent)                                  (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-		 (t                                                   (delete-backward-char 1)))
+      (cond ((and (region-active-p) (not (seaman/region-blank))) (seaman/delete-hungry))
+	    ((seaman/at-indent)                                  (delete-region (point) (seaman/get-point 'beginning-of-visual-line)))
+	    (t                                                   (delete-backward-char 1)))
     (delete-backward-char 1)))
 
-(global-set-key (kbd "<backspace>") #'custom/nimble-delete-backward)
+(global-set-key (kbd "<backspace>") #'seaman/nimble-delete-backward)
 
 #+end_src
 
@@ -4623,7 +4750,7 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 #+begin_src emacs-lisp
 
-(defun custom/kill-ring-mouse ()
+(defun seaman/kill-ring-mouse ()
   "If a region is active, save the region to the
 kill ring. Otherwise, yank the last entry in the
 kill ring."
@@ -4632,7 +4759,7 @@ kill ring."
       (kill-ring-save (region-beginning) (region-end))
     (yank)))
 
-(global-set-key   (kbd "<mouse-3>") #'custom/kill-ring-mouse)
+(global-set-key   (kbd "<mouse-3>") #'seaman/kill-ring-mouse)
 (global-unset-key (kbd "<down-mouse-3>"))
 
 #+end_src
@@ -4665,7 +4792,7 @@ kill ring."
 
 #+begin_src emacs-lisp
 
-(defun custom/smart-comment ()
+(defun seaman/smart-comment ()
   "If a region is active, comment out all lines in the
 region. Otherwise, comment out current line if it is
 not empty. In any case, advance to next line."
@@ -4686,12 +4813,12 @@ not empty. In any case, advance to next line."
 
     ;; Comment or uncomment region
     ;; If Org Mode is active
-    (if (not (custom/relative-line-empty))
+    (if (not (seaman/relative-line-empty))
 	      (comment-or-uncomment-region beg end))
     ;; Move to the beginning of the next line
     (beginning-of-line-text 2)))
 
-(global-set-key (kbd "C-x ;") #'custom/smart-comment)
+(global-set-key (kbd "C-x ;") #'seaman/smart-comment)
 
 #+end_src
 
@@ -4709,7 +4836,7 @@ not empty. In any case, advance to next line."
 #+begin_src emacs-lisp
 
 ;; Multiple cursor rectangle definition mouse event
-(defun custom/mouse-rectangle (start-event)
+(defun seaman/mouse-rectangle (start-event)
   (interactive "e")
   (deactivate-mark)
   (mouse-set-point start-event)
@@ -4722,7 +4849,7 @@ not empty. In any case, advance to next line."
                (mouse-movement-p drag-event))
         (mouse-set-point drag-event)))))
 
-(global-set-key (kbd "M-<down-mouse-1>") #'custom/mouse-rectangle)
+(global-set-key (kbd "M-<down-mouse-1>") #'seaman/mouse-rectangle)
 
 #+end_src
 
@@ -4737,7 +4864,7 @@ not empty. In any case, advance to next line."
 #+begin_src emacs-lisp
 
 ;; Enter multiple-cursors-mode
-(defun custom/rectangular-region-multiple-cursors ()
+(defun seaman/rectangular-region-multiple-cursors ()
   (interactive)
   (rectangular-region-mode 0)
   (multiple-cursors-mode 1)
@@ -4746,7 +4873,7 @@ not empty. In any case, advance to next line."
    (if (invisible-p (marker-position (overlay-get cursor 'point)))
        (mc/remove-fake-cursor cursor))))
 
-(define-key rectangular-region-mode-map (kbd "<return>") #'custom/rectangular-region-multiple-cursors)
+(define-key rectangular-region-mode-map (kbd "<return>") #'seaman/rectangular-region-multiple-cursors)
 
 #+end_src
 
@@ -4762,31 +4889,31 @@ not empty. In any case, advance to next line."
 
 ** Search
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-search.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-search.el
 :END:
 *** Search and replace
 
 #+begin_src emacs-lisp
 
-(defun custom/query-replace-regexp ()
+(defun seaman/query-replace-regexp ()
   (interactive)
   (save-excursion
     (beginning-of-buffer)
     (call-interactively 'query-replace-regexp)))
 
-(global-set-key (kbd "M-/") #'custom/query-replace-regexp)
+(global-set-key (kbd "M-/") #'seaman/query-replace-regexp)
 
 #+end_src
 
 ** Workflow
 *** Session
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-session.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-session.el
 :END:
 
 #+begin_src emacs-lisp
 
-(defun custom/load-session ()
+(defun seaman/load-session ()
   (interactive)
   (let ((session (read-file-name "Select session: "
                                  "~/sessions/"
@@ -4797,27 +4924,27 @@ not empty. In any case, advance to next line."
     (wg-load (concat session ".wg"))
     (call-interactively 'wg-switch-to-workgroup)))
 
-(global-set-key (kbd "C-x s") #'custom/load-session)
+(global-set-key (kbd "C-x s") #'seaman/load-session)
 
 #+end_src
 
 *** External programs
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-external-programs.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-external-programs.el
 :END:
 **** Keymap
 #+begin_src emacs-lisp
 
-(defcustom custom/external-application-map (make-keymap)
+(defcustom seaman/external-application-map (make-keymap)
   "External application keymap")
 
-(defcustom custom/external-application-bindings '()
+(defcustom seaman/external-application-bindings '()
   "List of external application key-binding pairs")
 
-(defun custom/bind-external-application (binding)
-  (add-to-list 'custom/external-application-bindings binding))
+(defun seaman/bind-external-application (binding)
+  (add-to-list 'seaman/external-application-bindings binding))
 
-(global-set-key (kbd "C-c C-o") custom/external-application-map)
+(global-set-key (kbd "C-c C-o") seaman/external-application-map)
 
 #+end_src
 
@@ -4830,7 +4957,7 @@ not empty. In any case, advance to next line."
   (let ((root (projectile-root-bottom-up (file-name-directory buffer-file-name))))
     (call-process-shell-command (concat "codium " root "&") nil 0)))
 
-(custom/bind-external-application '("c" . open-in-codium))
+(seaman/bind-external-application '("c" . open-in-codium))
 
 #+end_src
 
@@ -4842,7 +4969,7 @@ not empty. In any case, advance to next line."
   (interactive)
   (call-process-shell-command (concat "firefox-trunk \"" (buffer-file-name) "\"") nil 0))
 
-(custom/bind-external-application '("f" . open-in-firefox))
+(seaman/bind-external-application '("f" . open-in-firefox))
 
 #+end_src
 
@@ -4850,20 +4977,16 @@ not empty. In any case, advance to next line."
 
 #+begin_src emacs-lisp
 
-(dolist (binding custom/external-application-bindings)
-  (define-key custom/external-application-map (kbd (car binding)) (cdr binding)))
+(dolist (binding seaman/external-application-bindings)
+  (define-key seaman/external-application-map (kbd (car binding)) (cdr binding)))
 
 #+end_src
 
 
 ** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-navigation.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-navigation.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 *** Text
 **** TODO end
@@ -4876,21 +4999,21 @@ not empty. In any case, advance to next line."
 #+begin_src emacs-lisp
 
 ;; Double end to go to the beginning of line
-(defvar custom/double-end-timeout 0.4)
+(defvar seaman/double-end-timeout 0.4)
 
-(defun custom/double-end ()
+(defun seaman/double-end ()
   "Move to end of visual line. If the command is repeated 
-within `custom/double-end-timeout' seconds, move to end
+within `seaman/double-end-timeout' seconds, move to end
 of line."
   (interactive)
-  (let ((last-called (get this-command 'custom/last-call-time)))
+  (let ((last-called (get this-command 'seaman/last-call-time)))
     (if (and (eq last-command this-command)
-             (<= (time-to-seconds (time-since last-called)) custom/double-end-timeout))
+             (<= (time-to-seconds (time-since last-called)) seaman/double-end-timeout))
         (progn (beginning-of-visual-line) (end-of-line))
       (end-of-visual-line)))
-  (put this-command 'custom/last-call-time (current-time)))
+  (put this-command 'seaman/last-call-time (current-time)))
 
-(global-set-key (kbd "<end>") #'custom/double-end)
+(global-set-key (kbd "<end>") #'seaman/double-end)
 
 #+end_src
 
@@ -4898,7 +5021,7 @@ of line."
 
 #+begin_src emacs-lisp
 
-(defun custom/home ()
+(defun seaman/home ()
   "Conditional homing. 
 
 Default: `beginning-of-line-text'
@@ -4914,30 +5037,30 @@ If the current mode is derived from `prog-mode', home `back-to-indentation'.
 If the current line is a wrapped visual line, home to
 `beginning-of-visual-line'."
   (interactive)
-  (cond ((custom/relative-line-empty)    (beginning-of-line))
-	((custom/relative-line-list)     (beginning-of-line-text))
-	((custom/relative-line-indented) (back-to-indentation))
-	((custom/relative-line-wrapped)  (beginning-of-visual-line))
+  (cond ((seaman/relative-line-empty)    (beginning-of-line))
+	((seaman/relative-line-list)     (beginning-of-line-text))
+	((seaman/relative-line-indented) (back-to-indentation))
+	((seaman/relative-line-wrapped)  (beginning-of-visual-line))
 	((derived-mode-p 'prog-mode)     (back-to-indentation))
-	((custom/relative-line-wrapped)  (beginning-of-visual-line))
+	((seaman/relative-line-wrapped)  (beginning-of-visual-line))
         (t                               (beginning-of-line-text))))
 
-(defvar custom/double-home-timeout 0.4)
+(defvar seaman/double-home-timeout 0.4)
 
-(defun custom/double-home ()
-  "Dynamic homing command with a timeout of `custom/double-home-timeout' seconds.
-- Single press: `custom/home' 
+(defun seaman/double-home ()
+  "Dynamic homing command with a timeout of `seaman/double-home-timeout' seconds.
+- Single press: `seaman/home' 
 - Double press: `beginning-of-visual-line'"
   (interactive)
-  (let ((last-called (get this-command 'custom/last-call-time)))
+  (let ((last-called (get this-command 'seaman/last-call-time)))
     (if (and (eq last-command this-command)
-	     (<= (time-to-seconds (time-since last-called)) custom/double-home-timeout))
+	     (<= (time-to-seconds (time-since last-called)) seaman/double-home-timeout))
 	(progn (beginning-of-visual-line)
 	       (beginning-of-line-text))
-      (custom/home)))
-  (put this-command 'custom/last-call-time (current-time)))
+      (seaman/home)))
+  (put this-command 'seaman/last-call-time (current-time)))
 
-(global-set-key (kbd "<home>") #'custom/double-home)
+(global-set-key (kbd "<home>") #'seaman/double-home)
 
 #+end_src
 
@@ -4945,7 +5068,7 @@ If the current line is a wrapped visual line, home to
 
 #+begin_src emacs-lisp
 
-(defun custom/previous-line (orig-fun &rest args)
+(defun seaman/previous-line (orig-fun &rest args)
   "If a region is active and either the current mode is derived from
 `prog-mode' or the cursor lies in an `org-babel' source code block,
 arrow-up to `end-of-visual-line' of `previous-line'."
@@ -4956,18 +5079,18 @@ arrow-up to `end-of-visual-line' of `previous-line'."
       (progn (point-to-register 'region-up-register)
              (end-of-visual-line))))
 
-(advice-add 'previous-line :around #'custom/previous-line)
+(advice-add 'previous-line :around #'seaman/previous-line)
 
-(defun custom/region-up-register ()
+(defun seaman/region-up-register ()
   "Move cursor to `region-up-register', defined in
-`custom/previous-line'."
+`seaman/previous-line'."
   (interactive)
   (let ((end (region-end)))
     (ignore-errors (jump-to-register 'region-up-register))
     (set-register 'region-up-register nil)
     (push-mark end)))
 
-(global-set-key (kbd "S-<home>") #'custom/region-up-register)
+(global-set-key (kbd "S-<home>") #'seaman/region-up-register)
 
 #+end_src
 
@@ -4975,7 +5098,7 @@ arrow-up to `end-of-visual-line' of `previous-line'."
 
 #+begin_src emacs-lisp
 
-(defun custom/beginning-of-line-text (orig-fun &rest args)
+(defun seaman/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
   (interactive)
   (let ((ordered-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}"))
@@ -4985,7 +5108,7 @@ arrow-up to `end-of-visual-line' of `previous-line'."
 		   (re-search-forward ordered-line-regex))
       (apply orig-fun args))))
 
-(advice-add 'beginning-of-line-text :around #'custom/beginning-of-line-text)
+(advice-add 'beginning-of-line-text :around #'seaman/beginning-of-line-text)
 
 #+end_src
 
@@ -5014,22 +5137,22 @@ arrow-up to `end-of-visual-line' of `previous-line'."
 
 #+begin_src emacs-lisp
 
-(defvar custom/window-previous nil
+(defvar seaman/window-previous nil
   "Selected window before the last window change.")
 
-(defvar custom/window-pre-command nil
+(defvar seaman/window-pre-command nil
   "Auxiliary variable containing the `selected-window'
 before the execution of any command.")
 
-(defun custom/record-window-pre-command ()
-  (setq custom/window-pre-command (selected-window)))
-(add-hook 'pre-command-hook #'custom/record-window-pre-command)
+(defun seaman/record-window-pre-command ()
+  (setq seaman/window-pre-command (selected-window)))
+(add-hook 'pre-command-hook #'seaman/record-window-pre-command)
 
-(defun custom/record-window-previous ()
+(defun seaman/record-window-previous ()
   (let ((window-post (selected-window)))
-    (if (not (eq window-post custom/window-pre-command))
-	      (setq custom/window-previous custom/window-pre-command))))
-(add-hook 'post-command-hook #'custom/record-window-previous)
+    (if (not (eq window-post seaman/window-pre-command))
+	      (setq seaman/window-previous seaman/window-pre-command))))
+(add-hook 'post-command-hook #'seaman/record-window-previous)
 
 #+end_src
 
@@ -5039,34 +5162,30 @@ before the execution of any command.")
 
 #+begin_src emacs-lisp
 
-(defun custom/goto-window-previous ()
+(defun seaman/goto-window-previous ()
   (interactive)
-  (let ((target  custom/window-previous)
+  (let ((target  seaman/window-previous)
 	      (current (selected-window)))
     (if target
 	      (progn (select-window target)
-		     (setq custom/window-previous current)))))
+		     (setq seaman/window-previous current)))))
 
-(global-set-key (kbd "C-p") #'custom/goto-window-previous)
+(global-set-key (kbd "C-p") #'seaman/goto-window-previous)
 
 #+end_src
 
 
 ** File management
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-file-management.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-file-management.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 *** Buffer
 **** Reload from disk
 
 #+begin_src emacs-lisp
 
-(defun custom/reload-from-disk (&optional buffer)
+(defun seaman/reload-from-disk (&optional buffer)
   "Revert BUFFER contents to the contents of its
 file saved on disk, ignoring the auto-save file.
 If the buffer has unsaved modifications, prompt
@@ -5079,7 +5198,7 @@ the user for confirmation."
 	     (revert-buffer t t)
 	   (revert-buffer t nil)))))
 
-(global-set-key (kbd "C-c r") #'custom/reload-from-disk)
+(global-set-key (kbd "C-c r") #'seaman/reload-from-disk)
 
 #+end_src
 
@@ -5089,7 +5208,7 @@ the user for confirmation."
 #+begin_src emacs-lisp
 
 ;; Transform all files in directory from DOS to Unix line breaks
-(defun custom/dos2unix (&optional dir)
+(defun seaman/dos2unix (&optional dir)
   (let ((default-directory (or dir (file-name-directory buffer-file-name))))
     (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
@@ -5098,22 +5217,22 @@ the user for confirmation."
 
 ** PDF
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-pdf.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-pdf.el
 :END:
 *** Jump
 
 #+begin_src emacs-lisp
 
-(defun custom/pdf-view-jump-to-top ()
+(defun seaman/pdf-view-jump-to-top ()
   (interactive)
   (image-previous-line 9999))
 
-(defun custom/pdf-view-jump-to-bottom ()
+(defun seaman/pdf-view-jump-to-bottom ()
   (interactive)
   (image-next-line 9999))
 
-(define-key pdf-view-mode-map (kbd "<home>") #'custom/pdf-view-jump-to-top)
-(define-key pdf-view-mode-map (kbd "<end>")  #'custom/pdf-view-jump-to-bottom)
+(define-key pdf-view-mode-map (kbd "<home>") #'seaman/pdf-view-jump-to-top)
+(define-key pdf-view-mode-map (kbd "<end>")  #'seaman/pdf-view-jump-to-bottom)
 
 #+end_src
 
@@ -5121,20 +5240,20 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/pdf-view-next-line (&optional arg)
+(defun seaman/pdf-view-next-line (&optional arg)
   "Scroll upward by ARG lines. Stay in page."
   (interactive "P")
   (image-next-line (if arg arg 1)))
 
-(defun custom/pdf-view-previous-line (&optional arg)
+(defun seaman/pdf-view-previous-line (&optional arg)
   "Scroll upward by ARG lines. Stay in page."
   (interactive "P")
   (image-next-line (if arg (* -1 arg) -1)))
 
-(define-key pdf-view-mode-map (kbd "<wheel-down>") #'custom/pdf-view-next-line)
-(define-key pdf-view-mode-map (kbd "<wheel-up>")   #'custom/pdf-view-previous-line)
-(define-key pdf-view-mode-map (kbd "C-<wheel-down>") (lambda () (interactive) (custom/pdf-view-next-line 10)))
-(define-key pdf-view-mode-map (kbd "C-<wheel-up>")   (lambda () (interactive) (custom/pdf-view-previous-line 10)))
+(define-key pdf-view-mode-map (kbd "<wheel-down>") #'seaman/pdf-view-next-line)
+(define-key pdf-view-mode-map (kbd "<wheel-up>")   #'seaman/pdf-view-previous-line)
+(define-key pdf-view-mode-map (kbd "C-<wheel-down>") (lambda () (interactive) (seaman/pdf-view-next-line 10)))
+(define-key pdf-view-mode-map (kbd "C-<wheel-up>")   (lambda () (interactive) (seaman/pdf-view-previous-line 10)))
 
 #+end_src
 
@@ -5142,21 +5261,21 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/pdf-view-fit-height ()
+(defun seaman/pdf-view-fit-height ()
   (interactive)
   (setq pdf-view-display-size 'fit-page)
   (pdf-view-redisplay t)
   (pdf-view-center-in-window)
-  (custom/pdf-view-jump-to-top))
+  (seaman/pdf-view-jump-to-top))
 
-(defun custom/pdf-view-fit-width ()
+(defun seaman/pdf-view-fit-width ()
   (interactive)
   (setq pdf-view-display-size 'fit-width)
   (pdf-view-redisplay t)
   (pdf-view-center-in-window))
 
-(define-key pdf-view-mode-map (kbd "<tab>") #'custom/pdf-view-fit-height)
-(define-key pdf-view-mode-map (kbd "C-<tab>") #'custom/pdf-view-fit-width)
+(define-key pdf-view-mode-map (kbd "<tab>") #'seaman/pdf-view-fit-height)
+(define-key pdf-view-mode-map (kbd "C-<tab>") #'seaman/pdf-view-fit-width)
 
 #+end_src
 
@@ -5164,12 +5283,12 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/pdf-refresh-themed-view ()
+(defun seaman/pdf-refresh-themed-view ()
   (if pdf-view-themed-minor-mode
       (progn (pdf-view-themed-minor-mode -1)
              (pdf-view-themed-minor-mode))))
 
-(add-hook 'custom/enable-or-load-theme-hook #'custom/pdf-refresh-themed-view)
+(add-hook 'seaman/enable-or-load-theme-hook #'seaman/pdf-refresh-themed-view)
 
 #+end_src
 
@@ -5177,25 +5296,21 @@ the user for confirmation."
 *** Utilities
 **** Get
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-get.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-org-get.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 ***** org-get-title
 
 #+begin_src emacs-lisp
 
-(defun custom/org-get-title (&optional buffer)
+(defun seaman/org-get-title (&optional buffer)
   (let ((buffer (or buffer (current-buffer))))
     (with-current-buffer buffer
       (nth 1
 	   (assoc "TITLE"
 		  (org-element-map (org-element-parse-buffer 'greater-element)
 		      '(keyword)
-		    #'custom/get-keyword-key-value))))))
+		    #'seaman/get-keyword-key-value))))))
 
 #+end_src
 
@@ -5203,9 +5318,9 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-get-file-title (file)
+(defun seaman/org-get-file-title (file)
   (with-current-buffer (find-file-noselect file)
-       (custom/org-get-title)))
+       (seaman/org-get-title)))
 
 #+end_src
 
@@ -5213,7 +5328,7 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-get-subtree-region (&optional element)
+(defun seaman/org-get-subtree-region (&optional element)
   "Retrieve the beginning and end of the current subtree."
   (if (org-element--cache-active-p)
       (let* ((heading (org-element-lineage
@@ -5236,20 +5351,16 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-get-subtree-content ()
+(defun seaman/org-get-subtree-content ()
   "Retrieve the content of the current subtree."
-  (setq content (apply #'buffer-substring-no-properties (custom/org-get-subtree-region))))
+  (setq content (apply #'buffer-substring-no-properties (seaman/org-get-subtree-region))))
 
 #+end_src
 
 **** Queries
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-queries.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-org-queries.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 ***** in
 ****** org-in-src-block-p
@@ -5259,12 +5370,12 @@ the user for confirmation."
 ;; `org-in-src-block-p' gives false positives as of Org Mode 9.5.3. For
 ;; this reason, determine if cursor in src block with the more reliable
 ;; `org-babel-where-is-src-block-head'
-(defun custom/org-in-src-block-p (orig-fun &rest args)
+(defun seaman/org-in-src-block-p (orig-fun &rest args)
   (if args
       (apply orig-fun args)
     (org-babel-where-is-src-block-head)))
 
-(advice-add 'org-in-src-block-p :around #'custom/org-in-src-block-p)
+(advice-add 'org-in-src-block-p :around #'seaman/org-in-src-block-p)
 
 #+end_src
 
@@ -5273,8 +5384,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-ellipsis (&optional position)
-  (or (custom/org-at-ellipsis-h position) (custom/org-at-ellipsis-l position)))
+(defun seaman/org-at-ellipsis (&optional position)
+  (or (seaman/org-at-ellipsis-h position) (seaman/org-at-ellipsis-l position)))
 
 #+end_src
 
@@ -5282,8 +5393,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-ellipsis-l (&optional position)
-  (and (custom/org-relative-line-list-folded) (custom/at-point 'end-of-visual-line)))
+(defun seaman/org-at-ellipsis-l (&optional position)
+  (and (seaman/org-relative-line-list-folded) (seaman/at-point 'end-of-visual-line)))
 
 #+end_src 
 
@@ -5291,8 +5402,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-ellipsis-h (&optional position) 
-  (and (custom/org-relative-line-heading-folded) (custom/at-point 'end-of-visual-line)))
+(defun seaman/org-at-ellipsis-h (&optional position) 
+  (and (seaman/org-relative-line-heading-folded) (seaman/at-point 'end-of-visual-line)))
 
 #+END_src 
 
@@ -5300,8 +5411,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-keyword (&optional number)
-  (custom/relative-line-regex "^#+.*$" number))
+(defun seaman/org-at-keyword (&optional number)
+  (seaman/relative-line-regex "^#+.*$" number))
 
 #+END_src 
 
@@ -5309,9 +5420,9 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-heading (&optional point)
+(defun seaman/org-at-heading (&optional point)
   (let ((point (or point (point))))
-    (save-excursion (goto-char point) (custom/org-relative-line-heading))))
+    (save-excursion (goto-char point) (seaman/org-relative-line-heading))))
 
 #+end_src
 
@@ -5321,8 +5432,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-bol-list () 
-  (and (custom/org-relative-line-list) (custom/at-point 'beginning-of-line-text)))
+(defun seaman/org-at-bol-list () 
+  (and (seaman/org-relative-line-list) (seaman/at-point 'beginning-of-line-text)))
 
 #+END_src 
 
@@ -5332,8 +5443,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-bol-heading () 
-  (and (custom/org-relative-line-heading) (custom/at-point 'custom/org-goto-heading-bol)))
+(defun seaman/org-at-bol-heading () 
+  (and (seaman/org-relative-line-heading) (seaman/at-point 'seaman/org-goto-heading-bol)))
 
 #+END_src 
 
@@ -5343,8 +5454,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-at-eol-heading ()
-  (and (custom/org-relative-line-heading) (eolp) (not (custom/org-at-ellipsis-h)) (not (custom/org-relative-line-heading-empty))))
+(defun seaman/org-at-eol-heading ()
+  (and (seaman/org-relative-line-heading) (eolp) (not (seaman/org-at-ellipsis-h)) (not (seaman/org-relative-line-heading-empty))))
 
 #+end_src
 
@@ -5353,8 +5464,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-after-list-or-indent ()
-  (or (custom/org-relative-line-list -1) (custom/relative-line-indented -1)))
+(defun seaman/org-after-list-or-indent ()
+  (or (seaman/org-relative-line-list -1) (seaman/relative-line-indented -1)))
 
 #+end_src
 
@@ -5363,8 +5474,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-relative-line-list (&optional number)
-  (custom/relative-line (lambda () (progn (beginning-of-line-text) (org-at-item-p)))  number))
+(defun seaman/org-relative-line-list (&optional number)
+  (seaman/relative-line (lambda () (progn (beginning-of-line-text) (org-at-item-p)))  number))
 
 #+end_src
 
@@ -5372,8 +5483,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-relative-line-heading (&optional number)
-  (custom/relative-line 'org-at-heading-p number))
+(defun seaman/org-relative-line-heading (&optional number)
+  (seaman/relative-line 'org-at-heading-p number))
 
 #+end_src
 
@@ -5381,16 +5492,16 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-relative-line-paragraph (&optional number)
+(defun seaman/org-relative-line-paragraph (&optional number)
   "Determine whether the current line -or the NUMBER'th line relative to it
 is an indented paragraph."
   (let ((number (or number 0)))
-    (and (not (custom/org-relative-line-heading number))
-	       (not (custom/org-relative-line-list    number))
+    (and (not (seaman/org-relative-line-heading number))
+	       (not (seaman/org-relative-line-list    number))
 	       (not (org-in-src-block-p))
-	       (custom/relative-line-indented number)
-	       (or  (custom/org-relative-line-list      (- number 1))
-		    (custom/org-relative-line-paragraph (- number 1))))))
+	       (seaman/relative-line-indented number)
+	       (or  (seaman/org-relative-line-list      (- number 1))
+		    (seaman/org-relative-line-paragraph (- number 1))))))
 
 #+end_src
 
@@ -5398,10 +5509,10 @@ is an indented paragraph."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-relative-line-list-empty (&optional number)
-  (and (custom/org-relative-line-list)
-       (or (custom/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+$" number)
-	         (custom/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+$" number))))
+(defun seaman/org-relative-line-list-empty (&optional number)
+  (and (seaman/org-relative-line-list)
+       (or (seaman/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+$" number)
+	         (seaman/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+$" number))))
 
 #+end_src
 
@@ -5409,10 +5520,10 @@ is an indented paragraph."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-relative-line-list-folded (&optional number)
+(defun seaman/org-relative-line-list-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
 is on a folded list item."
-  (custom/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
+  (seaman/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
 
 #+end_src
 
@@ -5420,8 +5531,8 @@ is on a folded list item."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-relative-line-heading-empty (&optional number)
-  (custom/relative-line (lambda () (beginning-of-line-text) (org-point-at-end-of-empty-headline)) number))
+(defun seaman/org-relative-line-heading-empty (&optional number)
+  (seaman/relative-line (lambda () (beginning-of-line-text) (org-point-at-end-of-empty-headline)) number))
 
 #+end_src
 
@@ -5429,10 +5540,10 @@ is on a folded list item."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-relative-line-heading-folded (&optional number)
+(defun seaman/org-relative-line-heading-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
 is on a folded heading."
-  (custom/relative-line (lambda () (and (org-at-heading-p) (invisible-p (point-at-eol)))) number))
+  (seaman/relative-line (lambda () (and (org-at-heading-p) (invisible-p (point-at-eol)))) number))
 
 #+end_src
 
@@ -5440,8 +5551,8 @@ is on a folded heading."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-relative-line-heading-or-list (&optional number)
-  (custom/relative-line 'org-at-heading-or-item-p number))
+(defun seaman/org-relative-line-heading-or-list (&optional number)
+  (seaman/relative-line 'org-at-heading-or-item-p number))
 
 #+end_src
 
@@ -5450,11 +5561,11 @@ is on a folded heading."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-subtree-blank ()
+(defun seaman/org-subtree-blank ()
   "Return t if the current subtree consists of
-a `custom/region-blank'."
+a `seaman/region-blank'."
   (interactive)
-  (apply #'custom/region-blank (custom/org-get-subtree-region)))
+  (apply 'seaman/region-blank (seaman/org-get-subtree-region)))
 
 #+end_src
 
@@ -5462,9 +5573,9 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-subtree-empty ()
+(defun seaman/org-subtree-empty ()
   (interactive)
-  (string-equal "" (custom/org-get-subtree-content)))
+  (string-equal "" (seaman/org-get-subtree-content)))
 
 #+end_src
 
@@ -5472,10 +5583,10 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-headings-follow ()
-  (let ((pos (custom/get-point 'beginning-of-visual-line)))
-    (save-excursion (custom/org-goto-heading-next)
-		           (and (not (= pos (point))) (custom/org-relative-line-heading)))))
+(defun seaman/org-headings-follow ()
+  (let ((pos (seaman/get-point 'beginning-of-visual-line)))
+    (save-excursion (seaman/org-goto-heading-next)
+		           (and (not (= pos (point))) (seaman/org-relative-line-heading)))))
 
 #+end_src
 
@@ -5483,10 +5594,10 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-headings-precede ()
-  (let ((pos (custom/get-point 'beginning-of-visual-line)))
-    (save-excursion (custom/org-goto-heading-previous)
-		          (and (not (= pos (point))) (custom/org-relative-line-heading)))))
+(defun seaman/org-headings-precede ()
+  (let ((pos (seaman/get-point 'beginning-of-visual-line)))
+    (save-excursion (seaman/org-goto-heading-previous)
+		          (and (not (= pos (point))) (seaman/org-relative-line-heading)))))
 
 #+end_src
 
@@ -5494,10 +5605,10 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-subtree-blank-up-to-point ()
+(defun seaman/org-subtree-blank-up-to-point ()
   (interactive)
-  (let ((heading-eol (save-excursion (custom/org-goto-heading-current) (end-of-line) (point))))
-    (custom/region-blank heading-eol (point))))
+  (let ((heading-eol (save-excursion (seaman/org-goto-heading-current) (end-of-line) (point))))
+    (seaman/region-blank heading-eol (point))))
 
 #+end_src
 
@@ -5506,12 +5617,12 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-heading-first-child ()
+(defun seaman/org-heading-first-child ()
   (save-excursion
-    (custom/org-goto-heading-current)
-    (let ((pos (custom/get-point 'beginning-of-visual-line)))
+    (seaman/org-goto-heading-current)
+    (let ((pos (seaman/get-point 'beginning-of-visual-line)))
       (org-backward-heading-same-level 1)
-      (= pos (custom/get-point 'beginning-of-visual-line)))))
+      (= pos (seaman/get-point 'beginning-of-visual-line)))))
 
 #+end_src
 
@@ -5519,7 +5630,7 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-heading-has-children ()
+(defun seaman/org-heading-has-children ()
   (interactive)
   (save-excursion (org-goto-first-child)))
 
@@ -5528,38 +5639,30 @@ a `custom/region-blank'."
 
 *** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-ui.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-org-ui.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 **** Theme
 
 #+begin_src emacs-lisp
 
 ;; theme reload advice
-(defun custom/org-theme-reload ()
+(defun seaman/org-theme-reload ()
   "Re-set Org Mode UI typesetting after theme changes"
   (save-window-excursion
-    (cl-loop for buffer in (custom/get-visible-buffers)
+    (cl-loop for buffer in (seaman/get-visible-buffers)
 	     do (select-window (get-buffer-window buffer))
 	     if (string-equal major-mode "org-mode")
-             do (custom/org-ui-typeset))))
+             do (seaman/org-ui-typeset))))
 
-(add-hook 'custom/enable-or-load-theme-hook #'custom/org-theme-reload)
+(add-hook 'seaman/enable-or-load-theme-hook #'seaman/org-theme-reload)
 
 #+end_src
 
 **** Outline
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-outline.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-org-outline.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 - deprecated cl warning
    - find dependency
@@ -5569,9 +5672,9 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-hide-previous-subtree ()
+(defun seaman/org-hide-previous-subtree ()
   "Cycle previous Org Mode heading."
-  (save-excursion (custom/org-goto-heading-previous)
+  (save-excursion (seaman/org-goto-heading-previous)
 		  (outline-hide-subtree)))
 
 #+end_src
@@ -5581,9 +5684,9 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-show (orig-fun &rest args)
-  (if (custom/org-at-ellipsis)
-      (progn (custom/org-goto-heading-bol) (apply orig-fun args))
+(defun seaman/org-show (orig-fun &rest args)
+  (if (seaman/org-at-ellipsis)
+      (progn (seaman/org-goto-heading-bol) (apply orig-fun args))
     (apply orig-fun args)))
 
 #+end_src
@@ -5592,7 +5695,7 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(advice-add 'org-show-subtree :around #'custom/org-show)
+(advice-add 'org-show-subtree :around #'seaman/org-show)
 
 #+end_src
 
@@ -5600,7 +5703,7 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(advice-add 'org-show-children :around #'custom/org-show)
+(advice-add 'org-show-children :around #'seaman/org-show)
 
 #+end_src
 
@@ -5608,13 +5711,13 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-show-minimum ()
-  (if (or (custom/org-relative-line-list-folded)
-	        (custom/org-relative-line-heading-folded))
-      (progn (if (custom/org-at-ellipsis)
+(defun seaman/org-show-minimum ()
+  (if (or (seaman/org-relative-line-list-folded)
+	        (seaman/org-relative-line-heading-folded))
+      (progn (if (seaman/org-at-ellipsis)
 		       (progn (beginning-of-visual-line) (end-of-line)))
 	           (org-show-entry)
-	           (if (custom/org-heading-has-children) (org-show-children)))))
+	           (if (seaman/org-heading-has-children) (org-show-children)))))
 
 #+end_src
 
@@ -5626,7 +5729,7 @@ a `custom/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-cycle (orig-fun &rest args)
+(defun seaman/org-cycle (orig-fun &rest args)
   "Conditional `org-cycle'.
 
 Default: `org-cycle'
@@ -5638,17 +5741,17 @@ call `org-cycle'.
 If cursor lies at a paragraph directly under a list item and not
 indented at the level of the previous list item, indent the paragraph."
   (interactive)
-  (if (or (custom/org-relative-line-list-folded) (custom/org-relative-line-heading-folded))
-      (if (= (point) (custom/get-point 'end-of-visual-line))
+  (if (or (seaman/org-relative-line-list-folded) (seaman/org-relative-line-heading-folded))
+      (if (= (point) (seaman/get-point 'end-of-visual-line))
 	  (progn (beginning-of-visual-line)
 		 (end-of-line)
 		 (apply orig-fun args))
 	(apply orig-fun args))
-    (if (and (org-in-src-block-p) (not (custom/org-at-keyword)))
+    (if (and (org-in-src-block-p) (not (seaman/org-at-keyword)))
 	      (org-indent-line)
       (apply orig-fun args))))
 
-(advice-add 'org-cycle :around #'custom/org-cycle)
+(advice-add 'org-cycle :around #'seaman/org-cycle)
 
 #+end_src
 
@@ -5656,14 +5759,14 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+begin_src emacs-lisp
 
-(defun custom/c-cycle ()
+(defun seaman/c-cycle ()
   (interactive)
   (if (and (org-in-src-block-p) (not (invisible-p (point-at-eol))))
       (progn (org-babel-goto-src-block-head)
              (org-fold-hide-block-toggle))
     (org-fold-hide-subtree)))
 
-(define-key org-mode-map (kbd "C-<tab>") #'custom/c-cycle)
+(define-key org-mode-map (kbd "C-<tab>") #'seaman/c-cycle)
 
 #+end_src
 
@@ -5679,7 +5782,7 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-identify-hidden-overlays (overlay &optional use-markers)
+(defun seaman/org-identify-hidden-overlays (overlay &optional use-markers)
   (when (eq (overlay-get overlay 'invisible) 'outline)
     (let ((beg (overlay-start overlay))
           (end (overlay-end overlay)))
@@ -5689,7 +5792,7 @@ indented at the level of the previous list item, indent the paragraph."
                      (copy-marker end t))
              (cons beg end))))))
 
-(defun custom/org-get-outline-state (&optional use-markers)
+(defun seaman/org-get-outline-state (&optional use-markers)
   "Return a list of the locations of all outline overlays.
 These are overlays with the `invisible' property value `outline'.
 The return value is a list of cons cells, with start and stop
@@ -5698,7 +5801,7 @@ If USE-MARKERS is set, return the positions as markers."
   (let (beg end)
     (org-with-wide-buffer
      (delq nil
-       (mapcar 'custom/org-identify-hidden-overlays
+       (mapcar 'seaman/org-identify-hidden-overlays
            (overlays-in (point-min) (point-max)))))))
 
 #+end_src
@@ -5707,10 +5810,10 @@ If USE-MARKERS is set, return the positions as markers."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-save-outline-state ()
-  "Save org outline state in `custom/org-outline-state'.
-It can be recovered afterwards with `custom/org-recover-outline-state'."
-  (setq custom/org-outline-state (custom/org-get-outline-state t)))
+(defun seaman/org-save-outline-state ()
+  "Save org outline state in `seaman/org-outline-state'.
+It can be recovered afterwards with `seaman/org-recover-outline-state'."
+  (setq seaman/org-outline-state (seaman/org-get-outline-state t)))
 
 #+end_src
 
@@ -5718,13 +5821,13 @@ It can be recovered afterwards with `custom/org-recover-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defvar-local custom/org-outline-state nil
+(defvar-local seaman/org-outline-state nil
   "Variable to save the org outline.")
-(put 'custom/org-outline-state 'permanent-local t)
+(put 'seaman/org-outline-state 'permanent-local t)
 
-(defun custom/org-set-outline-state (data)
+(defun seaman/org-set-outline-state (data)
   "Create visibility overlays for all positions in DATA.
-DATA should have been made by `custom/org-get-outline-state'."
+DATA should have been made by `seaman/org-get-outline-state'."
   (org-with-wide-buffer
    (org-show-all)
    (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
@@ -5735,11 +5838,11 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-restore-outline-state ()
-  "Restore Org Mode outline stored in `custom/org-outline-state'."
-  (when custom/org-outline-state
-    (custom/org-set-outline-state custom/org-outline-state)
-    (setq custom/org-outline-state nil)))
+(defun seaman/org-restore-outline-state ()
+  "Restore Org Mode outline stored in `seaman/org-outline-state'."
+  (when seaman/org-outline-state
+    (seaman/org-set-outline-state seaman/org-outline-state)
+    (setq seaman/org-outline-state nil)))
 
 #+end_src
 
@@ -5747,14 +5850,14 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-mode (orig-fun &rest args)
+(defun seaman/org-mode (orig-fun &rest args)
   (if (string-equal major-mode "org-mode")
-      (progn (custom/org-save-outline-state)
+      (progn (seaman/org-save-outline-state)
              (apply orig-fun args)
-             (custom/org-restore-outline-state))
+             (seaman/org-restore-outline-state))
     (apply orig-fun args)))
 
-(advice-add 'org-mode :around #'custom/org-mode)
+(advice-add 'org-mode :around #'seaman/org-mode)
 
 #+end_src
 
@@ -5763,14 +5866,14 @@ DATA should have been made by `custom/org-get-outline-state'."
 #+begin_src emacs-lisp
 
 ;; UI typesetting
-(defun custom/org-ui-typeset ()
+(defun seaman/org-ui-typeset ()
   "Typeset the following Org Mode UI elements:
 - title of Org Mode documents
 - indent typeface used in `org-indent-mode' and `visual-line-mode'"
   (with-eval-after-load 'org-faces       (set-face-attribute 'org-document-title nil :font typeface-title :weight 'regular :height 200))
   (with-eval-after-load 'org-indent-mode (set-face-attribute 'org-indent         nil :inherit '(org-hide fixed-pitch))))
 
-(add-hook 'org-mode-hook #'custom/org-ui-typeset)
+(add-hook 'org-mode-hook #'seaman/org-ui-typeset)
 
 #+end_src
 
@@ -5778,20 +5881,20 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defface custom/variable-pitch-marker
+(defface seaman/variable-pitch-marker
   '((nil :inherit fixed-pitch))
   "List marker typeface.")
 
-(defface custom/variable-pitch-indent
+(defface seaman/variable-pitch-indent
   '((nil :inherit fixed-pitch :invisible t))
   "Indent typeface.")
 
-(defvar custom/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'custom/variable-pitch-marker)
-					 ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'custom/variable-pitch-marker)
-					 ("^[[:blank:]]+"                                  0 'custom/variable-pitch-indent))
+(defvar seaman/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'seaman/variable-pitch-marker)
+					 ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'seaman/variable-pitch-marker)
+					 ("^[[:blank:]]+"                                      0 'seaman/variable-pitch-indent))
   "Variable pitch font-lock keywords.")
 
-(font-lock-add-keywords 'org-mode custom/variable-pitch-keywords 'append)
+(font-lock-add-keywords 'org-mode seaman/variable-pitch-keywords 'append)
 
 #+end_src
 
@@ -5847,24 +5950,20 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 *** Editing
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-editing.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-org-editing.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 **** Text
 ***** Undo
 
 #+begin_src emacs-lisp
 
-(defun custom/org-undo ()
+(defun seaman/org-undo ()
   (interactive)
   (if (org-babel-where-is-src-block-head)
       (let ((beg (point)))
-	         (cond ((eq last-command 'custom/org-return)    (undo 2))
-                 ((eq last-command 'custom/smart-comment) (undo 1))
+	         (cond ((eq last-command 'seaman/org-return)    (undo 2))
+                       ((eq last-command 'seaman/smart-comment) (undo 1))
 	               (t                                       (undo 1)))
            (if (org-babel-where-is-src-block-head)
 	             (save-excursion (goto-char (org-babel-where-is-src-block-head))
@@ -5875,7 +5974,7 @@ DATA should have been made by `custom/org-get-outline-state'."
 			    (beginning-of-line-text))))
     (undo 1)))
 
-(define-key org-mode-map (kbd "C-/") 'custom/org-undo)
+(define-key org-mode-map (kbd "C-/") #'seaman/org-undo)
 
 #+end_src
 
@@ -5885,14 +5984,14 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-insert-item-respect-content ()
+(defun seaman/org-insert-item-respect-content ()
   (interactive)
   (let ((struct (org-list-struct))
-	    (unfold (if (custom/org-relative-line-list-folded) nil (point-marker))))
+	    (unfold (if (seaman/org-relative-line-list-folded) nil (point-marker))))
     (org-list-set-item-visibility (point-at-bol) struct 'folded)
     (save-excursion
       (beginning-of-visual-line)
-      (kill-ring-save (point) (custom/get-point 'beginning-of-line-text)))
+      (kill-ring-save (point) (seaman/get-point 'beginning-of-line-text)))
     (end-of-visual-line)
     (org-return)
     (yank)
@@ -5906,17 +6005,17 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-heading-margin-post ()
+(defun seaman/org-heading-margin-post ()
   "Return margin between current heading and next."
   (if (org-current-level)
-      (let ((pos            (custom/get-point 'custom/org-goto-heading-bol))
-	           (end-of-subtree (custom/get-point 'custom/org-goto-subtree-end))
-		   (next-heading   (custom/get-point 'custom/org-goto-heading-next)))
-	          (if (not (and (= pos end-of-subtree) (custom/org-relative-line-heading)))
-		      (buffer-substring-no-properties end-of-subtree next-heading)
-		    ""))
-    (if (custom/org-headings-follow)
-	       (buffer-substring-no-properties (point) (custom/get-point 'custom/org-goto-heading-next))
+      (let ((pos (seaman/get-point 'seaman/org-goto-heading-bol))
+	    (end-of-subtree (seaman/get-point 'seaman/org-goto-subtree-end))
+	    (next-heading   (seaman/get-point 'seaman/org-goto-heading-next)))
+	(if (not (and (= pos end-of-subtree) (seaman/org-relative-line-heading)))
+	    (buffer-substring-no-properties end-of-subtree next-heading)
+	  ""))
+    (if (seaman/org-headings-follow)
+	       (buffer-substring-no-properties (point) (seaman/get-point 'seaman/org-goto-heading-next))
       "")))
 
 #+end_src
@@ -5925,11 +6024,11 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-heading-margin-delete-post ()
+(defun seaman/org-heading-margin-delete-post ()
   "Delete newline after new headings created by
 `respect-content' heading commands."
-  (if (custom/org-subtree-blank)
-      (apply 'delete-region (custom/org-get-subtree-region))))
+  (if (seaman/org-subtree-blank)
+      (apply 'delete-region (seaman/org-get-subtree-region))))
 
 #+end_src
 
@@ -5937,13 +6036,13 @@ DATA should have been made by `custom/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-heading-margin-insert-previous ()
+(defun seaman/org-heading-margin-insert-previous ()
   "If the previous subtree is not empty,
 insert a margin of 1 empty line."
-  (let ((insert-margin (save-excursion (if (custom/org-heading-first-child)
-					          (custom/org-goto-heading-previous)
+  (let ((insert-margin (save-excursion (if (seaman/org-heading-first-child)
+					          (seaman/org-goto-heading-previous)
 					        (org-backward-heading-same-level 1))
-				              (not (custom/org-subtree-blank)))))
+				              (not (seaman/org-subtree-blank)))))
     (if insert-margin
       (progn (beginning-of-visual-line)
 	            (org-return)
@@ -5955,7 +6054,7 @@ insert a margin of 1 empty line."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-insert-heading (command &optional margin)
+(defun seaman/org-insert-heading (command &optional margin)
   "Primitive for custom heading functions.
 
 If cursor if at an Org Mode heading's
@@ -5963,7 +6062,7 @@ ellipsis, go to the `end-of-line' of the
 heading's visual line.
 
 If cursor lies on an Org Mode heading,
-`custom/org-show-minimum'.
+`seaman/org-show-minimum'.
 
 If cursor is outside top level heading,
 insert heading at point, without removing
@@ -5978,17 +6077,17 @@ until first preceding non-empty line.
 If MARGIN is t:
 - insert margin between content under parent heading and new one"
   (interactive)
-  (if (custom/org-at-ellipsis-h)         (progn (beginning-of-visual-line) (end-of-line)))
-  (if (custom/org-relative-line-heading) (custom/org-show-minimum))
+  (if (seaman/org-at-ellipsis-h)         (progn (beginning-of-visual-line) (end-of-line)))
+  (if (seaman/org-relative-line-heading) (seaman/org-show-minimum))
   ;; Insert heading
   (cond ((not (org-current-level)) (insert "* "))
         (t                         (funcall command)))
   ;; Insert margin
-  (if margin (custom/org-heading-margin-insert-previous))
+  (if margin (seaman/org-heading-margin-insert-previous))
   ;; Hide previous subtree
-  (if (save-excursion (custom/org-goto-heading-previous)
-		      (custom/org-relative-line-heading-folded))
-      (custom/org-hide-previous-subtree)))
+  (if (save-excursion (seaman/org-goto-heading-previous)
+		      (seaman/org-relative-line-heading-folded))
+      (seaman/org-hide-previous-subtree)))
 
 #+end_src
 
@@ -5996,13 +6095,13 @@ If MARGIN is t:
 
 #+begin_src emacs-lisp
 
-(defun custom/org-insert-subheading (orig-fun &optional arg)
+(defun seaman/org-insert-subheading (orig-fun &optional arg)
   "Make `org-insert-subheading' ARG optional."
   (interactive)
   (let ((arg (or arg 0)))
     (funcall orig-fun arg)))
 
-(advice-add 'org-insert-subheading :around #'custom/org-insert-subheading)
+(advice-add 'org-insert-subheading :around #'seaman/org-insert-subheading)
 
 #+end_src
 
@@ -6010,9 +6109,9 @@ If MARGIN is t:
 
 #+begin_src emacs-lisp
 
-(defun custom/org-insert-heading-at-point ()
+(defun seaman/org-insert-heading-at-point ()
   (interactive)
-  (custom/org-insert-heading 'org-insert-heading (not (custom/org-subtree-blank-up-to-point))))
+  (seaman/org-insert-heading 'org-insert-heading (not (seaman/org-subtree-blank-up-to-point))))
 
 #+end_src
 
@@ -6020,9 +6119,9 @@ If MARGIN is t:
 
 #+begin_src emacs-lisp
 
-(defun custom/org-insert-subheading-at-point ()
+(defun seaman/org-insert-subheading-at-point ()
   (interactive)
-  (custom/org-insert-heading 'org-insert-subheading (not (custom/org-subtree-blank-up-to-point))))
+  (seaman/org-insert-heading 'org-insert-subheading (not (seaman/org-subtree-blank-up-to-point))))
 
 #+end_src
 
@@ -6030,7 +6129,7 @@ If MARGIN is t:
 
 #+begin_src emacs-lisp
 
-(defun custom/org-insert-heading-after-subtree ()
+(defun seaman/org-insert-heading-after-subtree ()
   "Insert heading after current subtree. As
 `org-insert-heading-respect-content' does not
 behave well with folded Org Mode headings, if
@@ -6038,27 +6137,27 @@ the previous heading is folded:
 1. Unfold the heading
 2. Create the new heading after its subtree
 3. Fold it back"
-  (let ((margin-post        (custom/count-substrings "\n" (custom/org-heading-margin-post)))
-	(prev-same-level    (custom/get-point 'beginning-of-visual-line))
-	(prev-lower-level   (custom/get-point 'custom/org-goto-child-last))
-	(folded-same-level  (custom/org-relative-line-heading-folded))
-	(folded-lower-level (save-excursion (custom/org-goto-child-last)
-                                            (custom/org-relative-line-heading-folded))))
+  (let ((margin-post        (seaman/count-substrings "\n" (seaman/org-heading-margin-post)))
+	(prev-same-level    (seaman/get-point 'beginning-of-visual-line))
+	(prev-lower-level   (seaman/get-point 'seaman/org-goto-child-last))
+	(folded-same-level  (seaman/org-relative-line-heading-folded))
+	(folded-lower-level (save-excursion (seaman/org-goto-child-last)
+                                            (seaman/org-relative-line-heading-folded))))
 
     ;; Go to current heading
-    (custom/org-goto-heading-current)
+    (seaman/org-goto-heading-current)
 
     ;; Unfold if necessary
     (if folded-same-level  (save-excursion (org-show-subtree)))
-    (if folded-lower-level (save-excursion (custom/org-goto-subtree-end) (org-show-subtree)))
+    (if folded-lower-level (save-excursion (seaman/org-goto-subtree-end) (org-show-subtree)))
     
     ;; Insert heading
     (cond ((not (org-current-level)) (insert "* "))
-	        (t                         (progn (custom/org-goto-heading-current) (org-insert-heading-respect-content))))
-    (custom/org-heading-margin-delete-post)
+	        (t                         (progn (seaman/org-goto-heading-current) (org-insert-heading-respect-content))))
+    (seaman/org-heading-margin-delete-post)
 
     ;; Insert margin with previous heading
-    (custom/org-heading-margin-insert-previous)
+    (seaman/org-heading-margin-insert-previous)
     
     ;; Fold back if necessary
     (if folded-same-level  (save-excursion (goto-char prev-same-level)  (outline-hide-subtree)))
@@ -6073,14 +6172,14 @@ the previous heading is folded:
 
 #+begin_src emacs-lisp
 
-(defun custom/org-insert-subheading-after-subtree ()
+(defun seaman/org-insert-subheading-after-subtree ()
   "`org-insert-subheading' respecting content."
   (interactive)
-  (custom/org-show-minimum)
-  (if (custom/org-heading-has-children)
-      (progn (custom/org-goto-child-last)
-	           (custom/org-insert-heading-after-subtree))
-    (progn (custom/org-insert-heading-after-subtree)
+  (seaman/org-show-minimum)
+  (if (seaman/org-heading-has-children)
+      (progn (seaman/org-goto-child-last)
+	           (seaman/org-insert-heading-after-subtree))
+    (progn (seaman/org-insert-heading-after-subtree)
 	         (org-do-demote))))
 
 #+end_src
@@ -6089,24 +6188,24 @@ the previous heading is folded:
 
 #+begin_src emacs-lisp
 
-(defvar custom/org-functions-at-ellipsis '(org-self-insert-command
-					   custom/kill-ring-mouse)
+(defvar seaman/org-functions-at-ellipsis '(org-self-insert-command
+					   seaman/kill-ring-mouse)
   "Functions whose behavior at Org Mode ellipses
-will be advised by `custom/org-edit-at-ellipsis'")
+will be advised by `seaman/org-edit-at-ellipsis'")
 
-(defun custom/org-edit-at-ellipsis (orig-fun &rest args)
+(defun seaman/org-edit-at-ellipsis (orig-fun &rest args)
   "Execute commands invoked at an Org Mode heading's
 ellipsis in the first line under the heading."
-  (if (custom/org-at-ellipsis-h)
+  (if (seaman/org-at-ellipsis-h)
       (progn (beginning-of-visual-line)
-	     (custom/org-show-minimum)
+	     (seaman/org-show-minimum)
 	     (end-of-line)
 	     (org-return)
 	     (apply orig-fun args))
     (apply orig-fun args)))
 
-(dolist (function custom/org-functions-at-ellipsis)
-  (advice-add function :around #'custom/org-edit-at-ellipsis))
+(dolist (function seaman/org-functions-at-ellipsis)
+  (advice-add function :around #'seaman/org-edit-at-ellipsis))
 
 #+end_src
 
@@ -6119,21 +6218,21 @@ ellipsis in the first line under the heading."
 #+begin_src emacs-lisp
 
 ;; org-return
-(defun custom/org-return ()
+(defun seaman/org-return ()
   "Conditional `org-return'."
   (interactive)
-  (cond ((custom/org-relative-line-list-empty)          (progn (custom/delete-line) (org-return)))
-	     ((custom/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
-	     ((custom/org-at-ellipsis-l)                     (custom/org-insert-item-respect-content))
-	     ((custom/org-relative-line-paragraph)           (org-insert-item))
-	     ((custom/org-relative-line-list)                (org-meta-return))
-	     ((and (custom/org-after-list-or-indent) (bolp)) (org-return))
-	     ((custom/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
-	     ((custom/org-at-eol-heading)                    (progn (newline 2) (if (custom/org-subtree-blank) (progn (newline) (previous-line)))))
-	     ((custom/org-at-ellipsis-h)                     (org-return))
+  (cond ((seaman/org-relative-line-list-empty)          (progn (seaman/delete-line) (org-return)))
+	     ((seaman/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	     ((seaman/org-at-ellipsis-l)                     (seaman/org-insert-item-respect-content))
+	     ((seaman/org-relative-line-paragraph)           (org-insert-item))
+	     ((seaman/org-relative-line-list)                (org-meta-return))
+	     ((and (seaman/org-after-list-or-indent) (bolp)) (org-return))
+	     ((seaman/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
+	     ((seaman/org-at-eol-heading)                    (progn (newline 2) (if (seaman/org-subtree-blank) (progn (newline) (previous-line)))))
+	     ((seaman/org-at-ellipsis-h)                     (org-return))
 	     (t                                              (org-return t))))
 
-(define-key org-mode-map (kbd "<return>") 'custom/org-return)
+(define-key org-mode-map (kbd "<return>") #'seaman/org-return)
 
 #+end_src
 
@@ -6145,7 +6244,7 @@ ellipsis in the first line under the heading."
    - insert heading at line
 
 - list paragraphs
-   - custom/org-toggle-paragraph
+   - seaman/org-toggle-paragraph
       - keep cursor in place
 
 - bugs
@@ -6169,15 +6268,15 @@ ellipsis in the first line under the heading."
 #+begin_src emacs-lisp
 
 ;; org-meta-return
-(defun custom/org-control-return ()
+(defun seaman/org-control-return ()
   (interactive)
-  (cond ((custom/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
-	    ((custom/org-relative-line-heading)    (custom/org-insert-heading-after-subtree))
-	    ((custom/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
-	    ((custom/org-relative-line-paragraph)  (custom/org-paragraph-toggle))
-	    (t                                     (custom/org-insert-heading-after-subtree))))
+  (cond ((seaman/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
+	    ((seaman/org-relative-line-heading)    (seaman/org-insert-heading-after-subtree))
+	    ((seaman/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
+	    ((seaman/org-relative-line-paragraph)  (seaman/org-paragraph-toggle))
+	    (t                                     (seaman/org-insert-heading-after-subtree))))
 
-(define-key org-mode-map (kbd "C-<return>") #'custom/org-control-return)
+(define-key org-mode-map (kbd "C-<return>") #'seaman/org-control-return)
 
 #+end_src
 
@@ -6185,11 +6284,11 @@ ellipsis in the first line under the heading."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-meta-return ()
+(defun seaman/org-meta-return ()
   (interactive)
-  (custom/org-insert-subheading-after-subtree))
+  (seaman/org-insert-subheading-after-subtree))
 
-(define-key org-mode-map (kbd "M-<return>") 'custom/org-meta-return)
+(define-key org-mode-map (kbd "M-<return>") #'seaman/org-meta-return)
 
 #+end_src
 
@@ -6200,13 +6299,13 @@ ellipsis in the first line under the heading."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-super-return ()
+(defun seaman/org-super-return ()
   (interactive)
-  (cond ((or (custom/org-relative-line-list)
-	     (custom/org-relative-line-paragraph)) (org-return t))
-	(t                                         (custom/org-insert-subheading-at-point))))
+  (cond ((or (seaman/org-relative-line-list)
+	     (seaman/org-relative-line-paragraph)) (org-return t))
+	(t                                         (seaman/org-insert-subheading-at-point))))
 
-(define-key org-mode-map (kbd "S-<return>") 'custom/org-super-return)
+(define-key org-mode-map (kbd "S-<return>") #'seaman/org-super-return)
 
 #+end_src
 
@@ -6214,7 +6313,7 @@ ellipsis in the first line under the heading."
 
 #+begin_src emacs-lisp
  
-(define-key org-mode-map (kbd "M-S-<return>") 'custom/org-insert-heading-at-point)
+(define-key org-mode-map (kbd "M-S-<return>") #'seaman/org-insert-heading-at-point)
 
 #+end_src
 
@@ -6239,13 +6338,13 @@ ellipsis in the first line under the heading."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-delete-hungry ()
+(defun seaman/org-delete-hungry ()
   "If the region starts at the beginning of an 
 indented line and the cursor lies on an Org Mode
 src block, delete the region and its indent plus 
 one character."
   (interactive)
-  (custom/@delete-hungry (org-in-src-block-p)))
+  (seaman/@delete-hungry (org-in-src-block-p)))
 
 #+end_src
 
@@ -6255,16 +6354,16 @@ one character."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-nimble-delete-forward ()
-  "Org Mode complement to `custom/nimble-delete-forward'."
+(defun seaman/org-nimble-delete-forward ()
+  "Org Mode complement to `seaman/nimble-delete-forward'."
   (interactive)
-  (cond ((and (custom/org-at-ellipsis-h)
-	           (custom/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2)
+  (cond ((and (seaman/org-at-ellipsis-h)
+	           (seaman/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2)
 								 (beginning-of-line-text)
 								 (delete-forward-char 1)))
-	      (t (custom/nimble-delete-forward))))
+	      (t (seaman/nimble-delete-forward))))
 
-(define-key org-mode-map (kbd "<delete>") 'custom/org-nimble-delete-forward)
+(define-key org-mode-map (kbd "<delete>") #'seaman/org-nimble-delete-forward)
 
 #+end_src
 
@@ -6283,22 +6382,22 @@ one character."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-nimble-delete-backward ()
-  "Org Mode complement to `custom/nimble-delete-backward'."
+(defun seaman/org-nimble-delete-backward ()
+  "Org Mode complement to `seaman/nimble-delete-backward'."
   (interactive)
   (cond ((and (region-active-p)
-	           (not (custom/region-blank)))                 (custom/org-delete-hungry))
-	     ((or  (custom/org-at-ellipsis-h)
-		   (custom/org-at-ellipsis-l))                  (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
-	     ((and (or (custom/org-relative-line-heading-empty)
-		       (custom/org-relative-line-list-empty))
-		   (org-current-level))                         (delete-region (point) (custom/get-point 'end-of-line 0)))
-	     ((or  (custom/org-relative-line-heading-empty)
-		   (custom/org-relative-line-list-empty))       (delete-region (point) (custom/get-point 'beginning-of-visual-line)))
-	     ((custom/org-at-bol-list)                          (custom/org-toggle-item))
-        (t                                                 (custom/nimble-delete-backward))))
+	           (not (seaman/region-blank)))                 (seaman/org-delete-hungry))
+	     ((or  (seaman/org-at-ellipsis-h)
+		   (seaman/org-at-ellipsis-l))                  (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
+	     ((and (or (seaman/org-relative-line-heading-empty)
+		       (seaman/org-relative-line-list-empty))
+		   (org-current-level))                         (delete-region (point) (seaman/get-point 'end-of-line 0)))
+	     ((or  (seaman/org-relative-line-heading-empty)
+		   (seaman/org-relative-line-list-empty))       (delete-region (point) (seaman/get-point 'beginning-of-visual-line)))
+	     ((seaman/org-at-bol-list)                          (seaman/org-toggle-item))
+        (t                                                 (seaman/nimble-delete-backward))))
 
-(define-key org-mode-map (kbd "<backspace>") 'custom/org-nimble-delete-backward)
+(define-key org-mode-map (kbd "<backspace>") #'seaman/org-nimble-delete-backward)
 
 #+end_src
 
@@ -6307,9 +6406,9 @@ one character."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-toggle-item ()
+(defun seaman/org-toggle-item ()
   (interactive)
-  (let ((toggle-off (custom/org-relative-line-list))
+  (let ((toggle-off (seaman/org-relative-line-list))
 	     (indent     (+ 1 org-list-indent-offset))
 	     (marker     (point)))
     (beginning-of-line-text)
@@ -6334,7 +6433,7 @@ one character."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-indent-region (command &rest args)
+(defun seaman/org-indent-region (command &rest args)
   "Indent Org Mode region.
 
 If the region spans Org Mode headings or items:
@@ -6345,7 +6444,7 @@ If the region spans Org Mode headings or items:
 its limits to match shifts in the position of the
 text it spans, such as when indenting with `org-metaright'
 or outdenting with `org-metaleft'."
-  (if (or (custom/org-relative-line-heading) (custom/org-relative-line-list))
+  (if (or (seaman/org-relative-line-heading) (seaman/org-relative-line-list))
       (let ((beg (region-beginning))
 	         (end (region-end))
 		 (pos (point)))
@@ -6356,10 +6455,10 @@ or outdenting with `org-metaleft'."
 		(setq lines (count-screen-lines beg end))
 
 		;; Get initial cursor position wrt bol
-		(setq relative-pos-0 (- pos (custom/get-point 'beginning-of-line)))
+		(setq relative-pos-0 (- pos (seaman/get-point 'beginning-of-line)))
 		;; Execute command
 		(save-excursion (goto-char beg)
-				(push-mark (custom/get-point 'beginning-of-line))
+				(push-mark (seaman/get-point 'beginning-of-line))
 		 		(goto-char end)
 				(end-of-visual-line)
 				(apply command args))
@@ -6369,13 +6468,13 @@ or outdenting with `org-metaleft'."
 		(setq disp (- pos-1 pos))
 		
            ;; Get aftermath cursor position wrt bol
-		(setq relative-pos-1 (- pos-1 (custom/get-point 'beginning-of-line)))
+		(setq relative-pos-1 (- pos-1 (seaman/get-point 'beginning-of-line)))
 		;; Calculate cursor displacement wrt bol
 		(setq relative-disp (- relative-pos-1 relative-pos-0))
 
 		;; Calculate mark shift
 		(cond
-		 ((custom/org-at-heading beg)  (setq shift disp))
+		 ((seaman/org-at-heading beg)  (setq shift disp))
 		 ((= mark beg)                 (setq shift relative-disp))
 		 ((= mark end)                 (setq shift (* relative-disp lines))))
 
@@ -6390,20 +6489,20 @@ or outdenting with `org-metaleft'."
 
 #+begin_src emacs-lisp
 
-(defun custom/with-mark-active (&rest args)
+(defun seaman/with-mark-active (&rest args)
   "Keep mark active after command. To be used as advice AFTER any
 function that sets `deactivate-mark' to t."
   (setq deactivate-mark nil))
 
-(advice-add 'org-metaright      :after #'custom/with-mark-active)
-(advice-add 'org-metaleft       :after #'custom/with-mark-active)
-(advice-add 'org-metaup         :after #'custom/with-mark-active)
-(advice-add 'org-metadown       :after #'custom/with-mark-active)
+(advice-add 'org-metaright      :after #'seaman/with-mark-active)
+(advice-add 'org-metaleft       :after #'seaman/with-mark-active)
+(advice-add 'org-metaup         :after #'seaman/with-mark-active)
+(advice-add 'org-metadown       :after #'seaman/with-mark-active)
 
-(advice-add 'org-shiftmetaright :after #'custom/with-mark-active)
-(advice-add 'org-shiftmetaleft  :after #'custom/with-mark-active)
-(advice-add 'org-shiftmetaup    :after #'custom/with-mark-active)
-(advice-add 'org-shift-metadown :after #'custom/with-mark-active)
+(advice-add 'org-shiftmetaright :after #'seaman/with-mark-active)
+(advice-add 'org-shiftmetaleft  :after #'seaman/with-mark-active)
+(advice-add 'org-shiftmetaup    :after #'seaman/with-mark-active)
+(advice-add 'org-shift-metadown :after #'seaman/with-mark-active)
 
 #+end_src
 
@@ -6419,44 +6518,40 @@ function that sets `deactivate-mark' to t."
 
 *** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-navigation.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-org-navigation.el
 :END:
-
-#+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
-#+end_src
 
 **** Line
 ***** org-end
 
 #+begin_src emacs-lisp
 
-(defun custom/org-end ()
+(defun seaman/org-end ()
   "Conditional end in Org Mode.
 
-Default: `custom/end'
+Default: `seaman/end'
 
 If `org-at-table-p', go to `org-table-end-of-field'."
-  (cond ((and (region-active-p) (custom/org-relative-line-heading-folded)) (end-of-line))
+  (cond ((and (region-active-p) (seaman/org-relative-line-heading-folded)) (end-of-line))
         ((org-at-table-p)                                                  (org-table-end-of-field 1))
 	(t                                                                 (end-of-visual-line))))
 
-(defvar custom/org-double-end-timeout 0.4)
+(defvar seaman/org-double-end-timeout 0.4)
 
-(defun custom/org-double-end ()
-  "Dynamic homing command with a timeout of `custom/org-double-end-timeout' seconds.
-- Single press: `custom/org-home' 
+(defun seaman/org-double-end ()
+  "Dynamic homing command with a timeout of `seaman/org-double-end-timeout' seconds.
+- Single press: `seaman/org-home' 
 - Double press: `beginning-of-visual-line'"
   (interactive)
-  (let ((last-called (get this-command 'custom/last-call-time)))
+  (let ((last-called (get this-command 'seaman/last-call-time)))
     (if (and (eq last-command this-command)	     
-             (<= (time-to-seconds (time-since last-called)) custom/org-double-end-timeout)
+             (<= (time-to-seconds (time-since last-called)) seaman/org-double-end-timeout)
 	         (not (org-at-table-p)))
         (progn (beginning-of-visual-line) (end-of-line))
-      (custom/org-end)))
-  (put this-command 'custom/last-call-time (current-time)))
+      (seaman/org-end)))
+  (put this-command 'seaman/last-call-time (current-time)))
 
-(define-key org-mode-map (kbd "<end>") 'custom/org-double-end)
+(define-key org-mode-map (kbd "<end>") #'seaman/org-double-end)
 
 #+end_src
 
@@ -6466,18 +6561,18 @@ If `org-at-table-p', go to `org-table-end-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-home ()
+(defun seaman/org-home ()
      "Conditional homing in Org Mode.
 
-Default: `custom/home'
+Default: `seaman/home'
 
 If a multi-visual-line region is active and the cursor lies on a heading or
 list item, home to `beginning-of-visual-line'.
 
-If a region is active the cursor lies `custom/org-at-ellipsis-h', home to
+If a region is active the cursor lies `seaman/org-at-ellipsis-h', home to
 `beginning-of-visual-line'.
 
-If the cursor lies `custom/org-at-ellipsis-h' (no active region), home to
+If the cursor lies `seaman/org-at-ellipsis-h' (no active region), home to
 the `beginning-of-line-text' of the heading's visual line.
 
 If the cursor lies on at heading or list, home to `beginning-of-line-text'.
@@ -6489,32 +6584,32 @@ If the cursor lies in a source code block, home `back-to-indentation'.
 
 If `org-at-table-p', home to `org-table-beginning-of-field'."
    (interactive)
-   (cond ((and (custom/region-multiline-visual) (custom/org-relative-line-heading-or-list))  (beginning-of-visual-line))
-         ((and (region-active-p) (custom/org-at-ellipsis-h))                                 (beginning-of-visual-line))
-         ((custom/org-at-ellipsis-h)                                                         (custom/org-goto-heading-bol))
-	     ((custom/org-at-ellipsis-l)                                                         (custom/org-goto-heading-bol))
-	     ((custom/relative-line-wrapped)                                                     (beginning-of-visual-line))
-         ((custom/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
+   (cond ((and (seaman/region-multiline-visual) (seaman/org-relative-line-heading-or-list))  (beginning-of-visual-line))
+         ((and (region-active-p) (seaman/org-at-ellipsis-h))                                 (beginning-of-visual-line))
+         ((seaman/org-at-ellipsis-h)                                                         (seaman/org-goto-heading-bol))
+	     ((seaman/org-at-ellipsis-l)                                                         (seaman/org-goto-heading-bol))
+	     ((seaman/relative-line-wrapped)                                                     (beginning-of-visual-line))
+         ((seaman/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
          ((org-in-src-block-p)                                                               (back-to-indentation))
 	     ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
-         (t                                                                                  (custom/home))))
+         (t                                                                                  (seaman/home))))
 
-(defvar custom/org-double-home-timeout 0.4)
+(defvar seaman/org-double-home-timeout 0.4)
 
-(defun custom/org-double-home ()
-  "Dynamic homing command with a timeout of `custom/org-double-home-timeout' seconds.
-- Single press: `custom/org-home' 
+(defun seaman/org-double-home ()
+  "Dynamic homing command with a timeout of `seaman/org-double-home-timeout' seconds.
+- Single press: `seaman/org-home' 
 - Double press: `beginning-of-visual-line'"
   (interactive)
-  (let ((last-called (get this-command 'custom/last-call-time)))
+  (let ((last-called (get this-command 'seaman/last-call-time)))
     (if (and (eq last-command this-command)	     
-             (<= (time-to-seconds (time-since last-called)) custom/org-double-home-timeout)
+             (<= (time-to-seconds (time-since last-called)) seaman/org-double-home-timeout)
 	         (not (org-at-table-p)))
 	    (beginning-of-line)
-      (custom/org-home)))
-  (put this-command 'custom/last-call-time (current-time)))
+      (seaman/org-home)))
+  (put this-command 'seaman/last-call-time (current-time)))
 
-(define-key org-mode-map (kbd "<home>") 'custom/org-double-home)
+(define-key org-mode-map (kbd "<home>") #'seaman/org-double-home)
 
 #+end_src
 
@@ -6523,10 +6618,10 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-goto-child-last ()
+(defun seaman/org-goto-child-last ()
   (if (org-current-level)
-      (progn (custom/org-goto-subtree-end)
-	     (custom/org-goto-heading-current))))
+      (progn (seaman/org-goto-subtree-end)
+	     (seaman/org-goto-heading-current))))
 
 #+end_src
 
@@ -6534,10 +6629,10 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-goto-subtree-end ()
-  (custom/org-goto-heading-current)
+(defun seaman/org-goto-subtree-end ()
+  (seaman/org-goto-heading-current)
   (org-end-of-subtree)
-  (if (custom/org-relative-line-heading-folded) (end-of-visual-line)))
+  (if (seaman/org-relative-line-heading-folded) (end-of-visual-line)))
 
 #+end_src
 
@@ -6546,7 +6641,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-goto-heading-bol ()
+(defun seaman/org-goto-heading-bol ()
   (beginning-of-visual-line)
   (beginning-of-line-text))
 
@@ -6556,12 +6651,12 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-goto-heading-next ()
-  (custom/org-goto-heading-current)
-  (let ((pos (custom/get-point 'beginning-of-visual-line)))
+(defun seaman/org-goto-heading-next ()
+  (seaman/org-goto-heading-current)
+  (let ((pos (seaman/get-point 'beginning-of-visual-line)))
        (org-forward-heading-same-level 1)
        (if (= pos (point))
-	   (progn (custom/org-goto-heading-parent)
+	   (progn (seaman/org-goto-heading-parent)
 		  (org-forward-heading-same-level 1)))))
 
 #+end_src
@@ -6570,11 +6665,11 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-goto-heading-parent ()
-  (let ((current (custom/get-point 'beginning-of-visual-line)))
+(defun seaman/org-goto-heading-parent ()
+  (let ((current (seaman/get-point 'beginning-of-visual-line)))
     (if (and (org-current-level)
 	        (not (= 1 (org-current-level)))
-		(= current (custom/get-point 'beginning-of-visual-line)))
+		(= current (seaman/get-point 'beginning-of-visual-line)))
 	   (outline-up-heading 1))))
 
 #+end_src
@@ -6583,7 +6678,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-goto-heading-current ()
+(defun seaman/org-goto-heading-current ()
   (if (org-current-level) (outline-back-to-heading)))
 
 #+end_src
@@ -6592,16 +6687,16 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun custom/org-goto-heading-previous ()
-  (custom/org-goto-heading-current)
-  (let ((current (custom/get-point 'beginning-of-visual-line)))
+(defun seaman/org-goto-heading-previous ()
+  (seaman/org-goto-heading-current)
+  (let ((current (seaman/get-point 'beginning-of-visual-line)))
     ;; go to previous same-level heading
     (org-backward-heading-same-level 1)
     ;; if there was no previous same-level heading, go to parent if not at top
     (if (= (point) current)
-	    (custom/org-goto-heading-parent)
+	(seaman/org-goto-heading-parent)
       ;; else, attempt going to last subheading of previous same-level heading
-      (custom/org-goto-child-last))))
+      (seaman/org-goto-child-last))))
 
 #+end_src
 
@@ -6613,19 +6708,19 @@ Macros to make the creation of custom link types a breeze.
 
 #+begin_src emacs-lisp
 
-(defmacro @custom/org-dir-link-complete (name dir)
+(defmacro @seaman/org-dir-link-complete (name dir)
   `(defun ,(intern (concat "org-" name "-link-complete")) ()
      "Create an org-link target string to a file in org-`name'-link-complete."
      (concat ,name ":" (file-relative-name (read-file-name "File: " ,dir) ,dir))))
 
-(defmacro @custom/org-dir-link-follow (name dir)
+(defmacro @seaman/org-dir-link-follow (name dir)
   `(defun ,(intern (concat "org-" name "-link-follow")) (link)
      "Follow an org-link to a file in org-`name'-link-follow."
      (find-file (expand-file-name link ,dir))))
 
-(defmacro @custom/org-dir-link (name dir)
-  `(progn (@custom/org-dir-link-complete ,name ,dir)
-          (@custom/org-dir-link-follow   ,name ,dir)
+(defmacro @seaman/org-dir-link (name dir)
+  `(progn (@seaman/org-dir-link-complete ,name ,dir)
+          (@seaman/org-dir-link-follow   ,name ,dir)
           (org-link-set-parameters ,name
                                    :complete ',(intern (concat "org-" name "-link-complete"))
                                    :follow   ',(intern (concat "org-" name "-link-follow")))))
@@ -6637,7 +6732,7 @@ Macros to make the creation of custom link types a breeze.
 **** Agenda
 ***** org-agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-agenda.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-org-agenda.el
 :END:
 ****** UI
 ******* org-agenda-format-date
@@ -6646,7 +6741,7 @@ Macros to make the creation of custom link types a breeze.
 
 (require 'cal-iso)
 
-(defun custom/org-agenda-format-date-aligned (date)
+(defun seaman/org-agenda-format-date-aligned (date)
   "Format a DATE string for display in the daily/weekly agenda.
 This function makes sure that dates are aligned for easy reading."
   (let* ((dayname (calendar-day-name date))
@@ -6684,7 +6779,7 @@ This function makes sure that dates are aligned for easy reading."
                                       (string-width sep-r)) 9472)))
     (concat highlight-l sep-l label sep-r highlight-r)))
 
-(setq org-agenda-format-date 'custom/org-agenda-format-date-aligned)
+(setq org-agenda-format-date #'seaman/org-agenda-format-date-aligned)
 
 #+end_src
 
@@ -6693,11 +6788,11 @@ This function makes sure that dates are aligned for easy reading."
 #+begin_src emacs-lisp
 
 ;; Mark items as done
-(defun custom/org-agenda-todo-done ()
+(defun seaman/org-agenda-todo-done ()
   (interactive)
   (org-agenda-todo 'done))
 
-(define-key org-agenda-mode-map (kbd "d") 'custom/org-agenda-todo-done)
+(define-key org-agenda-mode-map (kbd "d") #'seaman/org-agenda-todo-done)
 
 #+end_src
 
@@ -6714,24 +6809,24 @@ This function makes sure that dates are aligned for easy reading."
 
 #+begin_src emacs-lisp :tangle no
 
-(defun custom/org-agenda-recenter (orig-fun &rest args)
+(defun seaman/org-agenda-recenter (orig-fun &rest args)
   (interactive "P")
-  (let ((last-called (get this-command 'custom/last-call-time)))
+  (let ((last-called (get this-command 'seaman/last-call-time)))
     (if (eq last-command this-command)
-        (progn (custom/org-restore-outline-state)
+        (progn (seaman/org-restore-outline-state)
 	       (org-agenda-recenter arg))
-      (progn (custom/org-save-outline-state)
+      (progn (seaman/org-save-outline-state)
 	     (org-agenda-recenter arg))))
-  (put this-command 'custom/last-call-time (current-time)))
+  (put this-command 'seaman/last-call-time (current-time)))
 
-(advice-add 'org-agenda-recenter :around #'custom/org-agenda-recenter)
+(advice-add 'org-agenda-recenter :around #'seaman/org-agenda-recenter)
 
 #+end_src
 
 **** Programming
 ***** org-babel
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/shapes-org-babel.el
+:header-args:emacs-lisp+: :tangle ./elisp/extensions/shapes-org-babel.el
 :END:
 ****** TODO Result formatting
 
@@ -6744,7 +6839,7 @@ allowing users to easily add custom result insertion formats.
 
 #+begin_src emacs-lisp
 
-(defvar custom/org-babel-result-wrap-formats
+(defvar seaman/org-babel-result-wrap-formats
   '(((assq :wrap (nth 2 info))
      (let* ((full (or (cdr (assq :wrap (nth 2 info))) "results"))
 	    (split (split-string full))
@@ -6840,7 +6935,7 @@ Display results inside of a LaTeX ~equation~ environment, and automatically prev
 
 #+begin_src emacs-lisp
 
-(add-to-list 'custom/org-babel-result-wrap-formats
+(add-to-list 'seaman/org-babel-result-wrap-formats
              '((member "latex-eq" result-params)
                (progn (funcall wrap "\\begin{equation}" "\\end{equation}" nil nil
 	                       "{{{results(@@latex:" "@@)}}}"))
@@ -7161,7 +7256,7 @@ INFO may provide the values of these header arguments (in the
 				     org-babel-inline-result-wrap)))
 		        (org-babel-examplify-region
 		         beg end results-switches inline))))
-                  (let ((formats (copy-tree custom/org-babel-result-wrap-formats)))
+                  (let ((formats (copy-tree seaman/org-babel-result-wrap-formats)))
                     (eval (add-to-list 'formats 'cond)))))
                 ;; Possibly indent results in par with #+results line.
 		(when (and (not inline) (numberp indent) (> indent 0)
