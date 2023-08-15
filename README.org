@@ -6,11 +6,7 @@
 
 Seaman Emacs is a literate, layer-based Emacs configuration framework designed to give you maximal maintainability, extensibility and performance. All in a way you can understand and control from the ground up.
 
-#+attr_org: :width 800px
-[[./seaman/startscreen-light.png]]
-
-#+attr_org: :width 800px
-[[./seaman/startscreen-dark.png]]
+| [[./seaman/startscreen-light.png]] | [[./seaman/startscreen-dark.png]] |
 
 *How to use Seaman*
 
