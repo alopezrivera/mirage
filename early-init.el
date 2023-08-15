@@ -1,3 +1,28 @@
+;;; early-init.el --- summary -*- lexical-binding: t; no-byte-compile: t; mode: emacs-lisp; coding:utf-8; fill-column: 80 -*-
+
+;; This file is not part of GNU Emacs
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+;;; Commentary:
+
+;; This is the early-init file. Only for use with emacs 27 or higher. See
+;; https://www.reddit.com/r/emacs/comments/7yns85/emacs_adds_support_for_a_second_read_earlier_init/
+;; and https://lists.gnu.org/archive/html/emacs-devel/2017-10/msg00372.html for
+;; more information.
+
 ;;;; Speed up startup
 ;; Help speed up emacs initialization See
 ;; https://blog.d46.us/advanced-emacs-startup/ and
@@ -96,18 +121,25 @@
 ;; https://www.reddit.com/r/emacs/comments/9jp9zt/anyone_know_what_variable_binding_depth_exceeds/
 (customize-set-variable 'max-specpdl-size 13000)
 
+;;;; System variables
+
 (setq user-emacs-directory (expand-file-name user-emacs-directory))
 
-;;;; Customize interface file
+;;;; Customize interface
+
 (setq custom-file (concat user-emacs-directory "persistent/custom.el"))
 (load-file custom-file)
 
 ;;;; Seaman core
+
+;; Load path
 (add-to-list 'load-path (concat user-emacs-directory "seaman/core/"))
 
+;; Load all core components
 (defvar seaman-core-components '("package-manager"
                                  "config-management"
                                  "base-config"))
-
 (mapc (lambda (component) (require (intern (concat "seaman-core-" component)) (concat "seaman-" component)))
       seaman-core-components)
+
+;;; early-init.el ends here
