@@ -30,7 +30,7 @@ Clone this repository to your =.emacs.d=. Write your personal configuration in =
   Start screen with quick links to recent files, projects, bookmarks, registers and your weekly agenda
 - [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#org-mode][Full fledged Org mode]]
 
-  Ready for literate programming, daily planning with =org-agenda=+=org-super-agenda=, code notebooks for *any language*, your own zettelkasten with =org-roam= and more
+  Ready for literate programming, daily planning with =org-agenda= + =org-super-agenda=, code notebooks for *any language*, your own zettelkasten with =org-roam= and more
 - [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#pdf][Full fledged PDF support]]
 
   Annotations and highlights you can save directly to the PDF, light and dark mode, text seach and more
