@@ -5,23 +5,18 @@
 *~
 *#*
 
-# art
-art/*
-
 # littering
 var/*
 transient/*
+auto-save-list/*
 persistent/custom.el
 .org-generic-id-locations
 
-# directories
+# temporary files
 tmp/*
 elpy/*
 eshell/*
 .cache/*
-transient/*
-auto-save-list/*
-url/cache/root/https/*
 
 # repositories
 elpa/*

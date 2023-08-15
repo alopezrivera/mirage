@@ -1050,7 +1050,7 @@ Application backlog
 - alert
    - https://github.com/jwiegley/alert
 - notification
-   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Notifications.html
+   - https://www.gnu.org/software/emacs/manual/html_node/seaman/Desktop-Notifications.html
 - org-mode
    - https://github.com/spegoraro/org-alert
 

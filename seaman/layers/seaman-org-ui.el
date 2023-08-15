@@ -19,8 +19,5 @@
 (setq org-modern-table        nil)
 (setq org-modern-block-fringe nil)
 
-;; markup
-(seaman-module 'org-appear)
-
 (provide 'seaman-layer-org-ui)
 ;;; seaman-org-ui.el ends here

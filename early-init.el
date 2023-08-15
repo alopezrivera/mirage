@@ -103,10 +103,9 @@
 (load-file custom-file)
 
 ;;;; Seaman core
-(add-to-list 'load-path (concat user-emacs-directory "elisp/core/"))
+(add-to-list 'load-path (concat user-emacs-directory "seaman/core/"))
 
-(defvar seaman-core-components '("load"
-                                 "package-manager"
+(defvar seaman-core-components '("package-manager"
                                  "config-management"
                                  "base-config"))
 

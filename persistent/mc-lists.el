@@ -96,6 +96,7 @@
         mouse-select-window
         mouse-set-region
         mouse-start-rectangle
+        mouse-wheel-text-scale
         next-buffer
         org-agenda
         org-babel-execute-src-block

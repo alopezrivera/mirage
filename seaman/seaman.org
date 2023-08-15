@@ -11,7 +11,7 @@
 
 * Early initialization
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle ./early-init.el
+:header-args:emacs-lisp: :tangle ../early-init.el
 :END:
 ** Performance settings
 
@@ -142,10 +142,9 @@ From Lambda Emacs.
 #+begin_src emacs-lisp
 
 ;;;; Seaman core
-(add-to-list 'load-path (concat user-emacs-directory "elisp/core/"))
+(add-to-list 'load-path (concat user-emacs-directory "seaman/core/"))
 
-(defvar seaman-core-components '("load"
-                                 "package-manager"
+(defvar seaman-core-components '("package-manager"
                                  "config-management"
                                  "base-config"))
 
@@ -155,43 +154,10 @@ From Lambda Emacs.
 #+end_src
 
 
-* Core
-** Loading
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/core/seaman-load.el
-:END:
-
-#+begin_src emacs-lisp
-
-(defun seaman-load-component (type component)
-  "Load a seaman COMPONENT of the given TYPE"
-  (let ((component-name (symbol-name component)))
-       (condition-case err
-           (require (intern (concat "seaman-" type "-" component-name)) (concat user-emacs-directory "elisp/" type "s" "/seaman-" component-name ".el"))
-         (error (progn (message "ERROR: seaman-%s %s load failed" component-name type)
-		       (if debug-on-error
-		           (debug err)))))))
-
-;; seaman modules
-(defun seaman-module (module)
-  "Load a seaman MODULE by name"
-  (seaman-load-component "module" module))
-
-;; seaman layers
-(defun seaman-layer (layer)
-  "Load a seaman LAYER by name"
-  (seaman-load-component "layer" layer))
-
-;; seaman extensions
-(defun seaman-extend (extension)
-  "Load a seaman EXTENSION by name"
-  (seaman-load-component "extension" extension))
-
-#+end_src
-
+* Seaman Core
 ** Package manager
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/core/seaman-package-manager.el
+:header-args:emacs-lisp+: :tangle ./core/seaman-package-manager.el
 :END:
 
 #+begin_src emacs-lisp
@@ -216,13 +182,42 @@ From Lambda Emacs.
 ;; fall back to straight.el
 (setq straight-use-package-by-default t)
 
-
 #+end_src
 
 ** Config management
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/core/seaman-config-management.el
+:header-args:emacs-lisp+: :tangle ./core/seaman-config-management.el
 :END:
+*** Component loading
+
+#+begin_src emacs-lisp
+
+(defun seaman-load-component (type component)
+  "Load a seaman COMPONENT of the given TYPE"
+  (let ((component-name (symbol-name component)))
+       (condition-case err
+           (require (intern (concat "seaman-" type "-" component-name)) (concat user-emacs-directory "seaman/" type "s" "/seaman-" component-name ".el"))
+         (error (progn (message "ERROR: seaman-%s %s load failed" component-name type)
+		       (if debug-on-error
+		           (debug err)))))))
+
+;; seaman modules
+(defun seaman-module (module)
+  "Load a seaman MODULE by name"
+  (seaman-load-component "module" module))
+
+;; seaman layers
+(defun seaman-layer (layer)
+  "Load a seaman LAYER by name"
+  (seaman-load-component "layer" layer))
+
+;; seaman extensions
+(defun seaman-extend (extension)
+  "Load a seaman EXTENSION by name"
+  (seaman-load-component "extension" extension))
+
+#+end_src
+
 *** Async tangling
 
 #+begin_src emacs-lisp
@@ -243,7 +238,7 @@ From Lambda Emacs.
      ;;; Tangling function
      `(lambda ()
         ;; Delete all pre-existing Seaman components
-        (dolist (comp-dir (mapcar (lambda (dir) (concat ,user-emacs-directory "elisp/" dir)) '("core" "layers" "modules" "extensions")))
+        (dolist (comp-dir (mapcar (lambda (dir) (concat ,user-emacs-directory "seaman/" dir)) '("core" "layers" "modules" "extensions")))
           (dolist (file (directory-files comp-dir t directory-files-no-dot-files-regexp))
             (delete-file file)))
         ;; Require org-mode
@@ -252,7 +247,7 @@ From Lambda Emacs.
 	(add-hook 'org-babel-post-tangle-hook
 		  (lambda ()
                     ;; Obtain component and component type from the name of the source file being tangled to
-                    (if (string-match "\\(^.*/elisp/\\)\\(.*\\)\\(/seaman-\\)\\(.*\\)\\(.el\\)" (buffer-file-name))
+                    (if (string-match "\\(^.*/seaman/\\)\\(.*\\)\\(/seaman-\\)\\(.*\\)\\(.el\\)" (buffer-file-name))
 		        (let ((component (match-string 4 (buffer-file-name)))
 			      (comp-type (match-string 2 (buffer-file-name))))
 		          (end-of-buffer)
@@ -270,22 +265,18 @@ From Lambda Emacs.
      (unless quiet
        `(lambda (result)
 	  (if result
-	      (message "SUCCESS: %s successfully tangled (%.2fs)."
-		       ,(file-name-nondirectory org-file)
-		       (float-time (time-subtract (current-time)
-						  ',init-tangle-start-time)))
-	    (message "ERROR: %s tangling failed." ,org-file)))))))
+	      (message "|SEAMAN| Seaman components successfully tangled (%.2fs)."
+		       (float-time (time-subtract (current-time) ',init-tangle-start-time)))
+	    (message "|SEAMAN| Seaman component tangling failed.")))))))
 
 (defun seaman/tangle-auto ()
   "Automatically tangle Org Mode files in the Emacs config directory"
   (let* ((file   (expand-file-name buffer-file-name))
-	 (source (string-match (concat user-emacs-directory ".*.org$") file))
-	 (seaman (string-match (concat user-emacs-directory "seaman.org$") buffer-file-name))
+	 (config (string-match (concat user-emacs-directory "config.org$") file))
+	 (seaman (string-match (concat user-emacs-directory "seaman/seaman.org$") buffer-file-name))
 	 (org-confirm-babel-evaluate nil))
-    (if source
-	(if seaman
-	    (seaman/tangle file)
-	  (org-babel-tangle)))))
+    (if seaman (seaman/tangle file))
+    (if config (org-babel-tangle))))
 
 (add-hook 'after-save-hook #'seaman/tangle-auto)
 
@@ -321,9 +312,9 @@ From Lambda Emacs.
 
 #+end_src
 
-** Configuration
+** Base configuration
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/core/seaman-base-config.el
+:header-args:emacs-lisp+: :tangle ./core/seaman-base-config.el
 :END:
 
 #+begin_src emacs-lisp
@@ -336,19 +327,29 @@ From Lambda Emacs.
 
 ;; UI
 (seaman-layer 'ui)
-(seaman-layer 'input)
+(seaman-layer 'themes)
+(seaman-layer 'dashboard)
 
 ;; input
-(seaman-extend 'rsi)
-
-;; themes
-(seaman-layer 'themes)
+(seaman-layer 'input)
 
 ;; org-mode
 (seaman-layer 'org)
 (seaman-layer 'org-ui)
+(seaman-layer 'org-inline)
 (seaman-layer 'org-typesetting)
-(seaman-layer 'org-latex-preview)
+(seaman-layer 'org-export)
+
+;; org applications
+(seaman-layer 'org-notebooks)
+(seaman-layer 'org-zettelkasten)
+(seaman-layer 'org-agenda)
+
+;; PDFs
+(seaman-layer 'pdf)
+
+;; magit
+(seaman-layer 'version-control)
 
 #+end_src
 
@@ -364,7 +365,7 @@ Content of a layer:
 
 ** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-ui.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-ui.el
 :END:
 *** Text
 **** Typefaces
@@ -460,20 +461,6 @@ Content of a layer:
 
 #+end_src
 
-*** Dashboard
-
-#+begin_src emacs-lisp
-
-;; requirements
-(seaman-module 'projectile)
-(seaman-module 'all-the-icons)
-(seaman-module 'page-break-lines)
-
-;; dashboard
-(seaman-module 'emacs-dashboard)
-
-#+end_src
-
 *** Extensions
 
 #+begin_src emacs-lisp
@@ -485,7 +472,7 @@ Content of a layer:
 
 ** Themes
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-themes.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-themes.el
 :END:
 
 Seaman themes layer. It requires three variables to be defined: the light and dark themes (~light~ and ~dark~ respectively).
@@ -511,7 +498,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 ** Mode line
 *** Doom
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-modeline-doom.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-modeline-doom.el
 :END:
 
 #+begin_src emacs-lisp
@@ -526,7 +513,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 *** Nano
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-modeline-nano.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-modeline-nano.el
 :END:
 
 #+begin_src emacs-lisp
@@ -541,7 +528,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 *** Moody
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-modeline-moody.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-modeline-moody.el
 :END:
 
 #+begin_src emacs-lisp
@@ -566,7 +553,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 *** Spaceline
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-modeline-spaceline.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-modeline-spaceline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -576,10 +563,61 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 #+end_src
 
+** Dashboard
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/seaman-dashboard.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; requirements
+(seaman-module 'projectile)
+(seaman-module 'all-the-icons)
+(seaman-module 'page-break-lines)
+
+;; dashboard
+(seaman-module 'emacs-dashboard)
+
+;; init info
+(setq dashboard-set-init-info t)
+
+;; center content
+(setq dashboard-center-content t)
+
+;; dashboard items
+(setq dashboard-items '((recents  . 5)
+                        (projects . 5)
+                        (bookmarks . 5)
+                        (registers . 5)
+                        (agenda . 5)))
+
+;; banner
+(setq dashboard-startup-banner (concat user-emacs-directory "seaman/art/gwd-light.png"))
+(add-hook 'seaman/enable-or-load-theme-hook (lambda () (let ((active-theme (car custom-enabled-themes)))
+                                                         (setq dashboard-startup-banner (concat user-emacs-directory "seaman/art/"
+                                                                                                (if (eq active-theme light-theme)
+                                                                                                    "gwd-light.png"
+                                                                                                  "gwd-dark.png")))
+                                                         (if (string-equal (buffer-name (current-buffer)) "*dashboard*")
+                                                             (revert-buffer)))))
+(setq dashboard-image-banner-max-width 300)
+
+;; title
+(setq dashboard-banner-logo-title "⚓ Welcome on Board! ⚓")
+
+;; footer
+(setq dashboard-set-footer t)
+(setq dashboard-footer-icon (all-the-icons-fileicon "emacs"
+                                                    :height 1
+                                                    :v-adjust -0.15
+                                                    :face 'font-lock-constant-face))
+
+#+end_src
+
 
 ** Input
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-input.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-input.el
 :END:
 
 #+begin_src emacs-lisp
@@ -593,12 +631,15 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (seaman-module 'evil)
 (seaman-module 'god-mode)
 
+;; extensions
+(seaman-extend 'rsi)
+
 #+end_src
 
 ** Completion
 *** ivy
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-completion-ivy.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-completion-ivy.el
 :END:
 
 #+begin_src emacs-lisp
@@ -609,7 +650,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 *** vertico
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-completion-vertico.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-completion-vertico.el
 :END:
 
 #+begin_src emacs-lisp
@@ -625,7 +666,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 ** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-navigation.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-navigation.el
 :END:
 
 #+begin_src emacs-lisp
@@ -665,7 +706,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 ** Search
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-search.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-search.el
 :END:
 
 #+begin_src emacs-lisp
@@ -681,7 +722,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 ** Editing
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-editing.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-editing.el
 :END:
 
 #+begin_src emacs-lisp
@@ -704,7 +745,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 ** Workflow
 *** Session
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-session.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-session.el
 :END:
 
 #+begin_src emacs-lisp
@@ -722,9 +763,9 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 #+end_src 
 
-*** Project interaction
+*** TODO Project interaction
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-project-interaction.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-project-interaction.el
 :END:
 
 #+begin_src emacs-lisp
@@ -734,11 +775,10 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (seaman-module 'treemacs)
 
 #+end_src
-a
 
 ** Version control
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-version-control.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-version-control.el
 :END:
 
 #+begin_src emacs-lisp
@@ -750,7 +790,7 @@ a
 
 ** File management
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-file-management.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-file-management.el
 :END:
 
 ~backup-directory-alist~, which determines where backups are saved, is set by ~no-littering~.
@@ -773,9 +813,9 @@ a
 #+end_src
 
 
-** IDE
+** TODO IDE
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-ide.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-ide.el
 :END:
 
 #+begin_src emacs-lisp
@@ -815,7 +855,7 @@ a
 
 ** PDF
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-pdf.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-pdf.el
 :END:
 
 #+begin_src emacs-lisp
@@ -835,9 +875,9 @@ a
 
 #+end_src
 
-** LaTeX
+** TODO LaTeX
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-latex.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-latex.el
 :END:
 
 #+begin_src emacs-lisp
@@ -847,10 +887,10 @@ a
 #+end_src
 
 ** Org Mode
-*** Config
-**** org
+*** Configuration
+**** Base
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-org.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-org.el
 :END:
 
 #+begin_src emacs-lisp
@@ -875,23 +915,11 @@ a
 (seaman-module 'org-tempo)
 (seaman-module 'org-capture)
 
-;; agenda - IMPORTANT: LOAD BEFORE org-roam
+;; agenda
 (seaman-module 'org-agenda)
 (seaman-module 'org-contacts)
 (seaman-module 'org-calendar)
 (seaman-extend 'org-agenda)
-
-;; notes
-(seaman-module 'bitacora)
-(seaman-module 'org-roam)
-
-;; presentations
-(seaman-module 'org-reveal)
-
-;; programming
-(seaman-module 'org-babel)
-(seaman-module 'ox-ipynb)
-(seaman-extend 'org-babel)
 
 ;; extensions
 (seaman-extend 'org-get)
@@ -903,9 +931,9 @@ a
 
 #+end_src
 
-**** org-ui
+**** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-org-ui.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-org-ui.el
 :END:
 
 #+begin_src emacs-lisp
@@ -931,14 +959,147 @@ a
 (setq org-modern-table        nil)
 (setq org-modern-block-fringe nil)
 
+#+end_src
+
+**** Inline previews
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/seaman-org-inline.el
+:END:
+***** Org Markup
+
+#+begin_src emacs-lisp
+
 ;; markup
 (seaman-module 'org-appear)
 
 #+end_src
 
-**** org-typesetting
+***** LaTeX equations
+
+#+begin_src emacs-lisp
+
+;; inline LaTeX previews
+(seaman-module 'org-fragtog)
+
+#+end_src
+
+****** TODO Options
+
+- mail bug in
+
+Importantly, ~modus-vivendi~ will not behave correctly with
+the default ~org-format-latex-options~, with LaTeX previews
+displaying as white boxes. [[https://debbugs.gnu.org/db/52/52277.html][This has been previously reported]].
+
+~org-format-latex-options~ has ~:foreground~ and ~:background~
+attributes. These may be assigned to
+
+- a color,
+- ~default~, instructing Org Mode to determine ~:foreground~ or
+  ~:background~ from the foreground or background color of the
+  default face, or
+- ~auto~, doing the same for the text face.
+
+By default, the ~:foreground~ and ~:background~ in ~org-format-latex-options~
+are set to ~default~. With default settings, changing the color
+of the ~default~ font has the following effects on the LaTeX preview SVGs:
+
+- modus-operandi
+   - ~default :foreground~: text color
+   - ~default :background~: no effect
+- modus-vivendi
+   - ~default :foreground~: background color
+   - ~default :background~: no effect
+
+By eliminating the ~:background~ attribute from ~org-format-latex-options~
+the issue is resolved.
+
+1. ~modus-operandi~ does not suffer from this issue nor do various
+   other themes. This makes me believe the issue lies with
+   ~modus-vivendi~ itself.
+2. However, the ~:background~ attribute in ~org-format-latex-options~
+   seems to have no effect, a potential bug in Org Mode
+
+#+begin_src emacs-lisp
+
+(setq org-format-latex-options
+        (list :foreground 'default
+              :scale       1.000))
+
+#+end_src
+
+****** Header
+
+#+begin_src emacs-lisp
+
+(setq seaman/org-latex-preview-class-args "fleqn")
+(setq seaman/org-latex-preview-width      "18cm")
+
+(setq org-format-latex-header
+      (string-join `("\\documentclass[" ,seaman/org-latex-preview-class-args "]{article}"
+		         "\\usepackage[usenames]{color}"
+			
+			 "\\usepackage{bm}"
+			
+			 "\\pagestyle{empty}"
+			 "\\setlength{\\textwidth}{" ,seaman/org-latex-preview-width "}"
+			 "\\addtolength{\\textwidth}{-3cm}"
+			 "\\setlength{\\oddsidemargin}{1.5cm}"
+			 "\\addtolength{\\oddsidemargin}{-2.54cm}"
+			 "\\setlength{\\evensidemargin}{\\oddsidemargin}"
+			 "\\setlength{\\textheight}{\\paperheight}"
+			 "\\addtolength{\\textheight}{-\\headheight}"
+			 "\\addtolength{\\textheight}{-\\headsep}"
+			 "\\addtolength{\\textheight}{-\\footskip}"
+			 "\\addtolength{\\textheight}{-3cm}"
+			 "\\setlength{\\topmargin}{1.5cm}"
+			 "\\addtolength{\\topmargin}{-2.54cm}")
+		   "\n"))
+
+#+end_src
+
+****** Equation preview format
+
+#+begin_src emacs-lisp
+
+;; SVG LaTeX equation preview
+(setq org-latex-create-formula-image-program 'dvisvgm)
+
+#+end_src
+
+****** Equation preview directory
+
+#+begin_src emacs-lisp
+
+;; theme-specific LaTeX preview directory
+(defun seaman/latex-preview-directory ()
+  "Set `org-preview-latex-image-directory' to the SVG
+LaTeX preview directory of the current theme"
+  (setq org-preview-latex-image-directory
+   (concat "/tmp/ltximg/" (seaman/get-active-theme) "/")))
+
+#+end_src
+
+****** Equation preview reload hook
+
+#+begin_src emacs-lisp
+
+(defun seaman/latex-preview-reload ()
+  "Reload all LaTeX previews in buffer,
+ensuring the LaTeX preview directory
+matches the current theme."
+  (if (string-equal major-mode "org-mode")
+      (progn (org-latex-preview '(64))
+	     (seaman/latex-preview-directory)
+	     (org-latex-preview '(16)))))
+
+(add-hook 'org-mode-hook #'seaman/latex-preview-reload)
+
+#+end_src
+
+**** Typesetting of Org Mode files
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-org-typesetting.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-org-typesetting.el
 :END:
 ***** Text
 ****** Typefaces
@@ -1040,135 +1201,22 @@ Candidates:
 
 #+end_src
 
-**** org-latex-preview
+**** Export
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-org-latex-preview.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-org-export.el
 :END:
 
 #+begin_src emacs-lisp
 
-(seaman-module 'org-fragtog)
-
-#+end_src
-
-***** TODO Options
-
-- mail bug in
-
-Importantly, ~modus-vivendi~ will not behave correctly with
-the default ~org-format-latex-options~, with LaTeX previews
-displaying as white boxes. [[https://debbugs.gnu.org/db/52/52277.html][This has been previously reported]].
-
-~org-format-latex-options~ has ~:foreground~ and ~:background~
-attributes. These may be assigned to
-
-- a color,
-- ~default~, instructing Org Mode to determine ~:foreground~ or
-  ~:background~ from the foreground or background color of the
-  default face, or
-- ~auto~, doing the same for the text face.
-
-By default, the ~:foreground~ and ~:background~ in ~org-format-latex-options~
-are set to ~default~. With default settings, changing the color
-of the ~default~ font has the following effects on the LaTeX preview SVGs:
-
-- modus-operandi
-   - ~default :foreground~: text color
-   - ~default :background~: no effect
-- modus-vivendi
-   - ~default :foreground~: background color
-   - ~default :background~: no effect
-
-By eliminating the ~:background~ attribute from ~org-format-latex-options~
-the issue is resolved.
-
-1. ~modus-operandi~ does not suffer from this issue nor do various
-   other themes. This makes me believe the issue lies with
-   ~modus-vivendi~ itself.
-2. However, the ~:background~ attribute in ~org-format-latex-options~
-   seems to have no effect, a potential bug in Org Mode
-
-#+begin_src emacs-lisp
-
-(setq org-format-latex-options
-        (list :foreground 'default
-              :scale       1.000))
-
-#+end_src
-
-***** Header
-
-#+begin_src emacs-lisp
-
-(setq seaman/org-latex-preview-class-args "fleqn")
-(setq seaman/org-latex-preview-width      "18cm")
-
-(setq org-format-latex-header
-      (string-join `("\\documentclass[" ,seaman/org-latex-preview-class-args "]{article}"
-		         "\\usepackage[usenames]{color}"
-			
-			 "\\usepackage{bm}"
-			
-			 "\\pagestyle{empty}"
-			 "\\setlength{\\textwidth}{" ,seaman/org-latex-preview-width "}"
-			 "\\addtolength{\\textwidth}{-3cm}"
-			 "\\setlength{\\oddsidemargin}{1.5cm}"
-			 "\\addtolength{\\oddsidemargin}{-2.54cm}"
-			 "\\setlength{\\evensidemargin}{\\oddsidemargin}"
-			 "\\setlength{\\textheight}{\\paperheight}"
-			 "\\addtolength{\\textheight}{-\\headheight}"
-			 "\\addtolength{\\textheight}{-\\headsep}"
-			 "\\addtolength{\\textheight}{-\\footskip}"
-			 "\\addtolength{\\textheight}{-3cm}"
-			 "\\setlength{\\topmargin}{1.5cm}"
-			 "\\addtolength{\\topmargin}{-2.54cm}")
-		   "\n"))
-
-#+end_src
-
-***** Equation preview format
-
-#+begin_src emacs-lisp
-
-;; SVG LaTeX equation preview
-(setq org-latex-create-formula-image-program 'dvisvgm)
-
-#+end_src
-
-***** Equation preview directory
-
-#+begin_src emacs-lisp
-
-;; theme-specific LaTeX preview directory
-(defun seaman/latex-preview-directory ()
-  "Set `org-preview-latex-image-directory' to the SVG
-LaTeX preview directory of the current theme"
-  (setq org-preview-latex-image-directory
-   (concat "/tmp/ltximg/" (seaman/get-active-theme) "/")))
-
-#+end_src
-
-***** Equation preview reload hook
-
-#+begin_src emacs-lisp
-
-(defun seaman/latex-preview-reload ()
-  "Reload all LaTeX previews in buffer,
-ensuring the LaTeX preview directory
-matches the current theme."
-  (if (string-equal major-mode "org-mode")
-      (progn (org-latex-preview '(64))
-	     (seaman/latex-preview-directory)
-	     (org-latex-preview '(16)))))
-
-(add-hook 'org-mode-hook #'seaman/latex-preview-reload)
+;; presentations
+(seaman-module 'org-reveal)
 
 #+end_src
 
 *** Applications
 **** Agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-org-agenda.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-org-agenda.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1207,71 +1255,37 @@ matches the current theme."
           (agenda "" ((org-agenda-ndays 7))))
          ((org-agenda-regexp-filter-preset '("Birthday"))))))
 
-;; hide group tags
-(setq org-agenda-hide-tags-regexp
-      "CW\\|INT\\|THESIS\\|TA\\|BIRTHDAY\\|PERSONAL\\|PROFESSIONAL\\|TRAVEL\\|PEOPLE\\|HOME\\|FINANCE\\|PURCHASES\\|GIFTS")
+#+end_src
 
-(setq org-super-agenda-groups
-      '(;; Each group has an implicit boolean OR operator between its selectors.
-        (:name "Important"
-               ;; Single arguments given alone
-               :priority "A")
-        (:name "Coursework"
-               ;; Single arguments given alone
-               :tag "CW")
-        (:name "Internship"
-               ;; Single arguments given alone
-               :tag "INT")
-        (:name "Thesis"
-               ;; Single arguments given alone
-               :tag "THESIS")
-        (:name "Assistantships"
-               ;; Single arguments given alone
-               :tag "TA")
-        (:name "Personal"
-               ;; Single arguments given alone
-               :tag "PERSONAL")
-        (:name "Professional"
-               ;; Single arguments given alone
-               :tag "PROFESSIONAL")
-        (:name "Travel"
-               ;; Single arguments given alone
-               :tag "TRAVEL")
-        (:name "Keeping in touch"
-               ;; Single arguments given alone
-               :tag "PEOPLE")
-        (:name "Home"
-               ;; Single arguments given alone
-               :tag "HOME")
-        (:name "Medical"
-               ;; Single arguments given alone
-               :tag "MEDICAL")
-        (:name "Finance"
-               ;; Single arguments given alone
-               :tag "FINANCE")
-        (:name "Purchases"
-               ;; Single arguments given alone
-               :tag "PURCHASES")
-        (:name "Gifts"
-               ;; Single arguments given alone
-               :tag "GIFTS")
-        (:name "Birthdays"
-               ;; Single arguments given alone
-               :tag "BIRTHDAY")
-        (:priority<= "B"
-                     ;; Show this section after "Today" and "Important", because
-                     ;; their order is unspecified, defaulting to 0. Sections
-                     ;; are displayed lowest-number-first.
-                     :order 1)
-        ;; After the last group, the agenda will display items that didn't
-        ;; match any of these groups, with the default order position of 99
-        ))
+**** Notebooks
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/seaman-org-notebooks.el
+:END:
+
+#+begin_src emacs-lisp
+
+(seaman-module 'org-babel)
+(seaman-module 'ox-ipynb)
+(seaman-extend 'org-babel)
+
+#+end_src
+
+**** Zettelkasten
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./layers/seaman-org-zettelkasten.el
+:END:
+
+#+begin_src emacs-lisp
+
+(seaman-module 'org-roam)
+(seaman-module 'org-roam-ui)
+(seaman-module 'org-roam-timestamps)
 
 #+end_src
 
 **** GTD
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/layers/seaman-org-gtd.el
+:header-args:emacs-lisp+: :tangle ./layers/seaman-org-gtd.el
 :END:
 ***** Agenda
 ****** Keywords
@@ -1335,39 +1349,10 @@ Content of a module:
 - Package setup
 
 ** UI
-*** Home
-**** emacs-dashboard
-:PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-emacs-dashboard.el
-:END:
-
-#+begin_src emacs-lisp
-
-;; requirements
-(require 'projectile)
-(require 'all-the-icons)
-(require 'page-break-lines)
-
-(straight-use-package 'dashboard)
-(require 'dashboard)
-
-(dashboard-setup-startup-hook)
-
-;; options
-(setq dashboard-center-content t)
-(setq dashboard-set-file-icons t)
-
-;; initial buffer choice
-(if (and (not initial-buffer-choice)
-         (string-equal (buffer-name (current-buffer)) "*scratch*"))
-    (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))))
-
-#+end_src
-
 *** Buffer
 **** olivetti
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-olivetti.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-olivetti.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1419,7 +1404,7 @@ a fraction of the window width."
 
 **** solaire-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-solaire-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-solaire-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1431,7 +1416,7 @@ a fraction of the window width."
 
 **** page-break-lines
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-page-break-lines.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-page-break-lines.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1444,7 +1429,7 @@ a fraction of the window width."
 *** Mode line
 **** delight
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-delight.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-delight.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1469,7 +1454,7 @@ a fraction of the window width."
 *** Typefaces
 **** all-the-icons
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-all-the-icons.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-all-the-icons.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1491,7 +1476,7 @@ the local machine:
 *** Highlights
 **** svg-tag-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-svg-tag-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-svg-tag-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1578,7 +1563,7 @@ the local machine:
 
 **** rainbow-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-rainbow-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-rainbow-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1591,7 +1576,7 @@ the local machine:
 *** Completion
 **** all-the-icons-completion
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-all-the-icons-completion.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-all-the-icons-completion.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1604,11 +1589,40 @@ the local machine:
 
 #+end_src
 
+*** Dashboard
+**** emacs-dashboard
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/seaman-emacs-dashboard.el
+:END:
+
+#+begin_src emacs-lisp
+
+;; requirements
+(require 'projectile)
+(require 'all-the-icons)
+(require 'page-break-lines)
+
+(straight-use-package 'dashboard)
+(require 'dashboard)
+
+(dashboard-setup-startup-hook)
+
+;; options
+(setq dashboard-center-content t)
+(setq dashboard-set-file-icons t)
+
+;; initial buffer choice
+(if (and (not initial-buffer-choice)
+         (string-equal (buffer-name (current-buffer)) "*scratch*"))
+    (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))))
+
+#+end_src
+
 ** Themes
 *** Themes
 **** Ef
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-ef-themes.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-ef-themes.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1620,7 +1634,7 @@ the local machine:
 
 **** Nano
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-nano-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-nano-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1638,7 +1652,7 @@ the local machine:
 
 **** Doom
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-doom-themes.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-doom-themes.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1650,7 +1664,7 @@ the local machine:
 
 **** Solarized
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-solarized-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-solarized-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1663,7 +1677,7 @@ the local machine:
 **** Standalone
 ***** Sweet
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-sweet-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-sweet-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1675,7 +1689,7 @@ the local machine:
 
 ***** Graphite
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-graphite-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-graphite-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1688,7 +1702,7 @@ the local machine:
 
 ***** Chocolate
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-chocolate-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-chocolate-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1700,19 +1714,19 @@ the local machine:
 
 ***** Doom Zen Writer
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-doom-zen-writer-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-doom-zen-writer-theme.el
 :END:
 
 #+begin_src emacs-lisp
 
-(load-file (concat user-emacs-directory "local/themes/doom-zen-writer-theme.el"))
+(load-file (concat user-emacs-directory "elisp/themes/doom-zen-writer-theme.el"))
 
 #+end_src
 
 *** Creation
 **** autothemer
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-autothemer.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-autothemer.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1725,7 +1739,7 @@ the local machine:
 *** Scheduling
 **** circadian
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-circadian.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-circadian.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1747,7 +1761,7 @@ the local machine:
 ** Mode line
 *** Nano
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-nano-modeline.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-nano-modeline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1762,7 +1776,7 @@ the local machine:
 
 *** Doom
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-doom-modeline.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-doom-modeline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1780,7 +1794,7 @@ the local machine:
 
 *** Moody
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-moody.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-moody.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1801,7 +1815,7 @@ the local machine:
 
 *** Spaceline
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-spaceline.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-spaceline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1820,7 +1834,7 @@ the local machine:
 *** Editing
 **** evil
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-evil.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-evil.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1895,7 +1909,7 @@ the local machine:
 
 **** meow
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-meow.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-meow.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2009,7 +2023,7 @@ the local machine:
 *** Commands
 **** god-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-god-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-god-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2033,7 +2047,7 @@ the local machine:
 ** Guidance
 *** counsel
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-counsel.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-counsel.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2047,7 +2061,7 @@ the local machine:
 
 *** helpful
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-helpful.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-helpful.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2067,7 +2081,7 @@ the local machine:
 
 *** which-key
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-which-key.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-which-key.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2084,7 +2098,7 @@ the local machine:
 
 *** command-log-mode                                                  :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-command-log-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-command-log-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2099,7 +2113,7 @@ the local machine:
 ** Completion
 *** ivy
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-ivy.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-ivy.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2137,7 +2151,7 @@ the local machine:
 
 *** ivy-rich                                                          :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-ivy-rich.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-ivy-rich.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2151,7 +2165,7 @@ the local machine:
 
 *** vertico
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-vertico.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-vertico.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2181,7 +2195,7 @@ the local machine:
 
 *** orderless
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-orderless.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-orderless.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2197,7 +2211,7 @@ the local machine:
 ** Navigation
 *** ace-window
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-ace-window.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-ace-window.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2214,7 +2228,7 @@ the local machine:
 ** Search
 *** swiper
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-swiper.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-swiper.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2260,7 +2274,7 @@ the local machine:
 
 *** ripgrep
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-rg.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-rg.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2274,7 +2288,7 @@ the local machine:
 *** Undo
 **** TODO vundo
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-vundo.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-vundo.el
 :END:
 
 - undo-fu
@@ -2297,7 +2311,7 @@ the local machine:
 
 **** undo-tree                                                        :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-undo-tree.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-undo-tree.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2331,7 +2345,7 @@ the local machine:
 *** Multiline
 **** multiple-cursors
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-multiple-cursors.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-multiple-cursors.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2363,7 +2377,7 @@ the local machine:
 *** Export
 **** htmlize
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-htmlize.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-htmlize.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2375,7 +2389,7 @@ the local machine:
 *** Session
 **** workgroups
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-workgroups.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-workgroups.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2399,7 +2413,7 @@ the local machine:
 *** Auto-save
 **** super-save
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-super-save.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-super-save.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2413,7 +2427,7 @@ the local machine:
 *** Project interaction
 **** projectile
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-projectile.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-projectile.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2431,7 +2445,7 @@ the local machine:
 
 **** treemacs
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-treemacs.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-treemacs.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2562,7 +2576,7 @@ the local machine:
 ** Templates
 *** yasnippet
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-yasnippet.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-yasnippet.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2610,7 +2624,7 @@ the local machine:
 ****** Selection
 ******* expand-region
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-expand-region.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-expand-region.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2622,7 +2636,7 @@ the local machine:
 ****** Wrapping
 ******* embrace
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-embrace.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-embrace.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2640,7 +2654,7 @@ the local machine:
 
 ******* smartparens                                                         :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-smartparens.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-smartparens.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2653,7 +2667,7 @@ the local machine:
 
 ******* paredit                                                               :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-paredit.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-paredit.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2665,7 +2679,7 @@ the local machine:
 ***** Outline
 ****** hideshow
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-hideshow.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-hideshow.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2723,7 +2737,7 @@ the local machine:
 ***** Completion
 ****** company
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-company.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-company.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2737,7 +2751,7 @@ the local machine:
 ***** Structural editing
 ******* puni
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-puni.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-puni.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2755,7 +2769,7 @@ the local machine:
 ***** Syntax checking
 ****** flycheck
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-flycheck.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-flycheck.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2771,7 +2785,7 @@ the local machine:
 ***** Language server protocol
 ****** eglot                                                          :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-eglot.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-eglot.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2782,7 +2796,7 @@ the local machine:
 
 ****** lsp-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-lsp-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-lsp-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2794,7 +2808,7 @@ the local machine:
 
 ****** lsp-bridge                                                     :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-lsp-bridge.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-lsp-bridge.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2808,7 +2822,7 @@ the local machine:
 ***** Lisp
 ****** rainbow-delimiters
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-rainbow-delimiters.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-rainbow-delimiters.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2825,7 +2839,7 @@ the local machine:
 ***** Python
 ****** elpy
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-elpy.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-elpy.el
 :END:
 
 #+begin_src bash :tangle no
@@ -2866,7 +2880,7 @@ sudo apt-get install python3-venv
 ***** Matlab
 ****** matlab-emacs
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-matlab-emacs.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-matlab-emacs.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2881,7 +2895,7 @@ sudo apt-get install python3-venv
 ***** Rust
 ****** rustic
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-rustic.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-rustic.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2901,7 +2915,7 @@ sudo apt-get install python3-venv
 *** PDF
 **** pdf-tools
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-pdf-tools.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-pdf-tools.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2951,7 +2965,7 @@ sudo apt-get install python3-venv
 
 **** pdf-view-restore
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-pdf-view-restore.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-pdf-view-restore.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2965,7 +2979,7 @@ sudo apt-get install python3-venv
 *** LaTeX
 **** AUCTeX
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-AUCTeX.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-AUCTeX.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2976,7 +2990,7 @@ sudo apt-get install python3-venv
 
 *** Org Mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3095,7 +3109,7 @@ match the indentation of the parent heading."
 **** UI
 ***** org-modern
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-modern.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-modern.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3113,8 +3127,8 @@ match the indentation of the parent heading."
 #+begin_src emacs-lisp
 
 (setq org-modern-list '((?+ . "-")
- 		  	     (?- . "•")
- 			     (?* . "▶")))
+ 		  	(?- . "•")
+ 			(?* . "▶")))
 
 #+end_src
 
@@ -3152,7 +3166,7 @@ match the indentation of the parent heading."
 
 ***** org-appear
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-appear.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-appear.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3182,7 +3196,7 @@ match the indentation of the parent heading."
 
 ***** org-fragtog
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-fragtog.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-fragtog.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3198,7 +3212,7 @@ match the indentation of the parent heading."
 **** Editing
 ***** org-paragraph
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-paragraph.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-paragraph.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3257,7 +3271,7 @@ beginning lies on an Org Mode heading,
 
 ***** org-download
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-download.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-download.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3283,7 +3297,7 @@ beginning lies on an Org Mode heading,
 **** Templates
 ***** org-tempo
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-tempo.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-tempo.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3370,7 +3384,7 @@ beginning lies on an Org Mode heading,
 
 ***** org-capture
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-capture.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-capture.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3389,7 +3403,7 @@ beginning lies on an Org Mode heading,
 ***** Notes
 ****** bitacora
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-bitacora.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-bitacora.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3400,7 +3414,7 @@ beginning lies on an Org Mode heading,
 
 ****** org-roam
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-roam.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-roam.el
 :END:
 
 Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-available-aborting-error-when-installing-org-roam-v2-on-mac/2178/6][a C compiler (eg: gcc or clang) must be installed for ~emacsql-sqlite~ to install correctly]].
@@ -3412,7 +3426,54 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-******* UI
+******* Hooks
+
+#+begin_src emacs-lisp
+
+;; node visit hook
+(defvar seaman/org-roam-node-visit-hook nil
+   "Hook ran after `org-roam-node-visit'.")
+
+(defun seaman/run-org-roam-node-visit-hook (&rest _args)
+   "Run `after-enable-theme-hook'."
+   (run-hooks 'seaman/org-roam-node-visit-hook))
+
+;; enable-theme
+(advice-add 'org-roam-node-visit :after #'seaman/run-org-roam-node-visit-hook)
+
+#+end_src
+
+******* Startup
+
+#+begin_src emacs-lisp
+
+(if (and (boundp 'org-roam-directory) (file-directory-p org-roam-directory))
+    (org-roam-db-autosync-mode))
+
+#+end_src
+
+******* Keymap
+
+#+begin_src emacs-lisp
+
+(setq seaman/org-roam-map (make-keymap))
+(global-set-key (kbd "C-r") seaman/org-roam-map)
+
+;; Capture
+(define-key seaman/org-roam-map (kbd "c") #'org-roam-capture)
+
+;; Find node
+(define-key seaman/org-roam-map (kbd "n") #'org-roam-node-find)
+
+;; Insert reference
+(define-key seaman/org-roam-map (kbd "i") #'org-roam-node-insert)
+
+#+end_src
+
+****** org-roam-ui
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-roam-ui.el
+:END:
 
 #+begin_src emacs-lisp
 
@@ -3454,69 +3515,10 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+end_src
 
-******* Hooks
-
-#+begin_src emacs-lisp
-
-;; node visit hook
-(defvar seaman/org-roam-node-visit-hook nil
-   "Hook ran after `org-roam-node-visit'.")
-
-(defun seaman/run-org-roam-node-visit-hook (&rest _args)
-   "Run `after-enable-theme-hook'."
-   (run-hooks 'seaman/org-roam-node-visit-hook))
-
-;; enable-theme
-(advice-add 'org-roam-node-visit :after #'seaman/run-org-roam-node-visit-hook)
-
-#+end_src
-
-******* Startup
-******** db-autosync-mode
-
-#+begin_src emacs-lisp
-
-(if (and (boundp 'org-roam-directory) (file-directory-p org-roam-directory))
-    (org-roam-db-autosync-mode))
-
-#+end_src
-
-******* Keymap
-
-#+begin_src emacs-lisp
-
-(setq seaman/org-roam-map (make-keymap))
-(global-set-key (kbd "C-r") seaman/org-roam-map)
-
-;; Capture
-(define-key seaman/org-roam-map (kbd "c") #'org-roam-capture)
-
-;; Find node
-(define-key seaman/org-roam-map (kbd "n") #'org-roam-node-find)
-
-;; Insert reference
-(define-key seaman/org-roam-map (kbd "i") #'org-roam-node-insert)
-
-#+end_src
-
-******* Templates
-******** Default
-
-#+begin_src emacs-lisp
-
-(setq org-roam-capture-templates
-      '(("m" "mathematics" plain "%?"
-         :target (file+head "mathematics/%<%Y%m%d%H%M%S>-${slug}.org"
-			           "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
-         :unnarrowed t)
-        ("c" "control" plain "%?"
-         :target (file+head "control/%<%Y%m%d%H%M%S>-${slug}.org"
-			           "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
-         :unnarrowed t)))
-
-#+end_src
-
-******* Timestamps
+****** org-roam-timestamps
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-roam-timestamps.el
+:END:
 
 #+begin_src emacs-lisp
 
@@ -3552,7 +3554,7 @@ if it was previously enabled."
 ***** Agenda
 ****** org-agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-agenda.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-agenda.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3575,7 +3577,7 @@ if it was previously enabled."
 
 ****** org-super-agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-super-agenda.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-super-agenda.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3590,7 +3592,7 @@ if it was previously enabled."
 
 ****** org-rainbow-tags
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-rainbow-tags.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-rainbow-tags.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3607,7 +3609,7 @@ if it was previously enabled."
 ***** Contacts
 ****** org-contacts
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-contacts.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-contacts.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3640,7 +3642,7 @@ if it was previously enabled."
 ***** Calendar
 ****** org-calendar
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-calendar.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-calendar.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3668,7 +3670,7 @@ if it was previously enabled."
 ***** Programming
 ****** org-babel
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-babel.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-babel.el
 :END:
 ******* Editing
 
@@ -3755,7 +3757,7 @@ if it was previously enabled."
 
 ****** ox-ipynb
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-ox-ipynb.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-ox-ipynb.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3767,7 +3769,7 @@ if it was previously enabled."
 
 ****** ob-async
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-ob-async.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-ob-async.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3780,7 +3782,7 @@ if it was previously enabled."
 ***** Presentations
 ****** org-reveal
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-reveal.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-reveal.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3796,7 +3798,7 @@ if it was previously enabled."
 ***** Time-tracking
 ****** org-pomodoro
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-pomodoro.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-pomodoro.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3814,7 +3816,7 @@ if it was previously enabled."
 
 ****** org-agenda-log-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-org-agenda-log-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-org-agenda-log-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3829,7 +3831,7 @@ if it was previously enabled."
 *** Tabulated lists
 **** tablist
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-tablist.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-tablist.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3841,7 +3843,7 @@ if it was previously enabled."
 *** Version control
 **** magit
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-magit.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-magit.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3855,7 +3857,7 @@ if it was previously enabled."
 
 **** forge
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-forge.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-forge.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3867,7 +3869,7 @@ if it was previously enabled."
 *** File management
 **** dirvish
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-dirvish.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-dirvish.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3884,7 +3886,7 @@ if it was previously enabled."
 ** Extensions
 *** crux
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/modules/seaman-crux.el
+:header-args:emacs-lisp+: :tangle ./modules/seaman-crux.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3904,7 +3906,7 @@ Content of an extension:
 ** Utilities
 *** Get
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-get.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-get.el
 :END:
 
 **** UI
@@ -4049,7 +4051,7 @@ References:
 
 *** Queries
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-queries.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-queries.el
 :END:
 
 **** At
@@ -4212,7 +4214,7 @@ to the query at execution."
 
 *** Execution
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-execution.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-execution.el
 :END:
 
 **** @buffers
@@ -4231,7 +4233,7 @@ to the query at execution."
 
 *** Operators
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-operators.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-operators.el
 :END:
 
 **** <>
@@ -4246,7 +4248,7 @@ to the query at execution."
 
 ** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-ui.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-ui.el
 :END:
 
 *** Text
@@ -4394,7 +4396,7 @@ key binding input with C-g."
 ** Themes
 *** Switch
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-theme-switch.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-theme-switch.el
 :END:
 
 **** Load
@@ -4508,7 +4510,7 @@ displayed by `display-line-numbers-mode'."
 
 *** Mode line
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-theme-modeline.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-theme-modeline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -4546,7 +4548,7 @@ displayed by `display-line-numbers-mode'."
 ** Input
 *** RSI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-rsi.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-rsi.el
 :END:
 
 #+begin_src emacs-lisp
@@ -4578,7 +4580,7 @@ displayed by `display-line-numbers-mode'."
 
 ** Editing
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-editing.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-editing.el
 :END:
 
 *** Delete
@@ -4843,7 +4845,7 @@ not empty. In any case, advance to next line."
 
 ** Search
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-search.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-search.el
 :END:
 *** Search and replace
 
@@ -4862,7 +4864,7 @@ not empty. In any case, advance to next line."
 ** Workflow
 *** Session
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-session.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-session.el
 :END:
 
 #+begin_src emacs-lisp
@@ -4884,7 +4886,7 @@ not empty. In any case, advance to next line."
 
 *** External programs
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-external-programs.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-external-programs.el
 :END:
 **** Keymap
 #+begin_src emacs-lisp
@@ -4939,7 +4941,7 @@ not empty. In any case, advance to next line."
 
 ** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-navigation.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-navigation.el
 :END:
 
 *** Text
@@ -5131,7 +5133,7 @@ before the execution of any command.")
 
 ** File management
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-file-management.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-file-management.el
 :END:
 
 *** Buffer
@@ -5171,7 +5173,7 @@ the user for confirmation."
 
 ** PDF
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-pdf.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-pdf.el
 :END:
 *** Jump
 
@@ -5250,7 +5252,7 @@ the user for confirmation."
 *** Utilities
 **** Get
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-org-get.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-get.el
 :END:
 
 ***** org-get-title
@@ -5313,7 +5315,7 @@ the user for confirmation."
 
 **** Queries
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-org-queries.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-queries.el
 :END:
 
 ***** in
@@ -5593,7 +5595,7 @@ a `seaman/region-blank'."
 
 *** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-org-ui.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-ui.el
 :END:
 
 **** Theme
@@ -5615,7 +5617,7 @@ a `seaman/region-blank'."
 
 **** Outline
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-org-outline.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-outline.el
 :END:
 
 - deprecated cl warning
@@ -5904,7 +5906,7 @@ DATA should have been made by `seaman/org-get-outline-state'."
 
 *** Editing
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-org-editing.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-editing.el
 :END:
 
 **** Text
@@ -6378,7 +6380,7 @@ one character."
 ***** TODO indent-region
 
 - use markers
-   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Overview-of-Markers.html
+   - https://www.gnu.org/software/emacs/manual/html_node/seaman/Overview-of-Markers.html
   
 - regions spanning headings
    - nested headings
@@ -6472,7 +6474,7 @@ function that sets `deactivate-mark' to t."
 
 *** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-org-navigation.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-navigation.el
 :END:
 
 **** Line
@@ -6686,7 +6688,7 @@ Macros to make the creation of custom link types a breeze.
 **** Agenda
 ***** org-agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-org-agenda.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-agenda.el
 :END:
 ****** UI
 ******* org-agenda-format-date
@@ -6780,7 +6782,7 @@ This function makes sure that dates are aligned for easy reading."
 **** Programming
 ***** org-babel
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./elisp/extensions/seaman-org-babel.el
+:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-babel.el
 :END:
 ****** TODO Result formatting
 

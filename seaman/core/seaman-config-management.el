@@ -1,3 +1,27 @@
+(defun seaman-load-component (type component)
+  "Load a seaman COMPONENT of the given TYPE"
+  (let ((component-name (symbol-name component)))
+       (condition-case err
+           (require (intern (concat "seaman-" type "-" component-name)) (concat user-emacs-directory "seaman/" type "s" "/seaman-" component-name ".el"))
+         (error (progn (message "ERROR: seaman-%s %s load failed" component-name type)
+		       (if debug-on-error
+		           (debug err)))))))
+
+;; seaman modules
+(defun seaman-module (module)
+  "Load a seaman MODULE by name"
+  (seaman-load-component "module" module))
+
+;; seaman layers
+(defun seaman-layer (layer)
+  "Load a seaman LAYER by name"
+  (seaman-load-component "layer" layer))
+
+;; seaman extensions
+(defun seaman-extend (extension)
+  "Load a seaman EXTENSION by name"
+  (seaman-load-component "extension" extension))
+
 ;;;; Load async package
 (straight-use-package 'async)
 (require 'async)
@@ -14,7 +38,7 @@
      ;;; Tangling function
      `(lambda ()
         ;; Delete all pre-existing Seaman components
-        (dolist (comp-dir (mapcar (lambda (dir) (concat ,user-emacs-directory "elisp/" dir)) '("core" "layers" "modules" "extensions")))
+        (dolist (comp-dir (mapcar (lambda (dir) (concat ,user-emacs-directory "seaman/" dir)) '("core" "layers" "modules" "extensions")))
           (dolist (file (directory-files comp-dir t directory-files-no-dot-files-regexp))
             (delete-file file)))
         ;; Require org-mode
@@ -23,7 +47,7 @@
 	(add-hook 'org-babel-post-tangle-hook
 		  (lambda ()
                     ;; Obtain component and component type from the name of the source file being tangled to
-                    (if (string-match "\\(^.*/elisp/\\)\\(.*\\)\\(/seaman-\\)\\(.*\\)\\(.el\\)" (buffer-file-name))
+                    (if (string-match "\\(^.*/seaman/\\)\\(.*\\)\\(/seaman-\\)\\(.*\\)\\(.el\\)" (buffer-file-name))
 		        (let ((component (match-string 4 (buffer-file-name)))
 			      (comp-type (match-string 2 (buffer-file-name))))
 		          (end-of-buffer)
@@ -41,22 +65,18 @@
      (unless quiet
        `(lambda (result)
 	  (if result
-	      (message "SUCCESS: %s successfully tangled (%.2fs)."
-		       ,(file-name-nondirectory org-file)
-		       (float-time (time-subtract (current-time)
-						  ',init-tangle-start-time)))
-	    (message "ERROR: %s tangling failed." ,org-file)))))))
+	      (message "|SEAMAN| Seaman components successfully tangled (%.2fs)."
+		       (float-time (time-subtract (current-time) ',init-tangle-start-time)))
+	    (message "|SEAMAN| Seaman component tangling failed.")))))))
 
 (defun seaman/tangle-auto ()
   "Automatically tangle Org Mode files in the Emacs config directory"
   (let* ((file   (expand-file-name buffer-file-name))
-	 (source (string-match (concat user-emacs-directory ".*.org$") file))
-	 (seaman (string-match (concat user-emacs-directory "seaman.org$") buffer-file-name))
+	 (config (string-match (concat user-emacs-directory "config.org$") file))
+	 (seaman (string-match (concat user-emacs-directory "seaman/seaman.org$") buffer-file-name))
 	 (org-confirm-babel-evaluate nil))
-    (if source
-	(if seaman
-	    (seaman/tangle file)
-	  (org-babel-tangle)))))
+    (if seaman (seaman/tangle file))
+    (if config (org-babel-tangle))))
 
 (add-hook 'after-save-hook #'seaman/tangle-auto)
 

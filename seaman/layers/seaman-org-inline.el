@@ -1,3 +1,7 @@
+;; markup
+(seaman-module 'org-appear)
+
+;; inline LaTeX previews
 (seaman-module 'org-fragtog)
 
 (setq org-format-latex-options
@@ -49,5 +53,5 @@ matches the current theme."
 
 (add-hook 'org-mode-hook #'seaman/latex-preview-reload)
 
-(provide 'seaman-layer-org-latex-preview)
-;;; seaman-org-latex-preview.el ends here
+(provide 'seaman-layer-org-inline)
+;;; seaman-org-inline.el ends here

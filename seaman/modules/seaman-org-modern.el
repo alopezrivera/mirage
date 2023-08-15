@@ -4,8 +4,8 @@
 (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
 
 (setq org-modern-list '((?+ . "-")
- 		  	     (?- . "•")
- 			     (?* . "▶")))
+ 		  	(?- . "•")
+ 			(?* . "▶")))
 
 (setq org-modern-checkbox nil)
 

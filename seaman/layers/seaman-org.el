@@ -18,23 +18,11 @@
 (seaman-module 'org-tempo)
 (seaman-module 'org-capture)
 
-;; agenda - IMPORTANT: LOAD BEFORE org-roam
+;; agenda
 (seaman-module 'org-agenda)
 (seaman-module 'org-contacts)
 (seaman-module 'org-calendar)
 (seaman-extend 'org-agenda)
-
-;; notes
-(seaman-module 'bitacora)
-(seaman-module 'org-roam)
-
-;; presentations
-(seaman-module 'org-reveal)
-
-;; programming
-(seaman-module 'org-babel)
-(seaman-module 'ox-ipynb)
-(seaman-extend 'org-babel)
 
 ;; extensions
 (seaman-extend 'org-get)

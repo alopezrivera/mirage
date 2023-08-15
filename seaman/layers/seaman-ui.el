@@ -49,14 +49,6 @@
 ;; mode display
 (seaman-module 'delight)
 
-;; requirements
-(seaman-module 'projectile)
-(seaman-module 'all-the-icons)
-(seaman-module 'page-break-lines)
-
-;; dashboard
-(seaman-module 'emacs-dashboard)
-
 ;; extensions
 (seaman-extend 'ui)
 

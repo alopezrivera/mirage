@@ -4,37 +4,34 @@
 
 
 
-#+title:Seaman Emacs Configuration
+#+title:My Personal Emacs Configuration
 #+PROPERTY: header-args:emacs-lisp :results none :tangle ./init.el :mkdirp yes
 
+This is my personal literate Emacs configuration. With it I aim to get the most out of Emacs /there where it shines most/, which in my humble opinion is note-taking, writing and literate programming.
 
+*Objectives*
 
-A single program,
+I aim to make of Emacs my tool of choice to:
 
-To jot down notes and write documents and prose.
-- [X] diary
-- [X] scratchpad
-- [X] zettelkasten
+- Jot down notes and write documents and prose
+   - [X] diary
+   - [X] scratchpad
+   - [X] zettelkasten
 
-To write code and version control.
-- [X] IDE
-- [X] git
+- Write code and version control
+   - [X] Jupyter-style notebooks within Org Mode
+   - [X] Magit
+   - [ ] IDE
 
-To manage the configuration of your machine.
-- [X] dotfiles
+- Manage the configuration of my machine
+   - [X] literate dotfiles
 
-To plan and keep track of tasks and projects.
-- [ ] agenda
-- [X] calendar
-- [ ] time tracking
+- Manage email
+   - [ ] email client
 
-To remember contacts and manage email.
-- [X] contact book
-- [ ] email client
-
-To publish to the web and in document form.
-- [ ] blog
-- [ ] LaTeX
+- Publish to the web and in document form
+   - [ ] blog
+   - [ ] LaTeX
 
 * Lockfile
 
@@ -167,7 +164,8 @@ References:
 
 
 * Config
-** Themes
+** UI
+*** Themes
 
 #+begin_src emacs-lisp
 
@@ -178,7 +176,7 @@ References:
 
 #+end_src
 
-** Mode line
+*** Mode line
 
 #+begin_src emacs-lisp
 
@@ -186,7 +184,7 @@ References:
 
 #+end_src
 
-** Typefaces
+*** Typefaces
 
 #+begin_src emacs-lisp
 
@@ -200,7 +198,7 @@ References:
 (set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 105 :weight 'regular)
 
 ;; italic
-(defface custom/italic
+(defface seaman/italic
   '((t :font "Victor Mono" :height  86 :weight  bold :slant italic))
   "Italic typeface")
 
@@ -215,58 +213,8 @@ References:
 
 #+end_src
 
-
-** Editing
-
-#+begin_src emacs-lisp
-
-(seaman-layer 'editing)
-
-#+end_src
-
-** Search
-
-#+begin_src emacs-lisp
-
-(seaman-layer 'search)
-
-#+end_src
-
-** Templates
-
-#+begin_src emacs-lisp
-
-(seaman-module 'yasnippet)
-
-#+end_src
-
-** Completion
-
-#+begin_src emacs-lisp
-
-(seaman-layer 'completion-vertico)
-
-#+end_src
-
-
-** Workflow
-*** Session
-
-#+begin_src emacs-lisp
-
-(seaman-layer 'session)
-
-#+end_src
-
-*** Project interaction
-
-#+begin_src emacs-lisp
-
-(seaman-layer 'project-interaction)
-
-#+end_src
-
-** Guidance
+** Editor
+*** Guidance
 
 #+begin_src emacs-lisp
 
@@ -276,7 +224,7 @@ References:
 
 #+end_src
 
-** Navigation
+*** Navigation
 
 #+begin_src emacs-lisp
 
@@ -284,12 +232,29 @@ References:
 
 #+end_src
 
-
-** Version control
+*** Control
 
 #+begin_src emacs-lisp
 
-(seaman-layer 'version-control)
+;; text editing
+(seaman-layer 'editing)
+;; text search
+(seaman-layer 'search)
+;; snippets
+(seaman-module 'yasnippet)
+;; auto-completions
+(seaman-layer 'completion-vertico)
+
+#+end_src
+
+** Workflow
+
+#+begin_src emacs-lisp
+
+;; session management
+(seaman-layer 'session)
+;; project management
+(seaman-layer 'project-interaction)
 
 #+end_src
 
@@ -302,6 +267,7 @@ References:
 #+end_src
 
 
+* Applications
 ** IDE
 
 #+begin_src emacs-lisp
@@ -330,6 +296,8 @@ References:
 
 #+begin_src emacs-lisp
 
+(seaman-module 'bitacora)
+
 (seaman-layer 'org-agenda)
 (seaman-layer 'org-gtd)
 
@@ -346,6 +314,77 @@ References:
 ;; custom link types
 (@seaman/org-dir-link "msc1" (concat home "studio/academic/education/TU Delft/MSc/Space Flight/SPF-1/"))
 (@seaman/org-dir-link "ta"(concat home "studio/academic/education/TU Delft/_assistantships/"))
+
+;; org-roam capture templates
+(setq org-roam-capture-templates
+      '(("m" "mathematics" plain "%?"
+         :target (file+head "mathematics/%<%Y%m%d%H%M%S>-${slug}.org"
+			           "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
+         :unnarrowed t)
+        ("c" "control" plain "%?"
+         :target (file+head "control/%<%Y%m%d%H%M%S>-${slug}.org"
+			           "#+STARTUP: subtree\n\n\n\n#+title:${title}\n\n\n")
+         :unnarrowed t)))
+
+;; org-agenda setup
+(setq org-agenda-hide-tags-regexp
+      "CW\\|INT\\|THESIS\\|TA\\|BIRTHDAY\\|PERSONAL\\|PROFESSIONAL\\|TRAVEL\\|PEOPLE\\|HOME\\|FINANCE\\|PURCHASES\\|GIFTS")
+
+(setq org-super-agenda-groups
+      '(;; Each group has an implicit boolean OR operator between its selectors.
+        (:name "Important"
+               ;; Single arguments given alone
+               :priority "A")
+        (:name "Coursework"
+               ;; Single arguments given alone
+               :tag "CW")
+        (:name "Internship"
+               ;; Single arguments given alone
+               :tag "INT")
+        (:name "Thesis"
+               ;; Single arguments given alone
+               :tag "THESIS")
+        (:name "Assistantships"
+               ;; Single arguments given alone
+               :tag "TA")
+        (:name "Personal"
+               ;; Single arguments given alone
+               :tag "PERSONAL")
+        (:name "Professional"
+               ;; Single arguments given alone
+               :tag "PROFESSIONAL")
+        (:name "Travel"
+               ;; Single arguments given alone
+               :tag "TRAVEL")
+        (:name "Keeping in touch"
+               ;; Single arguments given alone
+               :tag "PEOPLE")
+        (:name "Home"
+               ;; Single arguments given alone
+               :tag "HOME")
+        (:name "Medical"
+               ;; Single arguments given alone
+               :tag "MEDICAL")
+        (:name "Finance"
+               ;; Single arguments given alone
+               :tag "FINANCE")
+        (:name "Purchases"
+               ;; Single arguments given alone
+               :tag "PURCHASES")
+        (:name "Gifts"
+               ;; Single arguments given alone
+               :tag "GIFTS")
+        (:name "Birthdays"
+               ;; Single arguments given alone
+               :tag "BIRTHDAY")
+        (:priority<= "B"
+                     ;; Show this section after "Today" and "Important", because
+                     ;; their order is unspecified, defaulting to 0. Sections
+                     ;; are displayed lowest-number-first.
+                     :order 1)
+        ;; After the last group, the agenda will display items that didn't
+        ;; match any of these groups, with the default order position of 99
+        ))
 
 #+end_src
 

@@ -7,5 +7,8 @@
 (seaman-module 'evil)
 (seaman-module 'god-mode)
 
+;; extensions
+(seaman-extend 'rsi)
+
 (provide 'seaman-layer-input)
 ;;; seaman-input.el ends here
