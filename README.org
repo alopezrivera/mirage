@@ -4,13 +4,7 @@
 
 #+title:Seaman Emacs
 
-
------
-
 Seaman Emacs is a literate, layer-based Emacs configuration framework designed to give you maximal maintainability, extensibility and performance. All in a way you can understand and control from the ground up.
-
------
-
 
 #+attr_org: :width 800px
 [[./seaman/startscreen.png]]
@@ -21,9 +15,10 @@ Clone this repository to your =.emacs.d=. Write your personal configuration in =
 
 *BOM*
 
-| Package Manager: =straight.el= | Literate Emacs config: =config.org= (tangled to =init.el=) | Keyboard bindings: Emacs + custom bindings |
+| *Package Manager* | *Literate Emacs config*           | *Keyboard bindings*              |
+| =straight.el=     | =config.org= (tangled to =init.el=) | Emacs . =ESC=: god . =C-ESC=: evil |
 
-* Base Features
+* Features out of the box
 
 - [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#ui][UI]]
   Clean, minimalistic UI
