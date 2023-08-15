@@ -21,3 +21,6 @@ eshell/*
 # repositories
 elpa/*
 straight/*
+
+# other
+*.Zone.Identifier
