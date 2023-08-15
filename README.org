@@ -43,14 +43,14 @@ Clone this repository to your =.emacs.d=. Write your personal configuration in =
 The backbone of Seaman Emacs, the [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#core][Seaman Core]], consists of the elisp code responsible for the
 
 - Package manager, currently =straight.el=
-- Config management, and the
+- Config management
 - Base Seaman Emacs configuration
 
 * Seaman components: Layers, Modules and Extensions
 
-Emacs has an expansive package landscape, providing it with a wide-range of functionality. Many packages are complementary, and their configuration non-trivial.
+Emacs has an expansive package landscape, providing it with wide-ranging functionality. Many packages are complementary, and their configuration non-trivial.
 
-In Seaman Emacs, we combine complementary packages into units called "layers", each providing a certain set of functionality, for example: [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#pdf-1][PDF handling]], [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#latex-1][LaTeX editing]] and an [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#ide-1][Integrated Development Environment]].
+Following the approach of [[https://github.com/doomemacs/doomemacs][Doom Emacs]] and [[https://www.spacemacs.org][SpaceMacs]], in Seaman Emacs, we combine complementary packages into units called "layers", each providing a certain set of functionality, for example: [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#pdf-1][PDF handling]], [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#latex-1][LaTeX editing]] and an [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#ide-1][Integrated Development Environment]].
 
 Layers are composed of:
 
