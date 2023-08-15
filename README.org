@@ -15,8 +15,8 @@ Clone this repository to your =.emacs.d=. Write your personal configuration in =
 
 *BOM*
 
-| *Package Manager* | *Literate Emacs config*           | *Keyboard bindings*              |
-| =straight.el=     | =config.org= (tangled to =init.el=) | Emacs . =ESC=: god . =C-ESC=: evil |
+| *Package Manager* | *Literate Emacs config*             | *Keyboard bindings*       |
+| [[https://github.com/radian-software/straight.el][=straight.el=]]   | [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/config.org][=config.org=]] (tangled to =init.el=) | Emacs + custom bindings |
 
 * Features out of the box
 
