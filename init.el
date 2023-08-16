@@ -52,8 +52,6 @@
 
 (seaman-layer 'ide)
 
-(seaman-layer 'pdf)
-
 (seaman-layer 'latex)
 
 (seaman-module 'bitacora)

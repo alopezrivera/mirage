@@ -162,8 +162,8 @@ References:
 
 - [[https://www.lucacambiaghi.com/vanilla-emacs/readme.html][Luca Ambiaghi, Luca's literate Emacs config]]
 
-
-* Config
+  
+* Editor
 ** UI
 *** Themes
 
@@ -273,14 +273,6 @@ References:
 #+begin_src emacs-lisp
 
 (seaman-layer 'ide)
-
-#+end_src
-
-** PDF
-
-#+begin_src emacs-lisp
-
-(seaman-layer 'pdf)
 
 #+end_src
 
