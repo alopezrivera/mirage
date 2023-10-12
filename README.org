@@ -19,6 +19,8 @@ Clone this repository to your =.emacs.d=. Write your personal configuration in =
 
 * Features out of the box
 
+The Seaman [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman/seaman.org#base-configuration][Base Configuration]] comes with batteries included!
+
 - [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman/seaman.org#ui][UI]]
 
   Clean, minimalistic UI
@@ -44,7 +46,7 @@ The backbone of Seaman Emacs, the [[https://github.com/alopezrivera/Seaman-Emacs
 
 - Package manager, currently =straight.el=
 - Config management
-- Base Seaman Emacs configuration
+- Seaman [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman/seaman.org#base-configuration][Base Configuration]]
 
 * Seaman components: Layers, Modules and Extensions
 
