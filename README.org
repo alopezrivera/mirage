@@ -40,7 +40,7 @@ Clone this repository to your =.emacs.d=. Write your personal configuration in =
 
 * The Seaman Core
 
-The backbone of Seaman Emacs, the [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#core][Seaman Core]], consists of the elisp code responsible for the
+The backbone of Seaman Emacs, the [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman/seaman.org#seaman-core-1][Seaman Core]], consists of the elisp code responsible for the
 
 - Package manager, currently =straight.el=
 - Config management
