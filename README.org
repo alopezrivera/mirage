@@ -19,22 +19,22 @@ Clone this repository to your =.emacs.d=. Write your personal configuration in =
 
 * Features out of the box
 
-- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#ui][UI]]
+- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman/seaman.org#ui][UI]]
 
   Clean, minimalistic UI
-- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#themes][Themes]]
+- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman/seaman.org#themes][Themes]]
 
   Easily set light and dark themes, easy theme toggling and circadian theme switching between light and dark themes
-- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#dashboard][A good welcome]]
+- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman/seaman.org#dashboard][A good welcome]]
 
   Start screen with quick links to recent files, projects, bookmarks, registers and your weekly agenda
-- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#org-mode][Full fledged Org mode]]
+- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman/seaman.org#org-mode][Full fledged Org mode]]
 
   Ready for literate programming, daily planning with =org-agenda= + =org-super-agenda=, code notebooks for *any language*, your own zettelkasten with =org-roam= and more
-- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#pdf][Full fledged PDF support]]
+- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman/seaman.org#pdf][Full fledged PDF support]]
 
   Annotations and highlights you can save directly to the PDF, light and dark mode, text seach and more
-- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman.org#version-control][Magit for version control]]
+- [[https://github.com/alopezrivera/Seaman-Emacs/blob/main/seaman/seaman.org#version-control][Magit for version control]]
 
   A highlight of Emacs: version-control with the best Git front-end of them all
 
