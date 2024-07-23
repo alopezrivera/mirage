@@ -2,5 +2,5 @@
 (require 'graphite-light-theme)
 (require 'graphite-dark-theme)
 
-(provide 'seaman-module-graphite-theme)
-;;; seaman-graphite-theme.el ends here
+(provide 'mirage-module-graphite-theme)
+;;; mirage-graphite-theme.el ends here

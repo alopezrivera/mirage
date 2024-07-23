@@ -11,5 +11,5 @@
 (define-key elpy-mode-map (kbd "C-M-n") 'elpy-nav-forward-block)
 (define-key elpy-mode-map (kbd "C-M-p") 'elpy-nav-backward-block)
 
-(provide 'seaman-module-elpy)
-;;; seaman-elpy.el ends here
+(provide 'mirage-module-elpy)
+;;; mirage-elpy.el ends here

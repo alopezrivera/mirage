@@ -27,5 +27,5 @@
 			        ("C-d"   . ivy-reverse-i-search-kill))
             do (define-key map (kbd (car binding)) (cdr binding))))
 
-(provide 'seaman-module-ivy)
-;;; seaman-ivy.el ends here
+(provide 'mirage-module-ivy)
+;;; mirage-ivy.el ends here

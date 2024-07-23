@@ -7,14 +7,14 @@
   (require 'calfw-org)
   (require 'calfw-ical))
 
-(defun seaman/org-calendar ()
+(defun mirage/org-calendar ()
   "Open `calfw' Org Agenda calendar."
   (interactive)
   (require 'org-agenda)
   (let ((inhibit-message t))
        (cfw:open-org-calendar)))
 
-(global-set-key (kbd "C-c c") #'seaman/org-calendar)
+(global-set-key (kbd "C-c c") #'mirage/org-calendar)
 
-(provide 'seaman-module-org-calendar)
-;;; seaman-org-calendar.el ends here
+(provide 'mirage-module-org-calendar)
+;;; mirage-org-calendar.el ends here

@@ -19,5 +19,5 @@
 (define-key mc/keymap (kbd "<mouse-1>")      #'multiple-cursors-mode)
 (define-key mc/keymap (kbd "<down-mouse-1>")   nil) ; necessary
 
-(provide 'seaman-module-multiple-cursors)
-;;; seaman-multiple-cursors.el ends here
+(provide 'mirage-module-multiple-cursors)
+;;; mirage-multiple-cursors.el ends here

@@ -4,5 +4,5 @@
 
 (global-set-key (kbd "C-x o") #'ace-window)
 
-(provide 'seaman-module-ace-window)
-;;; seaman-ace-window.el ends here
+(provide 'mirage-module-ace-window)
+;;; mirage-ace-window.el ends here

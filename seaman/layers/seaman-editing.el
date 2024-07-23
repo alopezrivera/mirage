@@ -5,11 +5,11 @@
 (global-so-long-mode 1)
 
 ;; modules
-(seaman-module 'vundo)
-(seaman-module 'multiple-cursors)
+(mirage-module 'vundo)
+(mirage-module 'multiple-cursors)
 
 ;; extensions
-(seaman-extend 'editing)
+(mirage-extend 'editing)
 
-(provide 'seaman-layer-editing)
-;;; seaman-editing.el ends here
+(provide 'mirage-layer-editing)
+;;; mirage-editing.el ends here

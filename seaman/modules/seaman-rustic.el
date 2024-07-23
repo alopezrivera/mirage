@@ -8,5 +8,5 @@
 ;; Add cargo to exec-path
 (add-to-list 'exec-path "~/.cargo/bin")
 
-(provide 'seaman-module-rustic)
-;;; seaman-rustic.el ends here
+(provide 'mirage-module-rustic)
+;;; mirage-rustic.el ends here

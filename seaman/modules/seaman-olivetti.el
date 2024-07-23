@@ -29,5 +29,5 @@ a fraction of the window width."
   (olivetti-set-buffer-windows)
   (el-patch-remove (message "Text body width set to %s" olivetti-body-width)))
 
-(provide 'seaman-module-olivetti)
-;;; seaman-olivetti.el ends here
+(provide 'mirage-module-olivetti)
+;;; mirage-olivetti.el ends here

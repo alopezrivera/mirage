@@ -2,7 +2,7 @@
 
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 
-(defun seaman/hs-cycle (&optional level)
+(defun mirage/hs-cycle (&optional level)
   (interactive "p")
   (save-excursion
     (let (message-log-max (inhibit-message t))
@@ -28,7 +28,7 @@
 	(hs-hide-level level)
 	(setq this-command 'hs-hide-level)))))
 
-(defun seaman/hs-global-cycle ()
+(defun mirage/hs-global-cycle ()
   (interactive)
   (pcase last-command
     ('hs-global-cycle
@@ -36,7 +36,7 @@
      (setq this-command 'hs-global-show))
     (_ (hs-hide-all))))
 
-(define-key hs-minor-mode-map (kbd "C-\\") #'seaman/hs-cycle)
+(define-key hs-minor-mode-map (kbd "C-\\") #'mirage/hs-cycle)
 
-(provide 'seaman-module-hideshow)
-;;; seaman-hideshow.el ends here
+(provide 'mirage-module-hideshow)
+;;; mirage-hideshow.el ends here

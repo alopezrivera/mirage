@@ -4,5 +4,5 @@
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 
-(provide 'seaman-module-org-fragtog)
-;;; seaman-org-fragtog.el ends here
+(provide 'mirage-module-org-fragtog)
+;;; mirage-org-fragtog.el ends here

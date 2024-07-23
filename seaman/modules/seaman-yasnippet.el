@@ -3,7 +3,7 @@
 
 ;; (yas-global-mode 1)
 
-(defun seaman/<-snippet (orig-fun &rest args)
+(defun mirage/<-snippet (orig-fun &rest args)
   "Require < before snippets."
   (interactive)
   (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
@@ -14,10 +14,10 @@
 				       (delete-region (line-beginning-position) (point)))
 		       (apply orig-fun args)))))
 
-(advice-add 'yas-expand :around #'seaman/<-snippet)
+(advice-add 'yas-expand :around #'mirage/<-snippet)
 
 ;; yasnippet-snippets
 (straight-use-package 'yasnippet-snippets)
 
-(provide 'seaman-module-yasnippet)
-;;; seaman-yasnippet.el ends here
+(provide 'mirage-module-yasnippet)
+;;; mirage-yasnippet.el ends here

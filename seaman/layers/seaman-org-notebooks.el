@@ -1,6 +1,6 @@
-(seaman-module 'org-babel)
-(seaman-module 'ox-ipynb)
-(seaman-extend 'org-babel)
+(mirage-module 'org-babel)
+(mirage-module 'ox-ipynb)
+(mirage-extend 'org-babel)
 
-(provide 'seaman-layer-org-notebooks)
-;;; seaman-org-notebooks.el ends here
+(provide 'mirage-layer-org-notebooks)
+;;; mirage-org-notebooks.el ends here

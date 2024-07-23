@@ -11,23 +11,23 @@
 (electric-pair-mode)
 
 ;; outline
-(seaman-module 'hideshow)
+(mirage-module 'hideshow)
 ;; editing
-(seaman-module 'puni)
-(seaman-module 'embrace)
+(mirage-module 'puni)
+(mirage-module 'embrace)
 ;; completion
-(seaman-module 'company)
+(mirage-module 'company)
 ;; syntax checking
-(seaman-module 'flycheck)
+(mirage-module 'flycheck)
 ;; language server protocol
-(seaman-module 'lsp-mode)
+(mirage-module 'lsp-mode)
 
 ;; lisp
-(seaman-module 'rainbow-delimiters)
+(mirage-module 'rainbow-delimiters)
 ;; python
-(seaman-module 'elpy)
+(mirage-module 'elpy)
 ;; rust
-(seaman-module 'rustic)
+(mirage-module 'rustic)
 
-(provide 'seaman-layer-ide)
-;;; seaman-ide.el ends here
+(provide 'mirage-layer-ide)
+;;; mirage-ide.el ends here

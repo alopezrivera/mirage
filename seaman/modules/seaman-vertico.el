@@ -19,5 +19,5 @@
 
 (setq enable-recursive-minibuffers t)
 
-(provide 'seaman-module-vertico)
-;;; seaman-vertico.el ends here
+(provide 'mirage-module-vertico)
+;;; mirage-vertico.el ends here

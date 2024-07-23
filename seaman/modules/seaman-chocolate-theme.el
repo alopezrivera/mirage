@@ -1,5 +1,5 @@
 (straight-use-package 'chocolate-theme)
 (require 'chocolate-theme)
 
-(provide 'seaman-module-chocolate-theme)
-;;; seaman-chocolate-theme.el ends here
+(provide 'mirage-module-chocolate-theme)
+;;; mirage-chocolate-theme.el ends here

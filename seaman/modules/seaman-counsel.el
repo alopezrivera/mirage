@@ -3,5 +3,5 @@
 
 (global-set-key (kbd "M-x") #'counsel-M-x)
 
-(provide 'seaman-module-counsel)
-;;; seaman-counsel.el ends here
+(provide 'mirage-module-counsel)
+;;; mirage-counsel.el ends here

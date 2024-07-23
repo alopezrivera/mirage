@@ -6,5 +6,5 @@
                 eval-expression-minibuffer-setup-hook))
   (add-hook hook #'puni-mode))
 
-(provide 'seaman-module-puni)
-;;; seaman-puni.el ends here
+(provide 'mirage-module-puni)
+;;; mirage-puni.el ends here

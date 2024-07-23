@@ -6,5 +6,5 @@
 
 (which-key-mode)
 
-(provide 'seaman-module-which-key)
-;;; seaman-which-key.el ends here
+(provide 'mirage-module-which-key)
+;;; mirage-which-key.el ends here

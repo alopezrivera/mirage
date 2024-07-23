@@ -4,11 +4,11 @@
 (put 'narrow-to-region 'disabled nil)
 
 ;; modules
-(seaman-module 'evil)
-(seaman-module 'god-mode)
+(mirage-module 'evil)
+(mirage-module 'god-mode)
 
 ;; extensions
-(seaman-extend 'rsi)
+(mirage-extend 'rsi)
 
-(provide 'seaman-layer-input)
-;;; seaman-input.el ends here
+(provide 'mirage-layer-input)
+;;; mirage-input.el ends here

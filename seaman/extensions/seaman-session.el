@@ -1,4 +1,4 @@
-(defun seaman/load-session ()
+(defun mirage/load-session ()
   (interactive)
   (let ((session (read-file-name "Select session: "
                                  "~/sessions/"
@@ -9,7 +9,7 @@
     (wg-load (concat session ".wg"))
     (call-interactively 'wg-switch-to-workgroup)))
 
-(global-set-key (kbd "C-x s") #'seaman/load-session)
+(global-set-key (kbd "C-x s") #'mirage/load-session)
 
-(provide 'seaman-extension-session)
-;;; seaman-session.el ends here
+(provide 'mirage-extension-session)
+;;; mirage-session.el ends here

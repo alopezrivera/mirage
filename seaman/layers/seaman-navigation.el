@@ -20,13 +20,13 @@
 (winner-mode)
 
 ;; modules
-(seaman-module 'ace-window)
+(mirage-module 'ace-window)
 
 ;; extensions
-(seaman-extend 'navigation)
+(mirage-extend 'navigation)
 
 ;; bindings
 (global-set-key (kbd "C-S-n") #'make-frame-command)
 
-(provide 'seaman-layer-navigation)
-;;; seaman-navigation.el ends here
+(provide 'mirage-layer-navigation)
+;;; mirage-navigation.el ends here

@@ -1,11 +1,11 @@
 ;; icons
-(seaman-module 'all-the-icons)
+(mirage-module 'all-the-icons)
 
 ;; highlights
-(seaman-module 'rainbow-mode)
+(mirage-module 'rainbow-mode)
 
 ;; centering
-(seaman-module 'olivetti)
+(mirage-module 'olivetti)
 
 ;; line numbers
 (global-set-key (kbd "C-c l") #'display-line-numbers-mode)
@@ -47,10 +47,10 @@
 (column-number-mode)
 
 ;; mode display
-(seaman-module 'delight)
+(mirage-module 'delight)
 
 ;; extensions
-(seaman-extend 'ui)
+(mirage-extend 'ui)
 
-(provide 'seaman-layer-ui)
-;;; seaman-ui.el ends here
+(provide 'mirage-layer-ui)
+;;; mirage-ui.el ends here

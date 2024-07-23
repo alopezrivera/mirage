@@ -2,14 +2,14 @@
 (setq doc-view-resolution 250)
 
 ;; requirements
-(seaman-module 'tablist)
+(mirage-module 'tablist)
 
 ;; modules
-(seaman-module 'pdf-tools)
-(seaman-module 'pdf-view-restore)
+(mirage-module 'pdf-tools)
+(mirage-module 'pdf-view-restore)
 
 ;; extensions
-(seaman-extend 'pdf)
+(mirage-extend 'pdf)
 
-(provide 'seaman-layer-pdf)
-;;; seaman-pdf.el ends here
+(provide 'mirage-layer-pdf)
+;;; mirage-pdf.el ends here

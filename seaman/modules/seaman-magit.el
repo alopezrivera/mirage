@@ -3,5 +3,5 @@
 
 (global-set-key (kbd "C-x g") #'magit-status)
 
-(provide 'seaman-module-magit)
-;;; seaman-magit.el ends here
+(provide 'mirage-module-magit)
+;;; mirage-magit.el ends here

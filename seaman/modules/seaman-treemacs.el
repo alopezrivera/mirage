@@ -1,15 +1,15 @@
 (straight-use-package 'treemacs)
 (require 'treemacs)
 
-(defvar seaman/treemacs-ignored '(".*__pycache__.*")
+(defvar mirage/treemacs-ignored '(".*__pycache__.*")
   "Files and directories ignored by treemacs")
 
-(defun seaman/treemacs-ignore-filter (file _)
-  (cl-loop for ignored in seaman/treemacs-ignored
+(defun mirage/treemacs-ignore-filter (file _)
+  (cl-loop for ignored in mirage/treemacs-ignored
 	   if (string-match ignored file)
 	      return t
 	   finally return nil))
-(push #'seaman/treemacs-ignore-filter treemacs-ignored-file-predicates)
+(push #'mirage/treemacs-ignore-filter treemacs-ignored-file-predicates)
 
 (cl-loop for binding in '(("M-0"       . treemacs-select-window)
 			        ("C-x t 1"   . treemacs-delete-other-windows)
@@ -95,5 +95,5 @@
 
 (straight-use-package 'treemacs-magit)
 
-(provide 'seaman-module-treemacs)
-;;; seaman-treemacs.el ends here
+(provide 'mirage-module-treemacs)
+;;; mirage-treemacs.el ends here

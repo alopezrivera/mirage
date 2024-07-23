@@ -1,4 +1,4 @@
 (straight-use-package 'crux)
 
-(provide 'seaman-module-crux)
-;;; seaman-crux.el ends here
+(provide 'mirage-module-crux)
+;;; mirage-crux.el ends here

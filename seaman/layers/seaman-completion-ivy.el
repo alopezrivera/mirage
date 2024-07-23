@@ -1,4 +1,4 @@
-(seaman-module 'ivy)
+(mirage-module 'ivy)
 
-(provide 'seaman-layer-completion-ivy)
-;;; seaman-completion-ivy.el ends here
+(provide 'mirage-layer-completion-ivy)
+;;; mirage-completion-ivy.el ends here

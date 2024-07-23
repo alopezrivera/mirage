@@ -1,8 +1,8 @@
 ;; modules
-(seaman-module 'nano-modeline)
+(mirage-module 'nano-modeline)
 
 ;; extensions
-(seaman-extend 'theme-modeline)
+(mirage-extend 'theme-modeline)
 
-(provide 'seaman-layer-modeline-nano)
-;;; seaman-modeline-nano.el ends here
+(provide 'mirage-layer-modeline-nano)
+;;; mirage-modeline-nano.el ends here

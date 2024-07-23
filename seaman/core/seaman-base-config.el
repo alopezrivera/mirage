@@ -1,34 +1,34 @@
 ;; utilities
-(seaman-extend 'get)
-(seaman-extend 'queries)
-(seaman-extend 'execution)
-(seaman-extend 'operators)
+(mirage-extend 'get)
+(mirage-extend 'queries)
+(mirage-extend 'execution)
+(mirage-extend 'operators)
 
 ;; UI
-(seaman-layer 'ui)
-(seaman-layer 'themes)
-(seaman-layer 'dashboard)
+(mirage-layer 'ui)
+(mirage-layer 'themes)
+(mirage-layer 'dashboard)
 
 ;; input
-(seaman-layer 'input)
+(mirage-layer 'input)
 
 ;; org-mode
-(seaman-layer 'org)
-(seaman-layer 'org-ui)
-(seaman-layer 'org-inline)
-(seaman-layer 'org-typesetting)
-(seaman-layer 'org-export)
+(mirage-layer 'org)
+(mirage-layer 'org-ui)
+(mirage-layer 'org-inline)
+(mirage-layer 'org-typesetting)
+(mirage-layer 'org-export)
 
 ;; org applications
-(seaman-layer 'org-notebooks)
-(seaman-layer 'org-zettelkasten)
-(seaman-layer 'org-agenda)
+(mirage-layer 'org-notebooks)
+(mirage-layer 'org-zettelkasten)
+(mirage-layer 'org-agenda)
 
 ;; PDFs
-(seaman-layer 'pdf)
+(mirage-layer 'pdf)
 
 ;; magit
-(seaman-layer 'version-control)
+(mirage-layer 'version-control)
 
-(provide 'seaman-core-base-config)
-;;; seaman-base-config.el ends here
+(provide 'mirage-core-base-config)
+;;; mirage-base-config.el ends here

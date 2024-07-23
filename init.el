@@ -1,9 +1,9 @@
-(seaman-module 'ef-themes)
+(mirage-module 'ef-themes)
 
 (setq light-theme 'ef-deuteranopia-light)
 (setq dark-theme  'ef-tritanopia-dark)
 
-(seaman-layer 'modeline-moody)
+(mirage-layer 'modeline-moody)
 
 ;; default
 (set-face-attribute 'default nil        :font "Fira Code Retina" :height 93)
@@ -15,7 +15,7 @@
 (set-face-attribute 'variable-pitch nil :font "PT Sans"  :height 105 :weight 'regular)
 
 ;; italic
-(defface seaman/italic
+(defface mirage/italic
   '((t :font "Victor Mono" :height  86 :weight  bold :slant italic))
   "Italic typeface")
 
@@ -28,43 +28,43 @@
 ;; mode line
 (set-face-attribute 'mode-line nil :height 85 :inherit 'fixed-pitch)
 
-(seaman-module 'counsel)
-(seaman-module 'helpful)
-(seaman-module 'which-key)
+(mirage-module 'counsel)
+(mirage-module 'helpful)
+(mirage-module 'which-key)
 
-(seaman-layer 'navigation)
+(mirage-layer 'navigation)
 
 ;; text editing
-(seaman-layer 'editing)
+(mirage-layer 'editing)
 ;; text search
-(seaman-layer 'search)
+(mirage-layer 'search)
 ;; snippets
-(seaman-module 'yasnippet)
+(mirage-module 'yasnippet)
 ;; auto-completions
-(seaman-layer 'completion-vertico)
+(mirage-layer 'completion-vertico)
 
 ;; session management
-(seaman-layer 'session)
+(mirage-layer 'session)
 ;; project management
-(seaman-layer 'project-interaction)
+(mirage-layer 'project-interaction)
 
-(seaman-layer 'file-management)
+(mirage-layer 'file-management)
 
-(seaman-layer 'ide)
+(mirage-layer 'ide)
 
-(seaman-layer 'latex)
+(mirage-layer 'latex)
 
-(seaman-module 'bitacora)
+(mirage-module 'bitacora)
 
-(seaman-layer 'org-agenda)
-(seaman-layer 'org-gtd)
+(mirage-layer 'org-agenda)
+(mirage-layer 'org-gtd)
 
 ;; language
 (setq default-input-method 'spanish-prefix)
 
 ;; custom link types
-(@seaman/org-dir-link "msc1" (concat home "studio/academic/education/TU Delft/MSc/Space Flight/SPF-1/"))
-(@seaman/org-dir-link "ta"(concat home "studio/academic/education/TU Delft/_assistantships/"))
+(@mirage/org-dir-link "msc1" (concat home "studio/academic/education/TU Delft/MSc/Space Flight/SPF-1/"))
+(@mirage/org-dir-link "ta"(concat home "studio/academic/education/TU Delft/_assistantships/"))
 
 ;; org-roam capture templates
 (setq org-roam-capture-templates

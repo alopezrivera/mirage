@@ -2,5 +2,5 @@
 (straight-use-package 'company)
 (require 'company)
 
-(provide 'seaman-module-company)
-;;; seaman-company.el ends here
+(provide 'mirage-module-company)
+;;; mirage-company.el ends here

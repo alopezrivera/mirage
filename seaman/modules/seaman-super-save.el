@@ -2,5 +2,5 @@
 
 (super-save-mode +1)
 
-(provide 'seaman-module-super-save)
-;;; seaman-super-save.el ends here
+(provide 'mirage-module-super-save)
+;;; mirage-super-save.el ends here

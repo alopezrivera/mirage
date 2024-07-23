@@ -1,9 +1,9 @@
-(seaman-module 'vertico)
-(seaman-module 'orderless)
+(mirage-module 'vertico)
+(mirage-module 'orderless)
 
 ;; icons
-(seaman-module 'all-the-icons)
-(seaman-module 'all-the-icons-completion)
+(mirage-module 'all-the-icons)
+(mirage-module 'all-the-icons-completion)
 
-(provide 'seaman-layer-completion-vertico)
-;;; seaman-completion-vertico.el ends here
+(provide 'mirage-layer-completion-vertico)
+;;; mirage-completion-vertico.el ends here

@@ -3,5 +3,5 @@
 
 (global-set-key (kbd "C-v") #'vundo)
 
-(provide 'seaman-module-vundo)
-;;; seaman-vundo.el ends here
+(provide 'mirage-module-vundo)
+;;; mirage-vundo.el ends here

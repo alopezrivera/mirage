@@ -19,5 +19,5 @@
 (setq org-appear-autosubmarkers t)
 (setq org-appear-inside-latex t)
 
-(provide 'seaman-module-org-appear)
-;;; seaman-org-appear.el ends here
+(provide 'mirage-module-org-appear)
+;;; mirage-org-appear.el ends here

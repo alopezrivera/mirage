@@ -7,5 +7,5 @@
                                                                       (funcall orig-fun THEME))
                                                              (funcall orig-fun THEME))))
 
-(provide 'seaman-module-nano-theme)
-;;; seaman-nano-theme.el ends here
+(provide 'mirage-module-nano-theme)
+;;; mirage-nano-theme.el ends here

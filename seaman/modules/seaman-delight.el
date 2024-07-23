@@ -13,5 +13,5 @@
 	   ;; Major modes
 	   (emacs-lisp-mode "EL" :major)))
 
-(provide 'seaman-module-delight)
-;;; seaman-delight.el ends here
+(provide 'mirage-module-delight)
+;;; mirage-delight.el ends here

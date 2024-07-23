@@ -1,6 +1,6 @@
 ;; requirements
 (pixel-scroll-precision-mode)
-(seaman-module 'pdf-tools)
+(mirage-module 'pdf-tools)
 
 ;; save-buffer
 (global-set-key (kbd "C-=") #'save-buffer)
@@ -21,5 +21,5 @@
          do (define-key map (kbd "<next>")  #'next-buffer)
          do (define-key map (kbd "<prior>") #'previous-buffer))
 
-(provide 'seaman-extension-rsi)
-;;; seaman-rsi.el ends here
+(provide 'mirage-extension-rsi)
+;;; mirage-rsi.el ends here

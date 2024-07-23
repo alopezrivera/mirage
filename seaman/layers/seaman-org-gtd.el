@@ -31,7 +31,7 @@
 		       (org-agenda-files org-agenda-files)))))
              t)
 
-(seaman-module 'org-pomodoro)
+(mirage-module 'org-pomodoro)
 
-(provide 'seaman-layer-org-gtd)
-;;; seaman-org-gtd.el ends here
+(provide 'mirage-layer-org-gtd)
+;;; mirage-org-gtd.el ends here

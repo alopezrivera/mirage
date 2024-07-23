@@ -4,5 +4,5 @@
 
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 
-(provide 'seaman-module-org-reveal)
-;;; seaman-org-reveal.el ends here
+(provide 'mirage-module-org-reveal)
+;;; mirage-org-reveal.el ends here

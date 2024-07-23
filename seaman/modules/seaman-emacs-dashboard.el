@@ -17,5 +17,5 @@
          (string-equal (buffer-name (current-buffer)) "*scratch*"))
     (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))))
 
-(provide 'seaman-module-emacs-dashboard)
-;;; seaman-emacs-dashboard.el ends here
+(provide 'mirage-module-emacs-dashboard)
+;;; mirage-emacs-dashboard.el ends here

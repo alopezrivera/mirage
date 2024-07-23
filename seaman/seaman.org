@@ -5,7 +5,7 @@
 
 
 
-#+title:Seaman
+#+title:Mirage
 #+PROPERTY: header-args:emacs-lisp :results none :mkdirp yes
 
 
@@ -165,31 +165,31 @@ From Lambda Emacs. All credit to Colin McLear.
 
 #+end_src
 
-** Seaman core
+** Mirage core
 
 #+begin_src emacs-lisp
 
-;;;; Seaman core
+;;;; Mirage core
 
 ;; Load path
-(add-to-list 'load-path (concat user-emacs-directory "seaman/core/"))
+(add-to-list 'load-path (concat user-emacs-directory "mirage/core/"))
 
 ;; Load all core components
-(defvar seaman-core-components '("package-manager"
+(defvar mirage-core-components '("package-manager"
                                  "config-management"
                                  "base-config"))
-(mapc (lambda (component) (require (intern (concat "seaman-core-" component)) (concat "seaman-" component)))
-      seaman-core-components)
+(mapc (lambda (component) (require (intern (concat "mirage-core-" component)) (concat "mirage-" component)))
+      mirage-core-components)
 
 ;;; early-init.el ends here
 
 #+end_src
 
 
-* Seaman Core
+* Mirage Core
 ** Package manager
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/seaman-package-manager.el
+:header-args:emacs-lisp+: :tangle ./core/mirage-package-manager.el
 :END:
 
 #+begin_src emacs-lisp
@@ -218,35 +218,35 @@ From Lambda Emacs. All credit to Colin McLear.
 
 ** Config management
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/seaman-config-management.el
+:header-args:emacs-lisp+: :tangle ./core/mirage-config-management.el
 :END:
 *** Component loading
 
 #+begin_src emacs-lisp
 
-(defun seaman-load-component (type component)
-  "Load a seaman COMPONENT of the given TYPE"
+(defun mirage-load-component (type component)
+  "Load a mirage COMPONENT of the given TYPE"
   (let ((component-name (symbol-name component)))
        (condition-case err
-           (require (intern (concat "seaman-" type "-" component-name)) (concat user-emacs-directory "seaman/" type "s" "/seaman-" component-name ".el"))
-         (error (progn (message "ERROR: seaman-%s %s load failed" component-name type)
+           (require (intern (concat "mirage-" type "-" component-name)) (concat user-emacs-directory "mirage/" type "s" "/mirage-" component-name ".el"))
+         (error (progn (message "ERROR: mirage-%s %s load failed" component-name type)
 		       (if debug-on-error
 		           (debug err)))))))
 
-;; seaman modules
-(defun seaman-module (module)
-  "Load a seaman MODULE by name"
-  (seaman-load-component "module" module))
+;; mirage modules
+(defun mirage-module (module)
+  "Load a mirage MODULE by name"
+  (mirage-load-component "module" module))
 
-;; seaman layers
-(defun seaman-layer (layer)
-  "Load a seaman LAYER by name"
-  (seaman-load-component "layer" layer))
+;; mirage layers
+(defun mirage-layer (layer)
+  "Load a mirage LAYER by name"
+  (mirage-load-component "layer" layer))
 
-;; seaman extensions
-(defun seaman-extend (extension)
-  "Load a seaman EXTENSION by name"
-  (seaman-load-component "extension" extension))
+;; mirage extensions
+(defun mirage-extend (extension)
+  "Load a mirage EXTENSION by name"
+  (mirage-load-component "extension" extension))
 
 #+end_src
 
@@ -259,7 +259,7 @@ From Lambda Emacs. All credit to Colin McLear.
 (require 'async)
 
 ;;;; Tangling machinery
-(defun seaman/tangle (org-file &optional quiet)
+(defun mirage/tangle (org-file &optional quiet)
   "Asynchronously tangle an org file."
   ;; Record initial time, name of current buffer and set async quiet switch
   (let ((init-tangle-start-time (current-time))
@@ -269,8 +269,8 @@ From Lambda Emacs. All credit to Colin McLear.
     (async-start
      ;;; Tangling function
      `(lambda ()
-        ;; Delete all pre-existing Seaman components
-        (dolist (comp-dir (mapcar (lambda (dir) (concat ,user-emacs-directory "seaman/" dir)) '("core" "layers" "modules" "extensions")))
+        ;; Delete all pre-existing Mirage components
+        (dolist (comp-dir (mapcar (lambda (dir) (concat ,user-emacs-directory "mirage/" dir)) '("core" "layers" "modules" "extensions")))
           (dolist (file (directory-files comp-dir t directory-files-no-dot-files-regexp))
             (delete-file file)))
         ;; Require org-mode
@@ -279,17 +279,17 @@ From Lambda Emacs. All credit to Colin McLear.
 	(add-hook 'org-babel-post-tangle-hook
 		  (lambda ()
                     ;; Obtain component and component type from the name of the source file being tangled to
-                    (if (string-match "\\(^.*/seaman/\\)\\(.*\\)\\(/seaman-\\)\\(.*\\)\\(.el\\)" (buffer-file-name))
+                    (if (string-match "\\(^.*/mirage/\\)\\(.*\\)\\(/mirage-\\)\\(.*\\)\\(.el\\)" (buffer-file-name))
 		        (let ((component (match-string 4 (buffer-file-name)))
 			      (comp-type (match-string 2 (buffer-file-name))))
 		          (end-of-buffer)
 		          (insert (concat
 			           "\n"
-			           "(provide 'seaman-" (if (string-match-p "^.*s" comp-type)
+			           "(provide 'mirage-" (if (string-match-p "^.*s" comp-type)
                                                            (substring comp-type 0 -1)
                                                          comp-type)
                                    "-" component ")\n"
-			           ";;; seaman-" component ".el ends here"))
+			           ";;; mirage-" component ".el ends here"))
 		          (save-buffer)))))
         ;; Tangle current file
 	(org-babel-tangle-file ,org-file))
@@ -297,20 +297,20 @@ From Lambda Emacs. All credit to Colin McLear.
      (unless quiet
        `(lambda (result)
 	  (if result
-	      (message "|SEAMAN| Seaman components successfully tangled (%.2fs)."
+	      (message "|mirage| Mirage components successfully tangled (%.2fs)."
 		       (float-time (time-subtract (current-time) ',init-tangle-start-time)))
-	    (message "|SEAMAN| Seaman component tangling failed.")))))))
+	    (message "|mirage| Mirage component tangling failed.")))))))
 
-(defun seaman/tangle-auto ()
+(defun mirage/tangle-auto ()
   "Automatically tangle Org Mode files in the Emacs config directory"
   (let* ((file   (expand-file-name buffer-file-name))
 	 (config (string-match (concat user-emacs-directory "config.org$") file))
-	 (seaman (string-match (concat user-emacs-directory "seaman/seaman.org$") buffer-file-name))
+	 (mirage (string-match (concat user-emacs-directory "mirage/mirage.org$") buffer-file-name))
 	 (org-confirm-babel-evaluate nil))
-    (if seaman (seaman/tangle file))
+    (if mirage (mirage/tangle file))
     (if config (org-babel-tangle))))
 
-(add-hook 'after-save-hook #'seaman/tangle-auto)
+(add-hook 'after-save-hook #'mirage/tangle-auto)
 
 #+end_src
 
@@ -346,42 +346,42 @@ From Lambda Emacs. All credit to Colin McLear.
 
 ** Base configuration
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./core/seaman-base-config.el
+:header-args:emacs-lisp+: :tangle ./core/mirage-base-config.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; utilities
-(seaman-extend 'get)
-(seaman-extend 'queries)
-(seaman-extend 'execution)
-(seaman-extend 'operators)
+(mirage-extend 'get)
+(mirage-extend 'queries)
+(mirage-extend 'execution)
+(mirage-extend 'operators)
 
 ;; UI
-(seaman-layer 'ui)
-(seaman-layer 'themes)
-(seaman-layer 'dashboard)
+(mirage-layer 'ui)
+(mirage-layer 'themes)
+(mirage-layer 'dashboard)
 
 ;; input
-(seaman-layer 'input)
+(mirage-layer 'input)
 
 ;; org-mode
-(seaman-layer 'org)
-(seaman-layer 'org-ui)
-(seaman-layer 'org-inline)
-(seaman-layer 'org-typesetting)
-(seaman-layer 'org-export)
+(mirage-layer 'org)
+(mirage-layer 'org-ui)
+(mirage-layer 'org-inline)
+(mirage-layer 'org-typesetting)
+(mirage-layer 'org-export)
 
 ;; org applications
-(seaman-layer 'org-notebooks)
-(seaman-layer 'org-zettelkasten)
-(seaman-layer 'org-agenda)
+(mirage-layer 'org-notebooks)
+(mirage-layer 'org-zettelkasten)
+(mirage-layer 'org-agenda)
 
 ;; PDFs
-(seaman-layer 'pdf)
+(mirage-layer 'pdf)
 
 ;; magit
-(seaman-layer 'version-control)
+(mirage-layer 'version-control)
 
 #+end_src
 
@@ -397,7 +397,7 @@ Content of a layer:
 
 ** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-ui.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-ui.el
 :END:
 *** Text
 **** Typefaces
@@ -405,7 +405,7 @@ Content of a layer:
 #+begin_src emacs-lisp
 
 ;; icons
-(seaman-module 'all-the-icons)
+(mirage-module 'all-the-icons)
 
 #+end_src
 
@@ -414,7 +414,7 @@ Content of a layer:
 #+begin_src emacs-lisp
 
 ;; highlights
-(seaman-module 'rainbow-mode)
+(mirage-module 'rainbow-mode)
 
 #+end_src
 
@@ -423,7 +423,7 @@ Content of a layer:
 #+begin_src emacs-lisp
 
 ;; centering
-(seaman-module 'olivetti)
+(mirage-module 'olivetti)
 
 ;; line numbers
 (global-set-key (kbd "C-c l") #'display-line-numbers-mode)
@@ -489,7 +489,7 @@ Content of a layer:
 (column-number-mode)
 
 ;; mode display
-(seaman-module 'delight)
+(mirage-module 'delight)
 
 #+end_src
 
@@ -498,16 +498,16 @@ Content of a layer:
 #+begin_src emacs-lisp
 
 ;; extensions
-(seaman-extend 'ui)
+(mirage-extend 'ui)
 
 #+end_src
 
 ** Themes
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-themes.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-themes.el
 :END:
 
-Seaman themes layer. It requires three variables to be defined: the light and dark themes (~light~ and ~dark~ respectively).
+Mirage themes layer. It requires three variables to be defined: the light and dark themes (~light~ and ~dark~ respectively).
 
 #+begin_src emacs-lisp
 
@@ -517,55 +517,55 @@ Seaman themes layer. It requires three variables to be defined: the light and da
   "Dark theme")
 
 ;; creation
-(seaman-module 'autothemer)
+(mirage-module 'autothemer)
 
 ;; theme switching
-(seaman-extend 'theme-switch)
+(mirage-extend 'theme-switch)
 
 ;; scheduling
-(seaman-module 'circadian)
+(mirage-module 'circadian)
 
 #+end_src
 
 ** Mode line
 *** Doom
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-modeline-doom.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-modeline-doom.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; modules
-(seaman-module 'doom-modeline)
+(mirage-module 'doom-modeline)
 
 ;; extensions
-(seaman-extend 'theme-modeline)
+(mirage-extend 'theme-modeline)
 
 #+end_src
 
 *** Nano
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-modeline-nano.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-modeline-nano.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; modules
-(seaman-module 'nano-modeline)
+(mirage-module 'nano-modeline)
 
 ;; extensions
-(seaman-extend 'theme-modeline)
+(mirage-extend 'theme-modeline)
 
 #+end_src
 
 *** Moody
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-modeline-moody.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-modeline-moody.el
 :END:
 
 #+begin_src emacs-lisp
 
-(seaman-module 'moody)
+(mirage-module 'moody)
 
 ;; modeline height
 (setq moody-mode-line-height 22)
@@ -579,36 +579,36 @@ Seaman themes layer. It requires three variables to be defined: the light and da
   (set-face-attribute 'mode-line-inactive nil :box        nil))
 
 ;; extensions
-(seaman-extend 'theme-modeline)
+(mirage-extend 'theme-modeline)
 
 #+end_src
 
 *** Spaceline
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-modeline-spaceline.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-modeline-spaceline.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; modules
-(seaman-module 'spaceline)
+(mirage-module 'spaceline)
 
 #+end_src
 
 ** Dashboard
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-dashboard.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-dashboard.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; requirements
-(seaman-module 'projectile)
-(seaman-module 'all-the-icons)
-(seaman-module 'page-break-lines)
+(mirage-module 'projectile)
+(mirage-module 'all-the-icons)
+(mirage-module 'page-break-lines)
 
 ;; dashboard
-(seaman-module 'emacs-dashboard)
+(mirage-module 'emacs-dashboard)
 
 ;; init info
 (setq dashboard-set-init-info t)
@@ -624,9 +624,9 @@ Seaman themes layer. It requires three variables to be defined: the light and da
                         (agenda . 5)))
 
 ;; banner
-(setq dashboard-startup-banner (concat user-emacs-directory "seaman/art/gwd-light.png"))
-(add-hook 'seaman/enable-or-load-theme-hook (lambda () (let ((active-theme (car custom-enabled-themes)))
-                                                         (setq dashboard-startup-banner (concat user-emacs-directory "seaman/art/"
+(setq dashboard-startup-banner (concat user-emacs-directory "mirage/art/gwd-light.png"))
+(add-hook 'mirage/enable-or-load-theme-hook (lambda () (let ((active-theme (car custom-enabled-themes)))
+                                                         (setq dashboard-startup-banner (concat user-emacs-directory "mirage/art/"
                                                                                                 (if (eq active-theme light-theme)
                                                                                                     "gwd-light.png"
                                                                                                   "gwd-dark.png")))
@@ -649,7 +649,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 ** Input
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-input.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-input.el
 :END:
 
 #+begin_src emacs-lisp
@@ -660,45 +660,45 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (put 'narrow-to-region 'disabled nil)
 
 ;; modules
-(seaman-module 'evil)
-(seaman-module 'god-mode)
+(mirage-module 'evil)
+(mirage-module 'god-mode)
 
 ;; extensions
-(seaman-extend 'rsi)
+(mirage-extend 'rsi)
 
 #+end_src
 
 ** Completion
 *** ivy
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-completion-ivy.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-completion-ivy.el
 :END:
 
 #+begin_src emacs-lisp
 
-(seaman-module 'ivy)
+(mirage-module 'ivy)
 
 #+end_src
 
 *** vertico
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-completion-vertico.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-completion-vertico.el
 :END:
 
 #+begin_src emacs-lisp
 
-(seaman-module 'vertico)
-(seaman-module 'orderless)
+(mirage-module 'vertico)
+(mirage-module 'orderless)
 
 ;; icons
-(seaman-module 'all-the-icons)
-(seaman-module 'all-the-icons-completion)
+(mirage-module 'all-the-icons)
+(mirage-module 'all-the-icons-completion)
 
 #+end_src
 
 ** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-navigation.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-navigation.el
 :END:
 
 #+begin_src emacs-lisp
@@ -725,10 +725,10 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (winner-mode)
 
 ;; modules
-(seaman-module 'ace-window)
+(mirage-module 'ace-window)
 
 ;; extensions
-(seaman-extend 'navigation)
+(mirage-extend 'navigation)
 
 ;; bindings
 (global-set-key (kbd "C-S-n") #'make-frame-command)
@@ -738,23 +738,23 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 ** Search
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-search.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-search.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; modules
-(seaman-module 'swiper)
-(seaman-module 'rg)
+(mirage-module 'swiper)
+(mirage-module 'rg)
 
 ;; extensions
-(seaman-extend 'search)
+(mirage-extend 'search)
 
 #+end_src
 
 ** Editing
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-editing.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-editing.el
 :END:
 
 #+begin_src emacs-lisp
@@ -766,18 +766,18 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (global-so-long-mode 1)
 
 ;; modules
-(seaman-module 'vundo)
-(seaman-module 'multiple-cursors)
+(mirage-module 'vundo)
+(mirage-module 'multiple-cursors)
 
 ;; extensions
-(seaman-extend 'editing)
+(mirage-extend 'editing)
 
 #+end_src
 
 ** Workflow
 *** Session
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-session.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-session.el
 :END:
 
 #+begin_src emacs-lisp
@@ -786,43 +786,43 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (desktop-save-mode 1)
 
 ;; modules
-(seaman-module 'workgroups)
-(seaman-module 'super-save)
+(mirage-module 'workgroups)
+(mirage-module 'super-save)
 
 ;; extensions
-(seaman-extend 'session)
-(seaman-extend 'external-programs)
+(mirage-extend 'session)
+(mirage-extend 'external-programs)
 
 #+end_src 
 
 *** TODO Project interaction
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-project-interaction.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-project-interaction.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; modules
-(seaman-module 'projectile)
-(seaman-module 'treemacs)
+(mirage-module 'projectile)
+(mirage-module 'treemacs)
 
 #+end_src
 
 ** Version control
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-version-control.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-version-control.el
 :END:
 
 #+begin_src emacs-lisp
 
-(seaman-module 'magit)
-(seaman-module 'forge)
+(mirage-module 'magit)
+(mirage-module 'forge)
 
 #+end_src
 
 ** File management
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-file-management.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-file-management.el
 :END:
 
 ~backup-directory-alist~, which determines where backups are saved, is set by ~no-littering~.
@@ -837,17 +837,17 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (setq kept-old-versions 2)
 
 ;; file manager
-(seaman-module 'dirvish)
+(mirage-module 'dirvish)
 
 ;; extensions
-(seaman-extend 'file-management)
+(mirage-extend 'file-management)
 
 #+end_src
 
 
 ** TODO IDE
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-ide.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-ide.el
 :END:
 
 #+begin_src emacs-lisp
@@ -865,29 +865,29 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (electric-pair-mode)
 
 ;; outline
-(seaman-module 'hideshow)
+(mirage-module 'hideshow)
 ;; editing
-(seaman-module 'puni)
-(seaman-module 'embrace)
+(mirage-module 'puni)
+(mirage-module 'embrace)
 ;; completion
-(seaman-module 'company)
+(mirage-module 'company)
 ;; syntax checking
-(seaman-module 'flycheck)
+(mirage-module 'flycheck)
 ;; language server protocol
-(seaman-module 'lsp-mode)
+(mirage-module 'lsp-mode)
 
 ;; lisp
-(seaman-module 'rainbow-delimiters)
+(mirage-module 'rainbow-delimiters)
 ;; python
-(seaman-module 'elpy)
+(mirage-module 'elpy)
 ;; rust
-(seaman-module 'rustic)
+(mirage-module 'rustic)
 
 #+end_src
 
 ** PDF
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-pdf.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-pdf.el
 :END:
 
 #+begin_src emacs-lisp
@@ -896,20 +896,20 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (setq doc-view-resolution 250)
 
 ;; requirements
-(seaman-module 'tablist)
+(mirage-module 'tablist)
 
 ;; modules
-(seaman-module 'pdf-tools)
-(seaman-module 'pdf-view-restore)
+(mirage-module 'pdf-tools)
+(mirage-module 'pdf-view-restore)
 
 ;; extensions
-(seaman-extend 'pdf)
+(mirage-extend 'pdf)
 
 #+end_src
 
 ** TODO LaTeX
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-latex.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-latex.el
 :END:
 
 #+begin_src emacs-lisp
@@ -922,7 +922,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 *** Configuration
 **** Base
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-org.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-org.el
 :END:
 
 #+begin_src emacs-lisp
@@ -934,38 +934,38 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (global-set-key (kbd "C-x c") #'org-capture)
 
 ;; dependencies
-(seaman-layer  'editing)
+(mirage-layer  'editing)
 
 ;; org
-(seaman-module 'org)
+(mirage-module 'org)
 
 ;; editing
-(seaman-module 'org-paragraph)
-(seaman-module 'org-download)
+(mirage-module 'org-paragraph)
+(mirage-module 'org-download)
 
 ;; templates
-(seaman-module 'org-tempo)
-(seaman-module 'org-capture)
+(mirage-module 'org-tempo)
+(mirage-module 'org-capture)
 
 ;; agenda
-(seaman-module 'org-agenda)
-(seaman-module 'org-contacts)
-(seaman-module 'org-calendar)
-(seaman-extend 'org-agenda)
+(mirage-module 'org-agenda)
+(mirage-module 'org-contacts)
+(mirage-module 'org-calendar)
+(mirage-extend 'org-agenda)
 
 ;; extensions
-(seaman-extend 'org-get)
-(seaman-extend 'org-queries)
-(seaman-extend 'org-editing)
-(seaman-extend 'org-ui)
-(seaman-extend 'org-outline)
-(seaman-extend 'org-navigation)
+(mirage-extend 'org-get)
+(mirage-extend 'org-queries)
+(mirage-extend 'org-editing)
+(mirage-extend 'org-ui)
+(mirage-extend 'org-outline)
+(mirage-extend 'org-navigation)
 
 #+end_src
 
 **** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-org-ui.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-org-ui.el
 :END:
 
 #+begin_src emacs-lisp
@@ -987,7 +987,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 (add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
 
 ;; design
-(seaman-module 'org-modern)
+(mirage-module 'org-modern)
 (setq org-modern-table        nil)
 (setq org-modern-block-fringe nil)
 
@@ -995,14 +995,14 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 
 **** Inline previews
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-org-inline.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-org-inline.el
 :END:
 ***** Org Markup
 
 #+begin_src emacs-lisp
 
 ;; markup
-(seaman-module 'org-appear)
+(mirage-module 'org-appear)
 
 #+end_src
 
@@ -1011,7 +1011,7 @@ Seaman themes layer. It requires three variables to be defined: the light and da
 #+begin_src emacs-lisp
 
 ;; inline LaTeX previews
-(seaman-module 'org-fragtog)
+(mirage-module 'org-fragtog)
 
 #+end_src
 
@@ -1064,17 +1064,17 @@ the issue is resolved.
 
 #+begin_src emacs-lisp
 
-(setq seaman/org-latex-preview-class-args "fleqn")
-(setq seaman/org-latex-preview-width      "18cm")
+(setq mirage/org-latex-preview-class-args "fleqn")
+(setq mirage/org-latex-preview-width      "18cm")
 
 (setq org-format-latex-header
-      (string-join `("\\documentclass[" ,seaman/org-latex-preview-class-args "]{article}"
+      (string-join `("\\documentclass[" ,mirage/org-latex-preview-class-args "]{article}"
 		         "\\usepackage[usenames]{color}"
 			
 			 "\\usepackage{bm}"
 			
 			 "\\pagestyle{empty}"
-			 "\\setlength{\\textwidth}{" ,seaman/org-latex-preview-width "}"
+			 "\\setlength{\\textwidth}{" ,mirage/org-latex-preview-width "}"
 			 "\\addtolength{\\textwidth}{-3cm}"
 			 "\\setlength{\\oddsidemargin}{1.5cm}"
 			 "\\addtolength{\\oddsidemargin}{-2.54cm}"
@@ -1104,11 +1104,11 @@ the issue is resolved.
 #+begin_src emacs-lisp
 
 ;; theme-specific LaTeX preview directory
-(defun seaman/latex-preview-directory ()
+(defun mirage/latex-preview-directory ()
   "Set `org-preview-latex-image-directory' to the SVG
 LaTeX preview directory of the current theme"
   (setq org-preview-latex-image-directory
-   (concat "/tmp/ltximg/" (seaman/get-active-theme) "/")))
+   (concat "/tmp/ltximg/" (mirage/get-active-theme) "/")))
 
 #+end_src
 
@@ -1116,22 +1116,22 @@ LaTeX preview directory of the current theme"
 
 #+begin_src emacs-lisp
 
-(defun seaman/latex-preview-reload ()
+(defun mirage/latex-preview-reload ()
   "Reload all LaTeX previews in buffer,
 ensuring the LaTeX preview directory
 matches the current theme."
   (if (string-equal major-mode "org-mode")
       (progn (org-latex-preview '(64))
-	     (seaman/latex-preview-directory)
+	     (mirage/latex-preview-directory)
 	     (org-latex-preview '(16)))))
 
-(add-hook 'org-mode-hook #'seaman/latex-preview-reload)
+(add-hook 'org-mode-hook #'mirage/latex-preview-reload)
 
 #+end_src
 
 **** Typesetting of Org Mode files
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-org-typesetting.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-org-typesetting.el
 :END:
 ***** Text
 ****** Typefaces
@@ -1139,7 +1139,7 @@ matches the current theme."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-typefaces-body ()
+(defun mirage/org-typefaces-body ()
   (with-eval-after-load 'org-faces
 
     ;; Code
@@ -1159,7 +1159,7 @@ matches the current theme."
     (set-face-attribute 'org-document-info-keyword nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-special-keyword       nil :inherit 'fixed-pitch)))
 
-(add-hook 'org-mode-hook #'seaman/org-typefaces-body)
+(add-hook 'org-mode-hook #'mirage/org-typefaces-body)
 
 #+end_src
 
@@ -1177,7 +1177,7 @@ matches the current theme."
 (setq org-hide-leading-starts t)
 
 ;; font sizes
-(defun seaman/org-heading-typefaces () 
+(defun mirage/org-heading-typefaces () 
   (with-eval-after-load 'org-faces
     (dolist (face '((org-level-1  . 1.175)
                     (org-level-2  . 1.175)
@@ -1190,11 +1190,11 @@ matches the current theme."
          (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
 
 ;; org-mode hook
-(add-hook 'org-mode-hook #'seaman/org-heading-typefaces)
+(add-hook 'org-mode-hook #'mirage/org-heading-typefaces)
 
 ;; theme hooks
-(add-hook 'seaman/enable-or-load-theme-hook #'seaman/org-typefaces-body)
-(add-hook 'seaman/enable-or-load-theme-hook #'seaman/org-heading-typefaces)
+(add-hook 'mirage/enable-or-load-theme-hook #'mirage/org-typefaces-body)
+(add-hook 'mirage/enable-or-load-theme-hook #'mirage/org-heading-typefaces)
 
 #+end_src
 
@@ -1235,20 +1235,20 @@ Candidates:
 
 **** Export
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-org-export.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-org-export.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; presentations
-(seaman-module 'org-reveal)
+(mirage-module 'org-reveal)
 
 #+end_src
 
 *** Applications
 **** Agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-org-agenda.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-org-agenda.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1263,9 +1263,9 @@ Candidates:
 (define-key org-agenda-mode-map (kbd "<tab>") 'org-agenda-recenter)
 
 ;; modules
-(seaman-module 'org-agenda)
-(seaman-module 'org-super-agenda)
-(seaman-module 'org-rainbow-tags)
+(mirage-module 'org-agenda)
+(mirage-module 'org-super-agenda)
+(mirage-module 'org-rainbow-tags)
 
 ;; base TODO keyword sequence
 (setq org-todo-keywords
@@ -1291,33 +1291,33 @@ Candidates:
 
 **** Notebooks
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-org-notebooks.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-org-notebooks.el
 :END:
 
 #+begin_src emacs-lisp
 
-(seaman-module 'org-babel)
-(seaman-module 'ox-ipynb)
-(seaman-extend 'org-babel)
+(mirage-module 'org-babel)
+(mirage-module 'ox-ipynb)
+(mirage-extend 'org-babel)
 
 #+end_src
 
 **** Zettelkasten
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-org-zettelkasten.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-org-zettelkasten.el
 :END:
 
 #+begin_src emacs-lisp
 
-(seaman-module 'org-roam)
-(seaman-module 'org-roam-ui)
-(seaman-module 'org-roam-timestamps)
+(mirage-module 'org-roam)
+(mirage-module 'org-roam-ui)
+(mirage-module 'org-roam-timestamps)
 
 #+end_src
 
 **** GTD
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./layers/seaman-org-gtd.el
+:header-args:emacs-lisp+: :tangle ./layers/mirage-org-gtd.el
 :END:
 ***** Agenda
 ****** Keywords
@@ -1369,7 +1369,7 @@ Candidates:
 
 #+begin_src emacs-lisp
 
-(seaman-module 'org-pomodoro)
+(mirage-module 'org-pomodoro)
 
 #+end_src
 
@@ -1384,7 +1384,7 @@ Content of a module:
 *** Buffer
 **** olivetti
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-olivetti.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-olivetti.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1436,7 +1436,7 @@ a fraction of the window width."
 
 **** solaire-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-solaire-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-solaire-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1448,7 +1448,7 @@ a fraction of the window width."
 
 **** page-break-lines
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-page-break-lines.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-page-break-lines.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1461,7 +1461,7 @@ a fraction of the window width."
 *** Mode line
 **** delight
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-delight.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-delight.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1486,7 +1486,7 @@ a fraction of the window width."
 *** Typefaces
 **** all-the-icons
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-all-the-icons.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-all-the-icons.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1508,7 +1508,7 @@ the local machine:
 *** Highlights
 **** svg-tag-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-svg-tag-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-svg-tag-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1595,7 +1595,7 @@ the local machine:
 
 **** rainbow-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-rainbow-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-rainbow-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1608,7 +1608,7 @@ the local machine:
 *** Completion
 **** all-the-icons-completion
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-all-the-icons-completion.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-all-the-icons-completion.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1624,7 +1624,7 @@ the local machine:
 *** Dashboard
 **** emacs-dashboard
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-emacs-dashboard.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-emacs-dashboard.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1654,7 +1654,7 @@ the local machine:
 *** Themes
 **** Ef
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-ef-themes.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-ef-themes.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1666,7 +1666,7 @@ the local machine:
 
 **** Nano
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-nano-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-nano-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1684,7 +1684,7 @@ the local machine:
 
 **** Doom
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-doom-themes.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-doom-themes.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1696,7 +1696,7 @@ the local machine:
 
 **** Solarized
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-solarized-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-solarized-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1709,7 +1709,7 @@ the local machine:
 **** Standalone
 ***** Sweet
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-sweet-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-sweet-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1721,7 +1721,7 @@ the local machine:
 
 ***** Graphite
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-graphite-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-graphite-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1734,7 +1734,7 @@ the local machine:
 
 ***** Chocolate
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-chocolate-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-chocolate-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1746,7 +1746,7 @@ the local machine:
 
 ***** Doom Zen Writer
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-doom-zen-writer-theme.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-doom-zen-writer-theme.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1758,7 +1758,7 @@ the local machine:
 *** Creation
 **** autothemer
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-autothemer.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-autothemer.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1771,7 +1771,7 @@ the local machine:
 *** Scheduling
 **** circadian
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-circadian.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-circadian.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1793,7 +1793,7 @@ the local machine:
 ** Mode line
 *** Nano
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-nano-modeline.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-nano-modeline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1808,7 +1808,7 @@ the local machine:
 
 *** Doom
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-doom-modeline.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-doom-modeline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1826,7 +1826,7 @@ the local machine:
 
 *** Moody
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-moody.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-moody.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1847,7 +1847,7 @@ the local machine:
 
 *** Spaceline
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-spaceline.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-spaceline.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1866,7 +1866,7 @@ the local machine:
 *** Editing
 **** evil
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-evil.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-evil.el
 :END:
 
 #+begin_src emacs-lisp
@@ -1941,7 +1941,7 @@ the local machine:
 
 **** meow
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-meow.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-meow.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2055,7 +2055,7 @@ the local machine:
 *** Commands
 **** god-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-god-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-god-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2079,7 +2079,7 @@ the local machine:
 ** Guidance
 *** counsel
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-counsel.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-counsel.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2093,7 +2093,7 @@ the local machine:
 
 *** helpful
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-helpful.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-helpful.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2113,7 +2113,7 @@ the local machine:
 
 *** which-key
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-which-key.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-which-key.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2130,7 +2130,7 @@ the local machine:
 
 *** command-log-mode                                                  :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-command-log-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-command-log-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2145,7 +2145,7 @@ the local machine:
 ** Completion
 *** ivy
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-ivy.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-ivy.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2183,7 +2183,7 @@ the local machine:
 
 *** ivy-rich                                                          :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-ivy-rich.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-ivy-rich.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2197,7 +2197,7 @@ the local machine:
 
 *** vertico
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-vertico.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-vertico.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2227,7 +2227,7 @@ the local machine:
 
 *** orderless
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-orderless.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-orderless.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2243,7 +2243,7 @@ the local machine:
 ** Navigation
 *** ace-window
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-ace-window.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-ace-window.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2260,7 +2260,7 @@ the local machine:
 ** Search
 *** swiper
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-swiper.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-swiper.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2275,13 +2275,13 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(defun seaman/swiper-multiple-cursors ()
+(defun mirage/swiper-multiple-cursors ()
   (interactive)
   (swiper-mc)
   (minibuffer-keyboard-quit))
 
 ;; M-RET: multiple-cursors-mode
-(define-key swiper-map (kbd "M-<return>") #'seaman/swiper-multiple-cursors)
+(define-key swiper-map (kbd "M-<return>") #'mirage/swiper-multiple-cursors)
 
 #+end_src
 
@@ -2289,7 +2289,7 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(defun seaman/swiper-isearch (orig-fun &rest args)
+(defun mirage/swiper-isearch (orig-fun &rest args)
   "`swiper-isearch' the selected region. If none are, `swiper-isearch'."
   (if (region-active-p)
       (let ((beg (region-beginning))
@@ -2298,7 +2298,7 @@ the local machine:
 	(apply orig-fun (list (buffer-substring-no-properties beg end))))
     (apply orig-fun args)))
 
-(advice-add 'swiper-isearch :around #'seaman/swiper-isearch)
+(advice-add 'swiper-isearch :around #'mirage/swiper-isearch)
 
 (define-key global-map (kbd "C-s") #'swiper-isearch)
 
@@ -2306,7 +2306,7 @@ the local machine:
 
 *** ripgrep
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-rg.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-rg.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2320,7 +2320,7 @@ the local machine:
 *** Undo
 **** TODO vundo
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-vundo.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-vundo.el
 :END:
 
 - undo-fu
@@ -2343,7 +2343,7 @@ the local machine:
 
 **** undo-tree                                                        :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-undo-tree.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-undo-tree.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2364,20 +2364,20 @@ the local machine:
 #+begin_src emacs-lisp
 
 ;; visualize in side buffer
-(defun seaman/undo-tree-split-side-by-side (orig-fun &rest args)
+(defun mirage/undo-tree-split-side-by-side (orig-fun &rest args)
   "Split undo-tree side-by-side"
   (let ((split-height-threshold nil)
         (split-width-threshold 0))
     (apply orig-fun args)))
 
-(advice-add 'undo-tree-visualize :around #'seaman/undo-tree-split-side-by-side)
+(advice-add 'undo-tree-visualize :around #'mirage/undo-tree-split-side-by-side)
 
 #+end_src
 
 *** Multiline
 **** multiple-cursors
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-multiple-cursors.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-multiple-cursors.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2409,7 +2409,7 @@ the local machine:
 *** Export
 **** htmlize
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-htmlize.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-htmlize.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2421,7 +2421,7 @@ the local machine:
 *** Session
 **** workgroups
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-workgroups.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-workgroups.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2445,7 +2445,7 @@ the local machine:
 *** Auto-save
 **** super-save
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-super-save.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-super-save.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2459,7 +2459,7 @@ the local machine:
 *** Project interaction
 **** projectile
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-projectile.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-projectile.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2477,7 +2477,7 @@ the local machine:
 
 **** treemacs
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-treemacs.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-treemacs.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2491,15 +2491,15 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(defvar seaman/treemacs-ignored '(".*__pycache__.*")
+(defvar mirage/treemacs-ignored '(".*__pycache__.*")
   "Files and directories ignored by treemacs")
 
-(defun seaman/treemacs-ignore-filter (file _)
-  (cl-loop for ignored in seaman/treemacs-ignored
+(defun mirage/treemacs-ignore-filter (file _)
+  (cl-loop for ignored in mirage/treemacs-ignored
 	   if (string-match ignored file)
 	      return t
 	   finally return nil))
-(push #'seaman/treemacs-ignore-filter treemacs-ignored-file-predicates)
+(push #'mirage/treemacs-ignore-filter treemacs-ignored-file-predicates)
 
 #+end_src
 
@@ -2608,7 +2608,7 @@ the local machine:
 ** Templates
 *** yasnippet
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-yasnippet.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-yasnippet.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2624,7 +2624,7 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(defun seaman/<-snippet (orig-fun &rest args)
+(defun mirage/<-snippet (orig-fun &rest args)
   "Require < before snippets."
   (interactive)
   (setq line (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
@@ -2635,7 +2635,7 @@ the local machine:
 				       (delete-region (line-beginning-position) (point)))
 		       (apply orig-fun args)))))
 
-(advice-add 'yas-expand :around #'seaman/<-snippet)
+(advice-add 'yas-expand :around #'mirage/<-snippet)
 
 #+end_src
 
@@ -2656,7 +2656,7 @@ the local machine:
 ****** Selection
 ******* expand-region
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-expand-region.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-expand-region.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2668,13 +2668,13 @@ the local machine:
 ****** Wrapping
 ******* embrace
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-embrace.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-embrace.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; dependencies
-(seaman-module 'expand-region)
+(mirage-module 'expand-region)
 
 ;; embrace
 (straight-use-package 'embrace)
@@ -2686,7 +2686,7 @@ the local machine:
 
 ******* smartparens                                                         :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-smartparens.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-smartparens.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2699,7 +2699,7 @@ the local machine:
 
 ******* paredit                                                               :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-paredit.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-paredit.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2711,7 +2711,7 @@ the local machine:
 ***** Outline
 ****** hideshow
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-hideshow.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-hideshow.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2728,7 +2728,7 @@ the local machine:
 
 #+begin_src emacs-lisp
 
-(defun seaman/hs-cycle (&optional level)
+(defun mirage/hs-cycle (&optional level)
   (interactive "p")
   (save-excursion
     (let (message-log-max (inhibit-message t))
@@ -2754,7 +2754,7 @@ the local machine:
 	(hs-hide-level level)
 	(setq this-command 'hs-hide-level)))))
 
-(defun seaman/hs-global-cycle ()
+(defun mirage/hs-global-cycle ()
   (interactive)
   (pcase last-command
     ('hs-global-cycle
@@ -2762,14 +2762,14 @@ the local machine:
      (setq this-command 'hs-global-show))
     (_ (hs-hide-all))))
 
-(define-key hs-minor-mode-map (kbd "C-\\") #'seaman/hs-cycle)
+(define-key hs-minor-mode-map (kbd "C-\\") #'mirage/hs-cycle)
 
 #+end_src
 
 ***** Completion
 ****** company
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-company.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-company.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2783,7 +2783,7 @@ the local machine:
 ***** Structural editing
 ******* puni
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-puni.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-puni.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2801,7 +2801,7 @@ the local machine:
 ***** Syntax checking
 ****** flycheck
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-flycheck.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-flycheck.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2817,7 +2817,7 @@ the local machine:
 ***** Language server protocol
 ****** eglot                                                          :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-eglot.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-eglot.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2828,7 +2828,7 @@ the local machine:
 
 ****** lsp-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-lsp-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-lsp-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2840,7 +2840,7 @@ the local machine:
 
 ****** lsp-bridge                                                     :ARCHIVE:
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-lsp-bridge.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-lsp-bridge.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2854,7 +2854,7 @@ the local machine:
 ***** Lisp
 ****** rainbow-delimiters
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-rainbow-delimiters.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-rainbow-delimiters.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2871,7 +2871,7 @@ the local machine:
 ***** Python
 ****** elpy
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-elpy.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-elpy.el
 :END:
 
 #+begin_src bash :tangle no
@@ -2912,7 +2912,7 @@ sudo apt-get install python3-venv
 ***** Matlab
 ****** matlab-emacs
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-matlab-emacs.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-matlab-emacs.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2927,7 +2927,7 @@ sudo apt-get install python3-venv
 ***** Rust
 ****** rustic
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-rustic.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-rustic.el
 :END:
 
 #+begin_src emacs-lisp
@@ -2947,13 +2947,13 @@ sudo apt-get install python3-venv
 *** PDF
 **** pdf-tools
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-pdf-tools.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-pdf-tools.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; requirements
-(seaman-module 'tablist)
+(mirage-module 'tablist)
 
 (straight-use-package 'pdf-tools)
 (pdf-tools-install)
@@ -2997,7 +2997,7 @@ sudo apt-get install python3-venv
 
 **** pdf-view-restore
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-pdf-view-restore.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-pdf-view-restore.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3011,7 +3011,7 @@ sudo apt-get install python3-venv
 *** LaTeX
 **** AUCTeX
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-AUCTeX.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-AUCTeX.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3022,7 +3022,7 @@ sudo apt-get install python3-venv
 
 *** Org Mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3123,7 +3123,7 @@ overwritten, and the table is not marked as requiring realignment."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-indent--compute-prefixes ()
+(defun mirage/org-indent--compute-prefixes ()
   "Recompute line prefixes for regular text to
 match the indentation of the parent heading."
   (dotimes (n org-indent--deepest-level)
@@ -3134,14 +3134,14 @@ match the indentation of the parent heading."
 	           (concat (make-string (+ n indentation) ?\s))
 		    nil 'face 'org-indent)))))
 
-(advice-add 'org-indent--compute-prefixes :after #'seaman/org-indent--compute-prefixes)
+(advice-add 'org-indent--compute-prefixes :after #'mirage/org-indent--compute-prefixes)
 
 #+end_src
 
 **** UI
 ***** org-modern
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-modern.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-modern.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3198,7 +3198,7 @@ match the indentation of the parent heading."
 
 ***** org-appear
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-appear.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-appear.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3228,7 +3228,7 @@ match the indentation of the parent heading."
 
 ***** org-fragtog
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-fragtog.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-fragtog.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3244,7 +3244,7 @@ match the indentation of the parent heading."
 **** Editing
 ***** org-paragraph
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-paragraph.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-paragraph.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3257,18 +3257,18 @@ match the indentation of the parent heading."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-meta-arrows-h (orig-fun &rest args)
+(defun mirage/org-meta-arrows-h (orig-fun &rest args)
   "Paragraph indentation with `org-meta<arrows>'.
 Furthermore, if a region is active and its
 beginning lies on an Org Mode heading,
-`seaman/org-command-expand-region' to execute ORIG-FUN."
+`mirage/org-command-expand-region' to execute ORIG-FUN."
   (interactive)
-  (cond ((seaman/org-relative-line-paragraph) (seaman/org-paragraph orig-fun args))
-	((region-active-p)                    (seaman/org-indent-region orig-fun args))
+  (cond ((mirage/org-relative-line-paragraph) (mirage/org-paragraph orig-fun args))
+	((region-active-p)                    (mirage/org-indent-region orig-fun args))
 	(t                                    (apply orig-fun args))))
 
-(advice-add 'org-metaleft  :around #'seaman/org-meta-arrows-h)
-(advice-add 'org-metaright :around #'seaman/org-meta-arrows-h)
+(advice-add 'org-metaleft  :around #'mirage/org-meta-arrows-h)
+(advice-add 'org-metaright :around #'mirage/org-meta-arrows-h)
 
 #+end_src
 
@@ -3277,7 +3277,7 @@ beginning lies on an Org Mode heading,
 - paragraphs
 - visibility change when heading visibility is CHILDREN
    - save previous visibility
-      - seaman/org-subtree-state
+      - mirage/org-subtree-state
          - overlay = overlays-in subtree-beg subtree-end
          - overlay-properties?
    - org-meta-v
@@ -3288,22 +3288,22 @@ beginning lies on an Org Mode heading,
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-meta-arrows-v (orig-fun &rest args)
+(defun mirage/org-meta-arrows-v (orig-fun &rest args)
   (interactive)
-  (if (seaman/org-at-ellipsis)
+  (if (mirage/org-at-ellipsis)
       (progn (beginning-of-visual-line) (end-of-line)))
   (apply orig-fun args)
-  (if (seaman/org-relative-line-heading-folded)
+  (if (mirage/org-relative-line-heading-folded)
       (outline-hide-subtree)))
 
-(advice-add 'org-metaup   :around #'seaman/org-meta-arrows-v)
-(advice-add 'org-metadown :around #'seaman/org-meta-arrows-v)
+(advice-add 'org-metaup   :around #'mirage/org-meta-arrows-v)
+(advice-add 'org-metadown :around #'mirage/org-meta-arrows-v)
 
 #+end_src
 
 ***** org-download
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-download.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-download.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3318,18 +3318,18 @@ beginning lies on an Org Mode heading,
 (setq-default org-download-image-dir "./figures")
 
 ;; customize #+DOWNLOADED attribute
-(defun seaman/org-download-annotate (link)
+(defun mirage/org-download-annotate (link)
   "Create a captioned and labeled figure."
   (concat "#+CAPTION:\n"
           "#+NAME: fig:\n"))
-(setq org-download-annotate-function #'seaman/org-download-annotate)
+(setq org-download-annotate-function #'mirage/org-download-annotate)
 
 #+end_src
 
 **** Templates
 ***** org-tempo
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-tempo.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-tempo.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3393,7 +3393,7 @@ beginning lies on an Org Mode heading,
 
 #+begin_src emacs-lisp
 
-(defun seaman/tempo-code-block (key language)
+(defun mirage/tempo-code-block (key language)
   (tempo-define-template language
 		         `("#+begin_src " ,language n
 			   n
@@ -3410,13 +3410,13 @@ beginning lies on an Org Mode heading,
                 ("<cpp"  "C++")
 		("<bash" "bash")
                 ("<tx"   "latex")))
-  (apply 'seaman/tempo-code-block pair))
+  (apply 'mirage/tempo-code-block pair))
 
 #+end_src
 
 ***** org-capture
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-capture.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-capture.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3435,7 +3435,7 @@ beginning lies on an Org Mode heading,
 ***** Notes
 ****** bitacora
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-bitacora.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-bitacora.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3446,7 +3446,7 @@ beginning lies on an Org Mode heading,
 
 ****** org-roam
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-roam.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-roam.el
 :END:
 
 Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-available-aborting-error-when-installing-org-roam-v2-on-mac/2178/6][a C compiler (eg: gcc or clang) must be installed for ~emacsql-sqlite~ to install correctly]].
@@ -3463,15 +3463,15 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 #+begin_src emacs-lisp
 
 ;; node visit hook
-(defvar seaman/org-roam-node-visit-hook nil
+(defvar mirage/org-roam-node-visit-hook nil
    "Hook ran after `org-roam-node-visit'.")
 
-(defun seaman/run-org-roam-node-visit-hook (&rest _args)
+(defun mirage/run-org-roam-node-visit-hook (&rest _args)
    "Run `after-enable-theme-hook'."
-   (run-hooks 'seaman/org-roam-node-visit-hook))
+   (run-hooks 'mirage/org-roam-node-visit-hook))
 
 ;; enable-theme
-(advice-add 'org-roam-node-visit :after #'seaman/run-org-roam-node-visit-hook)
+(advice-add 'org-roam-node-visit :after #'mirage/run-org-roam-node-visit-hook)
 
 #+end_src
 
@@ -3488,23 +3488,23 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 #+begin_src emacs-lisp
 
-(setq seaman/org-roam-map (make-keymap))
-(global-set-key (kbd "C-r") seaman/org-roam-map)
+(setq mirage/org-roam-map (make-keymap))
+(global-set-key (kbd "C-r") mirage/org-roam-map)
 
 ;; Capture
-(define-key seaman/org-roam-map (kbd "c") #'org-roam-capture)
+(define-key mirage/org-roam-map (kbd "c") #'org-roam-capture)
 
 ;; Find node
-(define-key seaman/org-roam-map (kbd "n") #'org-roam-node-find)
+(define-key mirage/org-roam-map (kbd "n") #'org-roam-node-find)
 
 ;; Insert reference
-(define-key seaman/org-roam-map (kbd "i") #'org-roam-node-insert)
+(define-key mirage/org-roam-map (kbd "i") #'org-roam-node-insert)
 
 #+end_src
 
 ****** org-roam-ui
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-roam-ui.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-roam-ui.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3549,7 +3549,7 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 
 ****** org-roam-timestamps
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-roam-timestamps.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-roam-timestamps.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3563,30 +3563,30 @@ Importantly, [[https://org-roam.discourse.group/t/no-emacsql-sqlite-binary-avail
 (setq org-roam-timestamps-minimum-gap 3600)
 
 ;; visit hook
-(add-hook 'seaman/org-roam-node-visit-hook #'org-roam-timestamps-mode)
+(add-hook 'mirage/org-roam-node-visit-hook #'org-roam-timestamps-mode)
 
 ;; capture hook
-(defvar seaman/org-roam-timestamps-mode-active-before-capture nil)
+(defvar mirage/org-roam-timestamps-mode-active-before-capture nil)
 
-(defun seaman/org-roam-timestamps-mode-off ()
+(defun mirage/org-roam-timestamps-mode-off ()
   "Disable `org-roam-timestamps-mode' in Org Roam capture buffers."
-  (setq seaman/org-roam-timestamps-mode-active-before-capture org-roam-timestamps-mode)
+  (setq mirage/org-roam-timestamps-mode-active-before-capture org-roam-timestamps-mode)
   (org-roam-timestamps-mode -1))
-(add-hook 'org-roam-capture-new-node-hook #'seaman/org-roam-timestamps-mode-off)
+(add-hook 'org-roam-capture-new-node-hook #'mirage/org-roam-timestamps-mode-off)
 
-(defun seaman/org-roam-timestamps-mode-back ()
+(defun mirage/org-roam-timestamps-mode-back ()
   "Re-enable `org-roam-timestamps-mode' after finalizing capture,
 if it was previously enabled."
-  (if seaman/org-roam-timestamps-mode-active-before-capture
+  (if mirage/org-roam-timestamps-mode-active-before-capture
       (org-roam-timestamps-mode)))
-(add-hook 'org-capture-after-finalize-hook #'seaman/org-roam-timestamps-mode-back)
+(add-hook 'org-capture-after-finalize-hook #'mirage/org-roam-timestamps-mode-back)
 
 #+end_src
 
 ***** Agenda
 ****** org-agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-agenda.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-agenda.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3609,7 +3609,7 @@ if it was previously enabled."
 
 ****** org-super-agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-super-agenda.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-super-agenda.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3624,7 +3624,7 @@ if it was previously enabled."
 
 ****** org-rainbow-tags
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-rainbow-tags.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-rainbow-tags.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3641,7 +3641,7 @@ if it was previously enabled."
 ***** Contacts
 ****** org-contacts
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-contacts.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-contacts.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3656,7 +3656,7 @@ if it was previously enabled."
 
 #+begin_src emacs-lisp
 
-(defvar seaman/org-capture-contacts "* %(org-contacts-template-name)
+(defvar mirage/org-capture-contacts "* %(org-contacts-template-name)
 :PROPERTIES:
 :ADDRESS: %^{289 Cleveland St. Brooklyn, 11206 NY, USA}
 :BIRTHDAY: %^{yyyy-mm-dd}
@@ -3667,14 +3667,14 @@ if it was previously enabled."
 (add-to-list 'org-capture-templates
    `(("c" "contact" entry
       (file ,(nth 0 org-contacts-files))
-      ,seaman/org-capture-contacts)))
+      ,mirage/org-capture-contacts)))
 
 #+end_src
 
 ***** Calendar
 ****** org-calendar
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-calendar.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-calendar.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3688,21 +3688,21 @@ if it was previously enabled."
   (require 'calfw-org)
   (require 'calfw-ical))
 
-(defun seaman/org-calendar ()
+(defun mirage/org-calendar ()
   "Open `calfw' Org Agenda calendar."
   (interactive)
   (require 'org-agenda)
   (let ((inhibit-message t))
        (cfw:open-org-calendar)))
 
-(global-set-key (kbd "C-c c") #'seaman/org-calendar)
+(global-set-key (kbd "C-c c") #'mirage/org-calendar)
 
 #+end_src
 
 ***** Programming
 ****** org-babel
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-babel.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-babel.el
 :END:
 ******* Editing
 
@@ -3789,7 +3789,7 @@ if it was previously enabled."
 
 ****** ox-ipynb
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-ox-ipynb.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-ox-ipynb.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3801,7 +3801,7 @@ if it was previously enabled."
 
 ****** ob-async
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-ob-async.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-ob-async.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3814,7 +3814,7 @@ if it was previously enabled."
 ***** Presentations
 ****** org-reveal
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-reveal.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-reveal.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3830,7 +3830,7 @@ if it was previously enabled."
 ***** Time-tracking
 ****** org-pomodoro
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-pomodoro.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-pomodoro.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3848,7 +3848,7 @@ if it was previously enabled."
 
 ****** org-agenda-log-mode
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-org-agenda-log-mode.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-org-agenda-log-mode.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3863,7 +3863,7 @@ if it was previously enabled."
 *** Tabulated lists
 **** tablist
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-tablist.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-tablist.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3875,7 +3875,7 @@ if it was previously enabled."
 *** Version control
 **** magit
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-magit.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-magit.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3889,7 +3889,7 @@ if it was previously enabled."
 
 **** forge
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-forge.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-forge.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3901,7 +3901,7 @@ if it was previously enabled."
 *** File management
 **** dirvish
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-dirvish.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-dirvish.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3918,7 +3918,7 @@ if it was previously enabled."
 ** Extensions
 *** crux
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./modules/seaman-crux.el
+:header-args:emacs-lisp+: :tangle ./modules/mirage-crux.el
 :END:
 
 #+begin_src emacs-lisp
@@ -3938,7 +3938,7 @@ Content of an extension:
 ** Utilities
 *** Get
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-get.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-get.el
 :END:
 
 **** UI
@@ -3947,7 +3947,7 @@ Content of an extension:
 #+begin_src emacs-lisp
 
 ;; Retrieve current theme
-(defun seaman/get-active-theme ()
+(defun mirage/get-active-theme ()
   (substring (format "%s" (nth 0 custom-enabled-themes))))
 
 #+end_src
@@ -3957,7 +3957,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun seaman/get-point (command &rest args)
+(defun mirage/get-point (command &rest args)
   (interactive)
   (save-excursion
     (apply command args)
@@ -3969,7 +3969,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun seaman/get-last-change ()
+(defun mirage/get-last-change ()
   "Retrieve last change in current buffer."
   (setq last-change (nth 1 buffer-undo-list))
   (let ((beg (car last-change))
@@ -3982,7 +3982,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun seaman/count-substrings (regexp str)
+(defun mirage/count-substrings (regexp str)
   "Return the number of substrings of STR matching REGEXP"
   (loop with start = 0
         for count from 0
@@ -3997,7 +3997,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun seaman/get-keyword-key-value (kwd)
+(defun mirage/get-keyword-key-value (kwd)
    (let ((data (cadr kwd)))
      (list (plist-get data :key)
            (plist-get data :value))))
@@ -4009,7 +4009,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun seaman/get-visible-buffers ()
+(defun mirage/get-visible-buffers ()
   (cl-delete-duplicates (mapcar #'window-buffer (window-list))))
 
 #+end_src
@@ -4018,7 +4018,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun seaman/get-buffer-by-file-name (file)
+(defun mirage/get-buffer-by-file-name (file)
   (cl-loop for buffer in (buffer-list)
 	   if (string-equal (buffer-name buffer) (file-name-nondirectory file))
 	   return buffer
@@ -4031,7 +4031,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun seaman/get-active-window-number ()
+(defun mirage/get-active-window-number ()
   "Retrieve the current window's number."
   (setq window (prin1-to-string (get-buffer-window (current-buffer))))
   (string-match "^[^0-9]*\\([0-9]+\\).*$" window)
@@ -4044,20 +4044,20 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defvar seaman/keymap-list '()
+(defvar mirage/keymap-list '()
   "List containing the symbols of all keymaps in the `obarray'.")
 
-(defun seaman/get-keymaps ()
+(defun mirage/get-keymaps ()
   "Return a list containing the symbols of all keymaps in the `obarray'."
   (mapatoms (lambda (m) (if (condition-case nil
                                 (or (keymapp (symbol-value m))
                                     (keymapp m))
                               (error nil))
-                            (add-to-list 'seaman/keymap-list m))
+                            (add-to-list 'mirage/keymap-list m))
           obarray))
   (when (called-interactively-p 'interactive)
-        (message "Keymap list updated, %s keymaps found" (length seaman/keymap-list)))
-  seaman/keymap-list)
+        (message "Keymap list updated, %s keymaps found" (length mirage/keymap-list)))
+  mirage/keymap-list)
 
 #+end_src
 
@@ -4065,7 +4065,7 @@ Content of an extension:
 
 #+begin_src emacs-lisp
 
-(defun seaman/get-keymap-symbol (keymap)
+(defun mirage/get-keymap-symbol (keymap)
   "Return the symbol to which KEYMAP is bound, or nil if no such symbol exists."
   (catch 'gotit
     (mapatoms (lambda (sym)
@@ -4083,7 +4083,7 @@ References:
 
 *** Queries
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-queries.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-queries.el
 :END:
 
 **** At
@@ -4091,11 +4091,11 @@ References:
 
 #+begin_src emacs-lisp
 
-(defun seaman/eolp (orig-fun &rest args)
+(defun mirage/eolp (orig-fun &rest args)
   (interactive)
   (or (apply orig-fun args) (looking-at-p "[[:blank:]]*$")))
 
-(advice-add 'eolp :around #'seaman/eolp)
+(advice-add 'eolp :around #'mirage/eolp)
 
 #+end_src
 
@@ -4103,7 +4103,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(defun seaman/at-point (go-to-point &optional point)
+(defun mirage/at-point (go-to-point &optional point)
   (let ((point (or point (point))))
     (save-excursion
       (funcall go-to-point)
@@ -4115,8 +4115,8 @@ References:
 
 #+begin_src emacs-lisp
 
-(defun seaman/at-indent (&optional point)
-  (and (seaman/relative-line-indented) (seaman/at-point 'back-to-indentation point)))
+(defun mirage/at-indent (&optional point)
+  (and (mirage/relative-line-indented) (mirage/at-point 'back-to-indentation point)))
 
 #+end_src
 
@@ -4125,7 +4125,7 @@ References:
 
 #+begin_src emacs-lisp
 
-(defun seaman/relative-line (query &optional number &rest args)
+(defun mirage/relative-line (query &optional number &rest args)
   "Return the result of a boolean query at the beginning
 of the current visual line, or another specified by its
 relative position to the current line.
@@ -4143,11 +4143,11 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun seaman/relative-line-regex (pattern &optional number)
+(defun mirage/relative-line-regex (pattern &optional number)
   (let ((number (or number 0)))
     (save-excursion
       (beginning-of-line-text (+ number 1))
-      (setq line (buffer-substring-no-properties (seaman/get-point 'beginning-of-line) (seaman/get-point 'end-of-line))))
+      (setq line (buffer-substring-no-properties (mirage/get-point 'beginning-of-line) (mirage/get-point 'end-of-line))))
     (string-match-p pattern line)))
 
 #+end_src
@@ -4156,8 +4156,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun seaman/relative-line-list (&optional number)
-  (seaman/relative-line-regex "^[[:blank:]]*\\([0-9]+[.\\)]\\{1\\}\\|[-+*]\\{1\\}\\)[[:blank:]]+.*$" number))
+(defun mirage/relative-line-list (&optional number)
+  (mirage/relative-line-regex "^[[:blank:]]*\\([0-9]+[.\\)]\\{1\\}\\|[-+*]\\{1\\}\\)[[:blank:]]+.*$" number))
 
 #+end_src
 
@@ -4165,8 +4165,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun seaman/relative-line-empty (&optional number)
-  (seaman/relative-line-regex "^[[:space:]]*$" number))
+(defun mirage/relative-line-empty (&optional number)
+  (mirage/relative-line-regex "^[[:space:]]*$" number))
 
 #+end_src
 
@@ -4176,8 +4176,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun seaman/relative-line-wrapped ()
-  (> (seaman/get-point 'beginning-of-visual-line) (seaman/get-point 'beginning-of-line-text)))
+(defun mirage/relative-line-wrapped ()
+  (> (mirage/get-point 'beginning-of-visual-line) (mirage/get-point 'beginning-of-line-text)))
 
 #+end_src
 
@@ -4185,8 +4185,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun seaman/relative-line-indented (&optional number)
-  (seaman/relative-line-regex "^[[:blank:]]+.*$" number))
+(defun mirage/relative-line-indented (&optional number)
+  (mirage/relative-line-regex "^[[:blank:]]+.*$" number))
 
   #+end_src
 
@@ -4194,8 +4194,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun seaman/relative-line-list-ordered (&optional number)
-  (seaman/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+.*$" number))
+(defun mirage/relative-line-list-ordered (&optional number)
+  (mirage/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+.*$" number))
 
 #+end_src
 
@@ -4203,8 +4203,8 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun seaman/relative-line-list-unordered (&optional number)
-  (seaman/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+.*$" number))
+(defun mirage/relative-line-list-unordered (&optional number)
+  (mirage/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+.*$" number))
 
 #+end_src
 
@@ -4213,7 +4213,7 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun seaman/region-blank (&optional beg end)
+(defun mirage/region-blank (&optional beg end)
   (let ((beg (or beg (region-beginning)))
 	      (end (or end (region-end))))
     (setq region (buffer-substring-no-properties beg end))
@@ -4225,9 +4225,9 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun seaman/region-multiline-visual ()
+(defun mirage/region-multiline-visual ()
   "Return t if a region is active and spans more than one visual line."
-  (and (region-active-p) (> (seaman/region-count-visual-lines) 1)))
+  (and (region-active-p) (> (mirage/region-count-visual-lines) 1)))
 
 #+end_src
 
@@ -4235,7 +4235,7 @@ to the query at execution."
 
 #+begin_src emacs-lisp
 
-(defun seaman/region-count-visual-lines ()
+(defun mirage/region-count-visual-lines ()
   "Count visual lines in an active region."
   (interactive)
   (save-excursion 
@@ -4246,14 +4246,14 @@ to the query at execution."
 
 *** Execution
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-execution.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-execution.el
 :END:
 
 **** @buffers
 
 #+begin_src emacs-lisp
 
-(defmacro seaman/@buffers (command &optional buffers)
+(defmacro mirage/@buffers (command &optional buffers)
   (let ((buffers (or buffers (buffer-list))))
     `(cl-loop for buffer in ',buffers
               do (if (buffer-live-p buffer)
@@ -4265,7 +4265,7 @@ to the query at execution."
 
 *** Operators
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-operators.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-operators.el
 :END:
 
 **** <>
@@ -4280,7 +4280,7 @@ to the query at execution."
 
 ** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-ui.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-ui.el
 :END:
 
 *** Text
@@ -4289,29 +4289,29 @@ to the query at execution."
 #+begin_src emacs-lisp
 
 ;; accent typefaces
-(defvar seaman/accents '(seaman/italic))
+(defvar mirage/accents '(mirage/italic))
 
-(defun seaman/theme-accents (orig-fun &rest args)
+(defun mirage/theme-accents (orig-fun &rest args)
   "Many themes will override certain face *attributes*, such as `italic'. To prevent
-this, this function loops over all accent typefaces in `seaman/accents', which contains
-faces (defined with `defface') named ~seaman/<attribute>~, and makes the ~<attribute>~
-inherit from ~seaman/<attribute>~.
+this, this function loops over all accent typefaces in `mirage/accents', which contains
+faces (defined with `defface') named ~mirage/<attribute>~, and makes the ~<attribute>~
+inherit from ~mirage/<attribute>~.
 
 As such, when this function is run, the `italic' face attribute will be made to
-inherit from `seaman/italic' as in the expression below.
+inherit from `mirage/italic' as in the expression below.
 
-   (set-face-attribute 'italic nil :inherit 'seaman/italic)
+   (set-face-attribute 'italic nil :inherit 'mirage/italic)
 
 Thus, our preferred accent typefaces will stand whatever harassment they may be put
 through as a theme loads."
   ;; load theme
   (apply orig-fun args)
   ;; restore accents
-  (cl-loop for accent in seaman/accents
+  (cl-loop for accent in mirage/accents
 	   do (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
 		     (set-face-attribute face nil :inherit accent))))
 
-(advice-add 'seaman/enable-or-load-theme :around #'seaman/theme-accents)
+(advice-add 'mirage/enable-or-load-theme :around #'mirage/theme-accents)
 
 #+end_src
 
@@ -4320,7 +4320,7 @@ through as a theme loads."
 
 #+begin_src emacs-lisp
 
-(defun seaman/quit-window ()
+(defun mirage/quit-window ()
   (interactive)
   (if current-prefix-arg
       (quit-window)
@@ -4329,7 +4329,7 @@ through as a theme loads."
 (with-eval-after-load 'helpful
   (cl-loop for map in '(help-mode-map
                         helpful-mode-map)
-           do (define-key (symbol-value map) [remap quit-window] #'seaman/quit-window)))
+           do (define-key (symbol-value map) [remap quit-window] #'mirage/quit-window)))
 
 #+end_src
 
@@ -4338,7 +4338,7 @@ through as a theme loads."
 
 #+begin_src emacs-lisp
 
-(defun seaman/window-resize (width)
+(defun mirage/window-resize (width)
   (window-resize nil (- width (window-width)) t))
 
 #+end_src
@@ -4347,7 +4347,7 @@ through as a theme loads."
 
 #+begin_src emacs-lisp
 
-(defun seaman/window-resize-fraction (fr &optional min)
+(defun mirage/window-resize-fraction (fr &optional min)
   "Resize window to a fraction of the frame width."
   (interactive)
   (let ((width (max (if min min 0) (truncate (* fr (frame-width))))))
@@ -4364,7 +4364,7 @@ through as a theme loads."
 (defvar last-message nil)
 (defadvice message (after my-message pre act) (setq last-message ad-return-value))
 
-(defun seaman/undefined-override (orig-fun &rest args)
+(defun mirage/undefined-override (orig-fun &rest args)
   "Override `undefined' function to suppress
 undefined key binding messages when interrupting
 key binding input with C-g."
@@ -4377,7 +4377,7 @@ key binding input with C-g."
     (message _message)))
 
 ;; Override the undefined key binding notice with a keyboard-quit
-(advice-add 'undefined :around #'seaman/undefined-override)
+(advice-add 'undefined :around #'mirage/undefined-override)
 
 #+end_src
 
@@ -4386,26 +4386,26 @@ key binding input with C-g."
 
 #+begin_src emacs-lisp
 
-(defcustom seaman/mode-line nil
+(defcustom mirage/mode-line nil
   "Variable containing the format of the hidden mode line")
 
-(defcustom seaman/header-line nil
+(defcustom mirage/header-line nil
   "Variable containing the format of the hidden header line")
 
-(defun seaman/hide-mode-line ()
+(defun mirage/hide-mode-line ()
   "Hide `modeline' in current buffer"
   (interactive)
   (let ((m mode-line-format)
         (h header-line-format))
-       (seaman/@buffers (if (or m h)
-                            (progn (setq seaman/mode-line   m)
-                                   (setq seaman/header-line h)
+       (mirage/@buffers (if (or m h)
+                            (progn (setq mirage/mode-line   m)
+                                   (setq mirage/header-line h)
                                    (setq mode-line-format   nil)
                                    (setq header-line-format nil))
-                          (progn (setq mode-line-format seaman/mode-line)
-                                 (setq header-line-format seaman/header-line))))))
+                          (progn (setq mode-line-format mirage/mode-line)
+                                 (setq header-line-format mirage/header-line))))))
 
-(global-set-key (kbd "M-m") #'seaman/hide-mode-line)
+(global-set-key (kbd "M-m") #'mirage/hide-mode-line)
 
 #+end_src
 
@@ -4413,29 +4413,29 @@ key binding input with C-g."
 
 #+begin_src emacs-lisp
 
-(defun seaman/mode-line-invert ()
+(defun mirage/mode-line-invert ()
   (interactive)
   (if mode-line-format
-      (seaman/@buffers (progn (set 'header-line-format mode-line-format)
+      (mirage/@buffers (progn (set 'header-line-format mode-line-format)
                               (set 'mode-line-format nil)))
-    (seaman/@buffers (progn (set 'mode-line-format header-line-format)
+    (mirage/@buffers (progn (set 'mode-line-format header-line-format)
                             (set 'header-line-format nil)))))
 
-(global-set-key (kbd "M-t") #'seaman/mode-line-invert)
+(global-set-key (kbd "M-t") #'mirage/mode-line-invert)
 
 #+end_src
 
 ** Themes
 *** Switch
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-theme-switch.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-theme-switch.el
 :END:
 
 **** Load
 
 #+begin_src emacs-lisp
 
-(defun seaman/enable-or-load-theme (theme)
+(defun mirage/enable-or-load-theme (theme)
   (condition-case nil
       (enable-theme theme)
     (error (load-theme theme))))
@@ -4446,15 +4446,15 @@ key binding input with C-g."
 
 #+begin_src emacs-lisp
 
-(defvar seaman/enable-or-load-theme-hook nil
+(defvar mirage/enable-or-load-theme-hook nil
    "`load-theme' hook.")
 
-(defun seaman/enable-or-load-theme-hook (&rest _args)
+(defun mirage/enable-or-load-theme-hook (&rest _args)
    "Run `load-theme-hook'."
-   (run-hooks 'seaman/enable-or-load-theme-hook))
+   (run-hooks 'mirage/enable-or-load-theme-hook))
 
-(advice-add 'enable-theme :after #'seaman/enable-or-load-theme-hook)
-(advice-add 'load-theme   :after #'seaman/enable-or-load-theme-hook)
+(advice-add 'enable-theme :after #'mirage/enable-or-load-theme-hook)
+(advice-add 'load-theme   :after #'mirage/enable-or-load-theme-hook)
 
 #+end_src
 
@@ -4462,17 +4462,17 @@ key binding input with C-g."
 
 #+begin_src emacs-lisp
 
-(defun seaman/theme-toggle ()
+(defun mirage/theme-toggle ()
   "Toggle between `dark' and `light' themes
 using `enable-theme'"
   (interactive)
   (let ((theme (nth 0 custom-enabled-themes)))
     (cond ((string-equal theme light-theme) (progn (disable-theme light-theme)
-					           (seaman/enable-or-load-theme dark-theme)))
+					           (mirage/enable-or-load-theme dark-theme)))
 	  (t                                (progn (disable-theme dark-theme)
-					           (seaman/enable-or-load-theme light-theme))))))
+					           (mirage/enable-or-load-theme light-theme))))))
 
-(global-set-key (kbd "C-t") #'seaman/theme-toggle)
+(global-set-key (kbd "C-t") #'mirage/theme-toggle)
 
 #+end_src
 
@@ -4480,33 +4480,33 @@ using `enable-theme'"
 
 #+begin_src emacs-lisp
 
-(defcustom seaman/light-dark-themes '("modus"
+(defcustom mirage/light-dark-themes '("modus"
                                       "nano")
   "Themes with light and dark versions.")
 
-(defcustom seaman/theme-advice-dark '()
-  "List of functions run when loading the `dark' theme, if it is ncluded in `seaman/light-dark-themes'.")
+(defcustom mirage/theme-advice-dark '()
+  "List of functions run when loading the `dark' theme, if it is ncluded in `mirage/light-dark-themes'.")
 
-(defcustom seaman/theme-advice-light '()
-  "List of functions run when loading the `light' theme, if it is ncluded in `seaman/light-dark-themes'.")
+(defcustom mirage/theme-advice-light '()
+  "List of functions run when loading the `light' theme, if it is ncluded in `mirage/light-dark-themes'.")
 
-(defun seaman/theme-specific-advice (orig-fun &rest args)
+(defun mirage/theme-specific-advice (orig-fun &rest args)
   "Apply theme-specific advice when enabling themes, and
 preserve modeline status through theme changes."
   (setq modeline-status mode-line-format)
   (apply orig-fun args)
   (let ((theme (nth 0 args)))
-    (if (string-match-p (string-join seaman/light-dark-themes "\\|") (symbol-name theme))
+    (if (string-match-p (string-join mirage/light-dark-themes "\\|") (symbol-name theme))
         (let ((advice-list (if (string-equal theme light-theme)
-                               seaman/theme-advice-light
-                             seaman/theme-advice-dark)))
+                               mirage/theme-advice-light
+                             mirage/theme-advice-dark)))
           (dolist (advice advice-list)
             (funcall advice))))
   (setq mode-line-format modeline-status)))
 
 ;; add
-(advice-add 'enable-theme :around #'seaman/theme-specific-advice)
-(advice-add 'load-theme   :around #'seaman/theme-specific-advice)
+(advice-add 'enable-theme :around #'mirage/theme-specific-advice)
+(advice-add 'load-theme   :around #'mirage/theme-specific-advice)
 
 #+end_src
 
@@ -4514,25 +4514,25 @@ preserve modeline status through theme changes."
 
 #+begin_src emacs-lisp
 
-(defvar seaman/dark-line-number-colors '("#cfcfcf" "#262626")
+(defvar mirage/dark-line-number-colors '("#cfcfcf" "#262626")
   "Line number HTML colors for dark themes: FOREGROUND, BACKGROUND")
 
-(defvar seaman/light-line-number-colors '("#878787" "#ededed")
+(defvar mirage/light-line-number-colors '("#878787" "#ededed")
   "Line number HTML colors for light themes: FOREGROUND, BACKGROUND")
 
-(defun seaman/line-number-set-colors (fg bg)
+(defun mirage/line-number-set-colors (fg bg)
   "Set the foreground (FG) and background (BG) colors of the line numbers
 displayed by `display-line-numbers-mode'."
   (set-face-attribute 'line-number nil :foreground fg :background bg))
 
-(defun seaman/set-dark-line-number-colors ()
-  (apply 'seaman/line-number-set-colors seaman/dark-line-number-colors))
+(defun mirage/set-dark-line-number-colors ()
+  (apply 'mirage/line-number-set-colors mirage/dark-line-number-colors))
 
-(defun seaman/set-light-line-number-colors ()
-  (apply 'seaman/line-number-set-colors seaman/light-line-number-colors))
+(defun mirage/set-light-line-number-colors ()
+  (apply 'mirage/line-number-set-colors mirage/light-line-number-colors))
 
-(add-to-list 'seaman/theme-advice-dark  #'seaman/set-dark-line-number-colors)
-(add-to-list 'seaman/theme-advice-light #'seaman/set-light-line-number-colors)
+(add-to-list 'mirage/theme-advice-dark  #'mirage/set-dark-line-number-colors)
+(add-to-list 'mirage/theme-advice-light #'mirage/set-light-line-number-colors)
 
 ;; reload active theme
 (let ((active-theme (car custom-enabled-themes)))
@@ -4542,12 +4542,12 @@ displayed by `display-line-numbers-mode'."
 
 *** Mode line
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-theme-modeline.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-theme-modeline.el
 :END:
 
 #+begin_src emacs-lisp
 
-(defun seaman/modeline-set-colors (fg fg-in bg bg-in)
+(defun mirage/modeline-set-colors (fg fg-in bg bg-in)
   "Set the color of the mode and header lines and blend the 
 `doom-modeline-bar' with the background."
   (set-face-attribute 'mode-line            nil :foreground fg    :background bg    :box nil)
@@ -4555,20 +4555,20 @@ displayed by `display-line-numbers-mode'."
   ;; header line
   (set-face-attribute 'header-line          nil :foreground fg-in :background bg-in :box nil))
 
-(defvar seaman/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#454545" "#242424")
+(defvar mirage/dark-modeline-colors '("#cfcfcf" "#cfcfcf" "#454545" "#242424")
   "Dark modeline HTML colors: FOREGROUND, FOREGROUND-INACTIVE, BACKGROUND, BACKGROUND-INACTIVE")
 
-(defvar seaman/light-modeline-colors '("#616161" "#878787" "#c4c4c4" "#ededed")
+(defvar mirage/light-modeline-colors '("#616161" "#878787" "#c4c4c4" "#ededed")
   "Light modeline HTML colors: FOREGROUND, FOREGROUND-INACTIVE, BACKGROUND, BACKGROUND-INACTIVE")
 
-(defun seaman/set-dark-modeline-colors ()
-  (apply 'seaman/modeline-set-colors seaman/dark-modeline-colors))
+(defun mirage/set-dark-modeline-colors ()
+  (apply 'mirage/modeline-set-colors mirage/dark-modeline-colors))
 
-(defun seaman/set-light-modeline-colors ()
-  (apply 'seaman/modeline-set-colors seaman/light-modeline-colors))
+(defun mirage/set-light-modeline-colors ()
+  (apply 'mirage/modeline-set-colors mirage/light-modeline-colors))
 
-(add-to-list 'seaman/theme-advice-dark  #'seaman/set-dark-modeline-colors)
-(add-to-list 'seaman/theme-advice-light #'seaman/set-light-modeline-colors)
+(add-to-list 'mirage/theme-advice-dark  #'mirage/set-dark-modeline-colors)
+(add-to-list 'mirage/theme-advice-light #'mirage/set-light-modeline-colors)
 
 ;; reload active theme
 (let ((active-theme (car custom-enabled-themes)))
@@ -4580,14 +4580,14 @@ displayed by `display-line-numbers-mode'."
 ** Input
 *** RSI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-rsi.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-rsi.el
 :END:
 
 #+begin_src emacs-lisp
 
 ;; requirements
 (pixel-scroll-precision-mode)
-(seaman-module 'pdf-tools)
+(mirage-module 'pdf-tools)
 
 ;; save-buffer
 (global-set-key (kbd "C-=") #'save-buffer)
@@ -4612,7 +4612,7 @@ displayed by `display-line-numbers-mode'."
 
 ** Editing
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-editing.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-editing.el
 :END:
 
 *** Delete
@@ -4620,8 +4620,8 @@ displayed by `display-line-numbers-mode'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/delete-line ()
-  (delete-region (seaman/get-point 'beginning-of-line) (seaman/get-point 'end-of-line)))
+(defun mirage/delete-line ()
+  (delete-region (mirage/get-point 'beginning-of-line) (mirage/get-point 'end-of-line)))
 
 #+end_src
 
@@ -4631,16 +4631,16 @@ Do not save whole killed words in kill ring.
 
 #+begin_src emacs-lisp
 
-(defun seaman/delete-word-forward (&optional arg)
+(defun mirage/delete-word-forward (&optional arg)
   (interactive)
   (delete-region (point) (progn (forward-word arg) (point))))
 
-(defun seaman/delete-word-backward (&optional arg)
+(defun mirage/delete-word-backward (&optional arg)
   (interactive)
   (delete-region (point) (progn (backward-word arg) (point))))
 
-(global-set-key (kbd "C-<delete>") #'seaman/delete-word-forward)
-(global-set-key (kbd "C-<backspace>")  #'seaman/delete-word-backward)
+(global-set-key (kbd "C-<delete>") #'mirage/delete-word-forward)
+(global-set-key (kbd "C-<backspace>")  #'mirage/delete-word-backward)
 
 #+end_src
 
@@ -4648,7 +4648,7 @@ Do not save whole killed words in kill ring.
 
 #+begin_src emacs-lisp
 
-(defun seaman/@delete-hungry (query)
+(defun mirage/@delete-hungry (query)
   "Conditional region deletion.
 
 Default: `delete-region'
@@ -4659,20 +4659,20 @@ indented line, delete region and indent.
 If `query', delete the region and its indent 
 plus one character."
   (setq beg (region-beginning) end (region-end))
-  (if (seaman/at-indent beg)
+  (if (mirage/at-indent beg)
 	    (save-excursion (beginning-of-visual-line)
-                      (if (and query (not (bobp)) (not (seaman/relative-line-empty -1)))
+                      (if (and query (not (bobp)) (not (mirage/relative-line-empty -1)))
                           (left-char))
                       (delete-region (point) end))
     (delete-region beg end)))
 
-(defun seaman/delete-hungry ()
+(defun mirage/delete-hungry ()
   "If the region starts at the beginning of an 
 indented line and the current mode is derived from 
 `prog-mode',  delete the region and its indent plus 
 one character."
   (interactive)
-  (seaman/@delete-hungry (derived-mode-p 'prog-mode)))
+  (mirage/@delete-hungry (derived-mode-p 'prog-mode)))
 
 #+end_src
 
@@ -4682,7 +4682,7 @@ one character."
 
 #+begin_src emacs-lisp
 
-(defun seaman/nimble-delete-forward ()
+(defun mirage/nimble-delete-forward ()
   "Conditional forward deletion.
 
 Default: `delete-forward-char' 1
@@ -4690,11 +4690,11 @@ Default: `delete-forward-char' 1
 If next line is empty, forward delete indent of 
 next line plus one character."
   (interactive)
-  (cond ((and (eolp) (seaman/relative-line-indented 1)) (progn (setq beg (point)) (next-line) (back-to-indentation) (delete-region beg (point))))
-	    ((seaman/relative-line-empty)                   (delete-region (point) (seaman/get-point 'next-line)))
+  (cond ((and (eolp) (mirage/relative-line-indented 1)) (progn (setq beg (point)) (next-line) (back-to-indentation) (delete-region beg (point))))
+	    ((mirage/relative-line-empty)                   (delete-region (point) (mirage/get-point 'next-line)))
 	    (t                                              (delete-forward-char 1))))
 
-(global-set-key (kbd "<delete>") #'seaman/nimble-delete-forward)
+(global-set-key (kbd "<delete>") #'mirage/nimble-delete-forward)
 
 #+end_src
 
@@ -4702,7 +4702,7 @@ next line plus one character."
 
 #+begin_src emacs-lisp
 
-(defun seaman/nimble-delete-backward ()
+(defun mirage/nimble-delete-backward ()
   "Conditional forward deletion.
 
 Default: `delete-backward-char' 1
@@ -4711,16 +4711,16 @@ If `multiple-cursors-mode' is active, `delete-backward-char' 1.
 
 If region is active, delete region.
 
-If cursor lies either `seaman/at-indent' or is preceded only by
+If cursor lies either `mirage/at-indent' or is preceded only by
 whitespace, delete region from `point' to `beginning-of-visual-line'."
   (interactive)
   (if (not (bound-and-true-p multiple-cursors-mode))
-      (cond ((and (region-active-p) (not (seaman/region-blank))) (seaman/delete-hungry))
-	    ((seaman/at-indent)                                  (delete-region (point) (seaman/get-point 'beginning-of-visual-line)))
+      (cond ((and (region-active-p) (not (mirage/region-blank))) (mirage/delete-hungry))
+	    ((mirage/at-indent)                                  (delete-region (point) (mirage/get-point 'beginning-of-visual-line)))
 	    (t                                                   (delete-backward-char 1)))
     (delete-backward-char 1)))
 
-(global-set-key (kbd "<backspace>") #'seaman/nimble-delete-backward)
+(global-set-key (kbd "<backspace>") #'mirage/nimble-delete-backward)
 
 #+end_src
 
@@ -4738,7 +4738,7 @@ whitespace, delete region from `point' to `beginning-of-visual-line'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/kill-ring-mouse ()
+(defun mirage/kill-ring-mouse ()
   "If a region is active, save the region to the
 kill ring. Otherwise, yank the last entry in the
 kill ring."
@@ -4747,7 +4747,7 @@ kill ring."
       (kill-ring-save (region-beginning) (region-end))
     (yank)))
 
-(global-set-key   (kbd "<mouse-3>") #'seaman/kill-ring-mouse)
+(global-set-key   (kbd "<mouse-3>") #'mirage/kill-ring-mouse)
 (global-unset-key (kbd "<down-mouse-3>"))
 
 #+end_src
@@ -4780,7 +4780,7 @@ kill ring."
 
 #+begin_src emacs-lisp
 
-(defun seaman/smart-comment ()
+(defun mirage/smart-comment ()
   "If a region is active, comment out all lines in the
 region. Otherwise, comment out current line if it is
 not empty. In any case, advance to next line."
@@ -4801,12 +4801,12 @@ not empty. In any case, advance to next line."
 
     ;; Comment or uncomment region
     ;; If Org Mode is active
-    (if (not (seaman/relative-line-empty))
+    (if (not (mirage/relative-line-empty))
 	      (comment-or-uncomment-region beg end))
     ;; Move to the beginning of the next line
     (beginning-of-line-text 2)))
 
-(global-set-key (kbd "C-x ;") #'seaman/smart-comment)
+(global-set-key (kbd "C-x ;") #'mirage/smart-comment)
 
 #+end_src
 
@@ -4824,7 +4824,7 @@ not empty. In any case, advance to next line."
 #+begin_src emacs-lisp
 
 ;; Multiple cursor rectangle definition mouse event
-(defun seaman/mouse-rectangle (start-event)
+(defun mirage/mouse-rectangle (start-event)
   (interactive "e")
   (deactivate-mark)
   (mouse-set-point start-event)
@@ -4837,7 +4837,7 @@ not empty. In any case, advance to next line."
                (mouse-movement-p drag-event))
         (mouse-set-point drag-event)))))
 
-(global-set-key (kbd "M-<down-mouse-1>") #'seaman/mouse-rectangle)
+(global-set-key (kbd "M-<down-mouse-1>") #'mirage/mouse-rectangle)
 
 #+end_src
 
@@ -4852,7 +4852,7 @@ not empty. In any case, advance to next line."
 #+begin_src emacs-lisp
 
 ;; Enter multiple-cursors-mode
-(defun seaman/rectangular-region-multiple-cursors ()
+(defun mirage/rectangular-region-multiple-cursors ()
   (interactive)
   (rectangular-region-mode 0)
   (multiple-cursors-mode 1)
@@ -4861,7 +4861,7 @@ not empty. In any case, advance to next line."
    (if (invisible-p (marker-position (overlay-get cursor 'point)))
        (mc/remove-fake-cursor cursor))))
 
-(define-key rectangular-region-mode-map (kbd "<return>") #'seaman/rectangular-region-multiple-cursors)
+(define-key rectangular-region-mode-map (kbd "<return>") #'mirage/rectangular-region-multiple-cursors)
 
 #+end_src
 
@@ -4877,31 +4877,31 @@ not empty. In any case, advance to next line."
 
 ** Search
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-search.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-search.el
 :END:
 *** Search and replace
 
 #+begin_src emacs-lisp
 
-(defun seaman/query-replace-regexp ()
+(defun mirage/query-replace-regexp ()
   (interactive)
   (save-excursion
     (beginning-of-buffer)
     (call-interactively 'query-replace-regexp)))
 
-(global-set-key (kbd "M-/") #'seaman/query-replace-regexp)
+(global-set-key (kbd "M-/") #'mirage/query-replace-regexp)
 
 #+end_src
 
 ** Workflow
 *** Session
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-session.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-session.el
 :END:
 
 #+begin_src emacs-lisp
 
-(defun seaman/load-session ()
+(defun mirage/load-session ()
   (interactive)
   (let ((session (read-file-name "Select session: "
                                  "~/sessions/"
@@ -4912,27 +4912,27 @@ not empty. In any case, advance to next line."
     (wg-load (concat session ".wg"))
     (call-interactively 'wg-switch-to-workgroup)))
 
-(global-set-key (kbd "C-x s") #'seaman/load-session)
+(global-set-key (kbd "C-x s") #'mirage/load-session)
 
 #+end_src
 
 *** External programs
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-external-programs.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-external-programs.el
 :END:
 **** Keymap
 #+begin_src emacs-lisp
 
-(defcustom seaman/external-application-map (make-keymap)
+(defcustom mirage/external-application-map (make-keymap)
   "External application keymap")
 
-(defcustom seaman/external-application-bindings '()
+(defcustom mirage/external-application-bindings '()
   "List of external application key-binding pairs")
 
-(defun seaman/bind-external-application (binding)
-  (add-to-list 'seaman/external-application-bindings binding))
+(defun mirage/bind-external-application (binding)
+  (add-to-list 'mirage/external-application-bindings binding))
 
-(global-set-key (kbd "C-c C-o") seaman/external-application-map)
+(global-set-key (kbd "C-c C-o") mirage/external-application-map)
 
 #+end_src
 
@@ -4945,7 +4945,7 @@ not empty. In any case, advance to next line."
   (let ((root (projectile-root-bottom-up (file-name-directory buffer-file-name))))
     (call-process-shell-command (concat "codium " root "&") nil 0)))
 
-(seaman/bind-external-application '("c" . open-in-codium))
+(mirage/bind-external-application '("c" . open-in-codium))
 
 #+end_src
 
@@ -4957,7 +4957,7 @@ not empty. In any case, advance to next line."
   (interactive)
   (call-process-shell-command (concat "firefox-trunk \"" (buffer-file-name) "\"") nil 0))
 
-(seaman/bind-external-application '("f" . open-in-firefox))
+(mirage/bind-external-application '("f" . open-in-firefox))
 
 #+end_src
 
@@ -4965,15 +4965,15 @@ not empty. In any case, advance to next line."
 
 #+begin_src emacs-lisp
 
-(dolist (binding seaman/external-application-bindings)
-  (define-key seaman/external-application-map (kbd (car binding)) (cdr binding)))
+(dolist (binding mirage/external-application-bindings)
+  (define-key mirage/external-application-map (kbd (car binding)) (cdr binding)))
 
 #+end_src
 
 
 ** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-navigation.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-navigation.el
 :END:
 
 *** Text
@@ -4987,21 +4987,21 @@ not empty. In any case, advance to next line."
 #+begin_src emacs-lisp
 
 ;; Double end to go to the beginning of line
-(defvar seaman/double-end-timeout 0.4)
+(defvar mirage/double-end-timeout 0.4)
 
-(defun seaman/double-end ()
+(defun mirage/double-end ()
   "Move to end of visual line. If the command is repeated 
-within `seaman/double-end-timeout' seconds, move to end
+within `mirage/double-end-timeout' seconds, move to end
 of line."
   (interactive)
-  (let ((last-called (get this-command 'seaman/last-call-time)))
+  (let ((last-called (get this-command 'mirage/last-call-time)))
     (if (and (eq last-command this-command)
-             (<= (time-to-seconds (time-since last-called)) seaman/double-end-timeout))
+             (<= (time-to-seconds (time-since last-called)) mirage/double-end-timeout))
         (progn (beginning-of-visual-line) (end-of-line))
       (end-of-visual-line)))
-  (put this-command 'seaman/last-call-time (current-time)))
+  (put this-command 'mirage/last-call-time (current-time)))
 
-(global-set-key (kbd "<end>") #'seaman/double-end)
+(global-set-key (kbd "<end>") #'mirage/double-end)
 
 #+end_src
 
@@ -5009,7 +5009,7 @@ of line."
 
 #+begin_src emacs-lisp
 
-(defun seaman/home ()
+(defun mirage/home ()
   "Conditional homing. 
 
 Default: `beginning-of-line-text'
@@ -5025,30 +5025,30 @@ If the current mode is derived from `prog-mode', home `back-to-indentation'.
 If the current line is a wrapped visual line, home to
 `beginning-of-visual-line'."
   (interactive)
-  (cond ((seaman/relative-line-empty)    (beginning-of-line))
-	((seaman/relative-line-list)     (beginning-of-line-text))
-	((seaman/relative-line-indented) (back-to-indentation))
-	((seaman/relative-line-wrapped)  (beginning-of-visual-line))
+  (cond ((mirage/relative-line-empty)    (beginning-of-line))
+	((mirage/relative-line-list)     (beginning-of-line-text))
+	((mirage/relative-line-indented) (back-to-indentation))
+	((mirage/relative-line-wrapped)  (beginning-of-visual-line))
 	((derived-mode-p 'prog-mode)     (back-to-indentation))
-	((seaman/relative-line-wrapped)  (beginning-of-visual-line))
+	((mirage/relative-line-wrapped)  (beginning-of-visual-line))
         (t                               (beginning-of-line-text))))
 
-(defvar seaman/double-home-timeout 0.4)
+(defvar mirage/double-home-timeout 0.4)
 
-(defun seaman/double-home ()
-  "Dynamic homing command with a timeout of `seaman/double-home-timeout' seconds.
-- Single press: `seaman/home' 
+(defun mirage/double-home ()
+  "Dynamic homing command with a timeout of `mirage/double-home-timeout' seconds.
+- Single press: `mirage/home' 
 - Double press: `beginning-of-visual-line'"
   (interactive)
-  (let ((last-called (get this-command 'seaman/last-call-time)))
+  (let ((last-called (get this-command 'mirage/last-call-time)))
     (if (and (eq last-command this-command)
-	     (<= (time-to-seconds (time-since last-called)) seaman/double-home-timeout))
+	     (<= (time-to-seconds (time-since last-called)) mirage/double-home-timeout))
 	(progn (beginning-of-visual-line)
 	       (beginning-of-line-text))
-      (seaman/home)))
-  (put this-command 'seaman/last-call-time (current-time)))
+      (mirage/home)))
+  (put this-command 'mirage/last-call-time (current-time)))
 
-(global-set-key (kbd "<home>") #'seaman/double-home)
+(global-set-key (kbd "<home>") #'mirage/double-home)
 
 #+end_src
 
@@ -5056,7 +5056,7 @@ If the current line is a wrapped visual line, home to
 
 #+begin_src emacs-lisp
 
-(defun seaman/previous-line (orig-fun &rest args)
+(defun mirage/previous-line (orig-fun &rest args)
   "If a region is active and either the current mode is derived from
 `prog-mode' or the cursor lies in an `org-babel' source code block,
 arrow-up to `end-of-visual-line' of `previous-line'."
@@ -5067,18 +5067,18 @@ arrow-up to `end-of-visual-line' of `previous-line'."
       (progn (point-to-register 'region-up-register)
              (end-of-visual-line))))
 
-(advice-add 'previous-line :around #'seaman/previous-line)
+(advice-add 'previous-line :around #'mirage/previous-line)
 
-(defun seaman/region-up-register ()
+(defun mirage/region-up-register ()
   "Move cursor to `region-up-register', defined in
-`seaman/previous-line'."
+`mirage/previous-line'."
   (interactive)
   (let ((end (region-end)))
     (ignore-errors (jump-to-register 'region-up-register))
     (set-register 'region-up-register nil)
     (push-mark end)))
 
-(global-set-key (kbd "S-<home>") #'seaman/region-up-register)
+(global-set-key (kbd "S-<home>") #'mirage/region-up-register)
 
 #+end_src
 
@@ -5086,7 +5086,7 @@ arrow-up to `end-of-visual-line' of `previous-line'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/beginning-of-line-text (orig-fun &rest args)
+(defun mirage/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
   (interactive)
   (let ((ordered-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}"))
@@ -5096,7 +5096,7 @@ arrow-up to `end-of-visual-line' of `previous-line'."
 		   (re-search-forward ordered-line-regex))
       (apply orig-fun args))))
 
-(advice-add 'beginning-of-line-text :around #'seaman/beginning-of-line-text)
+(advice-add 'beginning-of-line-text :around #'mirage/beginning-of-line-text)
 
 #+end_src
 
@@ -5125,22 +5125,22 @@ arrow-up to `end-of-visual-line' of `previous-line'."
 
 #+begin_src emacs-lisp
 
-(defvar seaman/window-previous nil
+(defvar mirage/window-previous nil
   "Selected window before the last window change.")
 
-(defvar seaman/window-pre-command nil
+(defvar mirage/window-pre-command nil
   "Auxiliary variable containing the `selected-window'
 before the execution of any command.")
 
-(defun seaman/record-window-pre-command ()
-  (setq seaman/window-pre-command (selected-window)))
-(add-hook 'pre-command-hook #'seaman/record-window-pre-command)
+(defun mirage/record-window-pre-command ()
+  (setq mirage/window-pre-command (selected-window)))
+(add-hook 'pre-command-hook #'mirage/record-window-pre-command)
 
-(defun seaman/record-window-previous ()
+(defun mirage/record-window-previous ()
   (let ((window-post (selected-window)))
-    (if (not (eq window-post seaman/window-pre-command))
-	      (setq seaman/window-previous seaman/window-pre-command))))
-(add-hook 'post-command-hook #'seaman/record-window-previous)
+    (if (not (eq window-post mirage/window-pre-command))
+	      (setq mirage/window-previous mirage/window-pre-command))))
+(add-hook 'post-command-hook #'mirage/record-window-previous)
 
 #+end_src
 
@@ -5150,22 +5150,22 @@ before the execution of any command.")
 
 #+begin_src emacs-lisp
 
-(defun seaman/goto-window-previous ()
+(defun mirage/goto-window-previous ()
   (interactive)
-  (let ((target  seaman/window-previous)
+  (let ((target  mirage/window-previous)
 	      (current (selected-window)))
     (if target
 	      (progn (select-window target)
-		     (setq seaman/window-previous current)))))
+		     (setq mirage/window-previous current)))))
 
-(global-set-key (kbd "C-p") #'seaman/goto-window-previous)
+(global-set-key (kbd "C-p") #'mirage/goto-window-previous)
 
 #+end_src
 
 
 ** File management
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-file-management.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-file-management.el
 :END:
 
 *** Buffer
@@ -5173,7 +5173,7 @@ before the execution of any command.")
 
 #+begin_src emacs-lisp
 
-(defun seaman/reload-from-disk (&optional buffer)
+(defun mirage/reload-from-disk (&optional buffer)
   "Revert BUFFER contents to the contents of its
 file saved on disk, ignoring the auto-save file.
 If the buffer has unsaved modifications, prompt
@@ -5186,7 +5186,7 @@ the user for confirmation."
 	     (revert-buffer t t)
 	   (revert-buffer t nil)))))
 
-(global-set-key (kbd "C-c r") #'seaman/reload-from-disk)
+(global-set-key (kbd "C-c r") #'mirage/reload-from-disk)
 
 #+end_src
 
@@ -5196,7 +5196,7 @@ the user for confirmation."
 #+begin_src emacs-lisp
 
 ;; Transform all files in directory from DOS to Unix line breaks
-(defun seaman/dos2unix (&optional dir)
+(defun mirage/dos2unix (&optional dir)
   (let ((default-directory (or dir (file-name-directory buffer-file-name))))
     (shell-command "find . -maxdepth 1 -type f -exec dos2unix \\{\\} \\;")))
 
@@ -5205,22 +5205,22 @@ the user for confirmation."
 
 ** PDF
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-pdf.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-pdf.el
 :END:
 *** Jump
 
 #+begin_src emacs-lisp
 
-(defun seaman/pdf-view-jump-to-top ()
+(defun mirage/pdf-view-jump-to-top ()
   (interactive)
   (image-previous-line 9999))
 
-(defun seaman/pdf-view-jump-to-bottom ()
+(defun mirage/pdf-view-jump-to-bottom ()
   (interactive)
   (image-next-line 9999))
 
-(define-key pdf-view-mode-map (kbd "<home>") #'seaman/pdf-view-jump-to-top)
-(define-key pdf-view-mode-map (kbd "<end>")  #'seaman/pdf-view-jump-to-bottom)
+(define-key pdf-view-mode-map (kbd "<home>") #'mirage/pdf-view-jump-to-top)
+(define-key pdf-view-mode-map (kbd "<end>")  #'mirage/pdf-view-jump-to-bottom)
 
 #+end_src
 
@@ -5228,20 +5228,20 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/pdf-view-next-line (&optional arg)
+(defun mirage/pdf-view-next-line (&optional arg)
   "Scroll upward by ARG lines. Stay in page."
   (interactive "P")
   (image-next-line (if arg arg 1)))
 
-(defun seaman/pdf-view-previous-line (&optional arg)
+(defun mirage/pdf-view-previous-line (&optional arg)
   "Scroll upward by ARG lines. Stay in page."
   (interactive "P")
   (image-next-line (if arg (* -1 arg) -1)))
 
-(define-key pdf-view-mode-map (kbd "<wheel-down>") #'seaman/pdf-view-next-line)
-(define-key pdf-view-mode-map (kbd "<wheel-up>")   #'seaman/pdf-view-previous-line)
-(define-key pdf-view-mode-map (kbd "C-<wheel-down>") (lambda () (interactive) (seaman/pdf-view-next-line 10)))
-(define-key pdf-view-mode-map (kbd "C-<wheel-up>")   (lambda () (interactive) (seaman/pdf-view-previous-line 10)))
+(define-key pdf-view-mode-map (kbd "<wheel-down>") #'mirage/pdf-view-next-line)
+(define-key pdf-view-mode-map (kbd "<wheel-up>")   #'mirage/pdf-view-previous-line)
+(define-key pdf-view-mode-map (kbd "C-<wheel-down>") (lambda () (interactive) (mirage/pdf-view-next-line 10)))
+(define-key pdf-view-mode-map (kbd "C-<wheel-up>")   (lambda () (interactive) (mirage/pdf-view-previous-line 10)))
 
 #+end_src
 
@@ -5249,21 +5249,21 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/pdf-view-fit-height ()
+(defun mirage/pdf-view-fit-height ()
   (interactive)
   (setq pdf-view-display-size 'fit-page)
   (pdf-view-redisplay t)
   (pdf-view-center-in-window)
-  (seaman/pdf-view-jump-to-top))
+  (mirage/pdf-view-jump-to-top))
 
-(defun seaman/pdf-view-fit-width ()
+(defun mirage/pdf-view-fit-width ()
   (interactive)
   (setq pdf-view-display-size 'fit-width)
   (pdf-view-redisplay t)
   (pdf-view-center-in-window))
 
-(define-key pdf-view-mode-map (kbd "<tab>") #'seaman/pdf-view-fit-height)
-(define-key pdf-view-mode-map (kbd "C-<tab>") #'seaman/pdf-view-fit-width)
+(define-key pdf-view-mode-map (kbd "<tab>") #'mirage/pdf-view-fit-height)
+(define-key pdf-view-mode-map (kbd "C-<tab>") #'mirage/pdf-view-fit-width)
 
 #+end_src
 
@@ -5271,12 +5271,12 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/pdf-refresh-themed-view ()
+(defun mirage/pdf-refresh-themed-view ()
   (if pdf-view-themed-minor-mode
       (progn (pdf-view-themed-minor-mode -1)
              (pdf-view-themed-minor-mode))))
 
-(add-hook 'seaman/enable-or-load-theme-hook #'seaman/pdf-refresh-themed-view)
+(add-hook 'mirage/enable-or-load-theme-hook #'mirage/pdf-refresh-themed-view)
 
 #+end_src
 
@@ -5284,21 +5284,21 @@ the user for confirmation."
 *** Utilities
 **** Get
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-get.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-org-get.el
 :END:
 
 ***** org-get-title
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-get-title (&optional buffer)
+(defun mirage/org-get-title (&optional buffer)
   (let ((buffer (or buffer (current-buffer))))
     (with-current-buffer buffer
       (nth 1
 	   (assoc "TITLE"
 		  (org-element-map (org-element-parse-buffer 'greater-element)
 		      '(keyword)
-		    #'seaman/get-keyword-key-value))))))
+		    #'mirage/get-keyword-key-value))))))
 
 #+end_src
 
@@ -5306,9 +5306,9 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-get-file-title (file)
+(defun mirage/org-get-file-title (file)
   (with-current-buffer (find-file-noselect file)
-       (seaman/org-get-title)))
+       (mirage/org-get-title)))
 
 #+end_src
 
@@ -5316,7 +5316,7 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-get-subtree-region (&optional element)
+(defun mirage/org-get-subtree-region (&optional element)
   "Retrieve the beginning and end of the current subtree."
   (if (org-element--cache-active-p)
       (let* ((heading (org-element-lineage
@@ -5339,15 +5339,15 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-get-subtree-content ()
+(defun mirage/org-get-subtree-content ()
   "Retrieve the content of the current subtree."
-  (setq content (apply #'buffer-substring-no-properties (seaman/org-get-subtree-region))))
+  (setq content (apply #'buffer-substring-no-properties (mirage/org-get-subtree-region))))
 
 #+end_src
 
 **** Queries
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-queries.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-org-queries.el
 :END:
 
 ***** in
@@ -5358,12 +5358,12 @@ the user for confirmation."
 ;; `org-in-src-block-p' gives false positives as of Org Mode 9.5.3. For
 ;; this reason, determine if cursor in src block with the more reliable
 ;; `org-babel-where-is-src-block-head'
-(defun seaman/org-in-src-block-p (orig-fun &rest args)
+(defun mirage/org-in-src-block-p (orig-fun &rest args)
   (if args
       (apply orig-fun args)
     (org-babel-where-is-src-block-head)))
 
-(advice-add 'org-in-src-block-p :around #'seaman/org-in-src-block-p)
+(advice-add 'org-in-src-block-p :around #'mirage/org-in-src-block-p)
 
 #+end_src
 
@@ -5372,8 +5372,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-at-ellipsis (&optional position)
-  (or (seaman/org-at-ellipsis-h position) (seaman/org-at-ellipsis-l position)))
+(defun mirage/org-at-ellipsis (&optional position)
+  (or (mirage/org-at-ellipsis-h position) (mirage/org-at-ellipsis-l position)))
 
 #+end_src
 
@@ -5381,8 +5381,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-at-ellipsis-l (&optional position)
-  (and (seaman/org-relative-line-list-folded) (seaman/at-point 'end-of-visual-line)))
+(defun mirage/org-at-ellipsis-l (&optional position)
+  (and (mirage/org-relative-line-list-folded) (mirage/at-point 'end-of-visual-line)))
 
 #+end_src 
 
@@ -5390,8 +5390,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-at-ellipsis-h (&optional position) 
-  (and (seaman/org-relative-line-heading-folded) (seaman/at-point 'end-of-visual-line)))
+(defun mirage/org-at-ellipsis-h (&optional position) 
+  (and (mirage/org-relative-line-heading-folded) (mirage/at-point 'end-of-visual-line)))
 
 #+END_src 
 
@@ -5399,8 +5399,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-at-keyword (&optional number)
-  (seaman/relative-line-regex "^#+.*$" number))
+(defun mirage/org-at-keyword (&optional number)
+  (mirage/relative-line-regex "^#+.*$" number))
 
 #+END_src 
 
@@ -5408,9 +5408,9 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-at-heading (&optional point)
+(defun mirage/org-at-heading (&optional point)
   (let ((point (or point (point))))
-    (save-excursion (goto-char point) (seaman/org-relative-line-heading))))
+    (save-excursion (goto-char point) (mirage/org-relative-line-heading))))
 
 #+end_src
 
@@ -5420,8 +5420,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-at-bol-list () 
-  (and (seaman/org-relative-line-list) (seaman/at-point 'beginning-of-line-text)))
+(defun mirage/org-at-bol-list () 
+  (and (mirage/org-relative-line-list) (mirage/at-point 'beginning-of-line-text)))
 
 #+END_src 
 
@@ -5431,8 +5431,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-at-bol-heading () 
-  (and (seaman/org-relative-line-heading) (seaman/at-point 'seaman/org-goto-heading-bol)))
+(defun mirage/org-at-bol-heading () 
+  (and (mirage/org-relative-line-heading) (mirage/at-point 'mirage/org-goto-heading-bol)))
 
 #+END_src 
 
@@ -5442,8 +5442,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-at-eol-heading ()
-  (and (seaman/org-relative-line-heading) (eolp) (not (seaman/org-at-ellipsis-h)) (not (seaman/org-relative-line-heading-empty))))
+(defun mirage/org-at-eol-heading ()
+  (and (mirage/org-relative-line-heading) (eolp) (not (mirage/org-at-ellipsis-h)) (not (mirage/org-relative-line-heading-empty))))
 
 #+end_src
 
@@ -5452,8 +5452,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-after-list-or-indent ()
-  (or (seaman/org-relative-line-list -1) (seaman/relative-line-indented -1)))
+(defun mirage/org-after-list-or-indent ()
+  (or (mirage/org-relative-line-list -1) (mirage/relative-line-indented -1)))
 
 #+end_src
 
@@ -5462,8 +5462,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-relative-line-list (&optional number)
-  (seaman/relative-line (lambda () (progn (beginning-of-line-text) (org-at-item-p)))  number))
+(defun mirage/org-relative-line-list (&optional number)
+  (mirage/relative-line (lambda () (progn (beginning-of-line-text) (org-at-item-p)))  number))
 
 #+end_src
 
@@ -5471,8 +5471,8 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-relative-line-heading (&optional number)
-  (seaman/relative-line 'org-at-heading-p number))
+(defun mirage/org-relative-line-heading (&optional number)
+  (mirage/relative-line 'org-at-heading-p number))
 
 #+end_src
 
@@ -5480,16 +5480,16 @@ the user for confirmation."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-relative-line-paragraph (&optional number)
+(defun mirage/org-relative-line-paragraph (&optional number)
   "Determine whether the current line -or the NUMBER'th line relative to it
 is an indented paragraph."
   (let ((number (or number 0)))
-    (and (not (seaman/org-relative-line-heading number))
-	       (not (seaman/org-relative-line-list    number))
+    (and (not (mirage/org-relative-line-heading number))
+	       (not (mirage/org-relative-line-list    number))
 	       (not (org-in-src-block-p))
-	       (seaman/relative-line-indented number)
-	       (or  (seaman/org-relative-line-list      (- number 1))
-		    (seaman/org-relative-line-paragraph (- number 1))))))
+	       (mirage/relative-line-indented number)
+	       (or  (mirage/org-relative-line-list      (- number 1))
+		    (mirage/org-relative-line-paragraph (- number 1))))))
 
 #+end_src
 
@@ -5497,10 +5497,10 @@ is an indented paragraph."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-relative-line-list-empty (&optional number)
-  (and (seaman/org-relative-line-list)
-       (or (seaman/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+$" number)
-	         (seaman/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+$" number))))
+(defun mirage/org-relative-line-list-empty (&optional number)
+  (and (mirage/org-relative-line-list)
+       (or (mirage/relative-line-regex "^[[:blank:]]*[-+*]\\{1\\}[[:blank:]]+$" number)
+	         (mirage/relative-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]+$" number))))
 
 #+end_src
 
@@ -5508,10 +5508,10 @@ is an indented paragraph."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-relative-line-list-folded (&optional number)
+(defun mirage/org-relative-line-list-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
 is on a folded list item."
-  (seaman/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
+  (mirage/relative-line (lambda () (and (org-at-item-p) (invisible-p (point-at-eol)))) number))
 
 #+end_src
 
@@ -5519,8 +5519,8 @@ is on a folded list item."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-relative-line-heading-empty (&optional number)
-  (seaman/relative-line (lambda () (beginning-of-line-text) (org-point-at-end-of-empty-headline)) number))
+(defun mirage/org-relative-line-heading-empty (&optional number)
+  (mirage/relative-line (lambda () (beginning-of-line-text) (org-point-at-end-of-empty-headline)) number))
 
 #+end_src
 
@@ -5528,10 +5528,10 @@ is on a folded list item."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-relative-line-heading-folded (&optional number)
+(defun mirage/org-relative-line-heading-folded (&optional number)
   "Returns non-nil if `point-at-eol' of current visual line
 is on a folded heading."
-  (seaman/relative-line (lambda () (and (org-at-heading-p) (invisible-p (point-at-eol)))) number))
+  (mirage/relative-line (lambda () (and (org-at-heading-p) (invisible-p (point-at-eol)))) number))
 
 #+end_src
 
@@ -5539,8 +5539,8 @@ is on a folded heading."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-relative-line-heading-or-list (&optional number)
-  (seaman/relative-line 'org-at-heading-or-item-p number))
+(defun mirage/org-relative-line-heading-or-list (&optional number)
+  (mirage/relative-line 'org-at-heading-or-item-p number))
 
 #+end_src
 
@@ -5549,11 +5549,11 @@ is on a folded heading."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-subtree-blank ()
+(defun mirage/org-subtree-blank ()
   "Return t if the current subtree consists of
-a `seaman/region-blank'."
+a `mirage/region-blank'."
   (interactive)
-  (apply 'seaman/region-blank (seaman/org-get-subtree-region)))
+  (apply 'mirage/region-blank (mirage/org-get-subtree-region)))
 
 #+end_src
 
@@ -5561,9 +5561,9 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-subtree-empty ()
+(defun mirage/org-subtree-empty ()
   (interactive)
-  (string-equal "" (seaman/org-get-subtree-content)))
+  (string-equal "" (mirage/org-get-subtree-content)))
 
 #+end_src
 
@@ -5571,10 +5571,10 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-headings-follow ()
-  (let ((pos (seaman/get-point 'beginning-of-visual-line)))
-    (save-excursion (seaman/org-goto-heading-next)
-		           (and (not (= pos (point))) (seaman/org-relative-line-heading)))))
+(defun mirage/org-headings-follow ()
+  (let ((pos (mirage/get-point 'beginning-of-visual-line)))
+    (save-excursion (mirage/org-goto-heading-next)
+		           (and (not (= pos (point))) (mirage/org-relative-line-heading)))))
 
 #+end_src
 
@@ -5582,10 +5582,10 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-headings-precede ()
-  (let ((pos (seaman/get-point 'beginning-of-visual-line)))
-    (save-excursion (seaman/org-goto-heading-previous)
-		          (and (not (= pos (point))) (seaman/org-relative-line-heading)))))
+(defun mirage/org-headings-precede ()
+  (let ((pos (mirage/get-point 'beginning-of-visual-line)))
+    (save-excursion (mirage/org-goto-heading-previous)
+		          (and (not (= pos (point))) (mirage/org-relative-line-heading)))))
 
 #+end_src
 
@@ -5593,10 +5593,10 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-subtree-blank-up-to-point ()
+(defun mirage/org-subtree-blank-up-to-point ()
   (interactive)
-  (let ((heading-eol (save-excursion (seaman/org-goto-heading-current) (end-of-line) (point))))
-    (seaman/region-blank heading-eol (point))))
+  (let ((heading-eol (save-excursion (mirage/org-goto-heading-current) (end-of-line) (point))))
+    (mirage/region-blank heading-eol (point))))
 
 #+end_src
 
@@ -5605,12 +5605,12 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-heading-first-child ()
+(defun mirage/org-heading-first-child ()
   (save-excursion
-    (seaman/org-goto-heading-current)
-    (let ((pos (seaman/get-point 'beginning-of-visual-line)))
+    (mirage/org-goto-heading-current)
+    (let ((pos (mirage/get-point 'beginning-of-visual-line)))
       (org-backward-heading-same-level 1)
-      (= pos (seaman/get-point 'beginning-of-visual-line)))))
+      (= pos (mirage/get-point 'beginning-of-visual-line)))))
 
 #+end_src
 
@@ -5618,7 +5618,7 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-heading-has-children ()
+(defun mirage/org-heading-has-children ()
   (interactive)
   (save-excursion (org-goto-first-child)))
 
@@ -5627,7 +5627,7 @@ a `seaman/region-blank'."
 
 *** UI
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-ui.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-org-ui.el
 :END:
 
 **** Theme
@@ -5635,21 +5635,21 @@ a `seaman/region-blank'."
 #+begin_src emacs-lisp
 
 ;; theme reload advice
-(defun seaman/org-theme-reload ()
+(defun mirage/org-theme-reload ()
   "Re-set Org Mode UI typesetting after theme changes"
   (save-window-excursion
-    (cl-loop for buffer in (seaman/get-visible-buffers)
+    (cl-loop for buffer in (mirage/get-visible-buffers)
 	     do (select-window (get-buffer-window buffer))
 	     if (string-equal major-mode "org-mode")
-             do (seaman/org-ui-typeset))))
+             do (mirage/org-ui-typeset))))
 
-(add-hook 'seaman/enable-or-load-theme-hook #'seaman/org-theme-reload)
+(add-hook 'mirage/enable-or-load-theme-hook #'mirage/org-theme-reload)
 
 #+end_src
 
 **** Outline
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-outline.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-org-outline.el
 :END:
 
 - deprecated cl warning
@@ -5660,9 +5660,9 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-hide-previous-subtree ()
+(defun mirage/org-hide-previous-subtree ()
   "Cycle previous Org Mode heading."
-  (save-excursion (seaman/org-goto-heading-previous)
+  (save-excursion (mirage/org-goto-heading-previous)
 		  (outline-hide-subtree)))
 
 #+end_src
@@ -5672,9 +5672,9 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-show (orig-fun &rest args)
-  (if (seaman/org-at-ellipsis)
-      (progn (seaman/org-goto-heading-bol) (apply orig-fun args))
+(defun mirage/org-show (orig-fun &rest args)
+  (if (mirage/org-at-ellipsis)
+      (progn (mirage/org-goto-heading-bol) (apply orig-fun args))
     (apply orig-fun args)))
 
 #+end_src
@@ -5683,7 +5683,7 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(advice-add 'org-show-subtree :around #'seaman/org-show)
+(advice-add 'org-show-subtree :around #'mirage/org-show)
 
 #+end_src
 
@@ -5691,7 +5691,7 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(advice-add 'org-show-children :around #'seaman/org-show)
+(advice-add 'org-show-children :around #'mirage/org-show)
 
 #+end_src
 
@@ -5699,13 +5699,13 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-show-minimum ()
-  (if (or (seaman/org-relative-line-list-folded)
-	        (seaman/org-relative-line-heading-folded))
-      (progn (if (seaman/org-at-ellipsis)
+(defun mirage/org-show-minimum ()
+  (if (or (mirage/org-relative-line-list-folded)
+	        (mirage/org-relative-line-heading-folded))
+      (progn (if (mirage/org-at-ellipsis)
 		       (progn (beginning-of-visual-line) (end-of-line)))
 	           (org-show-entry)
-	           (if (seaman/org-heading-has-children) (org-show-children)))))
+	           (if (mirage/org-heading-has-children) (org-show-children)))))
 
 #+end_src
 
@@ -5717,7 +5717,7 @@ a `seaman/region-blank'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-cycle (orig-fun &rest args)
+(defun mirage/org-cycle (orig-fun &rest args)
   "Conditional `org-cycle'.
 
 Default: `org-cycle'
@@ -5729,17 +5729,17 @@ call `org-cycle'.
 If cursor lies at a paragraph directly under a list item and not
 indented at the level of the previous list item, indent the paragraph."
   (interactive)
-  (if (or (seaman/org-relative-line-list-folded) (seaman/org-relative-line-heading-folded))
-      (if (= (point) (seaman/get-point 'end-of-visual-line))
+  (if (or (mirage/org-relative-line-list-folded) (mirage/org-relative-line-heading-folded))
+      (if (= (point) (mirage/get-point 'end-of-visual-line))
 	  (progn (beginning-of-visual-line)
 		 (end-of-line)
 		 (apply orig-fun args))
 	(apply orig-fun args))
-    (if (and (org-in-src-block-p) (not (seaman/org-at-keyword)))
+    (if (and (org-in-src-block-p) (not (mirage/org-at-keyword)))
 	      (org-indent-line)
       (apply orig-fun args))))
 
-(advice-add 'org-cycle :around #'seaman/org-cycle)
+(advice-add 'org-cycle :around #'mirage/org-cycle)
 
 #+end_src
 
@@ -5747,14 +5747,14 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+begin_src emacs-lisp
 
-(defun seaman/c-cycle ()
+(defun mirage/c-cycle ()
   (interactive)
   (if (and (org-in-src-block-p) (not (invisible-p (point-at-eol))))
       (progn (org-babel-goto-src-block-head)
              (org-fold-hide-block-toggle))
     (org-fold-hide-subtree)))
 
-(define-key org-mode-map (kbd "C-<tab>") #'seaman/c-cycle)
+(define-key org-mode-map (kbd "C-<tab>") #'mirage/c-cycle)
 
 #+end_src
 
@@ -5770,7 +5770,7 @@ indented at the level of the previous list item, indent the paragraph."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-identify-hidden-overlays (overlay &optional use-markers)
+(defun mirage/org-identify-hidden-overlays (overlay &optional use-markers)
   (when (eq (overlay-get overlay 'invisible) 'outline)
     (let ((beg (overlay-start overlay))
           (end (overlay-end overlay)))
@@ -5780,7 +5780,7 @@ indented at the level of the previous list item, indent the paragraph."
                      (copy-marker end t))
              (cons beg end))))))
 
-(defun seaman/org-get-outline-state (&optional use-markers)
+(defun mirage/org-get-outline-state (&optional use-markers)
   "Return a list of the locations of all outline overlays.
 These are overlays with the `invisible' property value `outline'.
 The return value is a list of cons cells, with start and stop
@@ -5789,7 +5789,7 @@ If USE-MARKERS is set, return the positions as markers."
   (let (beg end)
     (org-with-wide-buffer
      (delq nil
-       (mapcar 'seaman/org-identify-hidden-overlays
+       (mapcar 'mirage/org-identify-hidden-overlays
            (overlays-in (point-min) (point-max)))))))
 
 #+end_src
@@ -5798,10 +5798,10 @@ If USE-MARKERS is set, return the positions as markers."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-save-outline-state ()
-  "Save org outline state in `seaman/org-outline-state'.
-It can be recovered afterwards with `seaman/org-recover-outline-state'."
-  (setq seaman/org-outline-state (seaman/org-get-outline-state t)))
+(defun mirage/org-save-outline-state ()
+  "Save org outline state in `mirage/org-outline-state'.
+It can be recovered afterwards with `mirage/org-recover-outline-state'."
+  (setq mirage/org-outline-state (mirage/org-get-outline-state t)))
 
 #+end_src
 
@@ -5809,13 +5809,13 @@ It can be recovered afterwards with `seaman/org-recover-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defvar-local seaman/org-outline-state nil
+(defvar-local mirage/org-outline-state nil
   "Variable to save the org outline.")
-(put 'seaman/org-outline-state 'permanent-local t)
+(put 'mirage/org-outline-state 'permanent-local t)
 
-(defun seaman/org-set-outline-state (data)
+(defun mirage/org-set-outline-state (data)
   "Create visibility overlays for all positions in DATA.
-DATA should have been made by `seaman/org-get-outline-state'."
+DATA should have been made by `mirage/org-get-outline-state'."
   (org-with-wide-buffer
    (org-show-all)
    (dolist (c data) (org-flag-region (car c) (cdr c) t 'outline))))
@@ -5826,11 +5826,11 @@ DATA should have been made by `seaman/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-restore-outline-state ()
-  "Restore Org Mode outline stored in `seaman/org-outline-state'."
-  (when seaman/org-outline-state
-    (seaman/org-set-outline-state seaman/org-outline-state)
-    (setq seaman/org-outline-state nil)))
+(defun mirage/org-restore-outline-state ()
+  "Restore Org Mode outline stored in `mirage/org-outline-state'."
+  (when mirage/org-outline-state
+    (mirage/org-set-outline-state mirage/org-outline-state)
+    (setq mirage/org-outline-state nil)))
 
 #+end_src
 
@@ -5838,14 +5838,14 @@ DATA should have been made by `seaman/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-mode (orig-fun &rest args)
+(defun mirage/org-mode (orig-fun &rest args)
   (if (string-equal major-mode "org-mode")
-      (progn (seaman/org-save-outline-state)
+      (progn (mirage/org-save-outline-state)
              (apply orig-fun args)
-             (seaman/org-restore-outline-state))
+             (mirage/org-restore-outline-state))
     (apply orig-fun args)))
 
-(advice-add 'org-mode :around #'seaman/org-mode)
+(advice-add 'org-mode :around #'mirage/org-mode)
 
 #+end_src
 
@@ -5854,14 +5854,14 @@ DATA should have been made by `seaman/org-get-outline-state'."
 #+begin_src emacs-lisp
 
 ;; UI typesetting
-(defun seaman/org-ui-typeset ()
+(defun mirage/org-ui-typeset ()
   "Typeset the following Org Mode UI elements:
 - title of Org Mode documents
 - indent typeface used in `org-indent-mode' and `visual-line-mode'"
   (with-eval-after-load 'org-faces       (set-face-attribute 'org-document-title nil :font typeface-title :weight 'regular :height 200))
   (with-eval-after-load 'org-indent-mode (set-face-attribute 'org-indent         nil :inherit '(org-hide fixed-pitch))))
 
-(add-hook 'org-mode-hook #'seaman/org-ui-typeset)
+(add-hook 'org-mode-hook #'mirage/org-ui-typeset)
 
 #+end_src
 
@@ -5869,20 +5869,20 @@ DATA should have been made by `seaman/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defface seaman/variable-pitch-marker
+(defface mirage/variable-pitch-marker
   '((nil :inherit fixed-pitch))
   "List marker typeface.")
 
-(defface seaman/variable-pitch-indent
+(defface mirage/variable-pitch-indent
   '((nil :inherit fixed-pitch :invisible t))
   "Indent typeface.")
 
-(defvar seaman/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'seaman/variable-pitch-marker)
-					 ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'seaman/variable-pitch-marker)
-					 ("^[[:blank:]]+"                                      0 'seaman/variable-pitch-indent))
+(defvar mirage/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'mirage/variable-pitch-marker)
+					 ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'mirage/variable-pitch-marker)
+					 ("^[[:blank:]]+"                                      0 'mirage/variable-pitch-indent))
   "Variable pitch font-lock keywords.")
 
-(font-lock-add-keywords 'org-mode seaman/variable-pitch-keywords 'append)
+(font-lock-add-keywords 'org-mode mirage/variable-pitch-keywords 'append)
 
 #+end_src
 
@@ -5938,7 +5938,7 @@ DATA should have been made by `seaman/org-get-outline-state'."
 
 *** Editing
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-editing.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-org-editing.el
 :END:
 
 **** Text
@@ -5946,12 +5946,12 @@ DATA should have been made by `seaman/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-undo ()
+(defun mirage/org-undo ()
   (interactive)
   (if (org-babel-where-is-src-block-head)
       (let ((beg (point)))
-	         (cond ((eq last-command 'seaman/org-return)    (undo 2))
-                       ((eq last-command 'seaman/smart-comment) (undo 1))
+	         (cond ((eq last-command 'mirage/org-return)    (undo 2))
+                       ((eq last-command 'mirage/smart-comment) (undo 1))
 	               (t                                       (undo 1)))
            (if (org-babel-where-is-src-block-head)
 	             (save-excursion (goto-char (org-babel-where-is-src-block-head))
@@ -5962,7 +5962,7 @@ DATA should have been made by `seaman/org-get-outline-state'."
 			    (beginning-of-line-text))))
     (undo 1)))
 
-(define-key org-mode-map (kbd "C-/") #'seaman/org-undo)
+(define-key org-mode-map (kbd "C-/") #'mirage/org-undo)
 
 #+end_src
 
@@ -5972,14 +5972,14 @@ DATA should have been made by `seaman/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-insert-item-respect-content ()
+(defun mirage/org-insert-item-respect-content ()
   (interactive)
   (let ((struct (org-list-struct))
-	    (unfold (if (seaman/org-relative-line-list-folded) nil (point-marker))))
+	    (unfold (if (mirage/org-relative-line-list-folded) nil (point-marker))))
     (org-list-set-item-visibility (point-at-bol) struct 'folded)
     (save-excursion
       (beginning-of-visual-line)
-      (kill-ring-save (point) (seaman/get-point 'beginning-of-line-text)))
+      (kill-ring-save (point) (mirage/get-point 'beginning-of-line-text)))
     (end-of-visual-line)
     (org-return)
     (yank)
@@ -5993,17 +5993,17 @@ DATA should have been made by `seaman/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-heading-margin-post ()
+(defun mirage/org-heading-margin-post ()
   "Return margin between current heading and next."
   (if (org-current-level)
-      (let ((pos (seaman/get-point 'seaman/org-goto-heading-bol))
-	    (end-of-subtree (seaman/get-point 'seaman/org-goto-subtree-end))
-	    (next-heading   (seaman/get-point 'seaman/org-goto-heading-next)))
-	(if (not (and (= pos end-of-subtree) (seaman/org-relative-line-heading)))
+      (let ((pos (mirage/get-point 'mirage/org-goto-heading-bol))
+	    (end-of-subtree (mirage/get-point 'mirage/org-goto-subtree-end))
+	    (next-heading   (mirage/get-point 'mirage/org-goto-heading-next)))
+	(if (not (and (= pos end-of-subtree) (mirage/org-relative-line-heading)))
 	    (buffer-substring-no-properties end-of-subtree next-heading)
 	  ""))
-    (if (seaman/org-headings-follow)
-	       (buffer-substring-no-properties (point) (seaman/get-point 'seaman/org-goto-heading-next))
+    (if (mirage/org-headings-follow)
+	       (buffer-substring-no-properties (point) (mirage/get-point 'mirage/org-goto-heading-next))
       "")))
 
 #+end_src
@@ -6012,11 +6012,11 @@ DATA should have been made by `seaman/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-heading-margin-delete-post ()
+(defun mirage/org-heading-margin-delete-post ()
   "Delete newline after new headings created by
 `respect-content' heading commands."
-  (if (seaman/org-subtree-blank)
-      (apply 'delete-region (seaman/org-get-subtree-region))))
+  (if (mirage/org-subtree-blank)
+      (apply 'delete-region (mirage/org-get-subtree-region))))
 
 #+end_src
 
@@ -6024,13 +6024,13 @@ DATA should have been made by `seaman/org-get-outline-state'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-heading-margin-insert-previous ()
+(defun mirage/org-heading-margin-insert-previous ()
   "If the previous subtree is not empty,
 insert a margin of 1 empty line."
-  (let ((insert-margin (save-excursion (if (seaman/org-heading-first-child)
-					          (seaman/org-goto-heading-previous)
+  (let ((insert-margin (save-excursion (if (mirage/org-heading-first-child)
+					          (mirage/org-goto-heading-previous)
 					        (org-backward-heading-same-level 1))
-				              (not (seaman/org-subtree-blank)))))
+				              (not (mirage/org-subtree-blank)))))
     (if insert-margin
       (progn (beginning-of-visual-line)
 	            (org-return)
@@ -6042,7 +6042,7 @@ insert a margin of 1 empty line."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-insert-heading (command &optional margin)
+(defun mirage/org-insert-heading (command &optional margin)
   "Primitive for custom heading functions.
 
 If cursor if at an Org Mode heading's
@@ -6050,7 +6050,7 @@ ellipsis, go to the `end-of-line' of the
 heading's visual line.
 
 If cursor lies on an Org Mode heading,
-`seaman/org-show-minimum'.
+`mirage/org-show-minimum'.
 
 If cursor is outside top level heading,
 insert heading at point, without removing
@@ -6065,17 +6065,17 @@ until first preceding non-empty line.
 If MARGIN is t:
 - insert margin between content under parent heading and new one"
   (interactive)
-  (if (seaman/org-at-ellipsis-h)         (progn (beginning-of-visual-line) (end-of-line)))
-  (if (seaman/org-relative-line-heading) (seaman/org-show-minimum))
+  (if (mirage/org-at-ellipsis-h)         (progn (beginning-of-visual-line) (end-of-line)))
+  (if (mirage/org-relative-line-heading) (mirage/org-show-minimum))
   ;; Insert heading
   (cond ((not (org-current-level)) (insert "* "))
         (t                         (funcall command)))
   ;; Insert margin
-  (if margin (seaman/org-heading-margin-insert-previous))
+  (if margin (mirage/org-heading-margin-insert-previous))
   ;; Hide previous subtree
-  (if (save-excursion (seaman/org-goto-heading-previous)
-		      (seaman/org-relative-line-heading-folded))
-      (seaman/org-hide-previous-subtree)))
+  (if (save-excursion (mirage/org-goto-heading-previous)
+		      (mirage/org-relative-line-heading-folded))
+      (mirage/org-hide-previous-subtree)))
 
 #+end_src
 
@@ -6083,13 +6083,13 @@ If MARGIN is t:
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-insert-subheading (orig-fun &optional arg)
+(defun mirage/org-insert-subheading (orig-fun &optional arg)
   "Make `org-insert-subheading' ARG optional."
   (interactive)
   (let ((arg (or arg 0)))
     (funcall orig-fun arg)))
 
-(advice-add 'org-insert-subheading :around #'seaman/org-insert-subheading)
+(advice-add 'org-insert-subheading :around #'mirage/org-insert-subheading)
 
 #+end_src
 
@@ -6097,9 +6097,9 @@ If MARGIN is t:
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-insert-heading-at-point ()
+(defun mirage/org-insert-heading-at-point ()
   (interactive)
-  (seaman/org-insert-heading 'org-insert-heading (not (seaman/org-subtree-blank-up-to-point))))
+  (mirage/org-insert-heading 'org-insert-heading (not (mirage/org-subtree-blank-up-to-point))))
 
 #+end_src
 
@@ -6107,9 +6107,9 @@ If MARGIN is t:
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-insert-subheading-at-point ()
+(defun mirage/org-insert-subheading-at-point ()
   (interactive)
-  (seaman/org-insert-heading 'org-insert-subheading (not (seaman/org-subtree-blank-up-to-point))))
+  (mirage/org-insert-heading 'org-insert-subheading (not (mirage/org-subtree-blank-up-to-point))))
 
 #+end_src
 
@@ -6117,7 +6117,7 @@ If MARGIN is t:
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-insert-heading-after-subtree ()
+(defun mirage/org-insert-heading-after-subtree ()
   "Insert heading after current subtree. As
 `org-insert-heading-respect-content' does not
 behave well with folded Org Mode headings, if
@@ -6125,27 +6125,27 @@ the previous heading is folded:
 1. Unfold the heading
 2. Create the new heading after its subtree
 3. Fold it back"
-  (let ((margin-post        (seaman/count-substrings "\n" (seaman/org-heading-margin-post)))
-	(prev-same-level    (seaman/get-point 'beginning-of-visual-line))
-	(prev-lower-level   (seaman/get-point 'seaman/org-goto-child-last))
-	(folded-same-level  (seaman/org-relative-line-heading-folded))
-	(folded-lower-level (save-excursion (seaman/org-goto-child-last)
-                                            (seaman/org-relative-line-heading-folded))))
+  (let ((margin-post        (mirage/count-substrings "\n" (mirage/org-heading-margin-post)))
+	(prev-same-level    (mirage/get-point 'beginning-of-visual-line))
+	(prev-lower-level   (mirage/get-point 'mirage/org-goto-child-last))
+	(folded-same-level  (mirage/org-relative-line-heading-folded))
+	(folded-lower-level (save-excursion (mirage/org-goto-child-last)
+                                            (mirage/org-relative-line-heading-folded))))
 
     ;; Go to current heading
-    (seaman/org-goto-heading-current)
+    (mirage/org-goto-heading-current)
 
     ;; Unfold if necessary
     (if folded-same-level  (save-excursion (org-show-subtree)))
-    (if folded-lower-level (save-excursion (seaman/org-goto-subtree-end) (org-show-subtree)))
+    (if folded-lower-level (save-excursion (mirage/org-goto-subtree-end) (org-show-subtree)))
     
     ;; Insert heading
     (cond ((not (org-current-level)) (insert "* "))
-	        (t                         (progn (seaman/org-goto-heading-current) (org-insert-heading-respect-content))))
-    (seaman/org-heading-margin-delete-post)
+	        (t                         (progn (mirage/org-goto-heading-current) (org-insert-heading-respect-content))))
+    (mirage/org-heading-margin-delete-post)
 
     ;; Insert margin with previous heading
-    (seaman/org-heading-margin-insert-previous)
+    (mirage/org-heading-margin-insert-previous)
     
     ;; Fold back if necessary
     (if folded-same-level  (save-excursion (goto-char prev-same-level)  (outline-hide-subtree)))
@@ -6160,14 +6160,14 @@ the previous heading is folded:
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-insert-subheading-after-subtree ()
+(defun mirage/org-insert-subheading-after-subtree ()
   "`org-insert-subheading' respecting content."
   (interactive)
-  (seaman/org-show-minimum)
-  (if (seaman/org-heading-has-children)
-      (progn (seaman/org-goto-child-last)
-	           (seaman/org-insert-heading-after-subtree))
-    (progn (seaman/org-insert-heading-after-subtree)
+  (mirage/org-show-minimum)
+  (if (mirage/org-heading-has-children)
+      (progn (mirage/org-goto-child-last)
+	           (mirage/org-insert-heading-after-subtree))
+    (progn (mirage/org-insert-heading-after-subtree)
 	         (org-do-demote))))
 
 #+end_src
@@ -6176,24 +6176,24 @@ the previous heading is folded:
 
 #+begin_src emacs-lisp
 
-(defvar seaman/org-functions-at-ellipsis '(org-self-insert-command
-					   seaman/kill-ring-mouse)
+(defvar mirage/org-functions-at-ellipsis '(org-self-insert-command
+					   mirage/kill-ring-mouse)
   "Functions whose behavior at Org Mode ellipses
-will be advised by `seaman/org-edit-at-ellipsis'")
+will be advised by `mirage/org-edit-at-ellipsis'")
 
-(defun seaman/org-edit-at-ellipsis (orig-fun &rest args)
+(defun mirage/org-edit-at-ellipsis (orig-fun &rest args)
   "Execute commands invoked at an Org Mode heading's
 ellipsis in the first line under the heading."
-  (if (seaman/org-at-ellipsis-h)
+  (if (mirage/org-at-ellipsis-h)
       (progn (beginning-of-visual-line)
-	     (seaman/org-show-minimum)
+	     (mirage/org-show-minimum)
 	     (end-of-line)
 	     (org-return)
 	     (apply orig-fun args))
     (apply orig-fun args)))
 
-(dolist (function seaman/org-functions-at-ellipsis)
-  (advice-add function :around #'seaman/org-edit-at-ellipsis))
+(dolist (function mirage/org-functions-at-ellipsis)
+  (advice-add function :around #'mirage/org-edit-at-ellipsis))
 
 #+end_src
 
@@ -6206,21 +6206,21 @@ ellipsis in the first line under the heading."
 #+begin_src emacs-lisp
 
 ;; org-return
-(defun seaman/org-return ()
+(defun mirage/org-return ()
   "Conditional `org-return'."
   (interactive)
-  (cond ((seaman/org-relative-line-list-empty)          (progn (seaman/delete-line) (org-return)))
-	     ((seaman/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
-	     ((seaman/org-at-ellipsis-l)                     (seaman/org-insert-item-respect-content))
-	     ((seaman/org-relative-line-paragraph)           (org-insert-item))
-	     ((seaman/org-relative-line-list)                (org-meta-return))
-	     ((and (seaman/org-after-list-or-indent) (bolp)) (org-return))
-	     ((seaman/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
-	     ((seaman/org-at-eol-heading)                    (progn (newline 2) (if (seaman/org-subtree-blank) (progn (newline) (previous-line)))))
-	     ((seaman/org-at-ellipsis-h)                     (org-return))
+  (cond ((mirage/org-relative-line-list-empty)          (progn (mirage/delete-line) (org-return)))
+	     ((mirage/org-at-bol-list)                       (progn (beginning-of-visual-line) (org-return) (beginning-of-line-text)))
+	     ((mirage/org-at-ellipsis-l)                     (mirage/org-insert-item-respect-content))
+	     ((mirage/org-relative-line-paragraph)           (org-insert-item))
+	     ((mirage/org-relative-line-list)                (org-meta-return))
+	     ((and (mirage/org-after-list-or-indent) (bolp)) (org-return))
+	     ((mirage/org-at-bol-heading)                    (save-excursion (beginning-of-visual-line) (org-return t)))
+	     ((mirage/org-at-eol-heading)                    (progn (newline 2) (if (mirage/org-subtree-blank) (progn (newline) (previous-line)))))
+	     ((mirage/org-at-ellipsis-h)                     (org-return))
 	     (t                                              (org-return t))))
 
-(define-key org-mode-map (kbd "<return>") #'seaman/org-return)
+(define-key org-mode-map (kbd "<return>") #'mirage/org-return)
 
 #+end_src
 
@@ -6232,7 +6232,7 @@ ellipsis in the first line under the heading."
    - insert heading at line
 
 - list paragraphs
-   - seaman/org-toggle-paragraph
+   - mirage/org-toggle-paragraph
       - keep cursor in place
 
 - bugs
@@ -6256,15 +6256,15 @@ ellipsis in the first line under the heading."
 #+begin_src emacs-lisp
 
 ;; org-meta-return
-(defun seaman/org-control-return ()
+(defun mirage/org-control-return ()
   (interactive)
-  (cond ((seaman/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
-	    ((seaman/org-relative-line-heading)    (seaman/org-insert-heading-after-subtree))
-	    ((seaman/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
-	    ((seaman/org-relative-line-paragraph)  (seaman/org-paragraph-toggle))
-	    (t                                     (seaman/org-insert-heading-after-subtree))))
+  (cond ((mirage/org-relative-line-list-empty) (progn (org-meta-return) (next-line) (end-of-line)))
+	    ((mirage/org-relative-line-heading)    (mirage/org-insert-heading-after-subtree))
+	    ((mirage/org-relative-line-list)       (progn (end-of-line) (org-meta-return)))
+	    ((mirage/org-relative-line-paragraph)  (mirage/org-paragraph-toggle))
+	    (t                                     (mirage/org-insert-heading-after-subtree))))
 
-(define-key org-mode-map (kbd "C-<return>") #'seaman/org-control-return)
+(define-key org-mode-map (kbd "C-<return>") #'mirage/org-control-return)
 
 #+end_src
 
@@ -6272,11 +6272,11 @@ ellipsis in the first line under the heading."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-meta-return ()
+(defun mirage/org-meta-return ()
   (interactive)
-  (seaman/org-insert-subheading-after-subtree))
+  (mirage/org-insert-subheading-after-subtree))
 
-(define-key org-mode-map (kbd "M-<return>") #'seaman/org-meta-return)
+(define-key org-mode-map (kbd "M-<return>") #'mirage/org-meta-return)
 
 #+end_src
 
@@ -6287,13 +6287,13 @@ ellipsis in the first line under the heading."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-super-return ()
+(defun mirage/org-super-return ()
   (interactive)
-  (cond ((or (seaman/org-relative-line-list)
-	     (seaman/org-relative-line-paragraph)) (org-return t))
-	(t                                         (seaman/org-insert-subheading-at-point))))
+  (cond ((or (mirage/org-relative-line-list)
+	     (mirage/org-relative-line-paragraph)) (org-return t))
+	(t                                         (mirage/org-insert-subheading-at-point))))
 
-(define-key org-mode-map (kbd "S-<return>") #'seaman/org-super-return)
+(define-key org-mode-map (kbd "S-<return>") #'mirage/org-super-return)
 
 #+end_src
 
@@ -6301,7 +6301,7 @@ ellipsis in the first line under the heading."
 
 #+begin_src emacs-lisp
  
-(define-key org-mode-map (kbd "M-S-<return>") #'seaman/org-insert-heading-at-point)
+(define-key org-mode-map (kbd "M-S-<return>") #'mirage/org-insert-heading-at-point)
 
 #+end_src
 
@@ -6326,13 +6326,13 @@ ellipsis in the first line under the heading."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-delete-hungry ()
+(defun mirage/org-delete-hungry ()
   "If the region starts at the beginning of an 
 indented line and the cursor lies on an Org Mode
 src block, delete the region and its indent plus 
 one character."
   (interactive)
-  (seaman/@delete-hungry (org-in-src-block-p)))
+  (mirage/@delete-hungry (org-in-src-block-p)))
 
 #+end_src
 
@@ -6342,16 +6342,16 @@ one character."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-nimble-delete-forward ()
-  "Org Mode complement to `seaman/nimble-delete-forward'."
+(defun mirage/org-nimble-delete-forward ()
+  "Org Mode complement to `mirage/nimble-delete-forward'."
   (interactive)
-  (cond ((and (seaman/org-at-ellipsis-h)
-	           (seaman/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2)
+  (cond ((and (mirage/org-at-ellipsis-h)
+	           (mirage/org-relative-line-heading 1))  (progn (beginning-of-visual-line 2)
 								 (beginning-of-line-text)
 								 (delete-forward-char 1)))
-	      (t (seaman/nimble-delete-forward))))
+	      (t (mirage/nimble-delete-forward))))
 
-(define-key org-mode-map (kbd "<delete>") #'seaman/org-nimble-delete-forward)
+(define-key org-mode-map (kbd "<delete>") #'mirage/org-nimble-delete-forward)
 
 #+end_src
 
@@ -6370,22 +6370,22 @@ one character."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-nimble-delete-backward ()
-  "Org Mode complement to `seaman/nimble-delete-backward'."
+(defun mirage/org-nimble-delete-backward ()
+  "Org Mode complement to `mirage/nimble-delete-backward'."
   (interactive)
   (cond ((and (region-active-p)
-	           (not (seaman/region-blank)))                 (seaman/org-delete-hungry))
-	     ((or  (seaman/org-at-ellipsis-h)
-		   (seaman/org-at-ellipsis-l))                  (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
-	     ((and (or (seaman/org-relative-line-heading-empty)
-		       (seaman/org-relative-line-list-empty))
-		   (org-current-level))                         (delete-region (point) (seaman/get-point 'end-of-line 0)))
-	     ((or  (seaman/org-relative-line-heading-empty)
-		   (seaman/org-relative-line-list-empty))       (delete-region (point) (seaman/get-point 'beginning-of-visual-line)))
-	     ((seaman/org-at-bol-list)                          (seaman/org-toggle-item))
-        (t                                                 (seaman/nimble-delete-backward))))
+	           (not (mirage/region-blank)))                 (mirage/org-delete-hungry))
+	     ((or  (mirage/org-at-ellipsis-h)
+		   (mirage/org-at-ellipsis-l))                  (progn (beginning-of-visual-line) (end-of-line) (delete-backward-char 1)))
+	     ((and (or (mirage/org-relative-line-heading-empty)
+		       (mirage/org-relative-line-list-empty))
+		   (org-current-level))                         (delete-region (point) (mirage/get-point 'end-of-line 0)))
+	     ((or  (mirage/org-relative-line-heading-empty)
+		   (mirage/org-relative-line-list-empty))       (delete-region (point) (mirage/get-point 'beginning-of-visual-line)))
+	     ((mirage/org-at-bol-list)                          (mirage/org-toggle-item))
+        (t                                                 (mirage/nimble-delete-backward))))
 
-(define-key org-mode-map (kbd "<backspace>") #'seaman/org-nimble-delete-backward)
+(define-key org-mode-map (kbd "<backspace>") #'mirage/org-nimble-delete-backward)
 
 #+end_src
 
@@ -6394,9 +6394,9 @@ one character."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-toggle-item ()
+(defun mirage/org-toggle-item ()
   (interactive)
-  (let ((toggle-off (seaman/org-relative-line-list))
+  (let ((toggle-off (mirage/org-relative-line-list))
 	     (indent     (+ 1 org-list-indent-offset))
 	     (marker     (point)))
     (beginning-of-line-text)
@@ -6412,7 +6412,7 @@ one character."
 ***** TODO indent-region
 
 - use markers
-   - https://www.gnu.org/software/emacs/manual/html_node/seaman/Overview-of-Markers.html
+   - https://www.gnu.org/software/emacs/manual/html_node/mirage/Overview-of-Markers.html
   
 - regions spanning headings
    - nested headings
@@ -6421,7 +6421,7 @@ one character."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-indent-region (command &rest args)
+(defun mirage/org-indent-region (command &rest args)
   "Indent Org Mode region.
 
 If the region spans Org Mode headings or items:
@@ -6432,7 +6432,7 @@ If the region spans Org Mode headings or items:
 its limits to match shifts in the position of the
 text it spans, such as when indenting with `org-metaright'
 or outdenting with `org-metaleft'."
-  (if (or (seaman/org-relative-line-heading) (seaman/org-relative-line-list))
+  (if (or (mirage/org-relative-line-heading) (mirage/org-relative-line-list))
       (let ((beg (region-beginning))
 	         (end (region-end))
 		 (pos (point)))
@@ -6443,10 +6443,10 @@ or outdenting with `org-metaleft'."
 		(setq lines (count-screen-lines beg end))
 
 		;; Get initial cursor position wrt bol
-		(setq relative-pos-0 (- pos (seaman/get-point 'beginning-of-line)))
+		(setq relative-pos-0 (- pos (mirage/get-point 'beginning-of-line)))
 		;; Execute command
 		(save-excursion (goto-char beg)
-				(push-mark (seaman/get-point 'beginning-of-line))
+				(push-mark (mirage/get-point 'beginning-of-line))
 		 		(goto-char end)
 				(end-of-visual-line)
 				(apply command args))
@@ -6456,13 +6456,13 @@ or outdenting with `org-metaleft'."
 		(setq disp (- pos-1 pos))
 		
            ;; Get aftermath cursor position wrt bol
-		(setq relative-pos-1 (- pos-1 (seaman/get-point 'beginning-of-line)))
+		(setq relative-pos-1 (- pos-1 (mirage/get-point 'beginning-of-line)))
 		;; Calculate cursor displacement wrt bol
 		(setq relative-disp (- relative-pos-1 relative-pos-0))
 
 		;; Calculate mark shift
 		(cond
-		 ((seaman/org-at-heading beg)  (setq shift disp))
+		 ((mirage/org-at-heading beg)  (setq shift disp))
 		 ((= mark beg)                 (setq shift relative-disp))
 		 ((= mark end)                 (setq shift (* relative-disp lines))))
 
@@ -6477,20 +6477,20 @@ or outdenting with `org-metaleft'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/with-mark-active (&rest args)
+(defun mirage/with-mark-active (&rest args)
   "Keep mark active after command. To be used as advice AFTER any
 function that sets `deactivate-mark' to t."
   (setq deactivate-mark nil))
 
-(advice-add 'org-metaright      :after #'seaman/with-mark-active)
-(advice-add 'org-metaleft       :after #'seaman/with-mark-active)
-(advice-add 'org-metaup         :after #'seaman/with-mark-active)
-(advice-add 'org-metadown       :after #'seaman/with-mark-active)
+(advice-add 'org-metaright      :after #'mirage/with-mark-active)
+(advice-add 'org-metaleft       :after #'mirage/with-mark-active)
+(advice-add 'org-metaup         :after #'mirage/with-mark-active)
+(advice-add 'org-metadown       :after #'mirage/with-mark-active)
 
-(advice-add 'org-shiftmetaright :after #'seaman/with-mark-active)
-(advice-add 'org-shiftmetaleft  :after #'seaman/with-mark-active)
-(advice-add 'org-shiftmetaup    :after #'seaman/with-mark-active)
-(advice-add 'org-shift-metadown :after #'seaman/with-mark-active)
+(advice-add 'org-shiftmetaright :after #'mirage/with-mark-active)
+(advice-add 'org-shiftmetaleft  :after #'mirage/with-mark-active)
+(advice-add 'org-shiftmetaup    :after #'mirage/with-mark-active)
+(advice-add 'org-shift-metadown :after #'mirage/with-mark-active)
 
 #+end_src
 
@@ -6506,7 +6506,7 @@ function that sets `deactivate-mark' to t."
 
 *** Navigation
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-navigation.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-org-navigation.el
 :END:
 
 **** Line
@@ -6514,32 +6514,32 @@ function that sets `deactivate-mark' to t."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-end ()
+(defun mirage/org-end ()
   "Conditional end in Org Mode.
 
-Default: `seaman/end'
+Default: `mirage/end'
 
 If `org-at-table-p', go to `org-table-end-of-field'."
-  (cond ((and (region-active-p) (seaman/org-relative-line-heading-folded)) (end-of-line))
+  (cond ((and (region-active-p) (mirage/org-relative-line-heading-folded)) (end-of-line))
         ((org-at-table-p)                                                  (org-table-end-of-field 1))
 	(t                                                                 (end-of-visual-line))))
 
-(defvar seaman/org-double-end-timeout 0.4)
+(defvar mirage/org-double-end-timeout 0.4)
 
-(defun seaman/org-double-end ()
-  "Dynamic homing command with a timeout of `seaman/org-double-end-timeout' seconds.
-- Single press: `seaman/org-home' 
+(defun mirage/org-double-end ()
+  "Dynamic homing command with a timeout of `mirage/org-double-end-timeout' seconds.
+- Single press: `mirage/org-home' 
 - Double press: `beginning-of-visual-line'"
   (interactive)
-  (let ((last-called (get this-command 'seaman/last-call-time)))
+  (let ((last-called (get this-command 'mirage/last-call-time)))
     (if (and (eq last-command this-command)	     
-             (<= (time-to-seconds (time-since last-called)) seaman/org-double-end-timeout)
+             (<= (time-to-seconds (time-since last-called)) mirage/org-double-end-timeout)
 	         (not (org-at-table-p)))
         (progn (beginning-of-visual-line) (end-of-line))
-      (seaman/org-end)))
-  (put this-command 'seaman/last-call-time (current-time)))
+      (mirage/org-end)))
+  (put this-command 'mirage/last-call-time (current-time)))
 
-(define-key org-mode-map (kbd "<end>") #'seaman/org-double-end)
+(define-key org-mode-map (kbd "<end>") #'mirage/org-double-end)
 
 #+end_src
 
@@ -6549,18 +6549,18 @@ If `org-at-table-p', go to `org-table-end-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-home ()
+(defun mirage/org-home ()
      "Conditional homing in Org Mode.
 
-Default: `seaman/home'
+Default: `mirage/home'
 
 If a multi-visual-line region is active and the cursor lies on a heading or
 list item, home to `beginning-of-visual-line'.
 
-If a region is active the cursor lies `seaman/org-at-ellipsis-h', home to
+If a region is active the cursor lies `mirage/org-at-ellipsis-h', home to
 `beginning-of-visual-line'.
 
-If the cursor lies `seaman/org-at-ellipsis-h' (no active region), home to
+If the cursor lies `mirage/org-at-ellipsis-h' (no active region), home to
 the `beginning-of-line-text' of the heading's visual line.
 
 If the cursor lies on at heading or list, home to `beginning-of-line-text'.
@@ -6572,32 +6572,32 @@ If the cursor lies in a source code block, home `back-to-indentation'.
 
 If `org-at-table-p', home to `org-table-beginning-of-field'."
    (interactive)
-   (cond ((and (seaman/region-multiline-visual) (seaman/org-relative-line-heading-or-list))  (beginning-of-visual-line))
-         ((and (region-active-p) (seaman/org-at-ellipsis-h))                                 (beginning-of-visual-line))
-         ((seaman/org-at-ellipsis-h)                                                         (seaman/org-goto-heading-bol))
-	     ((seaman/org-at-ellipsis-l)                                                         (seaman/org-goto-heading-bol))
-	     ((seaman/relative-line-wrapped)                                                     (beginning-of-visual-line))
-         ((seaman/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
+   (cond ((and (mirage/region-multiline-visual) (mirage/org-relative-line-heading-or-list))  (beginning-of-visual-line))
+         ((and (region-active-p) (mirage/org-at-ellipsis-h))                                 (beginning-of-visual-line))
+         ((mirage/org-at-ellipsis-h)                                                         (mirage/org-goto-heading-bol))
+	     ((mirage/org-at-ellipsis-l)                                                         (mirage/org-goto-heading-bol))
+	     ((mirage/relative-line-wrapped)                                                     (beginning-of-visual-line))
+         ((mirage/org-relative-line-heading-or-list)                                         (beginning-of-line-text))
          ((org-in-src-block-p)                                                               (back-to-indentation))
 	     ((org-at-table-p)                                                                   (org-table-beginning-of-field 1))
-         (t                                                                                  (seaman/home))))
+         (t                                                                                  (mirage/home))))
 
-(defvar seaman/org-double-home-timeout 0.4)
+(defvar mirage/org-double-home-timeout 0.4)
 
-(defun seaman/org-double-home ()
-  "Dynamic homing command with a timeout of `seaman/org-double-home-timeout' seconds.
-- Single press: `seaman/org-home' 
+(defun mirage/org-double-home ()
+  "Dynamic homing command with a timeout of `mirage/org-double-home-timeout' seconds.
+- Single press: `mirage/org-home' 
 - Double press: `beginning-of-visual-line'"
   (interactive)
-  (let ((last-called (get this-command 'seaman/last-call-time)))
+  (let ((last-called (get this-command 'mirage/last-call-time)))
     (if (and (eq last-command this-command)	     
-             (<= (time-to-seconds (time-since last-called)) seaman/org-double-home-timeout)
+             (<= (time-to-seconds (time-since last-called)) mirage/org-double-home-timeout)
 	         (not (org-at-table-p)))
 	    (beginning-of-line)
-      (seaman/org-home)))
-  (put this-command 'seaman/last-call-time (current-time)))
+      (mirage/org-home)))
+  (put this-command 'mirage/last-call-time (current-time)))
 
-(define-key org-mode-map (kbd "<home>") #'seaman/org-double-home)
+(define-key org-mode-map (kbd "<home>") #'mirage/org-double-home)
 
 #+end_src
 
@@ -6606,10 +6606,10 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-goto-child-last ()
+(defun mirage/org-goto-child-last ()
   (if (org-current-level)
-      (progn (seaman/org-goto-subtree-end)
-	     (seaman/org-goto-heading-current))))
+      (progn (mirage/org-goto-subtree-end)
+	     (mirage/org-goto-heading-current))))
 
 #+end_src
 
@@ -6617,10 +6617,10 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-goto-subtree-end ()
-  (seaman/org-goto-heading-current)
+(defun mirage/org-goto-subtree-end ()
+  (mirage/org-goto-heading-current)
   (org-end-of-subtree)
-  (if (seaman/org-relative-line-heading-folded) (end-of-visual-line)))
+  (if (mirage/org-relative-line-heading-folded) (end-of-visual-line)))
 
 #+end_src
 
@@ -6629,7 +6629,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-goto-heading-bol ()
+(defun mirage/org-goto-heading-bol ()
   (beginning-of-visual-line)
   (beginning-of-line-text))
 
@@ -6639,12 +6639,12 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-goto-heading-next ()
-  (seaman/org-goto-heading-current)
-  (let ((pos (seaman/get-point 'beginning-of-visual-line)))
+(defun mirage/org-goto-heading-next ()
+  (mirage/org-goto-heading-current)
+  (let ((pos (mirage/get-point 'beginning-of-visual-line)))
        (org-forward-heading-same-level 1)
        (if (= pos (point))
-	   (progn (seaman/org-goto-heading-parent)
+	   (progn (mirage/org-goto-heading-parent)
 		  (org-forward-heading-same-level 1)))))
 
 #+end_src
@@ -6653,11 +6653,11 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-goto-heading-parent ()
-  (let ((current (seaman/get-point 'beginning-of-visual-line)))
+(defun mirage/org-goto-heading-parent ()
+  (let ((current (mirage/get-point 'beginning-of-visual-line)))
     (if (and (org-current-level)
 	        (not (= 1 (org-current-level)))
-		(= current (seaman/get-point 'beginning-of-visual-line)))
+		(= current (mirage/get-point 'beginning-of-visual-line)))
 	   (outline-up-heading 1))))
 
 #+end_src
@@ -6666,7 +6666,7 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-goto-heading-current ()
+(defun mirage/org-goto-heading-current ()
   (if (org-current-level) (outline-back-to-heading)))
 
 #+end_src
@@ -6675,16 +6675,16 @@ If `org-at-table-p', home to `org-table-beginning-of-field'."
 
 #+begin_src emacs-lisp
 
-(defun seaman/org-goto-heading-previous ()
-  (seaman/org-goto-heading-current)
-  (let ((current (seaman/get-point 'beginning-of-visual-line)))
+(defun mirage/org-goto-heading-previous ()
+  (mirage/org-goto-heading-current)
+  (let ((current (mirage/get-point 'beginning-of-visual-line)))
     ;; go to previous same-level heading
     (org-backward-heading-same-level 1)
     ;; if there was no previous same-level heading, go to parent if not at top
     (if (= (point) current)
-	(seaman/org-goto-heading-parent)
+	(mirage/org-goto-heading-parent)
       ;; else, attempt going to last subheading of previous same-level heading
-      (seaman/org-goto-child-last))))
+      (mirage/org-goto-child-last))))
 
 #+end_src
 
@@ -6696,19 +6696,19 @@ Macros to make the creation of custom link types a breeze.
 
 #+begin_src emacs-lisp
 
-(defmacro @seaman/org-dir-link-complete (name dir)
+(defmacro @mirage/org-dir-link-complete (name dir)
   `(defun ,(intern (concat "org-" name "-link-complete")) ()
      "Create an org-link target string to a file in org-`name'-link-complete."
      (concat ,name ":" (file-relative-name (read-file-name "File: " ,dir) ,dir))))
 
-(defmacro @seaman/org-dir-link-follow (name dir)
+(defmacro @mirage/org-dir-link-follow (name dir)
   `(defun ,(intern (concat "org-" name "-link-follow")) (link)
      "Follow an org-link to a file in org-`name'-link-follow."
      (find-file (expand-file-name link ,dir))))
 
-(defmacro @seaman/org-dir-link (name dir)
-  `(progn (@seaman/org-dir-link-complete ,name ,dir)
-          (@seaman/org-dir-link-follow   ,name ,dir)
+(defmacro @mirage/org-dir-link (name dir)
+  `(progn (@mirage/org-dir-link-complete ,name ,dir)
+          (@mirage/org-dir-link-follow   ,name ,dir)
           (org-link-set-parameters ,name
                                    :complete ',(intern (concat "org-" name "-link-complete"))
                                    :follow   ',(intern (concat "org-" name "-link-follow")))))
@@ -6720,7 +6720,7 @@ Macros to make the creation of custom link types a breeze.
 **** Agenda
 ***** org-agenda
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-agenda.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-org-agenda.el
 :END:
 ****** UI
 ******* org-agenda-format-date
@@ -6729,7 +6729,7 @@ Macros to make the creation of custom link types a breeze.
 
 (require 'cal-iso)
 
-(defun seaman/org-agenda-format-date-aligned (date)
+(defun mirage/org-agenda-format-date-aligned (date)
   "Format a DATE string for display in the daily/weekly agenda.
 This function makes sure that dates are aligned for easy reading."
   (let* ((dayname (calendar-day-name date))
@@ -6767,7 +6767,7 @@ This function makes sure that dates are aligned for easy reading."
                                       (string-width sep-r)) 9472)))
     (concat highlight-l sep-l label sep-r highlight-r)))
 
-(setq org-agenda-format-date #'seaman/org-agenda-format-date-aligned)
+(setq org-agenda-format-date #'mirage/org-agenda-format-date-aligned)
 
 #+end_src
 
@@ -6776,11 +6776,11 @@ This function makes sure that dates are aligned for easy reading."
 #+begin_src emacs-lisp
 
 ;; Mark items as done
-(defun seaman/org-agenda-todo-done ()
+(defun mirage/org-agenda-todo-done ()
   (interactive)
   (org-agenda-todo 'done))
 
-(define-key org-agenda-mode-map (kbd "d") #'seaman/org-agenda-todo-done)
+(define-key org-agenda-mode-map (kbd "d") #'mirage/org-agenda-todo-done)
 
 #+end_src
 
@@ -6797,24 +6797,24 @@ This function makes sure that dates are aligned for easy reading."
 
 #+begin_src emacs-lisp :tangle no
 
-(defun seaman/org-agenda-recenter (orig-fun &rest args)
+(defun mirage/org-agenda-recenter (orig-fun &rest args)
   (interactive "P")
-  (let ((last-called (get this-command 'seaman/last-call-time)))
+  (let ((last-called (get this-command 'mirage/last-call-time)))
     (if (eq last-command this-command)
-        (progn (seaman/org-restore-outline-state)
+        (progn (mirage/org-restore-outline-state)
 	       (org-agenda-recenter arg))
-      (progn (seaman/org-save-outline-state)
+      (progn (mirage/org-save-outline-state)
 	     (org-agenda-recenter arg))))
-  (put this-command 'seaman/last-call-time (current-time)))
+  (put this-command 'mirage/last-call-time (current-time)))
 
-(advice-add 'org-agenda-recenter :around #'seaman/org-agenda-recenter)
+(advice-add 'org-agenda-recenter :around #'mirage/org-agenda-recenter)
 
 #+end_src
 
 **** Programming
 ***** org-babel
 :PROPERTIES:
-:header-args:emacs-lisp+: :tangle ./extensions/seaman-org-babel.el
+:header-args:emacs-lisp+: :tangle ./extensions/mirage-org-babel.el
 :END:
 ****** TODO Result formatting
 
@@ -6827,7 +6827,7 @@ allowing users to easily add custom result insertion formats.
 
 #+begin_src emacs-lisp
 
-(defvar seaman/org-babel-result-wrap-formats
+(defvar mirage/org-babel-result-wrap-formats
   '(((assq :wrap (nth 2 info))
      (let* ((full (or (cdr (assq :wrap (nth 2 info))) "results"))
 	    (split (split-string full))
@@ -6923,7 +6923,7 @@ Display results inside of a LaTeX ~equation~ environment, and automatically prev
 
 #+begin_src emacs-lisp
 
-(add-to-list 'seaman/org-babel-result-wrap-formats
+(add-to-list 'mirage/org-babel-result-wrap-formats
              '((member "latex-eq" result-params)
                (progn (funcall wrap "\\begin{equation}" "\\end{equation}" nil nil
 	                       "{{{results(@@latex:" "@@)}}}"))
@@ -7244,7 +7244,7 @@ INFO may provide the values of these header arguments (in the
 				     org-babel-inline-result-wrap)))
 		        (org-babel-examplify-region
 		         beg end results-switches inline))))
-                  (let ((formats (copy-tree seaman/org-babel-result-wrap-formats)))
+                  (let ((formats (copy-tree mirage/org-babel-result-wrap-formats)))
                     (eval (add-to-list 'formats 'cond)))))
                 ;; Possibly indent results in par with #+results line.
 		(when (and (not inline) (numberp indent) (> indent 0)

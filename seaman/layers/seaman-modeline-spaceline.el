@@ -1,5 +1,5 @@
 ;; modules
-(seaman-module 'spaceline)
+(mirage-module 'spaceline)
 
-(provide 'seaman-layer-modeline-spaceline)
-;;; seaman-modeline-spaceline.el ends here
+(provide 'mirage-layer-modeline-spaceline)
+;;; mirage-modeline-spaceline.el ends here

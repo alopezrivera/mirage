@@ -1,38 +1,38 @@
 ;; theme reload advice
-(defun seaman/org-theme-reload ()
+(defun mirage/org-theme-reload ()
   "Re-set Org Mode UI typesetting after theme changes"
   (save-window-excursion
-    (cl-loop for buffer in (seaman/get-visible-buffers)
+    (cl-loop for buffer in (mirage/get-visible-buffers)
 	     do (select-window (get-buffer-window buffer))
 	     if (string-equal major-mode "org-mode")
-             do (seaman/org-ui-typeset))))
+             do (mirage/org-ui-typeset))))
 
-(add-hook 'seaman/enable-or-load-theme-hook #'seaman/org-theme-reload)
+(add-hook 'mirage/enable-or-load-theme-hook #'mirage/org-theme-reload)
 
 ;; UI typesetting
-(defun seaman/org-ui-typeset ()
+(defun mirage/org-ui-typeset ()
   "Typeset the following Org Mode UI elements:
 - title of Org Mode documents
 - indent typeface used in `org-indent-mode' and `visual-line-mode'"
   (with-eval-after-load 'org-faces       (set-face-attribute 'org-document-title nil :font typeface-title :weight 'regular :height 200))
   (with-eval-after-load 'org-indent-mode (set-face-attribute 'org-indent         nil :inherit '(org-hide fixed-pitch))))
 
-(add-hook 'org-mode-hook #'seaman/org-ui-typeset)
+(add-hook 'org-mode-hook #'mirage/org-ui-typeset)
 
-(defface seaman/variable-pitch-marker
+(defface mirage/variable-pitch-marker
   '((nil :inherit fixed-pitch))
   "List marker typeface.")
 
-(defface seaman/variable-pitch-indent
+(defface mirage/variable-pitch-indent
   '((nil :inherit fixed-pitch :invisible t))
   "Indent typeface.")
 
-(defvar seaman/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'seaman/variable-pitch-marker)
-					 ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'seaman/variable-pitch-marker)
-					 ("^[[:blank:]]+"                                      0 'seaman/variable-pitch-indent))
+(defvar mirage/variable-pitch-keywords '(("^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}" 0 'mirage/variable-pitch-marker)
+					 ("^[[:blank:]]*[-+]\\{1\\}[[:blank:]]\\{1\\}"         0 'mirage/variable-pitch-marker)
+					 ("^[[:blank:]]+"                                      0 'mirage/variable-pitch-indent))
   "Variable pitch font-lock keywords.")
 
-(font-lock-add-keywords 'org-mode seaman/variable-pitch-keywords 'append)
+(font-lock-add-keywords 'org-mode mirage/variable-pitch-keywords 'append)
 
 ;; continuous numbering of Org Mode equations
 (defun org-renumber-environment (orig-fun &rest args)
@@ -77,5 +77,5 @@
 
 (advice-add 'org-create-formula-image :around #'org-renumber-environment)
 
-(provide 'seaman-extension-org-ui)
-;;; seaman-org-ui.el ends here
+(provide 'mirage-extension-org-ui)
+;;; mirage-org-ui.el ends here

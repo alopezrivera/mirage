@@ -8,9 +8,9 @@
 (define-key org-agenda-mode-map (kbd "<tab>") 'org-agenda-recenter)
 
 ;; modules
-(seaman-module 'org-agenda)
-(seaman-module 'org-super-agenda)
-(seaman-module 'org-rainbow-tags)
+(mirage-module 'org-agenda)
+(mirage-module 'org-super-agenda)
+(mirage-module 'org-rainbow-tags)
 
 ;; base TODO keyword sequence
 (setq org-todo-keywords
@@ -32,5 +32,5 @@
           (agenda "" ((org-agenda-ndays 7))))
          ((org-agenda-regexp-filter-preset '("Birthday"))))))
 
-(provide 'seaman-layer-org-agenda)
-;;; seaman-org-agenda.el ends here
+(provide 'mirage-layer-org-agenda)
+;;; mirage-org-agenda.el ends here

@@ -1,5 +1,5 @@
 (defun <> (a b c)
   (and (> b a) (> c b)))
 
-(provide 'seaman-extension-operators)
-;;; seaman-operators.el ends here
+(provide 'mirage-extension-operators)
+;;; mirage-operators.el ends here

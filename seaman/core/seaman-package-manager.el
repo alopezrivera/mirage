@@ -18,5 +18,5 @@
 ;; fall back to straight.el
 (setq straight-use-package-by-default t)
 
-(provide 'seaman-core-package-manager)
-;;; seaman-package-manager.el ends here
+(provide 'mirage-core-package-manager)
+;;; mirage-package-manager.el ends here

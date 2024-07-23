@@ -1,5 +1,5 @@
 ;; requirements
-(seaman-module 'tablist)
+(mirage-module 'tablist)
 
 (straight-use-package 'pdf-tools)
 (pdf-tools-install)
@@ -39,5 +39,5 @@
 ;; fine-grained zooming
 (setq pdf-view-resize-factor 1.1)
 
-(provide 'seaman-module-pdf-tools)
-;;; seaman-pdf-tools.el ends here
+(provide 'mirage-module-pdf-tools)
+;;; mirage-pdf-tools.el ends here

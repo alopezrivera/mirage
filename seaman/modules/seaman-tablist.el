@@ -1,4 +1,4 @@
 (straight-use-package 'tablist)
 
-(provide 'seaman-module-tablist)
-;;; seaman-tablist.el ends here
+(provide 'mirage-module-tablist)
+;;; mirage-tablist.el ends here

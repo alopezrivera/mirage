@@ -10,5 +10,5 @@
 			                                              (:sunset  . ,dark-theme)))
                                              (circadian-setup))))
 
-(provide 'seaman-module-circadian)
-;;; seaman-circadian.el ends here
+(provide 'mirage-module-circadian)
+;;; mirage-circadian.el ends here

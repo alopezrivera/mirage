@@ -76,5 +76,5 @@
           ((lambda (tag)
              (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))))
 
-(provide 'seaman-module-svg-tag-mode)
-;;; seaman-svg-tag-mode.el ends here
+(provide 'mirage-module-svg-tag-mode)
+;;; mirage-svg-tag-mode.el ends here

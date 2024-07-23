@@ -4,5 +4,5 @@
 
 (all-the-icons-completion-mode)
 
-(provide 'seaman-module-all-the-icons-completion)
-;;; seaman-all-the-icons-completion.el ends here
+(provide 'mirage-module-all-the-icons-completion)
+;;; mirage-all-the-icons-completion.el ends here

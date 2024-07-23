@@ -15,9 +15,9 @@
 (add-hook 'org-mode-hook (lambda () (progn (visual-line-mode 1) (setq line-move-visual t))))
 
 ;; design
-(seaman-module 'org-modern)
+(mirage-module 'org-modern)
 (setq org-modern-table        nil)
 (setq org-modern-block-fringe nil)
 
-(provide 'seaman-layer-org-ui)
-;;; seaman-org-ui.el ends here
+(provide 'mirage-layer-org-ui)
+;;; mirage-org-ui.el ends here

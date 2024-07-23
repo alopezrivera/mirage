@@ -1,6 +1,6 @@
 ;; modules
-(seaman-module 'projectile)
-(seaman-module 'treemacs)
+(mirage-module 'projectile)
+(mirage-module 'treemacs)
 
-(provide 'seaman-layer-project-interaction)
-;;; seaman-project-interaction.el ends here
+(provide 'mirage-layer-project-interaction)
+;;; mirage-project-interaction.el ends here

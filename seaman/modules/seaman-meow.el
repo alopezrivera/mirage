@@ -90,5 +90,5 @@
 (meow-setup)
 (meow-global-mode 1)
 
-(provide 'seaman-module-meow)
-;;; seaman-meow.el ends here
+(provide 'mirage-module-meow)
+;;; mirage-meow.el ends here

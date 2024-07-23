@@ -4,13 +4,13 @@
   "Dark theme")
 
 ;; creation
-(seaman-module 'autothemer)
+(mirage-module 'autothemer)
 
 ;; theme switching
-(seaman-extend 'theme-switch)
+(mirage-extend 'theme-switch)
 
 ;; scheduling
-(seaman-module 'circadian)
+(mirage-module 'circadian)
 
-(provide 'seaman-layer-themes)
-;;; seaman-themes.el ends here
+(provide 'mirage-layer-themes)
+;;; mirage-themes.el ends here

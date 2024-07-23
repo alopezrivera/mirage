@@ -4,5 +4,5 @@
 ;; override dired
 (dirvish-override-dired-mode)
 
-(provide 'seaman-module-dirvish)
-;;; seaman-dirvish.el ends here
+(provide 'mirage-module-dirvish)
+;;; mirage-dirvish.el ends here

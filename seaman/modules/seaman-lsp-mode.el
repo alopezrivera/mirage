@@ -1,5 +1,5 @@
 (straight-use-package 'lsp-mode)
 (require 'lsp-mode)
 
-(provide 'seaman-module-lsp-mode)
-;;; seaman-lsp-mode.el ends here
+(provide 'mirage-module-lsp-mode)
+;;; mirage-lsp-mode.el ends here

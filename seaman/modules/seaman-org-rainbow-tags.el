@@ -5,5 +5,5 @@
 
 (setq org-rainbow-tags-hash-start-index 5)
 
-(provide 'seaman-module-org-rainbow-tags)
-;;; seaman-org-rainbow-tags.el ends here
+(provide 'mirage-module-org-rainbow-tags)
+;;; mirage-org-rainbow-tags.el ends here

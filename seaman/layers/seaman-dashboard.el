@@ -1,10 +1,10 @@
 ;; requirements
-(seaman-module 'projectile)
-(seaman-module 'all-the-icons)
-(seaman-module 'page-break-lines)
+(mirage-module 'projectile)
+(mirage-module 'all-the-icons)
+(mirage-module 'page-break-lines)
 
 ;; dashboard
-(seaman-module 'emacs-dashboard)
+(mirage-module 'emacs-dashboard)
 
 ;; init info
 (setq dashboard-set-init-info t)
@@ -20,9 +20,9 @@
                         (agenda . 5)))
 
 ;; banner
-(setq dashboard-startup-banner (concat user-emacs-directory "seaman/art/gwd-light.png"))
-(add-hook 'seaman/enable-or-load-theme-hook (lambda () (let ((active-theme (car custom-enabled-themes)))
-                                                         (setq dashboard-startup-banner (concat user-emacs-directory "seaman/art/"
+(setq dashboard-startup-banner (concat user-emacs-directory "mirage/art/gwd-light.png"))
+(add-hook 'mirage/enable-or-load-theme-hook (lambda () (let ((active-theme (car custom-enabled-themes)))
+                                                         (setq dashboard-startup-banner (concat user-emacs-directory "mirage/art/"
                                                                                                 (if (eq active-theme light-theme)
                                                                                                     "gwd-light.png"
                                                                                                   "gwd-dark.png")))
@@ -40,5 +40,5 @@
                                                     :v-adjust -0.15
                                                     :face 'font-lock-constant-face))
 
-(provide 'seaman-layer-dashboard)
-;;; seaman-dashboard.el ends here
+(provide 'mirage-layer-dashboard)
+;;; mirage-dashboard.el ends here

@@ -5,32 +5,32 @@
 (global-set-key (kbd "C-x c") #'org-capture)
 
 ;; dependencies
-(seaman-layer  'editing)
+(mirage-layer  'editing)
 
 ;; org
-(seaman-module 'org)
+(mirage-module 'org)
 
 ;; editing
-(seaman-module 'org-paragraph)
-(seaman-module 'org-download)
+(mirage-module 'org-paragraph)
+(mirage-module 'org-download)
 
 ;; templates
-(seaman-module 'org-tempo)
-(seaman-module 'org-capture)
+(mirage-module 'org-tempo)
+(mirage-module 'org-capture)
 
 ;; agenda
-(seaman-module 'org-agenda)
-(seaman-module 'org-contacts)
-(seaman-module 'org-calendar)
-(seaman-extend 'org-agenda)
+(mirage-module 'org-agenda)
+(mirage-module 'org-contacts)
+(mirage-module 'org-calendar)
+(mirage-extend 'org-agenda)
 
 ;; extensions
-(seaman-extend 'org-get)
-(seaman-extend 'org-queries)
-(seaman-extend 'org-editing)
-(seaman-extend 'org-ui)
-(seaman-extend 'org-outline)
-(seaman-extend 'org-navigation)
+(mirage-extend 'org-get)
+(mirage-extend 'org-queries)
+(mirage-extend 'org-editing)
+(mirage-extend 'org-ui)
+(mirage-extend 'org-outline)
+(mirage-extend 'org-navigation)
 
-(provide 'seaman-layer-org)
-;;; seaman-org.el ends here
+(provide 'mirage-layer-org)
+;;; mirage-org.el ends here

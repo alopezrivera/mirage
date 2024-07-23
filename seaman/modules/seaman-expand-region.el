@@ -1,4 +1,4 @@
 (straight-use-package 'expand-region)
 
-(provide 'seaman-module-expand-region)
-;;; seaman-expand-region.el ends here
+(provide 'mirage-module-expand-region)
+;;; mirage-expand-region.el ends here

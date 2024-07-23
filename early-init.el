@@ -130,16 +130,16 @@
 (setq custom-file (concat user-emacs-directory "persistent/custom.el"))
 (load-file custom-file)
 
-;;;; Seaman core
+;;;; Mirage core
 
 ;; Load path
-(add-to-list 'load-path (concat user-emacs-directory "seaman/core/"))
+(add-to-list 'load-path (concat user-emacs-directory "mirage/core/"))
 
 ;; Load all core components
-(defvar seaman-core-components '("package-manager"
+(defvar mirage-core-components '("package-manager"
                                  "config-management"
                                  "base-config"))
-(mapc (lambda (component) (require (intern (concat "seaman-core-" component)) (concat "seaman-" component)))
-      seaman-core-components)
+(mapc (lambda (component) (require (intern (concat "mirage-core-" component)) (concat "mirage-" component)))
+      mirage-core-components)
 
 ;;; early-init.el ends here

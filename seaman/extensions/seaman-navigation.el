@@ -1,21 +1,21 @@
 ;; Double end to go to the beginning of line
-(defvar seaman/double-end-timeout 0.4)
+(defvar mirage/double-end-timeout 0.4)
 
-(defun seaman/double-end ()
+(defun mirage/double-end ()
   "Move to end of visual line. If the command is repeated 
-within `seaman/double-end-timeout' seconds, move to end
+within `mirage/double-end-timeout' seconds, move to end
 of line."
   (interactive)
-  (let ((last-called (get this-command 'seaman/last-call-time)))
+  (let ((last-called (get this-command 'mirage/last-call-time)))
     (if (and (eq last-command this-command)
-             (<= (time-to-seconds (time-since last-called)) seaman/double-end-timeout))
+             (<= (time-to-seconds (time-since last-called)) mirage/double-end-timeout))
         (progn (beginning-of-visual-line) (end-of-line))
       (end-of-visual-line)))
-  (put this-command 'seaman/last-call-time (current-time)))
+  (put this-command 'mirage/last-call-time (current-time)))
 
-(global-set-key (kbd "<end>") #'seaman/double-end)
+(global-set-key (kbd "<end>") #'mirage/double-end)
 
-(defun seaman/home ()
+(defun mirage/home ()
   "Conditional homing. 
 
 Default: `beginning-of-line-text'
@@ -31,32 +31,32 @@ If the current mode is derived from `prog-mode', home `back-to-indentation'.
 If the current line is a wrapped visual line, home to
 `beginning-of-visual-line'."
   (interactive)
-  (cond ((seaman/relative-line-empty)    (beginning-of-line))
-	((seaman/relative-line-list)     (beginning-of-line-text))
-	((seaman/relative-line-indented) (back-to-indentation))
-	((seaman/relative-line-wrapped)  (beginning-of-visual-line))
+  (cond ((mirage/relative-line-empty)    (beginning-of-line))
+	((mirage/relative-line-list)     (beginning-of-line-text))
+	((mirage/relative-line-indented) (back-to-indentation))
+	((mirage/relative-line-wrapped)  (beginning-of-visual-line))
 	((derived-mode-p 'prog-mode)     (back-to-indentation))
-	((seaman/relative-line-wrapped)  (beginning-of-visual-line))
+	((mirage/relative-line-wrapped)  (beginning-of-visual-line))
         (t                               (beginning-of-line-text))))
 
-(defvar seaman/double-home-timeout 0.4)
+(defvar mirage/double-home-timeout 0.4)
 
-(defun seaman/double-home ()
-  "Dynamic homing command with a timeout of `seaman/double-home-timeout' seconds.
-- Single press: `seaman/home' 
+(defun mirage/double-home ()
+  "Dynamic homing command with a timeout of `mirage/double-home-timeout' seconds.
+- Single press: `mirage/home' 
 - Double press: `beginning-of-visual-line'"
   (interactive)
-  (let ((last-called (get this-command 'seaman/last-call-time)))
+  (let ((last-called (get this-command 'mirage/last-call-time)))
     (if (and (eq last-command this-command)
-	     (<= (time-to-seconds (time-since last-called)) seaman/double-home-timeout))
+	     (<= (time-to-seconds (time-since last-called)) mirage/double-home-timeout))
 	(progn (beginning-of-visual-line)
 	       (beginning-of-line-text))
-      (seaman/home)))
-  (put this-command 'seaman/last-call-time (current-time)))
+      (mirage/home)))
+  (put this-command 'mirage/last-call-time (current-time)))
 
-(global-set-key (kbd "<home>") #'seaman/double-home)
+(global-set-key (kbd "<home>") #'mirage/double-home)
 
-(defun seaman/previous-line (orig-fun &rest args)
+(defun mirage/previous-line (orig-fun &rest args)
   "If a region is active and either the current mode is derived from
 `prog-mode' or the cursor lies in an `org-babel' source code block,
 arrow-up to `end-of-visual-line' of `previous-line'."
@@ -67,20 +67,20 @@ arrow-up to `end-of-visual-line' of `previous-line'."
       (progn (point-to-register 'region-up-register)
              (end-of-visual-line))))
 
-(advice-add 'previous-line :around #'seaman/previous-line)
+(advice-add 'previous-line :around #'mirage/previous-line)
 
-(defun seaman/region-up-register ()
+(defun mirage/region-up-register ()
   "Move cursor to `region-up-register', defined in
-`seaman/previous-line'."
+`mirage/previous-line'."
   (interactive)
   (let ((end (region-end)))
     (ignore-errors (jump-to-register 'region-up-register))
     (set-register 'region-up-register nil)
     (push-mark end)))
 
-(global-set-key (kbd "S-<home>") #'seaman/region-up-register)
+(global-set-key (kbd "S-<home>") #'mirage/region-up-register)
 
-(defun seaman/beginning-of-line-text (orig-fun &rest args)
+(defun mirage/beginning-of-line-text (orig-fun &rest args)
   "Correctly go to `beginning-of-line-text' in numbered lists."
   (interactive)
   (let ((ordered-line-regex "^[[:blank:]]*[0-9]+[.\\)]\\{1\\}[[:blank:]]\\{1\\}"))
@@ -90,7 +90,7 @@ arrow-up to `end-of-visual-line' of `previous-line'."
 		   (re-search-forward ordered-line-regex))
       (apply orig-fun args))))
 
-(advice-add 'beginning-of-line-text :around #'seaman/beginning-of-line-text)
+(advice-add 'beginning-of-line-text :around #'mirage/beginning-of-line-text)
 
 ;; split and follow
 (defun split-and-follow-horizontally ()
@@ -105,32 +105,32 @@ arrow-up to `end-of-visual-line' of `previous-line'."
   (other-window 1))
 (global-set-key (kbd "C-x 3") #'split-and-follow-vertically)
 
-(defvar seaman/window-previous nil
+(defvar mirage/window-previous nil
   "Selected window before the last window change.")
 
-(defvar seaman/window-pre-command nil
+(defvar mirage/window-pre-command nil
   "Auxiliary variable containing the `selected-window'
 before the execution of any command.")
 
-(defun seaman/record-window-pre-command ()
-  (setq seaman/window-pre-command (selected-window)))
-(add-hook 'pre-command-hook #'seaman/record-window-pre-command)
+(defun mirage/record-window-pre-command ()
+  (setq mirage/window-pre-command (selected-window)))
+(add-hook 'pre-command-hook #'mirage/record-window-pre-command)
 
-(defun seaman/record-window-previous ()
+(defun mirage/record-window-previous ()
   (let ((window-post (selected-window)))
-    (if (not (eq window-post seaman/window-pre-command))
-	      (setq seaman/window-previous seaman/window-pre-command))))
-(add-hook 'post-command-hook #'seaman/record-window-previous)
+    (if (not (eq window-post mirage/window-pre-command))
+	      (setq mirage/window-previous mirage/window-pre-command))))
+(add-hook 'post-command-hook #'mirage/record-window-previous)
 
-(defun seaman/goto-window-previous ()
+(defun mirage/goto-window-previous ()
   (interactive)
-  (let ((target  seaman/window-previous)
+  (let ((target  mirage/window-previous)
 	      (current (selected-window)))
     (if target
 	      (progn (select-window target)
-		     (setq seaman/window-previous current)))))
+		     (setq mirage/window-previous current)))))
 
-(global-set-key (kbd "C-p") #'seaman/goto-window-previous)
+(global-set-key (kbd "C-p") #'mirage/goto-window-previous)
 
-(provide 'seaman-extension-navigation)
-;;; seaman-navigation.el ends here
+(provide 'mirage-extension-navigation)
+;;; mirage-navigation.el ends here

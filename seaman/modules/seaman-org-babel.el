@@ -38,5 +38,5 @@
         (:hlines  . "no")
         (:tangle  . "no")))
 
-(provide 'seaman-module-org-babel)
-;;; seaman-org-babel.el ends here
+(provide 'mirage-module-org-babel)
+;;; mirage-org-babel.el ends here

@@ -1,4 +1,4 @@
-(seaman-module 'moody)
+(mirage-module 'moody)
 
 ;; modeline height
 (setq moody-mode-line-height 22)
@@ -12,7 +12,7 @@
   (set-face-attribute 'mode-line-inactive nil :box        nil))
 
 ;; extensions
-(seaman-extend 'theme-modeline)
+(mirage-extend 'theme-modeline)
 
-(provide 'seaman-layer-modeline-moody)
-;;; seaman-modeline-moody.el ends here
+(provide 'mirage-layer-modeline-moody)
+;;; mirage-modeline-moody.el ends here

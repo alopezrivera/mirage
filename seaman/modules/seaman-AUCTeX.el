@@ -1,4 +1,4 @@
 (use-package tex :straight auctex)
 
-(provide 'seaman-module-AUCTeX)
-;;; seaman-AUCTeX.el ends here
+(provide 'mirage-module-AUCTeX)
+;;; mirage-AUCTeX.el ends here

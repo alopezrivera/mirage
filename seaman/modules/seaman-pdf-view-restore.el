@@ -2,5 +2,5 @@
 
 (add-hook 'pdf-view-mode-hook #'pdf-view-restore-mode)
 
-(provide 'seaman-module-pdf-view-restore)
-;;; seaman-pdf-view-restore.el ends here
+(provide 'mirage-module-pdf-view-restore)
+;;; mirage-pdf-view-restore.el ends here

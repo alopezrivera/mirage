@@ -1,6 +1,6 @@
 (require 'cal-iso)
 
-(defun seaman/org-agenda-format-date-aligned (date)
+(defun mirage/org-agenda-format-date-aligned (date)
   "Format a DATE string for display in the daily/weekly agenda.
 This function makes sure that dates are aligned for easy reading."
   (let* ((dayname (calendar-day-name date))
@@ -38,14 +38,14 @@ This function makes sure that dates are aligned for easy reading."
                                       (string-width sep-r)) 9472)))
     (concat highlight-l sep-l label sep-r highlight-r)))
 
-(setq org-agenda-format-date #'seaman/org-agenda-format-date-aligned)
+(setq org-agenda-format-date #'mirage/org-agenda-format-date-aligned)
 
 ;; Mark items as done
-(defun seaman/org-agenda-todo-done ()
+(defun mirage/org-agenda-todo-done ()
   (interactive)
   (org-agenda-todo 'done))
 
-(define-key org-agenda-mode-map (kbd "d") #'seaman/org-agenda-todo-done)
+(define-key org-agenda-mode-map (kbd "d") #'mirage/org-agenda-todo-done)
 
-(provide 'seaman-extension-org-agenda)
-;;; seaman-org-agenda.el ends here
+(provide 'mirage-extension-org-agenda)
+;;; mirage-org-agenda.el ends here

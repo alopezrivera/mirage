@@ -7,5 +7,5 @@
 ;; command map prefix
 (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
 
-(provide 'seaman-module-projectile)
-;;; seaman-projectile.el ends here
+(provide 'mirage-module-projectile)
+;;; mirage-projectile.el ends here

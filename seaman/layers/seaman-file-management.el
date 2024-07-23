@@ -6,10 +6,10 @@
 (setq kept-old-versions 2)
 
 ;; file manager
-(seaman-module 'dirvish)
+(mirage-module 'dirvish)
 
 ;; extensions
-(seaman-extend 'file-management)
+(mirage-extend 'file-management)
 
-(provide 'seaman-layer-file-management)
-;;; seaman-file-management.el ends here
+(provide 'mirage-layer-file-management)
+;;; mirage-file-management.el ends here

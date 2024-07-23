@@ -3,5 +3,5 @@
 
 (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
 
-(provide 'seaman-module-matlab-emacs)
-;;; seaman-matlab-emacs.el ends here
+(provide 'mirage-module-matlab-emacs)
+;;; mirage-matlab-emacs.el ends here

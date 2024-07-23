@@ -155,12 +155,12 @@ Functional needs, resources, action plans - dirty.
 - https://www.reddit.com/r/emacs/comments/hnf3cw/my_orgmode_agenda_much_better_now_with_category/
    - https://github.com/psamim/dotfiles/blob/master/doom/config.el#L73
 
-** seaman
+** mirage
 *** lockfile
 
 - load
    - error
-      - (setq seaman-load-error t)
+      - (setq mirage-load-error t)
    - if no load error
       - automatic straight package freeze
 - frozen lockfile -> config
@@ -1050,7 +1050,7 @@ Application backlog
 - alert
    - https://github.com/jwiegley/alert
 - notification
-   - https://www.gnu.org/software/emacs/manual/html_node/seaman/Desktop-Notifications.html
+   - https://www.gnu.org/software/emacs/manual/html_node/mirage/Desktop-Notifications.html
 - org-mode
    - https://github.com/spegoraro/org-alert
 

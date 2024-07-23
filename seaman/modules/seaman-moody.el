@@ -10,5 +10,5 @@
 (let ((active-theme (car custom-enabled-themes)))
   (if active-theme (enable-theme active-theme)))
 
-(provide 'seaman-module-moody)
-;;; seaman-moody.el ends here
+(provide 'mirage-module-moody)
+;;; mirage-moody.el ends here

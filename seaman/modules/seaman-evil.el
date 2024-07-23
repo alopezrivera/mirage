@@ -45,5 +45,5 @@
   (add-hook 'org-mode-hook  (lambda () (if evil-mode (evil-org-mode))))
   (add-hook 'evil-mode-hook (lambda () (if (string-equal major-mode "org-mode") (evil-org-mode)))))
 
-(provide 'seaman-module-evil)
-;;; seaman-evil.el ends here
+(provide 'mirage-module-evil)
+;;; mirage-evil.el ends here

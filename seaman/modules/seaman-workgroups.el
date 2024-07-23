@@ -12,5 +12,5 @@
 
 (global-set-key (kbd "C-c w") #'workgroups-mode)
 
-(provide 'seaman-module-workgroups)
-;;; seaman-workgroups.el ends here
+(provide 'mirage-module-workgroups)
+;;; mirage-workgroups.el ends here

@@ -1,4 +1,4 @@
-(defun seaman/org-typefaces-body ()
+(defun mirage/org-typefaces-body ()
   (with-eval-after-load 'org-faces
 
     ;; Code
@@ -18,7 +18,7 @@
     (set-face-attribute 'org-document-info-keyword nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-special-keyword       nil :inherit 'fixed-pitch)))
 
-(add-hook 'org-mode-hook #'seaman/org-typefaces-body)
+(add-hook 'org-mode-hook #'mirage/org-typefaces-body)
 
 ;; use levels 1 through 16
 (setq org-n-level-faces 8)
@@ -30,7 +30,7 @@
 (setq org-hide-leading-starts t)
 
 ;; font sizes
-(defun seaman/org-heading-typefaces () 
+(defun mirage/org-heading-typefaces () 
   (with-eval-after-load 'org-faces
     (dolist (face '((org-level-1  . 1.175)
                     (org-level-2  . 1.175)
@@ -43,11 +43,11 @@
          (set-face-attribute (car face) nil :font typeface-heading :weight 'bold :height (cdr face)))))
 
 ;; org-mode hook
-(add-hook 'org-mode-hook #'seaman/org-heading-typefaces)
+(add-hook 'org-mode-hook #'mirage/org-heading-typefaces)
 
 ;; theme hooks
-(add-hook 'seaman/enable-or-load-theme-hook #'seaman/org-typefaces-body)
-(add-hook 'seaman/enable-or-load-theme-hook #'seaman/org-heading-typefaces)
+(add-hook 'mirage/enable-or-load-theme-hook #'mirage/org-typefaces-body)
+(add-hook 'mirage/enable-or-load-theme-hook #'mirage/org-heading-typefaces)
 
 ;; symbols, super- and subscripts
 (setq org-pretty-entities nil)
@@ -55,5 +55,5 @@
 ;; Change ellipsis ("...") to remove clutter
 (setq org-ellipsis " ♢")
 
-(provide 'seaman-layer-org-typesetting)
-;;; seaman-org-typesetting.el ends here
+(provide 'mirage-layer-org-typesetting)
+;;; mirage-org-typesetting.el ends here

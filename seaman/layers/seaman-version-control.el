@@ -1,5 +1,5 @@
-(seaman-module 'magit)
-(seaman-module 'forge)
+(mirage-module 'magit)
+(mirage-module 'forge)
 
-(provide 'seaman-layer-version-control)
-;;; seaman-version-control.el ends here
+(provide 'mirage-layer-version-control)
+;;; mirage-version-control.el ends here

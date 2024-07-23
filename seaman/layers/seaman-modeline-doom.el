@@ -1,8 +1,8 @@
 ;; modules
-(seaman-module 'doom-modeline)
+(mirage-module 'doom-modeline)
 
 ;; extensions
-(seaman-extend 'theme-modeline)
+(mirage-extend 'theme-modeline)
 
-(provide 'seaman-layer-modeline-doom)
-;;; seaman-modeline-doom.el ends here
+(provide 'mirage-layer-modeline-doom)
+;;; mirage-modeline-doom.el ends here

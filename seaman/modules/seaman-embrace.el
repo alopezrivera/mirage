@@ -1,5 +1,5 @@
 ;; dependencies
-(seaman-module 'expand-region)
+(mirage-module 'expand-region)
 
 ;; embrace
 (straight-use-package 'embrace)
@@ -7,5 +7,5 @@
 
 (add-hook 'org-mode-hook #'embrace-org-mode-hook)
 
-(provide 'seaman-module-embrace)
-;;; seaman-embrace.el ends here
+(provide 'mirage-module-embrace)
+;;; mirage-embrace.el ends here

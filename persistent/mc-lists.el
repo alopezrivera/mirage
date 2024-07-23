@@ -62,8 +62,8 @@
         rectangle-next-line
         rectangle-previous-line
         rectangle-right-char
-        seaman/delete-word-backward
-        seaman/org-nimble-delete-backward
+        mirage/delete-word-backward
+        mirage/org-nimble-delete-backward
         ))
 
 (setq mc/cmds-to-run-once
@@ -111,8 +111,8 @@
         pixel-scroll-precision
         pixel-scroll-start-momentum
         previous-buffer
-        seaman/swiper-multiple-cursors
-        seaman/theme-toggle
+        mirage/swiper-multiple-cursors
+        mirage/theme-toggle
         split-and-follow-horizontally
         suspend-frame
         swiper

@@ -7,5 +7,5 @@
 ;; mode line initialization hook
 (add-hook 'after-init-hook #'doom-modeline-mode)
 
-(provide 'seaman-module-doom-modeline)
-;;; seaman-doom-modeline.el ends here
+(provide 'mirage-module-doom-modeline)
+;;; mirage-doom-modeline.el ends here

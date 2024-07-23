@@ -7,5 +7,5 @@
 ;; visual notifications
 (setq alert-user-configuration (quote ((((:category . "org-pomodoro")) libnotify nil))))
 
-(provide 'seaman-module-org-pomodoro)
-;;; seaman-org-pomodoro.el ends here
+(provide 'mirage-module-org-pomodoro)
+;;; mirage-org-pomodoro.el ends here

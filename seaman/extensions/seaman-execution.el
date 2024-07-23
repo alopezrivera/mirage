@@ -1,4 +1,4 @@
-(defmacro seaman/@buffers (command &optional buffers)
+(defmacro mirage/@buffers (command &optional buffers)
   (let ((buffers (or buffers (buffer-list))))
     `(cl-loop for buffer in ',buffers
               do (if (buffer-live-p buffer)
@@ -6,5 +6,5 @@
                        (switch-to-buffer buffer)
                        ,command)))))
 
-(provide 'seaman-extension-execution)
-;;; seaman-execution.el ends here
+(provide 'mirage-extension-execution)
+;;; mirage-execution.el ends here

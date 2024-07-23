@@ -1,5 +1,5 @@
 (straight-use-package 'ob-async)
 (require 'ob-async)
 
-(provide 'seaman-module-ob-async)
-;;; seaman-ob-async.el ends here
+(provide 'mirage-module-ob-async)
+;;; mirage-ob-async.el ends here

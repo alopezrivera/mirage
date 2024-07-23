@@ -1,9 +1,9 @@
 ;; modules
-(seaman-module 'swiper)
-(seaman-module 'rg)
+(mirage-module 'swiper)
+(mirage-module 'rg)
 
 ;; extensions
-(seaman-extend 'search)
+(mirage-extend 'search)
 
-(provide 'seaman-layer-search)
-;;; seaman-search.el ends here
+(provide 'mirage-layer-search)
+;;; mirage-search.el ends here

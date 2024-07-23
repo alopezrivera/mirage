@@ -1,29 +1,29 @@
 ;; accent typefaces
-(defvar seaman/accents '(seaman/italic))
+(defvar mirage/accents '(mirage/italic))
 
-(defun seaman/theme-accents (orig-fun &rest args)
+(defun mirage/theme-accents (orig-fun &rest args)
   "Many themes will override certain face *attributes*, such as `italic'. To prevent
-this, this function loops over all accent typefaces in `seaman/accents', which contains
-faces (defined with `defface') named ~seaman/<attribute>~, and makes the ~<attribute>~
-inherit from ~seaman/<attribute>~.
+this, this function loops over all accent typefaces in `mirage/accents', which contains
+faces (defined with `defface') named ~mirage/<attribute>~, and makes the ~<attribute>~
+inherit from ~mirage/<attribute>~.
 
 As such, when this function is run, the `italic' face attribute will be made to
-inherit from `seaman/italic' as in the expression below.
+inherit from `mirage/italic' as in the expression below.
 
-   (set-face-attribute 'italic nil :inherit 'seaman/italic)
+   (set-face-attribute 'italic nil :inherit 'mirage/italic)
 
 Thus, our preferred accent typefaces will stand whatever harassment they may be put
 through as a theme loads."
   ;; load theme
   (apply orig-fun args)
   ;; restore accents
-  (cl-loop for accent in seaman/accents
+  (cl-loop for accent in mirage/accents
 	   do (let ((face (intern (car (last (split-string (symbol-name accent) "/"))))))
 		     (set-face-attribute face nil :inherit accent))))
 
-(advice-add 'seaman/enable-or-load-theme :around #'seaman/theme-accents)
+(advice-add 'mirage/enable-or-load-theme :around #'mirage/theme-accents)
 
-(defun seaman/quit-window ()
+(defun mirage/quit-window ()
   (interactive)
   (if current-prefix-arg
       (quit-window)
@@ -32,12 +32,12 @@ through as a theme loads."
 (with-eval-after-load 'helpful
   (cl-loop for map in '(help-mode-map
                         helpful-mode-map)
-           do (define-key (symbol-value map) [remap quit-window] #'seaman/quit-window)))
+           do (define-key (symbol-value map) [remap quit-window] #'mirage/quit-window)))
 
-(defun seaman/window-resize (width)
+(defun mirage/window-resize (width)
   (window-resize nil (- width (window-width)) t))
 
-(defun seaman/window-resize-fraction (fr &optional min)
+(defun mirage/window-resize-fraction (fr &optional min)
   "Resize window to a fraction of the frame width."
   (interactive)
   (let ((width (max (if min min 0) (truncate (* fr (frame-width))))))
@@ -47,7 +47,7 @@ through as a theme loads."
 (defvar last-message nil)
 (defadvice message (after my-message pre act) (setq last-message ad-return-value))
 
-(defun seaman/undefined-override (orig-fun &rest args)
+(defun mirage/undefined-override (orig-fun &rest args)
   "Override `undefined' function to suppress
 undefined key binding messages when interrupting
 key binding input with C-g."
@@ -60,38 +60,38 @@ key binding input with C-g."
     (message _message)))
 
 ;; Override the undefined key binding notice with a keyboard-quit
-(advice-add 'undefined :around #'seaman/undefined-override)
+(advice-add 'undefined :around #'mirage/undefined-override)
 
-(defcustom seaman/mode-line nil
+(defcustom mirage/mode-line nil
   "Variable containing the format of the hidden mode line")
 
-(defcustom seaman/header-line nil
+(defcustom mirage/header-line nil
   "Variable containing the format of the hidden header line")
 
-(defun seaman/hide-mode-line ()
+(defun mirage/hide-mode-line ()
   "Hide `modeline' in current buffer"
   (interactive)
   (let ((m mode-line-format)
         (h header-line-format))
-       (seaman/@buffers (if (or m h)
-                            (progn (setq seaman/mode-line   m)
-                                   (setq seaman/header-line h)
+       (mirage/@buffers (if (or m h)
+                            (progn (setq mirage/mode-line   m)
+                                   (setq mirage/header-line h)
                                    (setq mode-line-format   nil)
                                    (setq header-line-format nil))
-                          (progn (setq mode-line-format seaman/mode-line)
-                                 (setq header-line-format seaman/header-line))))))
+                          (progn (setq mode-line-format mirage/mode-line)
+                                 (setq header-line-format mirage/header-line))))))
 
-(global-set-key (kbd "M-m") #'seaman/hide-mode-line)
+(global-set-key (kbd "M-m") #'mirage/hide-mode-line)
 
-(defun seaman/mode-line-invert ()
+(defun mirage/mode-line-invert ()
   (interactive)
   (if mode-line-format
-      (seaman/@buffers (progn (set 'header-line-format mode-line-format)
+      (mirage/@buffers (progn (set 'header-line-format mode-line-format)
                               (set 'mode-line-format nil)))
-    (seaman/@buffers (progn (set 'mode-line-format header-line-format)
+    (mirage/@buffers (progn (set 'mode-line-format header-line-format)
                             (set 'header-line-format nil)))))
 
-(global-set-key (kbd "M-t") #'seaman/mode-line-invert)
+(global-set-key (kbd "M-t") #'mirage/mode-line-invert)
 
-(provide 'seaman-extension-ui)
-;;; seaman-ui.el ends here
+(provide 'mirage-extension-ui)
+;;; mirage-ui.el ends here

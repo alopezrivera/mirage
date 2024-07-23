@@ -8,11 +8,11 @@
 (setq-default org-download-image-dir "./figures")
 
 ;; customize #+DOWNLOADED attribute
-(defun seaman/org-download-annotate (link)
+(defun mirage/org-download-annotate (link)
   "Create a captioned and labeled figure."
   (concat "#+CAPTION:\n"
           "#+NAME: fig:\n"))
-(setq org-download-annotate-function #'seaman/org-download-annotate)
+(setq org-download-annotate-function #'mirage/org-download-annotate)
 
-(provide 'seaman-module-org-download)
-;;; seaman-org-download.el ends here
+(provide 'mirage-module-org-download)
+;;; mirage-org-download.el ends here

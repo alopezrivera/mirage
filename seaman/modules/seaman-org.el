@@ -74,7 +74,7 @@ overwritten, and the table is not marked as requiring realignment."
 	  (setq org-self-insert-command-undo-counter
 		(1+ org-self-insert-command-undo-counter))))))))
 
-(defun seaman/org-indent--compute-prefixes ()
+(defun mirage/org-indent--compute-prefixes ()
   "Recompute line prefixes for regular text to
 match the indentation of the parent heading."
   (dotimes (n org-indent--deepest-level)
@@ -85,7 +85,7 @@ match the indentation of the parent heading."
 	           (concat (make-string (+ n indentation) ?\s))
 		    nil 'face 'org-indent)))))
 
-(advice-add 'org-indent--compute-prefixes :after #'seaman/org-indent--compute-prefixes)
+(advice-add 'org-indent--compute-prefixes :after #'mirage/org-indent--compute-prefixes)
 
-(provide 'seaman-module-org)
-;;; seaman-org.el ends here
+(provide 'mirage-module-org)
+;;; mirage-org.el ends here

@@ -3,5 +3,5 @@
 (setq org-log-done 'time)
 (setq org-log-into-drawer t)
 
-(provide 'seaman-module-org-agenda-log-mode)
-;;; seaman-org-agenda-log-mode.el ends here
+(provide 'mirage-module-org-agenda-log-mode)
+;;; mirage-org-agenda-log-mode.el ends here

@@ -39,7 +39,7 @@
 		       "<fig"
 		       "Org Mode figure template")
 
-(defun seaman/tempo-code-block (key language)
+(defun mirage/tempo-code-block (key language)
   (tempo-define-template language
 		         `("#+begin_src " ,language n
 			   n
@@ -56,7 +56,7 @@
                 ("<cpp"  "C++")
 		("<bash" "bash")
                 ("<tx"   "latex")))
-  (apply 'seaman/tempo-code-block pair))
+  (apply 'mirage/tempo-code-block pair))
 
-(provide 'seaman-module-org-tempo)
-;;; seaman-org-tempo.el ends here
+(provide 'mirage-module-org-tempo)
+;;; mirage-org-tempo.el ends here

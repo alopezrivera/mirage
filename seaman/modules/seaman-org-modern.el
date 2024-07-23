@@ -21,5 +21,5 @@
 ;; Priorities
 (setq org-modern-priority nil)
 
-(provide 'seaman-module-org-modern)
-;;; seaman-org-modern.el ends here
+(provide 'mirage-module-org-modern)
+;;; mirage-org-modern.el ends here

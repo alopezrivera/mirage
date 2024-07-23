@@ -1,4 +1,4 @@
-(defvar seaman/org-babel-result-wrap-formats
+(defvar mirage/org-babel-result-wrap-formats
   '(((assq :wrap (nth 2 info))
      (let* ((full (or (cdr (assq :wrap (nth 2 info))) "results"))
 	    (split (split-string full))
@@ -85,7 +85,7 @@
        (org-babel-examplify-region
 	beg end results-switches inline)))))
 
-(add-to-list 'seaman/org-babel-result-wrap-formats
+(add-to-list 'mirage/org-babel-result-wrap-formats
              '((member "latex-eq" result-params)
                (progn (funcall wrap "\\begin{equation}" "\\end{equation}" nil nil
 	                       "{{{results(@@latex:" "@@)}}}"))
@@ -400,7 +400,7 @@ INFO may provide the values of these header arguments (in the
 				     org-babel-inline-result-wrap)))
 		        (org-babel-examplify-region
 		         beg end results-switches inline))))
-                  (let ((formats (copy-tree seaman/org-babel-result-wrap-formats)))
+                  (let ((formats (copy-tree mirage/org-babel-result-wrap-formats)))
                     (eval (add-to-list 'formats 'cond)))))
                 ;; Possibly indent results in par with #+results line.
 		(when (and (not inline) (numberp indent) (> indent 0)
@@ -426,5 +426,5 @@ INFO may provide the values of these header arguments (in the
 	    (set-marker visible-beg nil)
 	    (set-marker visible-end nil)))))))
 
-(provide 'seaman-extension-org-babel)
-;;; seaman-org-babel.el ends here
+(provide 'mirage-extension-org-babel)
+;;; mirage-org-babel.el ends here

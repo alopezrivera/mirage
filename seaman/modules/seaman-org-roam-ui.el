@@ -10,5 +10,5 @@
 
 (setq org-roam-ui-update-on-save t)
 
-(provide 'seaman-module-org-roam-ui)
-;;; seaman-org-roam-ui.el ends here
+(provide 'mirage-module-org-roam-ui)
+;;; mirage-org-roam-ui.el ends here

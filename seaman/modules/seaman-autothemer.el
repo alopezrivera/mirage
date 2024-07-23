@@ -1,5 +1,5 @@
 (straight-use-package 'autothemer)
 (require 'autothemer)
 
-(provide 'seaman-module-autothemer)
-;;; seaman-autothemer.el ends here
+(provide 'mirage-module-autothemer)
+;;; mirage-autothemer.el ends here

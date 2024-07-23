@@ -4,5 +4,5 @@
 
 (add-hook 'prog-mode-hook #'flycheck-mode)
 
-(provide 'seaman-module-flycheck)
-;;; seaman-flycheck.el ends here
+(provide 'mirage-module-flycheck)
+;;; mirage-flycheck.el ends here

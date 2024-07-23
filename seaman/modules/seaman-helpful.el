@@ -9,5 +9,5 @@
 (global-set-key [remap describe-variable] #'helpful-variable)
 (global-set-key [remap describe-key]      #'helpful-key)
 
-(provide 'seaman-module-helpful)
-;;; seaman-helpful.el ends here
+(provide 'mirage-module-helpful)
+;;; mirage-helpful.el ends here

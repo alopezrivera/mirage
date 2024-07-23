@@ -12,5 +12,5 @@
 ;; remove redundant bindings
 (define-key org-mode-map (kbd "C-,") nil)
 
-(provide 'seaman-module-org-agenda)
-;;; seaman-org-agenda.el ends here
+(provide 'mirage-module-org-agenda)
+;;; mirage-org-agenda.el ends here
